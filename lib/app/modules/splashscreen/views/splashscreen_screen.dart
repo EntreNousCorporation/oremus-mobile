@@ -15,19 +15,20 @@ class SplashscreenScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return KeyboardDismisser(
-      child: GetX<SplashscreenController>(builder: (logic) {
+      child: GetBuilder<SplashscreenController>(builder: (logic) {
         return SafeArea(
           child: Scaffold(
               backgroundColor: Colors.transparent,
               body: Container(
                 color: colorWhite,
+                width: Get.width,
                 child: Column(
                   children: [
                     const SizedBox(
                       height: 50,
                     ),
                     const Text(
-                      'Simple & rapide',
+                      'Oremus',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontFamily: 'avenir_bold',
@@ -41,18 +42,16 @@ class SplashscreenScreen extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Visibility(
-                                visible: false,
-                                child: Separators.minimunVertical()),
+                            Separators.minimunVertical(),
                             const Visibility(
-                              visible: false,
+                              visible: true,
                               child: LoadingView()
                             )
                           ],
                         ),
                       ),
                     ),
-                    SvgPicture.asset('assets/images/splash_bottom.svg'),
+                    //SvgPicture.asset('assets/images/splash_bottom.svg'),
                   ],
                 ),
               )),

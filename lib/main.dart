@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -30,7 +33,16 @@ void main() async {
       Jiffy.locale('fr');
       configOrientation();
 
-      runApp(const MyApp());
+      //runApp(const MyApp());
+      runZonedGuarded<Future<void>>(() async {
+        await Firebase.initializeApp();
+        FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+        FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+
+        runApp(MyApp());
+
+      },
+              (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack));
 
     },
   );
