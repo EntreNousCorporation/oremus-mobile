@@ -4,7 +4,6 @@ abstract class AppConstants {
   static const ENV_DEV = 'dev';
   static const ENV_PROD = 'prod';
 
-
   static const USER_LOG_INFOS = 'USER_LOG_INFO';
   static const FCM_TOKEN = 'FCM_TOKEN';
 
@@ -16,4 +15,10 @@ abstract class AppConstants {
   //HIVE
   static const BOX_NAME = "oremusBox";
   static const STORAGE_KEY = "oremusKey";
+
+  //VALIDATOR
+  static const INPUT_NUM_REGEX = "[0-9\\s]";
+
+  //CREDENTIALS
+  static const KEY_TOKEN = "KEY_TOKEN";
 }

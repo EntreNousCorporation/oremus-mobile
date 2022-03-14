@@ -6,13 +6,13 @@ final ThemeData appThemeData = ThemeData(
   appBarTheme: AppBarTheme(
     systemOverlayStyle: SystemUiOverlayStyle.dark, // 2
   ),
-  primaryColor: colorGreenDark,
+  primaryColor: colorBlueDark,
   splashColor: colorWhite,
-  highlightColor: colorGreenDark,
-  primaryColorDark: colorGreenDark,
+  highlightColor: colorBlueDark,
+  primaryColorDark: colorBlueDark,
   fontFamily: 'avenir_regular',
  //brightness: Brightness.light,
  /* textTheme: TextTheme(
     headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-  ),*/ colorScheme: ColorScheme.fromSwatch().copyWith(secondary: colorGreenDark),
+  ),*/ colorScheme: ColorScheme.fromSwatch().copyWith(secondary: colorBlueDark),
 );

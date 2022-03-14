@@ -1,11 +1,10 @@
-
 import 'package:oremusapp/app/modules/splashscreen/data/repository/interface_splashscreen_repository.dart';
-import 'package:oremusapp/app/provider/remote/api_client.dart';
+import 'package:oremusapp/app/remote/api_client.dart';
 
 class SplashscreenRepository implements ISplashscreenRepository {
 
-  final ApiClient apiClient;
+  final ApiClient _apiClient;
 
-  SplashscreenRepository({required this.apiClient});
+  SplashscreenRepository(this._apiClient);
 
 }

@@ -1,7 +1,4 @@
-
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/loader_widget.dart';
@@ -33,7 +30,7 @@ class SplashscreenScreen extends StatelessWidget {
                       style: TextStyle(
                         fontFamily: 'avenir_bold',
                         fontSize: 32,
-                        color: colorGreenDark,
+                        color: colorBlueDark,
                       ),
                     ),
                     Expanded(

@@ -3,3 +3,11 @@ enum PaiementMode {
   cash,
   mobile_money,
 }
+
+enum HttpMethod {
+  get,
+  post,
+  patch,
+  put,
+  delete,
+}

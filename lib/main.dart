@@ -14,6 +14,7 @@ import 'package:jiffy/jiffy.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/configs/flavor_settings.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 var appUrl;
 var flavor;
@@ -22,12 +23,12 @@ var encryptedBox;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   initializeDateFormatting('fr_FR', null).then(
-        (_) async {
-
+    (_) async {
       final settings = await _getFlavorSettings();
       appUrl = settings.apiBaseUrl;
 
-      await Hive.initFlutter().then((value) => log('==== HIVE INIT SUCCESS===='));
+      await Hive.initFlutter()
+          .then((value) => log('==== HIVE INIT SUCCESS===='));
       await configureEncryptedHive();
 
       Jiffy.locale('fr');
@@ -40,10 +41,9 @@ void main() async {
         FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
         runApp(MyApp());
-
       },
-              (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack));
-
+          (error, stack) =>
+              FirebaseCrashlytics.instance.recordError(error, stack));
     },
   );
 }
@@ -53,37 +53,44 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: (flavor == AppConstants.ENV_DEV) ? true : false,
-      defaultTransition: Transition.rightToLeftWithFade,
-      initialRoute: Routes.SPLASHSCREEN,
-      getPages: AppPages.pages,
-      builder: (context, child) {
-        return MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
-            child: child!);
-      },
+    return OverlaySupport.global(
+      child: GetMaterialApp(
+        debugShowCheckedModeBanner:
+            (flavor == AppConstants.ENV_DEV) ? true : false,
+        defaultTransition: Transition.rightToLeftWithFade,
+        initialRoute: Routes.CONNEXION,
+        getPages: AppPages.pages,
+        builder: (context, child) {
+          return MediaQuery(
+              data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
+              child: child!);
+        },
+      ),
     );
   }
 }
 
-
 configureEncryptedHive() async {
   const FlutterSecureStorage secureStorage = FlutterSecureStorage();
-  var containsEncryptionKey = await secureStorage.containsKey(key: AppConstants.STORAGE_KEY);
-  if (containsEncryptionKey == false) {
+  var containsEncryption =
+      await secureStorage.read(key: AppConstants.STORAGE_KEY);
+  if (containsEncryption == null) {
     var key = Hive.generateSecureKey();
     log('key $key');
-    await secureStorage.write(key: AppConstants.STORAGE_KEY, value: base64UrlEncode(key));
+    await secureStorage.write(
+        key: AppConstants.STORAGE_KEY, value: base64UrlEncode(key));
   }
-  log('containsEncryptionKey $containsEncryptionKey');
-  var encryptionKey = base64Url.decode(await secureStorage.read(key: AppConstants.STORAGE_KEY) ?? '');
+  log('containsEncryption $containsEncryption');
+  var encryptionKey = base64Url
+      .decode(await secureStorage.read(key: AppConstants.STORAGE_KEY) ?? '');
   log('encryptionKey $encryptionKey');
-  encryptedBox = await Hive.openBox(AppConstants.BOX_NAME, encryptionCipher: HiveAesCipher(encryptionKey));
+  encryptedBox = await Hive.openBox(AppConstants.BOX_NAME,
+      encryptionCipher: HiveAesCipher(encryptionKey));
 }
 
 Future<FlavorSettings> _getFlavorSettings() async {
-  flavor = await const MethodChannel('flavor').invokeMethod<String>('getFlavor');
+  flavor =
+      await const MethodChannel('flavor').invokeMethod<String>('getFlavor');
 
   log('STARTED WITH FLAVOR $flavor');
 
