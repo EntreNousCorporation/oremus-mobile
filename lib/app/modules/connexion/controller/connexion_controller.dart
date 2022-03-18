@@ -77,9 +77,9 @@ class ConnexionController extends GetxController {
       debugPrint("error => ${error.toString()}");
       if (error.toString().isNotEmpty && error is Map) {
         var errorResponse = ErrorResponse.fromJson(json.decode(error.toString()));
-        showSimpleNotification(Text(errorResponse.debugMessage.toString()), background: Colors.red);
+        showSimpleNotification(Center(child: Text(errorResponse.debugMessage.toString())), background: Colors.red);
       } else {
-        showSimpleNotification(const Text("Login et/ou mot de passe incorrect"), background: Colors.red);
+        showSimpleNotification(const Center(child: Text("Login et/ou mot de passe incorrect")), background: Colors.red);
       }
     });
   }
