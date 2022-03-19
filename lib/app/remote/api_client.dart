@@ -35,6 +35,10 @@ class ApiClientImpl extends GetConnect implements ApiClient {
     }
     timeout = const Duration(seconds: AppConstants.REQUEST_TIMEOUT);
 
+    log("url => " + appUrl + endpoint);
+    log("body => " + body);
+    log("method => " + method.name);
+
     Response response;
     var resp;
 
@@ -57,14 +61,11 @@ class ApiClientImpl extends GetConnect implements ApiClient {
           break;
       }
 
-      resp = _response(response);
-
       log("statusCode ${response.statusCode}");
       log("bodystring => " + response.bodyString.toString());
       log("headers => " + headers.toString());
-      log("url => " + appUrl + endpoint);
-      log("body => " + body);
-      log("method => " + method.name);
+
+      resp = _response(response);
 
     } on SocketException {
       throw FetchDataException(100, 'No Internet connection');
@@ -76,6 +77,8 @@ class ApiClientImpl extends GetConnect implements ApiClient {
   dynamic _response(Response response) {
     switch (response.statusCode) {
       case 200:
+      case 201:
+      case 202:
         return response;
       case 400:
         throw BadRequestException(400, response.body.toString());

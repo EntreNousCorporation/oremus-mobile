@@ -71,8 +71,9 @@ class MyApp extends StatelessWidget {
         getPages: AppPages.pages,
         builder: EasyLoading.init(builder: (context, child) {
           return MediaQuery(
-              data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
-              child: child!);
+            data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
+            child: child!,
+          );
         }),
       ),
     );
@@ -119,7 +120,7 @@ configOrientation() {
 void configLoading() {
   EasyLoading.instance
     ..displayDuration = const Duration(milliseconds: 2000)
-    ..indicatorType = EasyLoadingIndicatorType.threeBounce
+    ..indicatorType = EasyLoadingIndicatorType.cubeGrid
     ..loadingStyle = EasyLoadingStyle.dark
     ..indicatorSize = 25.0
     ..radius = 10.0
@@ -130,6 +131,7 @@ void configLoading() {
     ..maskColor = Colors.black.withOpacity(0.5)
     ..userInteractions = false
     ..dismissOnTap = false
-    ..textStyle = const TextStyle(color: colorWhite, fontFamily: 'montserrat_regular')
+    ..textStyle =
+        const TextStyle(color: colorWhite, fontFamily: 'montserrat_regular')
     ..customAnimation = CustomAnimation();
 }

@@ -189,6 +189,7 @@ const Map<String, String> fr_FR = {
   'unavailable': 'Non disponible !',
   'waiting': 'Veuillez patienter...',
   'connection_processing': 'Connexion en cours...',
+  'signup_processing': 'Inscription en cours...',
   'processing': 'Traitement en cours...',
   'reload_proccessing': 'Rechargement en cours...',
   'error_text': 'Une erreur est survenue',

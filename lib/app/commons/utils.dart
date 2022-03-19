@@ -48,5 +48,6 @@ extension StringExtension on String {
 }
 
 hideKeyboard() {
-  FocusManager.instance.primaryFocus?.unfocus();
+  //FocusManager.instance.primaryFocus?.unfocus();
+  WidgetsBinding.instance?.focusManager.primaryFocus?.unfocus();
 }

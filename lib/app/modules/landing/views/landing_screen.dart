@@ -62,7 +62,7 @@ class _LandingScreenState extends State<LandingScreen> {
           curve: Curves.bounceInOut,
           duration: Duration(milliseconds: 200),
         ),
-        navBarStyle: NavBarStyle.style13, // Choose the nav bar style with this property.
+        navBarStyle: NavBarStyle.style1, // Choose the nav bar style with this property.
       ),
     );
   }

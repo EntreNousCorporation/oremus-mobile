@@ -107,7 +107,7 @@ class _MyTextFieldState extends State<MyTextField> {
         inputFormatters: maskInputs,
         onChanged: onChanged,
         keyboardType: keyboardType ?? TextInputType.text,
-        textCapitalization: TextCapitalization.characters,
+        textCapitalization: TextCapitalization.words,
         decoration: InputDecoration(
           filled: true,
           fillColor: colorGrey3,

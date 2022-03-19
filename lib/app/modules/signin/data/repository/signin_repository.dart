@@ -15,7 +15,7 @@ class SigninRepository implements ISigninRepository {
   SigninRepository(this._apiClient);
 
   @override
-  Future<SignupResponse> loginUser(Signin request) async {
+  Future<SigninResponse> loginUser(Signin request) async {
     Response response = await _apiClient.doRequest(
       endpoint: "/auth/login",
       body: jsonEncode(request.toJson()),
@@ -29,7 +29,7 @@ class SigninRepository implements ISigninRepository {
       throw Exception(resp);
     } else {
       log('resp => $resp');
-      return SignupResponse.fromJson(json.decode(response.bodyString.toString()));
+      return SigninResponse.fromJson(json.decode(response.bodyString.toString()));
     }
   }
 }

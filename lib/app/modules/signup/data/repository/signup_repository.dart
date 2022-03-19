@@ -15,7 +15,7 @@ class SignupRepository implements ISignupRepository {
   SignupRepository(this._apiClient);
 
   @override
-  Future<SignupResponse> signupUser(Signin request) async {
+  Future<SigninResponse> signupUser(Signin request) async {
     Response response = await _apiClient.doRequest(
       endpoint: "/users/fo-agents",
       body: jsonEncode(request.toJson()),
@@ -25,11 +25,11 @@ class SignupRepository implements ISignupRepository {
     final String resp = json.encode(response.bodyString.toString());
     log('resp => ${response.statusCode}');
 
-    if (response.statusCode != 200) {
-      throw Exception(resp);
-    } else {
+    if (response.statusCode! >= 200 && response.statusCode! <= 202) {
       log('resp => $resp');
-      return SignupResponse.fromJson(json.decode(response.bodyString.toString()));
+      return SigninResponse.fromJson(json.decode(response.bodyString.toString()));
+    } else {
+      throw Exception(resp);
     }
   }
 }

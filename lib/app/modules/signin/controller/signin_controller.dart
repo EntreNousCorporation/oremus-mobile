@@ -6,6 +6,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
@@ -60,11 +61,12 @@ class SigninController extends GetxController {
   }
 
   connectUser() {
+    hideKeyboard();
     EasyLoading.show(
-            status: 'connection_processing'.tr,
-            maskType: EasyLoadingMaskType.black,
-            indicator: const LoadingView())
-        .then((v) {
+      status: 'connection_processing'.tr,
+      maskType: EasyLoadingMaskType.black,
+      indicator: const LoadingView(),
+    ).then((v) {
       unlockBackButton.value = false;
     });
 

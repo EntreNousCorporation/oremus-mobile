@@ -12,7 +12,7 @@ class HomeController extends GetxController {
   final HomeRepository homeRepository;
   var loading = true.obs;
   var showNotificationCount = 0.obs;
-  var userConnection = SignupResponse().obs;
+  var userConnection = SigninResponse().obs;
 
   RxList<OperationTypeMenu> operations = RxList<OperationTypeMenu>([]);
 
@@ -61,8 +61,8 @@ class HomeController extends GetxController {
 
   getUserInfo() {
     var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
-    SignupResponse userConnected =
-    SignupResponse.fromJson(jsonDecode(userInfo));
+    SigninResponse userConnected =
+    SigninResponse.fromJson(jsonDecode(userInfo));
     userConnection.value = userConnected;
   }
 }

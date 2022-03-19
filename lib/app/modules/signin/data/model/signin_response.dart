@@ -1,13 +1,13 @@
-class SignupResponse {
+class SigninResponse {
   String? accessToken;
   dynamic expiredAt;
 
-  SignupResponse({
+  SigninResponse({
     this.accessToken,
     this.expiredAt,
   });
 
-  SignupResponse.fromJson(Map<String, dynamic> json) {
+  SigninResponse.fromJson(Map<String, dynamic> json) {
     accessToken = json['accessToken'];
     expiredAt = json['expiredAt'];
   }

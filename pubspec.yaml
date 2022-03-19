@@ -29,6 +29,7 @@ dependencies:
   hive_flutter: ^1.1.0
   overlay_support: ^1.2.1
   flutter_easyloading: ^3.0.3
+  hidden_drawer_menu: ^3.0.1
 
 dev_dependencies:
   flutter_test:

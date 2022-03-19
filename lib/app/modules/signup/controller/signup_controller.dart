@@ -6,6 +6,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signup/data/repository/signup_repository.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
@@ -66,35 +68,50 @@ class SignupController extends GetxController {
   }
 
   signupUser() {
+    hideKeyboard();
     EasyLoading.show(
-      status: 'connection_processing'.tr,
+      status: 'signup_processing'.tr,
       maskType: EasyLoadingMaskType.black,
       indicator: const LoadingView()
     ).then((v) {
       unlockBackButton.value = false;
     });
 
-    String login = phoneController.text.trim().toString().replaceAll(' ', '');
+    String firstname = firstnameController.text.trim().toString().replaceAll(' ', '');
+    String lastname = lastnameController.text.trim().toString();
+    String phone = phoneController.text.trim().toString().replaceAll(' ', '');
     String password = passwordController.text.trim().toString();
 
     loading(true);
     lockScreen(true);
-    Signin request = Signin(username: login, password: password);
+    Signin request = Signin(
+      phone: phone,
+      firstname: firstname,
+      lastname: lastname,
+      password: password,
+    );
 
     log('request signupUser => ${request.toJson().toString()}');
 
     signupRepository.signupUser(request).then((value) {
+      EasyLoading.dismiss(animation: true).then((v) {
+        unlockBackButton.value = true;
+      });
       log('value => ${value.accessToken}');
       lockScreen(false);
+      showSimpleNotification(const Center(child: Text('Inscription effectué avec succès')), background: colorGreen);
       Get.back();
     }, onError: (error) {
+      EasyLoading.dismiss(animation: true).then((v) {
+        unlockBackButton.value = true;
+      });
       lockScreen(false);
       debugPrint("error => ${error.toString()}");
       if (error.toString().isNotEmpty && error is Map) {
         var errorResponse = ErrorResponse.fromJson(json.decode(error.toString()));
         showSimpleNotification(Center(child: Text(errorResponse.debugMessage.toString())), background: Colors.red);
       } else {
-        showSimpleNotification(const Center(child: Text("Login et/ou mot de passe incorrect")), background: Colors.red);
+        showSimpleNotification(const Center(child: Text("Une erreur est survenue")), background: Colors.red);
       }
     });
   }
@@ -113,6 +130,9 @@ class SignupController extends GetxController {
   void dispose() {
     phoneController.dispose();
     passwordController.dispose();
+    lastnameController.dispose();
+    firstnameController.dispose();
+    confPasswordController.dispose();
     super.dispose();
   }
 }

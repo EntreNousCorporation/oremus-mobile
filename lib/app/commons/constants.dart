@@ -10,7 +10,7 @@ abstract class AppConstants {
   static const APP_NAME = 'OREMUS';
 
   //CONNECTIVITY
-  static const REQUEST_TIMEOUT = 1 * 60; //seconds
+  static const REQUEST_TIMEOUT = 2 * 60; //seconds
 
   //HIVE
   static const BOX_NAME = "oremusBox";
