@@ -1,8 +1,11 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
-import 'package:oremusapp/app/modules/home/binding/home_binding.dart';
-import 'package:oremusapp/app/modules/home/views/home_screen.dart';
+import 'package:oremusapp/app/modules/diocese/binding/diocese_binding.dart';
+import 'package:oremusapp/app/modules/formation/binding/formation_binding.dart';
 import 'package:oremusapp/app/modules/landing/views/landing_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/binding/paroisse_binding.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_screen.dart';
+import 'package:oremusapp/app/modules/service/binding/service_binding.dart';
 import 'package:oremusapp/app/modules/signin/binding/signin_binding.dart';
 import 'package:oremusapp/app/modules/signin/views/signin_screen.dart';
 import 'package:oremusapp/app/modules/signup/binding/signup_binding.dart';
@@ -23,13 +26,16 @@ class AppPages {
         name: Routes.INITIAL,
         page: () => LandingScreen(),
         bindings: [
-          HomeBinding(),
+          ParoisseBinding(),
+          DioceseBinding(),
+          FormationBinding(),
+          ServiceBinding(),
         ],
-        transition: Transition.zoom),
+    ),
     GetPage(
       name: Routes.HOME,
-      page: () => const HomeScreen(),
-      binding: HomeBinding(),
+      page: () => const ParoisseScreen(),
+      binding: ParoisseBinding(),
     ),
     GetPage(
         name: Routes.SIGNIN,

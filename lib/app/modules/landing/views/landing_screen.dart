@@ -1,12 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
-import 'package:oremusapp/app/modules/home/views/home_screen.dart';
+import 'package:oremusapp/app/modules/diocese/views/diocese_screen.dart';
+import 'package:oremusapp/app/modules/formation/views/formation_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_screen.dart';
+import 'package:oremusapp/app/modules/service/views/service_screen.dart';
 
 class LandingScreen extends StatefulWidget {
   LandingScreen({Key? key}) : super(key: key);
@@ -69,9 +70,10 @@ class _LandingScreenState extends State<LandingScreen> {
 
   List<Widget> _buildScreens() {
     return [
-      const HomeScreen(),
-      const HomeScreen(),
-      const HomeScreen(),
+      const ParoisseScreen(),
+      const DioceseScreen(),
+      const FormationScreen(),
+      const ServiceScreen(),
     ];
   }
 
@@ -79,22 +81,29 @@ class _LandingScreenState extends State<LandingScreen> {
     return [
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.home_outlined),
-        title: '',
-        textStyle: const TextStyle(fontFamily: 'avenir_bold', fontSize: 12),
+        title: 'Paroisses',
+        textStyle: const TextStyle(fontFamily: 'montserrat_bold', fontSize: 12),
         activeColorPrimary: colorGreen,
         inactiveColorPrimary: colorGrey1,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.favorite_border),
-        title: "",
-        textStyle: const TextStyle(fontFamily: 'avenir_bold', fontSize: 12),
+        title: 'Diocèses',
+        textStyle: const TextStyle(fontFamily: 'montserrat_bold', fontSize: 12),
         activeColorPrimary: colorGreen,
         inactiveColorPrimary: colorGrey1,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.person),
-        title: '',
-        textStyle: const TextStyle(fontFamily: 'avenir_bold', fontSize: 12),
+        title: 'Formations',
+        textStyle: const TextStyle(fontFamily: 'montserrat_bold', fontSize: 12),
+        activeColorPrimary: colorGreen,
+        inactiveColorPrimary: colorGrey1,
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(Icons.person),
+        title: 'Services',
+        textStyle: const TextStyle(fontFamily: 'montserrat_bold', fontSize: 12),
         activeColorPrimary: colorGreen,
         inactiveColorPrimary: colorGrey1,
       ),

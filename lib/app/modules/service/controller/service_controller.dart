@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
-import 'package:oremusapp/app/modules/home/data/model/operation_type_menu.dart';
-import 'package:oremusapp/app/modules/home/data/repository/home_repository.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/operation_type_menu.dart';
+import 'package:oremusapp/app/modules/service/data/repository/service_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin_response.dart';
 import 'package:oremusapp/main.dart';
 
-class HomeController extends GetxController {
-  final HomeRepository homeRepository;
+class ServiceController extends GetxController {
+  final ServiceRepository serviceRepository;
   var loading = true.obs;
   var showNotificationCount = 0.obs;
   var userConnection = SigninResponse().obs;
@@ -20,8 +20,8 @@ class HomeController extends GetxController {
 
   var unlockBackButton = true.obs;
 
-  HomeController({
-    required this.homeRepository,
+  ServiceController({
+    required this.serviceRepository,
   });
 
   @override

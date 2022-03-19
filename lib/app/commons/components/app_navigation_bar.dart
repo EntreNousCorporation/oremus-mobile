@@ -39,7 +39,7 @@ class AppNavigationBar extends StatelessWidget {
                     style: const TextStyle(
                         color: colorBlack,
                         fontSize: 22,
-                        fontFamily: 'avenir_bold'),
+                        fontFamily: 'montserrat_bold'),
                   ),
                 ],
               ),

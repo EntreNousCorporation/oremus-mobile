@@ -113,7 +113,7 @@ const Map<String, String> fr_FR = {
   'amount_to_send': 'Montant à envoyer',
 
   //Landing
-  'home': 'Accueil',
+  'diocese': 'Accueil',
   'stats': 'Statistiques',
 
   //Farlight
