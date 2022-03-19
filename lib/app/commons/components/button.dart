@@ -31,10 +31,10 @@ class CustomButton extends StatefulWidget {
     this.textColor = colorWhite,
     this.textSize = TextSizes.fourteen,
     this.textAlign = TextAlign.center,
-    this.bgcolor = colorBlueDark,
+    this.bgcolor = colorGreen,
     this.actionColor = colorBlue2,
     this.borderWidth = 2,
-    this.borderColor = colorBlueDark,
+    this.borderColor = colorGreen,
     this.paddingVertical = 10.0,
     this.paddingHorizontal = 10.0,
     this.icon,
@@ -122,7 +122,7 @@ class _CustomButtonState extends State<CustomButton> {
               (text != null && text.isNotEmpty) ? Expanded(
                 child: Text(text,
                     textAlign: textAlign,
-                    style: TextStyles.avenirBold(
+                    style: TextStyles.montserratMedium(
                         textSize: textSize, textColor: textColor)),
               ) : Container(),
               if (icon != null)

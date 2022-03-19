@@ -28,6 +28,7 @@ dependencies:
   hive: ^2.0.4
   hive_flutter: ^1.1.0
   overlay_support: ^1.2.1
+  flutter_easyloading: ^3.0.3
 
 dev_dependencies:
   flutter_test:
@@ -133,19 +134,147 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: avenir_bold
+    - family: montserrat_black
       fonts:
-        - asset: assets/fonts/avenir_next_ltpro_bold.otf
-    - family: avenir_demi_bold
+        - asset: assets/fonts/Montserrat_Black.otf
+
+    - family: montserrat_black_italic
       fonts:
-        - asset: assets/fonts/avenir_next_ltpro_demi_bold.otf
-    - family: avenir_regular
+        - asset: assets/fonts/Montserrat_BlackItalic.otf
+
+    - family: montserrat_bold
       fonts:
-        - asset: assets/fonts/avenir_next_ltpro_regular.otf
-    - family: credit_card
+        - asset: assets/fonts/Montserrat_Bold.otf
+
+    - family: montserrat_bold_italic
       fonts:
-        - asset: assets/fonts/credit_card.ttf
-    - family: halter
+        - asset: assets/fonts/Montserrat_BoldItalic.otf
+
+    - family: montserrat_extra_bold
       fonts:
-        - asset: assets/fonts/halter.ttf
+        - asset: assets/fonts/Montserrat_ExtraBold.otf
+
+    - family: montserrat_extraBold_italic
+      fonts:
+        - asset: assets/fonts/Montserrat_ExtraBoldItalic.otf
+
+    - family: montserrat_extra_light
+      fonts:
+        - asset: assets/fonts/Montserrat_ExtraLight.otf
+
+    - family: montserrat_extra_light_italic
+      fonts:
+        - asset: assets/fonts/Montserrat_ExtraLightItalic.otf
+
+    - family: montserrat_italic
+      fonts:
+        - asset: assets/fonts/Montserrat_Italic.otf
+
+    - family: montserrat_light
+      fonts:
+        - asset: assets/fonts/Montserrat_Light.otf
+
+    - family: montserrat_light_italic
+      fonts:
+        - asset: assets/fonts/Montserrat_LightItalic.otf
+
+    - family: montserrat_medium
+      fonts:
+        - asset: assets/fonts/Montserrat_Medium.otf
+
+    - family: montserrat_medium_italic
+      fonts:
+        - asset: assets/fonts/Montserrat_MediumItalic.otf
+
+    - family: montserrat_regular
+      fonts:
+        - asset: assets/fonts/Montserrat_Regular.otf
+
+    - family: montserrat_semi_bold
+      fonts:
+        - asset: assets/fonts/Montserrat_SemiBold.otf
+
+    - family: montserrat_semi_bold_italic
+      fonts:
+        - asset: assets/fonts/Montserrat_SemiBoldItalic.otf
+
+    - family: montserrat_thin
+      fonts:
+        - asset: assets/fonts/Montserrat_Thin.otf
+
+    - family: montserrat_thin_italic
+      fonts:
+        - asset: assets/fonts/Montserrat_ThinItalic.otf
+
+    - family: montserrat_alternates_black
+      fonts:
+        - asset: assets/fonts/MontserratAlternates_Black.otf
+
+    - family: montserrat_alternates_black_italic
+      fonts:
+        - asset: assets/fonts/MontserratAlternates_BlackItalic.otf
+
+    - family: montserrat_alternates_bold
+      fonts:
+        - asset: assets/fonts/MontserratAlternates_Bold.otf
+
+    - family: montserrat_alternates_bold_italic
+      fonts:
+        - asset: assets/fonts/MontserratAlternates_BoldItalic.otf
+
+    - family: montserrat_alternates_extra_bold
+      fonts:
+        - asset: assets/fonts/MontserratAlternates_ExtraBold.otf
+
+    - family: montserrat_alternates_extraBold_italic
+      fonts:
+        - asset: assets/fonts/MontserratAlternates_ExtraBoldItalic.otf
+
+    - family: montserrat_alternates_extra_light
+      fonts:
+        - asset: assets/fonts/MontserratAlternates_ExtraLight.otf
+
+    - family: montserrat_alternates_extra_light_italic
+      fonts:
+        - asset: assets/fonts/MontserratAlternates_ExtraLightItalic.otf
+
+    - family: montserrat_alternates_italic
+      fonts:
+        - asset: assets/fonts/MontserratAlternates_Italic.otf
+
+    - family: montserrat_alternates_light
+      fonts:
+        - asset: assets/fonts/MontserratAlternates_Light.otf
+
+    - family: montserrat_alternates_light_italic
+      fonts:
+        - asset: assets/fonts/MontserratAlternates_LightItalic.otf
+
+    - family: montserrat_alternates_medium
+      fonts:
+        - asset: assets/fonts/MontserratAlternates_Medium.otf
+
+    - family: montserrat_alternates_medium_italic
+      fonts:
+        - asset: assets/fonts/MontserratAlternates_MediumItalic.otf
+
+    - family: montserrat_alternates_regular
+      fonts:
+        - asset: assets/fonts/MontserratAlternates_Regular.otf
+
+    - family: montserrat_alternates_semi_bold
+      fonts:
+        - asset: assets/fonts/MontserratAlternates_SemiBold.otf
+
+    - family: montserrat_alternates_semi_bold_italic
+      fonts:
+        - asset: assets/fonts/MontserratAlternates_SemiBoldItalic.otf
+
+    - family: montserrat_alternates_thin
+      fonts:
+        - asset: assets/fonts/MontserratAlternates_Thin.otf
+
+    - family: montserrat_alternates_thin_italic
+      fonts:
+        - asset: assets/fonts/MontserratAlternates_ThinItalic.otf
 

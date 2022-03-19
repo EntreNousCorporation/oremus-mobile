@@ -30,7 +30,7 @@ class SplashscreenScreen extends StatelessWidget {
                       style: TextStyle(
                         fontFamily: 'avenir_bold',
                         fontSize: 32,
-                        color: colorBlueDark,
+                        color: colorGreen,
                       ),
                     ),
                     Expanded(

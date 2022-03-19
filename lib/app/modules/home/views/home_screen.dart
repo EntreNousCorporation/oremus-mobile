@@ -23,7 +23,7 @@ class HomeScreen extends StatelessWidget {
     final double operationItemWidth = screensize.width / 4;
 
     return Container(
-      color: colorBlueDark,
+      color: colorGreen,
       child: SafeArea(
         child: GetBuilder<HomeController>(
             initState: (state) {},

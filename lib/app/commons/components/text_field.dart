@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,30 +6,31 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 
 class MyTextField extends StatefulWidget {
-  const MyTextField(
-      {Key? key,
-      this.fieldKey,
-      required this.controller,
-       this.phoneIndicatifController,
-      this.hintText = "hintText",
-      this.labelText = "labelText",
-      this.isPassword = false,
-      this.maskInputs,
-      this.keyboardType,
-      this.maxLength,
-      this.counterText = '',
-      this.maxLines = 1,
-      this.inputTextSize = TextSizes.sixteen,
-      this.prefixIcon,
-      this.prefixIconColor,
-      this.suffixIcon,
-      this.enabled = true,
-      this.onSaved,
-      this.validator,
-      this.onChanged,
-      this.afterDateNow = false,
-      this.isDate = false, this.isPhone = false,})
-      : super(key: key);
+  const MyTextField({
+    Key? key,
+    this.fieldKey,
+    required this.controller,
+    this.phoneIndicatifController,
+    this.hintText = "hintText",
+    this.labelText = "labelText",
+    this.isPassword = false,
+    this.maskInputs,
+    this.keyboardType,
+    this.maxLength,
+    this.counterText = '',
+    this.maxLines = 1,
+    this.inputTextSize = TextSizes.fourteen,
+    this.prefixIcon,
+    this.prefixIconColor,
+    this.suffixIcon,
+    this.enabled = true,
+    this.onSaved,
+    this.validator,
+    this.onChanged,
+    this.afterDateNow = false,
+    this.isDate = false,
+    this.isPhone = false,
+  }) : super(key: key);
 
   final Key? fieldKey;
   final TextEditingController controller;
@@ -48,7 +48,7 @@ class MyTextField extends StatefulWidget {
   final bool isPhone;
   final String? prefixIcon;
   final Color? prefixIconColor;
-  final Icon? suffixIcon;
+  final String? suffixIcon;
   final bool enabled;
   final FormFieldSetter<String>? onSaved;
   final FormFieldValidator<String>? validator;
@@ -100,28 +100,37 @@ class _MyTextFieldState extends State<MyTextField> {
         keyboardAppearance: Brightness.light,
         onSaved: onSaved,
         validator: validator,
-        style: TextStyles.avenirMedium(textColor: colorBlack),
+        style: TextStyles.montserratMedium(textColor: colorBlack),
         maxLines: maxLines,
         maxLength: maxLength,
-        cursorColor: colorGreen3,
+        cursorColor: colorGreen,
         inputFormatters: maskInputs,
         onChanged: onChanged,
         keyboardType: keyboardType ?? TextInputType.text,
-        textCapitalization: TextCapitalization.none,
+        textCapitalization: TextCapitalization.characters,
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.only(bottom: 0, top: 0, left: 0, right: 0),
-          border: const UnderlineInputBorder(),
+          filled: true,
+          fillColor: colorGrey3,
+          border: InputBorder.none,
           counterText: counterText,
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: colorGrey3),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: colorGrey3),
+            borderRadius: BorderRadius.circular(12),
+          ),
           errorBorder: InputBorder.none,
           disabledBorder: InputBorder.none,
           hintText: hintText,
           labelText: labelText,
           enabled: enabled,
-          hintStyle: TextStyles.avenirMedium(textSize: inputTextSize),
-          labelStyle: TextStyles.avenirMedium(),
+          hintStyle: TextStyles.montserratMedium(textSize: inputTextSize),
+          labelStyle: TextStyles.montserratMedium(),
           prefixIcon: (prefixIcon != null)
               ? Padding(
-                  padding: const EdgeInsets.all(15.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: SvgPicture.asset(
                     prefixIcon,
                     color: prefixIconColor,
@@ -130,10 +139,9 @@ class _MyTextFieldState extends State<MyTextField> {
               : null,
           suffixIcon: !isPassword
               ? ((suffixIcon != null)
-                  ? /*SvgPicture.asset(
+                  ? SvgPicture.asset(
                       suffixIcon,
-                    )*/
-                    suffixIcon
+                    )
                   : null)
               : GestureDetector(
                   onTap: () {
@@ -143,7 +151,7 @@ class _MyTextFieldState extends State<MyTextField> {
                   },
                   child: Icon(
                     _obscureText ? Icons.visibility : Icons.visibility_off,
-                    color: colorGrey1,
+                    color: colorGreen.withOpacity(0.5),
                   ),
                 ),
         ),
@@ -155,33 +163,54 @@ class _MyTextFieldState extends State<MyTextField> {
         keyboardAppearance: Brightness.light,
         onSaved: onSaved,
         validator: validator,
-        style: TextStyles.avenirMedium(textColor: colorBlack),
+        style: TextStyles.montserratMedium(textColor: colorBlack),
         maxLines: maxLines,
         cursorColor: colorGreen3,
         inputFormatters: maskInputs,
         onChanged: onChanged,
         keyboardType: TextInputType.phone,
         decoration: InputDecoration(
-          filled: false,
+          filled: true,
           fillColor: colorGrey3,
           border: InputBorder.none,
           counterText: counterText,
           focusedBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: colorGrey3),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: colorGrey3),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
           ),
           errorBorder: InputBorder.none,
           disabledBorder: InputBorder.none,
           hintText: hintText,
           labelText: labelText,
           enabled: enabled,
-          hintStyle: TextStyles.avenirMedium(textSize: inputTextSize),
-          labelStyle: TextStyles.avenirMedium(),
-          prefixIcon: null,
+          hintStyle: TextStyles.montserratMedium(textSize: inputTextSize),
+          labelStyle: TextStyles.montserratMedium(),
+          /*prefixIcon: CountryCodePicker(
+            onChanged: (code) {
+              phoneIndicatifController!.text =
+                  "${code.dialCode!.replaceAll("+", "")}";
+              print("indicatif=${phoneIndicatifController!.text}");
+              print("on onChanged ${code.name} ${code.dialCode} ${code.name}");
+            },
+            onInit: (code) {
+              phoneIndicatifController!.text =
+                  "${code!.dialCode!.replaceAll("+", "")}";
+              print("indicatif=${phoneIndicatifController!.text}");
+              print("on onInit ${code.name} ${code.dialCode} ${code.name}");
+            },
+            // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+            initialSelection: 'CI',
+            favorite: ['+225', 'CI'],
+
+            // flag can be styled with BoxDecoration's `borderRadius` and `shape` fields
+            flagDecoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(7),
+            ),
+          ),*/
           suffixIcon: !isPassword
               ? ((suffixIcon != null)
                   ? SvgPicture.asset(
@@ -215,32 +244,32 @@ class _MyTextFieldState extends State<MyTextField> {
           keyboardAppearance: Brightness.light,
           onSaved: onSaved,
           validator: validator,
-          style: TextStyles.avenirMedium(textColor: colorBlack),
+          style: TextStyles.montserratMedium(textColor: colorBlack),
           maxLines: maxLines,
-          cursorColor: colorBlueDark,
+          cursorColor: colorGreen3,
           decoration: InputDecoration(
             filled: true,
-            fillColor: colorWhite,
-            border: const OutlineInputBorder(),
+            fillColor: colorGrey3,
+            border: InputBorder.none,
             counterText: counterText,
             focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(color: colorGrey3),
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(12),
             ),
             enabledBorder: OutlineInputBorder(
               borderSide: const BorderSide(color: colorGrey3),
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(12),
             ),
             errorBorder: InputBorder.none,
             disabledBorder: InputBorder.none,
             hintText: hintText,
             labelText: labelText,
             enabled: enabled,
-            hintStyle: TextStyles.avenirMedium(textSize: inputTextSize),
-            labelStyle: TextStyles.avenirMedium(),
+            hintStyle: TextStyles.montserratMedium(textSize: inputTextSize),
+            labelStyle: TextStyles.montserratMedium(),
             prefixIcon: (prefixIcon != null)
                 ? Padding(
-                    padding: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.all(16.0),
                     child: SvgPicture.asset(
                       prefixIcon,
                       color: prefixIconColor,
@@ -308,8 +337,8 @@ Widget get requiredField {
         ),
         TextSpan(
           text: ' Champ obligatoire',
-          style:
-          TextStyle(fontSize: 14, fontFamily: 'avenir_regular', color: colorGrey1),
+          style: TextStyle(
+              fontSize: 14, fontFamily: 'avenir_regular', color: colorGrey1),
         ),
       ],
     ),

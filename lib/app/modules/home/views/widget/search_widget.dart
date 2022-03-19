@@ -12,7 +12,7 @@ class SearchWidget extends StatelessWidget {
       elevation: 2,
       child: TextFormField(
         keyboardAppearance: Brightness.light,
-        style: TextStyles.avenirMedium(
+        style: TextStyles.montserratMedium(
             textColor: colorBlack),
         maxLines: 1,
         cursorColor: colorBlue,
@@ -37,7 +37,7 @@ class SearchWidget extends StatelessWidget {
           errorBorder: InputBorder.none,
           disabledBorder: InputBorder.none,
           hintText: 'Recherche',
-          labelStyle: TextStyles.avenirMedium(),
+          labelStyle: TextStyles.montserratMedium(),
           prefixIcon: null,
           suffixIcon: const Icon(Icons.search),
         ),

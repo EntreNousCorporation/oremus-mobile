@@ -138,7 +138,7 @@ showExitDialog(BuildContext context,
               child: Text(
                 positiveText,
                 style: const TextStyle(
-                  color: colorBlueDark,
+                  color: colorGreen,
                   fontSize: 16,
                   fontFamily: 'avenir_bold',
                 ),

@@ -6,12 +6,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:oremusapp/app/commons/components/custom_animation.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/lang/translation_service.dart';
+import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/configs/flavor_settings.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -33,6 +37,7 @@ void main() async {
 
       Jiffy.locale('fr');
       configOrientation();
+      configLoading();
 
       //runApp(const MyApp());
       runZonedGuarded<Future<void>>(() async {
@@ -40,7 +45,7 @@ void main() async {
         FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
         FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
-        runApp(MyApp());
+        runApp(const MyApp());
       },
           (error, stack) =>
               FirebaseCrashlytics.instance.recordError(error, stack));
@@ -57,14 +62,18 @@ class MyApp extends StatelessWidget {
       child: GetMaterialApp(
         debugShowCheckedModeBanner:
             (flavor == AppConstants.ENV_DEV) ? true : false,
+        locale: TranslationService.locale,
+        fallbackLocale: TranslationService.fallbackLocale,
+        translations: TranslationService(),
+        translationsKeys: TranslationService().keys,
         defaultTransition: Transition.rightToLeftWithFade,
-        initialRoute: Routes.CONNEXION,
+        initialRoute: Routes.SIGNIN,
         getPages: AppPages.pages,
-        builder: (context, child) {
+        builder: EasyLoading.init(builder: (context, child) {
           return MediaQuery(
               data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
               child: child!);
-        },
+        }),
       ),
     );
   }
@@ -105,4 +114,22 @@ Future<FlavorSettings> _getFlavorSettings() async {
 
 configOrientation() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+}
+
+void configLoading() {
+  EasyLoading.instance
+    ..displayDuration = const Duration(milliseconds: 2000)
+    ..indicatorType = EasyLoadingIndicatorType.threeBounce
+    ..loadingStyle = EasyLoadingStyle.dark
+    ..indicatorSize = 25.0
+    ..radius = 10.0
+    ..progressColor = Colors.yellow
+    ..backgroundColor = Colors.green
+    ..indicatorColor = Colors.yellow
+    ..textColor = Colors.yellow
+    ..maskColor = Colors.black.withOpacity(0.5)
+    ..userInteractions = false
+    ..dismissOnTap = false
+    ..textStyle = const TextStyle(color: colorWhite, fontFamily: 'montserrat_regular')
+    ..customAnimation = CustomAnimation();
 }

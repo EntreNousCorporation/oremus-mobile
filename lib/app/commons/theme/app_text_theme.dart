@@ -7,24 +7,24 @@ const TextStyle cardTextStyle =
     TextStyle(color: colorGreyHint, fontSize: 16, fontWeight: FontWeight.bold);
 
 class TextStyles {
-  static TextStyle avenirMedium(
+  static TextStyle montserratMedium(
           {double textSize = TextSizes.sixteen,
           Color textColor = colorGrey1}) =>
       const TextStyle().copyWith(
-          fontFamily: "avenir_regular", fontSize: textSize, color: textColor);
+          fontFamily: "montserrat_medium", fontSize: textSize, color: textColor);
 
-  static TextStyle avenirBold(
+  static TextStyle montserratBold(
           {double textSize = TextSizes.twenty, Color textColor = colorBlack}) =>
       const TextStyle().copyWith(
-          fontFamily: "avenir_bold",
+          fontFamily: "montserrat_bold",
           fontSize: textSize,
           color: textColor,
           fontWeight: FontWeight.bold);
 
-  static TextStyle avenirDemiBold(
+  static TextStyle montserratSemiBold(
           {double textSize = TextSizes.twelve, Color textColor = colorBlack}) =>
       const TextStyle().copyWith(
-          fontFamily: "avenir_demi_bold",
+          fontFamily: "montserrat_semi_bold",
           fontSize: textSize,
           color: textColor,
           fontWeight: FontWeight.bold);

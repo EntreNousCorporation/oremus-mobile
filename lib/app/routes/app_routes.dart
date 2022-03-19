@@ -6,6 +6,6 @@ abstract class Routes {
   static const INITIAL = '/initial';
 
   //AUTH
-  static const CONNEXION = '/connexion';
-  static const INSCRIPTION = '/inscription';
+  static const SIGNIN = '/signin';
+  static const SIGNUP = '/signup';
 }
