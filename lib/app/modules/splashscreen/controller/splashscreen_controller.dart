@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/splashscreen/data/repository/splashscreen_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main.dart';
@@ -12,6 +14,7 @@ class SplashscreenController extends GetxController {
 
   SplashscreenController({required this.splashscreenRepository});
 
+  var userConnection = Signin().obs;
   var userInfo;
 
   var applyAnim = true.obs;
@@ -31,7 +34,7 @@ class SplashscreenController extends GetxController {
   }
 
   getInitialView() {
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 2), () {
       if (userInfo != null) {
         Get.offNamed(Routes.HOME);
       } else {
@@ -41,9 +44,11 @@ class SplashscreenController extends GetxController {
   }
 
   getUserInfo() {
-    var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
+    userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
     if (userInfo != null) {
-
+      Signin userConnected =
+      Signin.fromJson(jsonDecode(userInfo));
+      userConnection.value = userConnected;
     }
   }
 }

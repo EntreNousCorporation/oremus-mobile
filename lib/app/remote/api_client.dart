@@ -30,14 +30,14 @@ class ApiClientImpl extends GetConnect implements ApiClient {
     headers[HttpHeaders.contentTypeHeader] = 'application/json; charset=utf-8';
     headers[HttpHeaders.acceptHeader] = 'application/json';
     if (useBearer) {
-      headers[HttpHeaders.authorizationHeader] =
-          'Bearer ${StorageRequest.getData(AppConstants.KEY_TOKEN)}';
+      headers[HttpHeaders.authorizationHeader] = 'Bearer ${StorageRequest.getData(AppConstants.KEY_TOKEN)}';
     }
     timeout = const Duration(seconds: AppConstants.REQUEST_TIMEOUT);
 
     log("url => " + appUrl + endpoint);
-    log("body => " + body);
+    log("headers => " + headers.toString());
     log("method => " + method.name);
+    //log("body => " + body != null ? body: '');
 
     Response response;
     var resp;
@@ -63,7 +63,6 @@ class ApiClientImpl extends GetConnect implements ApiClient {
 
       log("statusCode ${response.statusCode}");
       log("bodystring => " + response.bodyString.toString());
-      log("headers => " + headers.toString());
 
       resp = _response(response);
 

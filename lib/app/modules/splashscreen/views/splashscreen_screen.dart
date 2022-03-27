@@ -20,34 +20,9 @@ class SplashscreenScreen extends StatelessWidget {
                 color: colorWhite,
                 width: Get.width,
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    const Text(
-                      'Oremus',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'avenir_bold',
-                        fontSize: 32,
-                        color: colorGreen,
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Separators.minimunVertical(),
-                            const Visibility(
-                              visible: true,
-                              child: LoadingView()
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                    Image.asset('assets/images/bg_2.png',height: 80,)
                     //SvgPicture.asset('assets/images/splash_bottom.svg'),
                   ],
                 ),

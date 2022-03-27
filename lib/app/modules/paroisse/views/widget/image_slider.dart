@@ -14,7 +14,8 @@ class ImageSlider extends StatelessWidget {
           borderRadius: const BorderRadius.all(Radius.circular(0.0)),
           child: Stack(
             children: <Widget>[
-              Image.network(image, fit: BoxFit.cover, width: Get.width),
+              //Image.network(image, fit: BoxFit.cover, width: Get.width),
+              Image.asset(image, fit: BoxFit.cover, width: Get.width),
               Visibility(
                 visible: false,
                 child: Positioned(

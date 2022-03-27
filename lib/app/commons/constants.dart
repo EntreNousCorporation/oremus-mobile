@@ -22,4 +22,7 @@ abstract class AppConstants {
 
   //CREDENTIALS
   static const KEY_TOKEN = "KEY_TOKEN";
+
+  //PAGGING
+  static const PAGING_SIZE = 10;
 }

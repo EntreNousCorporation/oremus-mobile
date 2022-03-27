@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
         translations: TranslationService(),
         translationsKeys: TranslationService().keys,
         defaultTransition: Transition.rightToLeftWithFade,
-        initialRoute: Routes.SIGNIN,
+        initialRoute: Routes.SPLASHSCREEN,
         getPages: AppPages.pages,
         builder: EasyLoading.init(builder: (context, child) {
           return MediaQuery(

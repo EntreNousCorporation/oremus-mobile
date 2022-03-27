@@ -2,7 +2,8 @@ part of './app_pages.dart';
 
 abstract class Routes {
   static const SPLASHSCREEN = '/';
-  static const HOME = '/diocese';
+  static const HOME = '/home';
+  static const DIOCESE = '/diocese';
   static const INITIAL = '/initial';
 
   //AUTH

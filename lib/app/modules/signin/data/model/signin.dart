@@ -1,5 +1,8 @@
 class Signin {
 
+  String? id;
+  String? profile;
+
   //LOGIN
   String? username;
   String? password;
@@ -10,7 +13,9 @@ class Signin {
   String? lastname;
 
   Signin({
+    this.id,
     this.username,
+    this.profile,
     this.password,
     this.phone,
     this.firstname,
@@ -18,6 +23,8 @@ class Signin {
   });
 
   factory Signin.fromJson(Map<String, dynamic> json) => Signin(
+    id: json["id"],
+    profile: json["profile"],
     username: json["username"],
     password: json["password"],
     phone: json["phone"],
@@ -26,6 +33,8 @@ class Signin {
   );
 
   Map<String, dynamic> toJson() => {
+    "id": id,
+    "profile": profile,
     "username": username,
     "password": password,
     "phone": phone,

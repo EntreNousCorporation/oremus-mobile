@@ -4,8 +4,11 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 import 'package:oremusapp/app/commons/components/loader_widget.dart';
+import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/storage_request.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
@@ -65,7 +68,7 @@ class SigninController extends GetxController {
     EasyLoading.show(
       status: 'connection_processing'.tr,
       maskType: EasyLoadingMaskType.black,
-      indicator: const LoadingView(),
+      indicator: const LottieLoadingView(),
     ).then((v) {
       unlockBackButton.value = false;
     });
@@ -85,6 +88,13 @@ class SigninController extends GetxController {
       });
       log('value => ${value.accessToken}');
       lockScreen(false);
+      StorageRequest.saveData(AppConstants.KEY_TOKEN, value.accessToken);
+      Map<String, dynamic> payload = Jwt.parseJwt(value.accessToken ?? '');
+      var userConnection = Signin(
+        username: payload['username'],
+        id: payload['sub']
+      );
+      encryptedBox.put(AppConstants.USER_LOG_INFOS, jsonEncode(userConnection.toJson()));
       Get.toNamed(Routes.INITIAL);
     }, onError: (error) {
       EasyLoading.dismiss(animation: true).then((v) {
@@ -93,8 +103,7 @@ class SigninController extends GetxController {
       lockScreen(false);
       debugPrint("error => ${error.toString()}");
       if (error.toString().isNotEmpty && error is Map) {
-        var errorResponse =
-            ErrorResponse.fromJson(json.decode(error.toString()));
+        var errorResponse = ErrorResponse.fromJson(json.decode(error.toString()));
         showSimpleNotification(
           Center(child: Text(errorResponse.debugMessage.toString())),
           background: Colors.red,

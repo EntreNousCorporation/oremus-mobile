@@ -7,6 +7,12 @@ const TextStyle cardTextStyle =
     TextStyle(color: colorGreyHint, fontSize: 16, fontWeight: FontWeight.bold);
 
 class TextStyles {
+  static TextStyle montserratRegular(
+          {double textSize = TextSizes.sixteen,
+          Color textColor = colorGrey1}) =>
+      const TextStyle().copyWith(
+          fontFamily: "montserrat_regular", fontSize: textSize, color: textColor);
+
   static TextStyle montserratMedium(
           {double textSize = TextSizes.sixteen,
           Color textColor = colorGrey1}) =>
@@ -33,13 +39,13 @@ class TextStyles {
 class Separators {
   static Widget minimunHorizontal() {
     return const SizedBox(
-      width: 10,
+      width: 8,
     );
   }
 
   static Widget minimunVertical() {
     return const SizedBox(
-      height: 10,
+      height: 8,
     );
   }
 
