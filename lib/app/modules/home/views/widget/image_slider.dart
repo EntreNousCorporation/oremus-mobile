@@ -27,16 +27,15 @@ class ImageSlider extends StatelessWidget {
                       gradient: LinearGradient(
                         colors: [
                           Color.fromARGB(200, 0, 0, 0),
-                          Color.fromARGB(0, 0, 0, 0)
+                          Color.fromARGB(0, 0, 0, 0),
                         ],
                         begin: Alignment.bottomCenter,
                         end: Alignment.topCenter,
                       ),
                     ),
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 20.0),
+                    padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 20.0),
                     child: const Text(
-                      'No. image',
+                      'Description',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,

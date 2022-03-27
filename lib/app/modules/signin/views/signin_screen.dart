@@ -88,7 +88,7 @@ class SigninScreen extends StatelessWidget {
                                                   prefixIcon: "assets/images/icon_phone.svg",
                                                   //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
                                                   prefixIconColor: colorGrey1,
-                                                  keyboardType: TextInputType.number,
+                                                  keyboardType: TextInputType.phone,
                                                   maskInputs: [
                                                     ObjectSeparatorInputFormatter(
                                                         groupBy: 2),
@@ -148,7 +148,7 @@ class SigninScreen extends StatelessWidget {
                                                   icon: 'assets/images/icon_arrow_right.svg',
                                                   bgcolor: _.isValidForm.isTrue
                                                       ? colorGreen
-                                                      : colorGreen.withOpacity(0.5),
+                                                      : colorGrey1.withOpacity(0.5),
                                                   borderColor: _.isValidForm.isTrue
                                                       ? colorGreen
                                                       : colorGreen.withOpacity(0),

@@ -1,6 +1,7 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:oremusapp/app/modules/diocese/binding/diocese_binding.dart';
+import 'package:oremusapp/app/modules/diocese/views/diocese_screen.dart';
 import 'package:oremusapp/app/modules/formation/binding/formation_binding.dart';
 import 'package:oremusapp/app/modules/home/binding/home_binding.dart';
 import 'package:oremusapp/app/modules/home/views/home_screen.dart';
@@ -25,36 +26,37 @@ class AppPages {
         binding: SplashscreenBinding(),
         transition: Transition.fadeIn),
     GetPage(
-        name: Routes.INITIAL,
-        page: () => LandingScreen(),
-        bindings: [
-          ParoisseBinding(),
-          DioceseBinding(),
-          FormationBinding(),
-          ServiceBinding(),
-        ],
+      name: Routes.INITIAL,
+      page: () => LandingScreen(),
+      bindings: [
+        ParoisseBinding(),
+        DioceseBinding(),
+        FormationBinding(),
+        ServiceBinding(),
+      ],
+      transition: Transition.circularReveal,
     ),
     GetPage(
-        name: Routes.HOME,
-        page: () => HomeScreen(),
-        binding: HomeBinding(),
+      name: Routes.HOME,
+      page: () => HomeScreen(),
+      binding: HomeBinding(),
     ),
     GetPage(
       name: Routes.DIOCESE,
-      page: () => const ParoisseScreen(),
-      binding: ParoisseBinding(),
+      page: () => const DioceseScreen(),
+      binding: DioceseBinding(),
     ),
     GetPage(
-        name: Routes.SIGNIN,
-        page: () => const SigninScreen(),
-        binding: SigninBinding(),
-        transition: Transition.circularReveal,
+      name: Routes.SIGNIN,
+      page: () => const SigninScreen(),
+      binding: SigninBinding(),
+      transition: Transition.circularReveal,
     ),
     GetPage(
-        name: Routes.SIGNUP,
-        page: () => const SignupScreen(),
-        binding: SignupBinding(),
-        transition: Transition.circularReveal,
+      name: Routes.SIGNUP,
+      page: () => const SignupScreen(),
+      binding: SignupBinding(),
+      transition: Transition.circularReveal,
     ),
   ];
 }

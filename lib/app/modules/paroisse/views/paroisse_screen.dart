@@ -1,4 +1,3 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
@@ -9,9 +8,7 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/gridview_item.dart';
-import 'package:oremusapp/app/modules/paroisse/views/widget/image_slider.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/search_widget.dart';
-import 'package:oremusapp/app/modules/paroisse/views/widget/slider_indicator.dart';
 
 class ParoisseScreen extends StatelessWidget {
   const ParoisseScreen({Key? key}) : super(key: key);
@@ -31,37 +28,54 @@ class ParoisseScreen extends StatelessWidget {
                     resizeToAvoidBottomInset: true,
                     body: Container(
                       color: colorGrey4,
+                      width: double.infinity,
                       child: Column(
                         children: [
-                          //CAROUSEL
-                          Stack(
-                            children: [
-                              SizedBox(
-                                width: Get.width,
-                                child: CarouselSlider.builder(
-                                  carouselController: _.carouselController,
-                                  itemCount: _.imgList.length,
-                                  itemBuilder: (BuildContext context,
-                                      int itemIndex, int pageViewIndex) {
-                                    final image = _.imgList[itemIndex];
-                                    return ImageSlider(image: image);
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 16,
+                                bottom: 0,
+                                left: 16,
+                                right: 16),
+                            child: Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.back();
                                   },
-                                  options: _.carouselOptions,
+                                  child: Material(
+                                    borderRadius:
+                                    BorderRadius.circular(10.0),
+                                    elevation: 10,
+                                    color: colorWhite,
+                                    shadowColor:
+                                    colorGrey2.withOpacity(0.5),
+                                    child: SizedBox(
+                                      height: (Get.width / 9),
+                                      width: (Get.width / 9),
+                                      child: const Icon(
+                                        Icons.arrow_back_ios_rounded,
+                                        color: colorBlack,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              Positioned(
-                                bottom: 0.0,
-                                left: 0.0,
-                                right: 0.0,
-                                child: SliderIndicator(controller: _),
-                              ),
-                            ],
+                                Separators.normalHorizontal(),
+                                Expanded(
+                                  child: SizedBox(
+                                    height: (Get.width / 9),
+                                    child: const SearchWidget(),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
+                          Separators.maximumVertical(),
                           _.isDataProcessing.isTrue
                               ? const Expanded(
                                   child: Center(
                                     child: LottieLoadingView(
-                                      size: 30,
+                                      size: 25,
                                     ),
                                   ),
                                 )
@@ -71,21 +85,16 @@ class ParoisseScreen extends StatelessWidget {
                                       duration: const Duration(milliseconds: 500),
                                       child: Padding(
                                         padding: const EdgeInsets.only(
-                                            top: 24,
+                                            top: 0,
                                             bottom: 0,
                                             left: 16,
                                             right: 16),
-                                        child: SingleChildScrollView(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                height: (Get.width / 9),
-                                                child: const SearchWidget(),
-                                              ),
-                                              Separators.maximumVertical(),
-                                              GridView.builder(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: GridView.builder(
                                                 physics:
                                                     const NeverScrollableScrollPhysics(),
                                                 shrinkWrap: true,
@@ -105,8 +114,8 @@ class ParoisseScreen extends StatelessWidget {
                                                       paroisse: paroisse);
                                                 },
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),

@@ -34,7 +34,7 @@ class _LandingScreenState extends State<LandingScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: widget._onBackPressed,
+        onWillPop: () async => true, //widget._onBackPressed,
         child:
       PersistentTabView(
         context,

@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/constants.dart';
-import 'package:oremusapp/app/modules/home/data/model/menu_item.dart';
+import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/modules/home/data/model/type_menu.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin_response.dart';
+import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main.dart';
 
 class HomeController extends GetxController {
-
   var userConnection = SigninResponse().obs;
 
   var unlockBackButton = true.obs;
@@ -30,7 +31,7 @@ class HomeController extends GetxController {
     'assets/images/bg_login.jpg'
   ];
 
-  RxList<MenuItem> menus = RxList<MenuItem>([]);
+  RxList<TypeMenu> menus = RxList<TypeMenu>([]);
 
   @override
   void onInit() {
@@ -43,7 +44,7 @@ class HomeController extends GetxController {
   getUserInfo() {
     var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
     SigninResponse userConnected =
-    SigninResponse.fromJson(jsonDecode(userInfo));
+        SigninResponse.fromJson(jsonDecode(userInfo));
     userConnection.value = userConnected;
   }
 
@@ -53,7 +54,7 @@ class HomeController extends GetxController {
         autoPlay: true,
         enlargeCenterPage: false,
         viewportFraction: 1,
-        aspectRatio: 16/9,
+        aspectRatio: 16 / 9,
         disableCenter: true,
         onPageChanged: (index, reason) {
           currentSlide.value = index;
@@ -62,25 +63,42 @@ class HomeController extends GetxController {
 
   initMenus() {
     menus.value = [
-      MenuItem(
+      TypeMenu(
         code: 'par',
-        libelle: 'Paroisses',
+        title: 'Paroisses',
         icon: 'assets/images/icon_paroisse.png',
+        isPngImage: true,
+        activeTint: colorBlack,
+        goToPage: () {
+          Get.toNamed(
+            Routes.INITIAL,
+            arguments: 0,
+          );
+        },
       ),
-      MenuItem(
+      TypeMenu(
         code: 'dio',
-        libelle: 'Diocèses',
+        title: 'Diocèses',
         icon: 'assets/images/icon_diocese.jpg',
+        isPngImage: true,
+        activeTint: colorBlack,
+        goToPage: () {},
       ),
-      MenuItem(
+      TypeMenu(
         code: 'ser',
-        libelle: 'Services',
+        title: 'Services',
         icon: 'assets/images/icon_services.png',
+        isPngImage: true,
+        activeTint: colorBlack,
+        goToPage: () {},
       ),
-      MenuItem(
+      TypeMenu(
         code: 'for',
-        libelle: 'Formations',
+        title: 'Formations',
         icon: 'assets/images/icon_formation.png',
+        isPngImage: true,
+        activeTint: colorBlack,
+        goToPage: () {},
       ),
     ];
   }
