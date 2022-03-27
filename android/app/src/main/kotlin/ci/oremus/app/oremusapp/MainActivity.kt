@@ -10,7 +10,7 @@ import io.flutter.plugins.GeneratedPluginRegistrant
 class MainActivity: FlutterActivity() {
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine);
-        window.addFlags(LayoutParams.FLAG_SECURE); //Empêche la capture d'écran dans l'app
+        //window.addFlags(LayoutParams.FLAG_SECURE); //Empêche la capture d'écran dans l'app
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "flavor").setMethodCallHandler {
                 call, result -> result.success(BuildConfig.FLAVOR)
