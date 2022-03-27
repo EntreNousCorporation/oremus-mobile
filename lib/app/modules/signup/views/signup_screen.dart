@@ -155,7 +155,8 @@ class SignupScreen extends StatelessWidget {
                                                   //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
                                                   prefixIconColor: colorGrey1,
                                                   keyboardType:
-                                                      TextInputType.number,
+                                                      TextInputType.phone,
+                                                  maxLength: 14,
                                                   maskInputs: [
                                                     ObjectSeparatorInputFormatter(
                                                         groupBy: 2),
@@ -213,8 +214,7 @@ class SignupScreen extends StatelessWidget {
                                                       'assets/images/icon_arrow_right.svg',
                                                   bgcolor: _.isValidForm.isTrue
                                                       ? colorGreen
-                                                      : colorGrey1
-                                                          .withOpacity(0.5),
+                                                      : colorGrey1.withOpacity(0.5),
                                                   borderColor:
                                                       _.isValidForm.isTrue
                                                           ? colorGreen

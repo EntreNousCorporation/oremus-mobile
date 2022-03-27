@@ -121,17 +121,16 @@ void configLoading() {
   EasyLoading.instance
     ..displayDuration = const Duration(milliseconds: 2000)
     ..indicatorType = EasyLoadingIndicatorType.cubeGrid
-    ..loadingStyle = EasyLoadingStyle.dark
+    ..loadingStyle = EasyLoadingStyle.light
     ..indicatorSize = 25.0
     ..radius = 10.0
     ..progressColor = Colors.yellow
-    ..backgroundColor = Colors.green
     ..indicatorColor = Colors.yellow
     ..textColor = Colors.yellow
-    ..maskColor = Colors.black.withOpacity(0.5)
+    ..maskColor = Colors.black.withOpacity(0.8)
     ..userInteractions = false
     ..dismissOnTap = false
     ..textStyle =
-        const TextStyle(color: colorWhite, fontFamily: 'montserrat_regular')
+        const TextStyle(color: colorBlack, fontFamily: 'montserrat_regular')
     ..customAnimation = CustomAnimation();
 }

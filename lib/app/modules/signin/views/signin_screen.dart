@@ -89,6 +89,7 @@ class SigninScreen extends StatelessWidget {
                                                   //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
                                                   prefixIconColor: colorGrey1,
                                                   keyboardType: TextInputType.phone,
+                                                  maxLength: 14,
                                                   maskInputs: [
                                                     ObjectSeparatorInputFormatter(
                                                         groupBy: 2),
