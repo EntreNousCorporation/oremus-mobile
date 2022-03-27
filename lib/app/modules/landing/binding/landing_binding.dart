@@ -1,0 +1,16 @@
+import 'package:get/get.dart';
+import 'package:oremusapp/app/modules/landing/controller/landing_controller.dart';
+import 'package:oremusapp/app/modules/paroisse/controller/paroisse_controller.dart';
+import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
+import 'package:oremusapp/app/remote/api_client.dart';
+
+class LandingBinding implements Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut<LandingController>(
+      () {
+        return LandingController();
+      },
+    );
+  }
+}

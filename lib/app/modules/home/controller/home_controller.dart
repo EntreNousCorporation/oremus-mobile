@@ -72,7 +72,7 @@ class HomeController extends GetxController {
         goToPage: () {
           Get.toNamed(
             Routes.INITIAL,
-            arguments: 0,
+            arguments: AppConstants.PAROISSE,
           );
         },
       ),
@@ -82,7 +82,12 @@ class HomeController extends GetxController {
         icon: 'assets/images/icon_diocese.jpg',
         isPngImage: true,
         activeTint: colorBlack,
-        goToPage: () {},
+        goToPage: () {
+          Get.toNamed(
+            Routes.INITIAL,
+            arguments: AppConstants.DIOCESE,
+          );
+        },
       ),
       TypeMenu(
         code: 'ser',
@@ -90,7 +95,12 @@ class HomeController extends GetxController {
         icon: 'assets/images/icon_services.png',
         isPngImage: true,
         activeTint: colorBlack,
-        goToPage: () {},
+        goToPage: () {
+          Get.toNamed(
+            Routes.INITIAL,
+            arguments: AppConstants.SERVICE,
+          );
+        },
       ),
       TypeMenu(
         code: 'for',
@@ -98,7 +108,12 @@ class HomeController extends GetxController {
         icon: 'assets/images/icon_formation.png',
         isPngImage: true,
         activeTint: colorBlack,
-        goToPage: () {},
+        goToPage: () {
+          Get.toNamed(
+            Routes.INITIAL,
+            arguments: AppConstants.FORMATION,
+          );
+        },
       ),
     ];
   }

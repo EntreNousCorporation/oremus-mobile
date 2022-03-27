@@ -62,9 +62,12 @@ class ParoisseScreen extends StatelessWidget {
                                 ),
                                 Separators.normalHorizontal(),
                                 Expanded(
-                                  child: SizedBox(
-                                    height: (Get.width / 9),
-                                    child: const SearchWidget(),
+                                  child: Hero(
+                                    tag: 'search',
+                                    child: SizedBox(
+                                      height: (Get.width / 9),
+                                      child: const SearchWidget(),
+                                    ),
                                   ),
                                 ),
                               ],

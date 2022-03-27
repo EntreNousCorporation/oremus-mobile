@@ -74,9 +74,12 @@ class HomeScreen extends StatelessWidget {
                         Separators.normalVertical(),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: SizedBox(
-                            height: (Get.width / 10),
-                            child: const SearchWidget(),
+                          child: Hero(
+                            tag: 'search',
+                            child: SizedBox(
+                              height: (Get.width / 10),
+                              child: const SearchWidget(),
+                            ),
                           ),
                         ),
                         Separators.normalVertical(),

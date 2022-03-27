@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
         fallbackLocale: TranslationService.fallbackLocale,
         translations: TranslationService(),
         translationsKeys: TranslationService().keys,
-        defaultTransition: Transition.rightToLeftWithFade,
+        //defaultTransition: Transition.rightToLeftWithFade,
         initialRoute: Routes.SPLASHSCREEN,
         getPages: AppPages.pages,
         builder: EasyLoading.init(builder: (context, child) {

@@ -5,6 +5,7 @@ import 'package:oremusapp/app/modules/diocese/views/diocese_screen.dart';
 import 'package:oremusapp/app/modules/formation/binding/formation_binding.dart';
 import 'package:oremusapp/app/modules/home/binding/home_binding.dart';
 import 'package:oremusapp/app/modules/home/views/home_screen.dart';
+import 'package:oremusapp/app/modules/landing/binding/landing_binding.dart';
 import 'package:oremusapp/app/modules/landing/views/landing_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_screen.dart';
@@ -29,6 +30,7 @@ class AppPages {
       name: Routes.INITIAL,
       page: () => LandingScreen(),
       bindings: [
+        LandingBinding(),
         ParoisseBinding(),
         DioceseBinding(),
         FormationBinding(),
