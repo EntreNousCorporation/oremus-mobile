@@ -213,7 +213,7 @@ class SignupScreen extends StatelessWidget {
                                                       'assets/images/icon_arrow_right.svg',
                                                   bgcolor: _.isValidForm.isTrue
                                                       ? colorGreen
-                                                      : colorGreen
+                                                      : colorGrey1
                                                           .withOpacity(0.5),
                                                   borderColor:
                                                       _.isValidForm.isTrue

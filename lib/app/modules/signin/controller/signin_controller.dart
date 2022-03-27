@@ -95,7 +95,7 @@ class SigninController extends GetxController {
         id: payload['sub']
       );
       encryptedBox.put(AppConstants.USER_LOG_INFOS, jsonEncode(userConnection.toJson()));
-      Get.toNamed(Routes.INITIAL);
+      Get.toNamed(Routes.HOME);
     }, onError: (error) {
       EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;
