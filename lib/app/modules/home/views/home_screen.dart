@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
-import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/home/controller/home_controller.dart';
 import 'package:oremusapp/app/modules/home/views/widget/image_slider.dart';
@@ -27,25 +26,6 @@ class HomeScreen extends StatelessWidget {
                 child: KeyboardDismisser(
                   child: Scaffold(
                     resizeToAvoidBottomInset: false,
-                    appBar: AppBar(
-                      elevation: 0,
-                      backgroundColor: colorGreen,
-                      centerTitle: true,
-                      leading: const IconButton(
-                        icon: Icon(Icons.menu, color: colorWhite,),
-                        onPressed: null,
-                      ),
-                      title: Text(
-                        'Accueil',
-                        style: TextStyles
-                            .montserratBold(
-                            textSize:
-                            TextSizes
-                                .twenty,
-                            textColor:
-                            colorWhite),
-                      ),
-                    ),
                     body: Column(
                       children: [
                         Stack(

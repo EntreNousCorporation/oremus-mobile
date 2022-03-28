@@ -43,9 +43,9 @@ class HomeController extends GetxController {
 
   getUserInfo() {
     var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
-    SigninResponse userConnected =
-        SigninResponse.fromJson(jsonDecode(userInfo));
-    userConnection.value = userConnected;
+    if (userInfo != null) {
+      userConnection.value = SigninResponse.fromJson(json.decode(userInfo));
+    }
   }
 
   void initCarousel() {

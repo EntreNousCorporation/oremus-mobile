@@ -38,7 +38,8 @@ class SplashscreenController extends GetxController {
       if (userInfo != null) {
         Get.offNamed(Routes.HOME);
       } else {
-        Get.offNamed(Routes.SIGNIN);
+        //Get.offNamed(Routes.SIGNIN);
+        Get.offNamed(Routes.CUSTOM_HOME);
       }
     });
   }

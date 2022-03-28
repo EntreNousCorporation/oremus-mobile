@@ -6,6 +6,7 @@ const Color colorGrey3 = Color(0xFFf8f8f8);
 const Color colorGrey4 = Color(0xFFFEFEFE);
 const Color colorGrey2 = Color(0xFFEDF0F0);
 const Color colorGrey1 = Color(0xFF9095A1);
+const Color colorGreyDrawer = Color(0xFFa1a6b0);
 
 const Color colorGreen1 = Color(0xFFe2f7d5);
 const Color colorBlue2 = Color(0xFF5080ea);

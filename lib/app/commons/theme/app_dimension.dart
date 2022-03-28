@@ -14,4 +14,5 @@ class TextSizes{
   static const double twenty_four=24;
   static const double thirty_two=32;
   static const double thirty_eight=38;
+  static const double fourty_five=45;
 }
