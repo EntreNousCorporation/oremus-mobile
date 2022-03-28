@@ -33,12 +33,12 @@ class PersistentBottomNavBarItem {
   ///`Warning: Screen will cover the entire extent of the display`
   final double opacity;
 
-  ///If you want custom behavior on a press of a NavBar item like display a modal screen, you can declare your logic here.
+  ///If you want custom behavior on a press of a NavBar item like display a modal views, you can declare your logic here.
   ///
   ///NOTE: This will override the default tab switiching behavior for this particular item.
   final Function(BuildContext?)? onPressed;
 
-  ///Use it when you want to run some code when user presses the NavBar when on the initial screen of that respective tab. The inspiration was taken from the native iOS navigation bar behavior where when performing similar operation, you taken to the top of the list.
+  ///Use it when you want to run some code when user presses the NavBar when on the initial views of that respective tab. The inspiration was taken from the native iOS navigation bar behavior where when performing similar operation, you taken to the top of the list.
   ///
   ///NOTE: This feature is experimental at the moment and might not work as intended for some.
   final Function? onSelectedTabPressWhenNoScreensPushed;

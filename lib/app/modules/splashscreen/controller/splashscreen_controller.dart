@@ -36,10 +36,10 @@ class SplashscreenController extends GetxController {
   getInitialView() {
     Future.delayed(const Duration(seconds: 2), () {
       if (userInfo != null) {
-        Get.offNamed(Routes.HOME);
-      } else {
-        //Get.offNamed(Routes.SIGNIN);
         Get.offNamed(Routes.CUSTOM_HOME);
+      } else {
+        Get.offNamed(Routes.SIGNIN);
+        //Get.offNamed(Routes.CUSTOM_HOME);
       }
     });
   }

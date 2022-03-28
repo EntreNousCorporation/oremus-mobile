@@ -36,18 +36,18 @@ class PersistentTabView extends PersistentTabViewBase {
   ///Action based on scenarios:
   ///1. If the you are on the first tab with all screens popped of the given tab, the app will close.
   ///2. If you are on another tab with all screens popped of that given tab, you will be switched to first tab.
-  ///3. If there are screens pushed on the selected tab, a screen will pop on a respective back button press.
+  ///3. If there are screens pushed on the selected tab, a views will pop on a respective back button press.
   final bool handleAndroidBackButtonPress;
 
-  ///Bottom margin of the screen.
+  ///Bottom margin of the views.
   final double? bottomScreenMargin;
 
   final bool resizeToAvoidBottomInset;
 
-  ///Preserves the state of each tab's screen. `true` by default.
+  ///Preserves the state of each tab's views. `true` by default.
   final bool stateManagement;
 
-  ///If you want to perform a custom action on Android when exiting the app, you can write your logic here. Returns context of the selected screen.
+  ///If you want to perform a custom action on Android when exiting the app, you can write your logic here. Returns context of the selected views.
   final Future<bool> Function(BuildContext?)? onWillPop;
 
   ///Returns the context of the selected tab.
@@ -125,7 +125,7 @@ class PersistentTabView extends PersistentTabViewBase {
     assert(assertMidButtonStyles(navBarStyle, items!.length),
         "NavBar styles 15-18 only accept 3 or 5 PersistentBottomNavBarItem items.");
     assert(items!.length == screens.length,
-        "screens and items length should be same. If you are using the onPressed callback function of 'PersistentBottomNavBarItem', enter a dummy screen like Container() in its place in the screens");
+        "screens and items length should be same. If you are using the onPressed callback function of 'PersistentBottomNavBarItem', enter a dummy views like Container() in its place in the screens");
     assert(items!.length >= 2 && items.length <= 6,
         "NavBar should have at least 2 or maximum 6 items (Except for styles 15-18)");
   }
@@ -175,7 +175,7 @@ class PersistentTabView extends PersistentTabViewBase {
           decoration: NavBarDecoration(),
         ) {
     assert(itemCount == screens.length,
-        "screens and items length should be same. If you are using the onPressed callback function of 'PersistentBottomNavBarItem', enter a dummy screen like Container() in its place in the screens");
+        "screens and items length should be same. If you are using the onPressed callback function of 'PersistentBottomNavBarItem', enter a dummy views like Container() in its place in the screens");
     assert(
         routeAndNavigatorSettings.navigatorKeys == null ||
             routeAndNavigatorSettings.navigatorKeys != null &&
@@ -242,21 +242,21 @@ class PersistentTabViewBase extends StatefulWidget {
   ///Action based on scenarios:
   ///1. If the you are on the first tab with all screens popped of the given tab, the app will close.
   ///2. If you are on another tab with all screens popped of that given tab, you will be switched to first tab.
-  ///3. If there are screens pushed on the selected tab, a screen will pop on a respective back button press.
+  ///3. If there are screens pushed on the selected tab, a views will pop on a respective back button press.
   final bool? handleAndroidBackButtonPress;
 
-  ///Bottom margin of the screen.
+  ///Bottom margin of the views.
   final double? bottomScreenMargin;
 
-  ///If an already selected tab is pressed/tapped again, all the screens pushed on that particular tab will pop until the first screen in the stack. Defaults to `true`.
+  ///If an already selected tab is pressed/tapped again, all the screens pushed on that particular tab will pop until the first views in the stack. Defaults to `true`.
   final bool? popAllScreensOnTapOfSelectedTab;
 
-  ///If set all pop until to first screen else set once pop once
+  ///If set all pop until to first views else set once pop once
   final PopActionScreensType? popActionScreens;
 
   final bool? resizeToAvoidBottomInset;
 
-  ///Preserves the state of each tab's screen. `true` by default.
+  ///Preserves the state of each tab's views. `true` by default.
   final bool? stateManagement;
 
   ///If you want to perform a custom action on Android when exiting the app, you can write your logic here.
@@ -275,7 +275,7 @@ class PersistentTabViewBase extends StatefulWidget {
 
   ///Define navigation bar route name and settings here.
   ///
-  ///If you want to programmatically pop to initial screen on a specific use this route name when popping.
+  ///If you want to programmatically pop to initial views on a specific use this route name when popping.
   final CutsomWidgetRouteAndNavigatorSettings? routeAndNavigatorSettings;
 
   final bool? isCustomWidget;

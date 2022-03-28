@@ -24,7 +24,7 @@ class LandingScreen extends StatelessWidget {
             backgroundColor: colorWhite,
             handleAndroidBackButtonPress: false,
             resizeToAvoidBottomInset: true,
-            // This needs to be true if you want to move up the screen when keyboard appears.
+            // This needs to be true if you want to move up the views when keyboard appears.
             stateManagement: true,
             //mettre à false après et corrigé le bug
             hideNavigationBarWhenKeyboardShows: true,

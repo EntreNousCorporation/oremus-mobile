@@ -40,7 +40,7 @@ class NavBarDecoration {
 
   final List<BoxShadow>? boxShadow;
 
-  ///If enabled, the screen's bottom padding will be adjusted accordingly to the amount of curve applied.
+  ///If enabled, the views's bottom padding will be adjusted accordingly to the amount of curve applied.
   final bool adjustScreenBottomPaddingOnCurve;
 
   const NavBarDecoration({

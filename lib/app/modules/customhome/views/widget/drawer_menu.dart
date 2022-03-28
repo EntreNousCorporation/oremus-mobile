@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:hidden_drawer_menu/hidden_drawer_menu.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/customhome/controller/custom_home_controller.dart';
+import 'package:oremusapp/app/modules/customhome/views/widget/drawer_menu_item.dart';
 
 class DrawerMenu extends StatefulWidget {
   @override
@@ -59,64 +61,48 @@ class _MenuState extends State<DrawerMenu> with TickerProviderStateMixin {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  //Expanded(child: Container()),
                   Text(
                     'Menu',
                     style: TextStyles.montserratBold(
-                        textSize: TextSizes.fourty_five, textColor: colorWhite),
+                        textSize: TextSizes.thirty_eight,
+                        textColor: colorWhite),
                   ),
-                  //list des menus
+                  Expanded(child: Container()),
                   GetBuilder<CustomHomeController>(builder: (logic) {
                     return ListView.builder(
                         shrinkWrap: true,
                         itemCount: logic.menus.length,
                         itemBuilder: (context, index) {
                           var menu = logic.menus.value[index];
-                          return Padding(
-                            padding:
-                                const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Row(
-                              children: [
-                                Image.asset(
-                                  menu.icon ?? '',
-                                  height: 30,
-                                ),
-                                Separators.normalHorizontal(),
-                                Text(
-                                  menu.libelle ?? '',
-                                  style: TextStyles.montserratRegular(
-                                      textSize: TextSizes.fourteen,
-                                      textColor: colorWhite),
-                                ),
-                                const Visibility(
-                                  visible: false,
-                                  child: Icon(
-                                    Icons.arrow_forward_ios_rounded,
-                                    size: 16,
-                                    color: colorWhite,
-                                  ),
-                                ),
-                              ],
-                            ),
+                          return DrawerMenuItem(
+                            menu: menu,
+                            index: index,
                           );
                         });
                   }),
                   Expanded(child: Container()),
-                  Row(
-                    children: [
-                      Image.asset(
-                        'assets/images/icon_paroisse.png',
-                        height: 30,
+                  GetBuilder<CustomHomeController>(builder: (logic) {
+                    return GestureDetector(
+                      onTap: () {
+                        logic.doLogout();
+                      },
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/images/icon_settings.svg',
+                            height: 20,
+                          ),
+                          Separators.normalHorizontal(),
+                          Text(
+                            'Déconnexion',
+                            style: TextStyles.montserratRegular(
+                                textSize: TextSizes.fourteen,
+                                textColor: colorWhite),
+                          ),
+                        ],
                       ),
-                      Separators.normalHorizontal(),
-                      Text(
-                        'Déconnexion',
-                        style: TextStyles.montserratRegular(
-                            textSize: TextSizes.fourteen,
-                            textColor: colorWhite),
-                      ),
-                    ],
-                  ),
+                    );
+                  }),
                 ],
               ),
             ),

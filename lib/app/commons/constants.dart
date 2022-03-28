@@ -31,4 +31,13 @@ abstract class AppConstants {
   static const DIOCESE = 1;
   static const SERVICE = 2;
   static const FORMATION = 3;
+
+  //DRAWER MENU INDEX
+  static const HOME = 1;
+  static const PROFILE = 2;
+  static const SHARE_APP = 3;
+  static const PROMO = 4;
+  static const FAQ = 5;
+  static const CONTACTS = 6;
+  static const ABOUT = 7;
 }

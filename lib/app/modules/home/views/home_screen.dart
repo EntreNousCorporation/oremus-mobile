@@ -11,7 +11,8 @@ import 'package:oremusapp/app/modules/home/views/widget/search_widget.dart';
 import 'package:oremusapp/app/modules/home/views/widget/slider_indicator.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  HomeScreen({Key? key}) : super(key: key);
+  HomeController controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
