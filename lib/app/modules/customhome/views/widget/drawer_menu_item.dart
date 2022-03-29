@@ -8,7 +8,8 @@ import 'package:oremusapp/app/modules/customhome/controller/custom_home_controll
 import 'package:oremusapp/app/modules/customhome/data/model/menu_item.dart';
 
 class DrawerMenuItem extends StatelessWidget {
-  DrawerMenuItem({required this.menu, required this.index, Key? key}) : super(key: key);
+  DrawerMenuItem({required this.menu, required this.index, Key? key})
+      : super(key: key);
 
   MenuItem menu;
   int index;
@@ -18,14 +19,23 @@ class DrawerMenuItem extends StatelessWidget {
     return GetBuilder<CustomHomeController>(
       initState: (_) {},
       builder: (logic) {
-        return GestureDetector(
+        return InkWell(
           onTap: () {
             logic.doRedirection(index, logic.drawerController);
           },
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            padding: const EdgeInsets.symmetric(vertical: 18.0),
             child: Row(
               children: [
+                Visibility(
+                  visible: menu.isSelected ?? false,
+                  child: const Icon(
+                    Icons.circle,
+                    size: 8,
+                    color: colorWhite,
+                  ),
+                ),
+                Separators.minimunHorizontal(),
                 SvgPicture.asset(
                   menu.icon ?? '',
                   height: 20,
@@ -34,10 +44,11 @@ class DrawerMenuItem extends StatelessWidget {
                 Separators.normalHorizontal(),
                 Text(
                   menu.libelle ?? '',
+                  maxLines: 2,
                   style: TextStyles.montserratRegular(
-                      textSize: TextSizes.fourteen,
-                      textColor: colorWhite),
+                      textSize: TextSizes.fourteen, textColor: colorWhite),
                 ),
+                //Expanded(child: Container()),
                 const Visibility(
                   visible: false,
                   child: Icon(

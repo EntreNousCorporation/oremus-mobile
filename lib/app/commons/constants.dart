@@ -33,11 +33,11 @@ abstract class AppConstants {
   static const FORMATION = 3;
 
   //DRAWER MENU INDEX
-  static const HOME = 1;
-  static const PROFILE = 2;
-  static const SHARE_APP = 3;
-  static const PROMO = 4;
-  static const FAQ = 5;
-  static const CONTACTS = 6;
-  static const ABOUT = 7;
+  static const HOME = 0;
+  static const PROFILE = 1;
+  static const SHARE_APP = 2;
+  static const PROMO = 3;
+  static const FAQ = 4;
+  static const CONTACTS = 5;
+  static const ABOUT = 6;
 }

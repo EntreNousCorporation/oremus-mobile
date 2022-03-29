@@ -14,6 +14,7 @@ class CustomHomeController extends GetxController {
 
   RxList<MenuItem> menus = RxList<MenuItem>([]);
   late SimpleHiddenDrawerController drawerController;
+  var selectedIndex = 0.obs;
 
   @override
   void onInit() {
@@ -71,7 +72,9 @@ class CustomHomeController extends GetxController {
 
   doRedirection(int index, SimpleHiddenDrawerController controller) {
     log('index selected => $index');
+    selectedIndex.value = index;
     controller.setSelectedMenuPosition(index);
+    update();
   }
 
   doLogout() {

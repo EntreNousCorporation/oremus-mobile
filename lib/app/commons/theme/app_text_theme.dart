@@ -66,4 +66,10 @@ class Separators {
       height: 30,
     );
   }
+
+  static Widget maximumHorizontal() {
+    return const SizedBox(
+      width: 30,
+    );
+  }
 }
