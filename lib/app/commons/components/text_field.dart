@@ -11,8 +11,8 @@ class MyTextField extends StatefulWidget {
     this.fieldKey,
     required this.controller,
     this.phoneIndicatifController,
-    this.hintText = "hintText",
-    this.labelText = "labelText",
+    this.hintText = '',
+    this.labelText = '',
     this.isPassword = false,
     this.maskInputs,
     this.keyboardType,
@@ -24,6 +24,9 @@ class MyTextField extends StatefulWidget {
     this.prefixIconColor,
     this.suffixIcon,
     this.enabled = true,
+    this.errorText = '',
+    this.height = 45,
+    this.textCapitalization = TextCapitalization.words,
     this.onSaved,
     this.validator,
     this.onChanged,
@@ -49,7 +52,10 @@ class MyTextField extends StatefulWidget {
   final String? prefixIcon;
   final Color? prefixIconColor;
   final String? suffixIcon;
+  final String? errorText;
   final bool enabled;
+  final TextCapitalization textCapitalization;
+  final double? height;
   final FormFieldSetter<String>? onSaved;
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onChanged;
@@ -79,6 +85,9 @@ class _MyTextFieldState extends State<MyTextField> {
   get prefixIconColor => widget.prefixIconColor;
   get suffixIcon => widget.suffixIcon;
   get enabled => widget.enabled;
+  get errorText => widget.errorText;
+  get height => widget.height;
+  get textCapitalization => widget.textCapitalization;
   get onSaved => widget.onSaved;
   get validator => widget.validator;
   get onChanged => widget.onChanged;
@@ -92,7 +101,32 @@ class _MyTextFieldState extends State<MyTextField> {
   DateTime selectedDate = DateTime.now();
   @override
   Widget build(BuildContext context) {
-    if ((isDate == false && isPhone == false)) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: height,
+          child: tf(context),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: Visibility(
+            visible: errorText.isNotEmpty,
+            child: Text(
+              errorText,
+              style:
+              TextStyles.montserratMedium(
+                  textSize: TextSizes.twelve,
+                  textColor: colorRed),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget tf(BuildContext context) {
+     if ((isDate == false && isPhone == false)) {
       return TextFormField(
         controller: controller,
         key: fieldKey,
@@ -107,7 +141,7 @@ class _MyTextFieldState extends State<MyTextField> {
         inputFormatters: maskInputs,
         onChanged: onChanged,
         keyboardType: keyboardType ?? TextInputType.text,
-        textCapitalization: TextCapitalization.words,
+        textCapitalization: textCapitalization,
         decoration: InputDecoration(
           filled: true,
           fillColor: colorGrey3,
@@ -115,11 +149,11 @@ class _MyTextFieldState extends State<MyTextField> {
           counterText: counterText,
           focusedBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: colorGrey3),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(10),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: colorGrey3),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(10),
           ),
           errorBorder: InputBorder.none,
           disabledBorder: InputBorder.none,
@@ -176,11 +210,11 @@ class _MyTextFieldState extends State<MyTextField> {
           counterText: counterText,
           focusedBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: colorGrey3),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(10),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: colorGrey3),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(10),
           ),
           errorBorder: InputBorder.none,
           disabledBorder: InputBorder.none,
@@ -254,11 +288,11 @@ class _MyTextFieldState extends State<MyTextField> {
             counterText: counterText,
             focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(color: colorGrey3),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
             ),
             enabledBorder: OutlineInputBorder(
               borderSide: const BorderSide(color: colorGrey3),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
             ),
             errorBorder: InputBorder.none,
             disabledBorder: InputBorder.none,

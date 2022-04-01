@@ -1,15 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/button.dart';
 import 'package:oremusapp/app/commons/components/text_field.dart';
-import 'package:oremusapp/app/commons/constants.dart';
-import 'package:oremusapp/app/commons/formatters/object_separator_input_formatter.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
@@ -37,7 +34,7 @@ class SigninScreen extends StatelessWidget {
                 resizeToAvoidBottomInset: true,
                 body: Center(
                   child: SingleChildScrollView(
-                    reverse: true,
+                    reverse: false,
                     child: SafeArea(
                       child: GetX<SigninController>(
                         initState: (_) {},
@@ -79,43 +76,33 @@ class SigninScreen extends StatelessWidget {
                                                     textColor: colorGreen),
                                               ),
                                               Separators.maximumVertical(),
-                                              SizedBox(
-                                                height: 45,
-                                                child: MyTextField(
-                                                  controller: _.phoneController,
-                                                  hintText: '',
-                                                  labelText: 'Téléphone',
-                                                  prefixIcon: "assets/images/icon_phone.svg",
-                                                  //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
-                                                  prefixIconColor: colorGrey1,
-                                                  keyboardType: TextInputType.phone,
-                                                  maxLength: 14,
-                                                  maskInputs: [
-                                                    ObjectSeparatorInputFormatter(
-                                                        groupBy: 2),
-                                                    FilteringTextInputFormatter.allow(
-                                                        RegExp(AppConstants
-                                                            .INPUT_NUM_REGEX)),
-                                                  ],
-                                                  onChanged: (value) {
-                                                    _.checkForm();
-                                                  },
-                                                ),
+                                              MyTextField(
+                                                controller: _.emailController,
+                                                hintText: '',
+                                                labelText: 'E-mail',
+                                                prefixIcon: "assets/images/icon_enveloppe.svg",
+                                                //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
+                                                prefixIconColor: colorGrey1,
+                                                keyboardType: TextInputType.emailAddress,
+                                                textCapitalization: TextCapitalization.none,
+                                                onChanged: (value) {
+                                                  _.checkForm();
+                                                },
+                                                errorText: _.emailErrorMessage.value,
                                               ),
                                               Separators.normalVertical(),
-                                              SizedBox(
-                                                height: 45,
-                                                child: MyTextField(
-                                                  controller: _.passwordController,
-                                                  hintText: '',
-                                                  labelText: 'Mot de passe',
-                                                  isPassword: true,
-                                                  prefixIcon: 'assets/images/icon_password_profil.svg',
-                                                  prefixIconColor: colorGrey1,
-                                                  onChanged: (value) {
-                                                    _.checkForm();
-                                                  },
-                                                ),
+                                              MyTextField(
+                                                controller: _.passwordController,
+                                                hintText: '',
+                                                labelText: 'Mot de passe',
+                                                isPassword: true,
+                                                prefixIcon: 'assets/images/icon_password_profil.svg',
+                                                prefixIconColor: colorGrey1,
+                                                textCapitalization: TextCapitalization.none,
+                                                onChanged: (value) {
+                                                  _.checkForm();
+                                                },
+                                                errorText: _.passwordErrorMessage.value,
                                               ),
                                               Visibility(
                                                 visible: false,

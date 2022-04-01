@@ -36,7 +36,7 @@ class SignupScreen extends StatelessWidget {
                 resizeToAvoidBottomInset: true,
                 body: Center(
                   child: SingleChildScrollView(
-                    reverse: true,
+                    reverse: false,
                     child: SafeArea(
                       child: GetX<SignupController>(
                         initState: (_) {},
@@ -97,112 +97,117 @@ class SignupScreen extends StatelessWidget {
                                                         textColor: colorGreen),
                                               ),
                                               Separators.maximumVertical(),
-                                              SizedBox(
-                                                height: 45,
-                                                child: MyTextField(
-                                                  controller:
-                                                      _.lastnameController,
-                                                  hintText: '',
-                                                  labelText: 'Nom',
-                                                  prefixIcon:
-                                                      "assets/images/icon_user.svg",
-                                                  prefixIconColor: colorGrey1,
-                                                  keyboardType:
-                                                      TextInputType.name,
-                                                  maskInputs: [
-                                                    FilteringTextInputFormatter
-                                                        .allow(RegExp(AppConstants
-                                                            .INPUT_NAME_REGEX)),
-                                                  ],
-                                                  onChanged: (value) {
-                                                    _.checkForm();
-                                                  },
-                                                ),
+                                              MyTextField(
+                                                controller:
+                                                    _.lastnameController,
+                                                hintText: '',
+                                                labelText: 'Nom',
+                                                prefixIcon:
+                                                    "assets/images/icon_user.svg",
+                                                prefixIconColor: colorGrey1,
+                                                keyboardType:
+                                                    TextInputType.name,
+                                                maskInputs: [
+                                                  FilteringTextInputFormatter
+                                                      .allow(RegExp(AppConstants
+                                                          .INPUT_NAME_REGEX)),
+                                                ],
+                                                onChanged: (value) {
+                                                  _.checkForm();
+                                                },
+                                                errorText: _.lastnameErrorMessage.value,
                                               ),
                                               Separators.normalVertical(),
-                                              SizedBox(
-                                                height: 45,
-                                                child: MyTextField(
-                                                  controller:
-                                                      _.firstnameController,
-                                                  hintText: '',
-                                                  labelText: 'Prénom(s)',
-                                                  prefixIcon:
-                                                      "assets/images/icon_user.svg",
-                                                  //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
-                                                  prefixIconColor: colorGrey1,
-                                                  keyboardType:
-                                                      TextInputType.name,
-                                                  maskInputs: [
-                                                    FilteringTextInputFormatter
-                                                        .allow(RegExp(AppConstants
-                                                            .INPUT_NAME_REGEX)),
-                                                  ],
-                                                  onChanged: (value) {
-                                                    _.checkForm();
-                                                  },
-                                                ),
+                                              MyTextField(
+                                                controller:
+                                                    _.firstnameController,
+                                                hintText: '',
+                                                labelText: 'Prénom(s)',
+                                                prefixIcon:
+                                                    "assets/images/icon_user.svg",
+                                                //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
+                                                prefixIconColor: colorGrey1,
+                                                keyboardType:
+                                                    TextInputType.name,
+                                                maskInputs: [
+                                                  FilteringTextInputFormatter
+                                                      .allow(RegExp(AppConstants
+                                                          .INPUT_NAME_REGEX)),
+                                                ],
+                                                onChanged: (value) {
+                                                  _.checkForm();
+                                                },
+                                                errorText: _.firstnameErrorMessage.value,
                                               ),
                                               Separators.normalVertical(),
-                                              SizedBox(
-                                                height: 45,
-                                                child: MyTextField(
-                                                  controller: _.phoneController,
-                                                  hintText: '',
-                                                  labelText: 'Téléphone',
-                                                  prefixIcon:
-                                                      "assets/images/icon_phone.svg",
-                                                  //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
-                                                  prefixIconColor: colorGrey1,
-                                                  keyboardType:
-                                                      TextInputType.phone,
-                                                  maxLength: 14,
-                                                  maskInputs: [
-                                                    ObjectSeparatorInputFormatter(
-                                                        groupBy: 2),
-                                                    FilteringTextInputFormatter
-                                                        .allow(RegExp(AppConstants
-                                                            .INPUT_NUM_REGEX)),
-                                                  ],
-                                                  onChanged: (value) {
-                                                    _.checkForm();
-                                                  },
-                                                ),
+                                              MyTextField(
+                                                controller: _.emailController,
+                                                hintText: '',
+                                                labelText: 'E-mail',
+                                                prefixIcon: "assets/images/icon_enveloppe.svg",
+                                                //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
+                                                prefixIconColor: colorGrey1,
+                                                keyboardType: TextInputType.emailAddress,
+                                                textCapitalization: TextCapitalization.none,
+                                                onChanged: (value) {
+                                                  _.checkForm();
+                                                },
+                                                errorText: _.emailErrorMessage.value,
                                               ),
                                               Separators.normalVertical(),
-                                              SizedBox(
-                                                height: 45,
-                                                child: MyTextField(
-                                                  controller:
-                                                      _.passwordController,
-                                                  hintText: '',
-                                                  labelText: 'Mot de passe',
-                                                  isPassword: true,
-                                                  prefixIcon:
-                                                      "assets/images/icon_password_profil.svg",
-                                                  prefixIconColor: colorGrey1,
-                                                  onChanged: (value) {
-                                                    _.checkForm();
-                                                  },
-                                                ),
+                                              MyTextField(
+                                                controller: _.phoneController,
+                                                hintText: '',
+                                                labelText: 'Téléphone',
+                                                prefixIcon:
+                                                    "assets/images/icon_phone.svg",
+                                                //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
+                                                prefixIconColor: colorGrey1,
+                                                keyboardType:
+                                                    TextInputType.phone,
+                                                maxLength: 14,
+                                                maskInputs: [
+                                                  ObjectSeparatorInputFormatter(
+                                                      groupBy: 2),
+                                                  FilteringTextInputFormatter
+                                                      .allow(RegExp(AppConstants
+                                                          .INPUT_NUM_REGEX)),
+                                                ],
+                                                onChanged: (value) {
+                                                  _.checkForm();
+                                                },
+                                                errorText: _.phoneErrorMessage.value,
                                               ),
                                               Separators.normalVertical(),
-                                              SizedBox(
-                                                height: 45,
-                                                child: MyTextField(
-                                                  controller:
-                                                      _.confPasswordController,
-                                                  hintText: '',
-                                                  labelText:
-                                                      'Confirmer le mot de passe',
-                                                  isPassword: true,
-                                                  prefixIcon:
-                                                      "assets/images/icon_password_profil.svg",
-                                                  prefixIconColor: colorGrey1,
-                                                  onChanged: (value) {
-                                                    _.checkForm();
-                                                  },
-                                                ),
+                                              MyTextField(
+                                                controller:
+                                                    _.passwordController,
+                                                hintText: '',
+                                                labelText: 'Mot de passe',
+                                                isPassword: true,
+                                                prefixIcon:
+                                                    "assets/images/icon_password_profil.svg",
+                                                prefixIconColor: colorGrey1,
+                                                onChanged: (value) {
+                                                  _.checkForm();
+                                                },
+                                                errorText: _.passwordErrorMessage.value,
+                                              ),
+                                              Separators.normalVertical(),
+                                              MyTextField(
+                                                controller:
+                                                    _.confPasswordController,
+                                                hintText: '',
+                                                labelText:
+                                                    'Confirmer le mot de passe',
+                                                isPassword: true,
+                                                prefixIcon:
+                                                    "assets/images/icon_password_profil.svg",
+                                                prefixIconColor: colorGrey1,
+                                                onChanged: (value) {
+                                                  _.checkForm();
+                                                },
+                                                errorText: _.confPasswordErrorMessage.value,
                                               ),
                                               Separators.normalVertical(),
                                               SizedBox(

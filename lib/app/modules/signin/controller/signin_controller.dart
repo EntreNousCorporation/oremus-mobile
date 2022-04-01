@@ -8,6 +8,7 @@ import 'package:jwt_decode/jwt_decode.dart';
 import 'package:oremusapp/app/commons/components/loader_widget.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/email_validator.dart';
 import 'package:oremusapp/app/commons/storage_request.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
@@ -22,7 +23,7 @@ class SigninController extends GetxController {
 
   SigninController({required this.signinRepository});
 
-  late TextEditingController phoneController;
+  late TextEditingController emailController;
   late TextEditingController passwordController;
 
   var unlockBackButton = true.obs;
@@ -33,12 +34,15 @@ class SigninController extends GetxController {
   var lockScreen = false.obs;
   var isValidForm = false.obs;
 
+  var emailErrorMessage = ''.obs;
+  var passwordErrorMessage = ''.obs;
+
   GlobalKey<FormState> formSigninKey = GlobalKey<FormState>();
 
   @override
   void onInit() {
     super.onInit();
-    phoneController = TextEditingController(text: '');
+    emailController = TextEditingController(text: '');
     passwordController = TextEditingController(text: '');
 
     if (flavor == AppConstants.ENV_DEV) {
@@ -73,7 +77,7 @@ class SigninController extends GetxController {
       unlockBackButton.value = false;
     });
 
-    String login = phoneController.text.trim().toString().replaceAll(' ', '');
+    String login = emailController.text.trim().toString().replaceAll(' ', '');
     String password = passwordController.text.trim().toString();
 
     loading(true);
@@ -122,14 +126,35 @@ class SigninController extends GetxController {
   }
 
   void checkForm() {
-    String login = phoneController.text.trim().toString().replaceAll(' ', '');
+    String email = emailController.text.trim().toString().replaceAll(' ', '');
     String password = passwordController.text.trim().toString();
-    isValidForm.value = login.isNotEmpty && password.isNotEmpty;
+    bool isValidEmail = EmailValidator.validate(email) == true;
+
+    if (email.isEmpty) {
+      emailErrorMessage.value = "L'email est obligatoire";
+    } else {
+      if (isValidEmail == false) {
+        emailErrorMessage.value = "L'email est incorrect";
+      } else {
+        emailErrorMessage.value = '';
+      }
+    }
+
+    if (password.isEmpty) {
+      passwordErrorMessage.value = 'Le mot de passe est obligatoire';
+    } else {
+      passwordErrorMessage.value = '';
+    }
+
+    isValidForm.value = email.isNotEmpty && isValidEmail && password.isNotEmpty;
+    log('email => $email');
+    log('isValidEmail => $isValidEmail');
+    log('isValidForm => ${isValidForm.value}');
   }
 
   @override
   void dispose() {
-    phoneController.dispose();
+    emailController.dispose();
     passwordController.dispose();
     super.dispose();
   }
