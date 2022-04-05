@@ -3,6 +3,7 @@ class TextSizes{
   static const double eight =8.0;
   static const double nine =9.0;
   static const double ten =10.0;
+  static const double eleven =11.0;
   static const double twelve=12;
   static const double thirteen=13;
   static const double fourteen=14;

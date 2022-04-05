@@ -10,6 +10,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/paroisse_response.dart
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin_response.dart';
 import 'package:oremusapp/main.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoisseController extends GetxController {
   final ParoisseRepository paroisseRepository;
@@ -20,12 +21,14 @@ class ParoisseController extends GetxController {
 
   var userConnection = SigninResponse().obs;
 
-  RxList<ContentParoisse> paroisses = RxList<ContentParoisse>([]);
+  RxList<ContentPlace> paroisses = RxList<ContentPlace>([]);
 
   var unlockBackButton = true.obs;
 
   var isDataProcessing = false.obs;
   var hasData = false.obs;
+
+  var refreshController = RefreshController();
 
   //CAROUSEL
   late CarouselController carouselController;
@@ -51,6 +54,10 @@ class ParoisseController extends GetxController {
   void onReady() {
     getParoisses();
     super.onReady();
+  }
+
+  initPullToRefresh() {
+    refreshController = RefreshController(initialRefresh: false);
   }
 
   void initCarousel() {
@@ -87,10 +94,27 @@ class ParoisseController extends GetxController {
     });
   }
 
+  onRefresh() {
+
+    log('request onRefresh');
+
+    paroisseRepository.getParoisses().then((value) {
+      refreshController.refreshCompleted();
+      if (value.empty == false) {
+        paroisses.value = value.content ?? [];
+      }
+    }, onError: (error) {
+      refreshController.refreshCompleted();
+      debugPrint("error => ${error.toString()}");
+    });
+  }
+
   getUserInfo() {
     var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
-    SigninResponse userConnected =
-        SigninResponse.fromJson(jsonDecode(userInfo));
-    userConnection.value = userConnected;
+    if (userInfo != null) {
+      SigninResponse userConnected =
+      SigninResponse.fromJson(jsonDecode(userInfo));
+      userConnection.value = userConnected;
+    }
   }
 }

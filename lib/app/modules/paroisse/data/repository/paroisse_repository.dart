@@ -15,7 +15,7 @@ class ParoisseRepository implements IParoisseRepository {
   ParoisseRepository(this._apiClient);
 
   @override
-  Future<ParoisseResponse> getParoisses({int? page = 0}) async {
+  Future<PlaceResponse> getParoisses({int? page = 0}) async {
     Response response = await _apiClient.doRequest(
       endpoint: "/places-of-worship?page=$page&size=${AppConstants.PAGING_SIZE}",
       method: HttpMethod.get,
@@ -28,7 +28,7 @@ class ParoisseRepository implements IParoisseRepository {
       throw Exception(resp);
     } else {
       log('resp => $resp');
-      return ParoisseResponse.fromJson(json.decode(response.bodyString.toString()));
+      return PlaceResponse.fromJson(json.decode(response.bodyString.toString()));
     }
   }
 }

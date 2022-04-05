@@ -1,7 +1,6 @@
-import 'package:oremusapp/app/modules/paroisse/data/model/paroisse.dart';
 
-class ParoisseResponse {
-  List<ContentParoisse>? content;
+class PlaceResponse {
+  List<ContentPlace>? content;
   Pageable? pageable;
   int? totalPages;
   int? totalElements;
@@ -13,7 +12,7 @@ class ParoisseResponse {
   int? size;
   bool? empty;
 
-  ParoisseResponse({
+  PlaceResponse({
     this.content,
     this.pageable,
     this.totalPages,
@@ -26,10 +25,10 @@ class ParoisseResponse {
     this.empty,
   });
 
-  ParoisseResponse.fromJson(Map<String, dynamic> json) {
+  PlaceResponse.fromJson(Map<String, dynamic> json) {
     content = json['content'] != null
         ? (json['content'] as List)
-        .map((i) => ContentParoisse.fromJson(i))
+        .map((i) => ContentPlace.fromJson(i))
         .toList()
         : null;
     pageable = json['pageable'] != null
@@ -128,7 +127,7 @@ class Sort {
   }
 }
 
-class ContentParoisse {
+class ContentPlace {
   int? identifier;
   String? createdAt;
   String? updatedAt;
@@ -137,8 +136,10 @@ class ContentParoisse {
   String? name;
   String? description;
   TypeContent? type;
+  String? leader;
+  bool? isArchDiocese;
 
-  ContentParoisse({
+  ContentPlace({
     this.identifier,
     this.createdAt,
     this.updatedAt,
@@ -147,9 +148,11 @@ class ContentParoisse {
     this.name,
     this.description,
     this.type,
+    this.leader,
+    this.isArchDiocese,
   });
 
-  ContentParoisse.fromJson(Map<String, dynamic> json) {
+  ContentPlace.fromJson(Map<String, dynamic> json) {
     identifier = json['identifier'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
@@ -157,6 +160,8 @@ class ContentParoisse {
     modifiedBy = json['modifiedBy'];
     name = json['name'];
     description = json['description'];
+    leader = json['leader'];
+    isArchDiocese = json['isArchDiocese'];
     type = json['type'] != null
         ? TypeContent.fromJson(json['type'])
         : null;
@@ -171,6 +176,8 @@ class ContentParoisse {
     data['modifiedBy'] = modifiedBy;
     data['name'] = name;
     data['description'] = description;
+    data['leader'] = leader;
+    data['isArchDiocese'] = isArchDiocese;
     data['type'] = type?.toJson();
     return data;
   }

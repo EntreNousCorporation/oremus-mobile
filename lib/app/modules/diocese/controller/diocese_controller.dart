@@ -1,62 +1,45 @@
 import 'dart:convert';
+import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/constants.dart';
-import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/diocese/data/repository/diocese_repository.dart';
-import 'package:oremusapp/app/modules/paroisse/data/model/operation_type_menu.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/paroisse_response.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin_response.dart';
 import 'package:oremusapp/main.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class DioceseController extends GetxController {
   final DioceseRepository dioceseRepository;
-  var loading = true.obs;
-  var showNotificationCount = 0.obs;
-  var userConnection = SigninResponse().obs;
-
-  RxList<OperationTypeMenu> operations = RxList<OperationTypeMenu>([]);
-
-  var soldeLoading = false.obs;
-
-  var unlockBackButton = true.obs;
 
   DioceseController({
     required this.dioceseRepository,
   });
 
+  var userConnection = SigninResponse().obs;
+  RxList<ContentPlace> dioceses = RxList<ContentPlace>([]);
+  var unlockBackButton = true.obs;
+  var isDataProcessing = false.obs;
+  var hasData = false.obs;
+
+  var refreshController = RefreshController();
+
   @override
   void onInit() {
     super.onInit();
-    //getUserInfo();
-    initMenus();
+    initPullToRefresh();
+    getUserInfo();
   }
 
-  void initMenus() {
-    operations.value = [
-      OperationTypeMenu(
-        isVisble: true,
-        title: 'ordinary_transfer'.tr,
-        imageSVG: "assets/images/icon_transfert.svg",
-        activeTint: colorBlack,
-        goToPage: () {},
-      ),
-      OperationTypeMenu(
-        isVisble: true,
-        title: 'withdraw'.tr,
-        imageSVG: "assets/images/icon_retrait.svg",
-        activeTint: colorBlack,
-        goToPage: () {},
-      ),
-      OperationTypeMenu(
-        isVisble: true,
-        title: 'account_transfer'.tr,
-        imageSVG: "assets/images/icon_virement.svg",
-        activeTint: colorBlack,
-        goToPage: () {},
-      ),
-    ];
+  @override
+  void onReady() {
+    getDioceses();
+    super.onReady();
+  }
 
-    operations.value = operations.where((element) => element.isVisble).toList();
+  initPullToRefresh() {
+    refreshController = RefreshController(initialRefresh: false);
   }
 
   getUserInfo() {
@@ -64,5 +47,41 @@ class DioceseController extends GetxController {
     SigninResponse userConnected =
     SigninResponse.fromJson(jsonDecode(userInfo));
     userConnection.value = userConnected;
+  }
+
+  getDioceses() {
+    isDataProcessing(true);
+
+    log('request getDioceses');
+
+    dioceseRepository.getDioceses().then((value) {
+      log('response getDioceses => $value');
+      isDataProcessing(false);
+      if (value.empty == false) {
+        hasData(true);
+        dioceses.value = value.content ?? [];
+      } else {
+        hasData(false);
+      }
+    }, onError: (error) {
+      isDataProcessing(false);
+      hasData(false);
+      debugPrint("error => ${error.toString()}");
+    });
+  }
+
+  onRefresh() {
+
+    log('request onRefresh');
+
+    dioceseRepository.getDioceses().then((value) {
+      refreshController.refreshCompleted();
+      if (value.empty == false) {
+        dioceses.value = value.content ?? [];
+      }
+    }, onError: (error) {
+      refreshController.refreshCompleted();
+      debugPrint("error => ${error.toString()}");
+    });
   }
 }
