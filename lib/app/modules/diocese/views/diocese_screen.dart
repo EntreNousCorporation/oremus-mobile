@@ -37,10 +37,7 @@ class DioceseScreen extends StatelessWidget {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(
-                                  top: 16,
-                                  bottom: 0,
-                                  left: 16,
-                                  right: 16),
+                                  top: 16, bottom: 0, left: 16, right: 16),
                               child: Row(
                                 children: [
                                   GestureDetector(
@@ -48,12 +45,10 @@ class DioceseScreen extends StatelessWidget {
                                       Get.back();
                                     },
                                     child: Material(
-                                      borderRadius:
-                                      BorderRadius.circular(10.0),
+                                      borderRadius: BorderRadius.circular(10.0),
                                       elevation: 10,
                                       color: colorWhite,
-                                      shadowColor:
-                                      colorGrey2.withOpacity(0.5),
+                                      shadowColor: colorGrey2.withOpacity(0.5),
                                       child: SizedBox(
                                         height: (Get.width / 9),
                                         width: (Get.width / 9),
@@ -80,57 +75,58 @@ class DioceseScreen extends StatelessWidget {
                             Separators.maximumVertical(),
                             _.isDataProcessing.isTrue
                                 ? const Expanded(
-                              child: Center(
-                                child: LottieLoadingView(
-                                  size: 25,
-                                ),
-                              ),
-                            )
-                                : _.hasData.isTrue
-                                ? Expanded(
-                              child: FadeIn(
-                                duration: const Duration(milliseconds: 500),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 0,
-                                      bottom: 0,
-                                      left: 16,
-                                      right: 16),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: GridView.builder(
-                                          physics:
-                                          const NeverScrollableScrollPhysics(),
-                                          shrinkWrap: true,
-                                          gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                            //childAspectRatio: 3 / 2,
-                                            crossAxisCount: 2,
-                                            crossAxisSpacing: 0.0,
-                                            mainAxisSpacing: 16.0,
-                                          ),
-                                          itemCount: _.dioceses.length,
-                                          itemBuilder:
-                                              (context, index) {
-                                            var paroisse =
-                                            _.dioceses[index];
-                                            return GridviewItem(
-                                                diocese: paroisse);
-                                          },
-                                        ),
+                                    child: Center(
+                                      child: LottieLoadingView(
+                                        size: 25,
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
-                                : Expanded(
-                                child: NotFoundScreen(
-                                  message: "Aucun diocèse trouvé !",
-                                )),
+                                    ),
+                                  )
+                                : _.hasData.isTrue
+                                    ? Expanded(
+                                        child: FadeIn(
+                                          duration:
+                                              const Duration(milliseconds: 500),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: 0,
+                                              bottom: 0,
+                                              left: 16,
+                                              right: 16,
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Expanded(
+                                                  child: GridView.builder(
+                                                    //physics: const NeverScrollableScrollPhysics(),
+                                                    shrinkWrap: true,
+                                                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                      //childAspectRatio: 3 / 2,
+                                                      crossAxisCount: 2,
+                                                      crossAxisSpacing: 0.0,
+                                                      mainAxisSpacing: 16.0,
+                                                    ),
+                                                    itemCount:
+                                                        _.dioceses.length,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      var paroisse =
+                                                          _.dioceses[index];
+                                                      return GridviewItem(
+                                                          diocese: paroisse);
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : Expanded(
+                                        child: NotFoundScreen(
+                                        message: "Aucun diocèse trouvé !",
+                                      )),
                           ],
                         ),
                       ),

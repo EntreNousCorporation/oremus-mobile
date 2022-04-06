@@ -98,6 +98,7 @@ class SignupScreen extends StatelessWidget {
                                               ),
                                               Separators.maximumVertical(),
                                               MyTextField(
+                                                focusNode: _.lastnameFocusNode,
                                                 controller:
                                                     _.lastnameController,
                                                 hintText: '',
@@ -119,6 +120,7 @@ class SignupScreen extends StatelessWidget {
                                               ),
                                               Separators.normalVertical(),
                                               MyTextField(
+                                                focusNode: _.firstnameFocusNode,
                                                 controller:
                                                     _.firstnameController,
                                                 hintText: '',
@@ -141,6 +143,7 @@ class SignupScreen extends StatelessWidget {
                                               ),
                                               Separators.normalVertical(),
                                               MyTextField(
+                                                focusNode: _.emailFocusNode,
                                                 controller: _.emailController,
                                                 hintText: '',
                                                 labelText: 'E-mail',
@@ -156,6 +159,7 @@ class SignupScreen extends StatelessWidget {
                                               ),
                                               Separators.normalVertical(),
                                               MyTextField(
+                                                focusNode: _.phoneFocusNode,
                                                 controller: _.phoneController,
                                                 hintText: '',
                                                 labelText: 'Téléphone',
@@ -180,6 +184,7 @@ class SignupScreen extends StatelessWidget {
                                               ),
                                               Separators.normalVertical(),
                                               MyTextField(
+                                                focusNode: _.passwordFocusNode,
                                                 controller:
                                                     _.passwordController,
                                                 hintText: '',
@@ -195,6 +200,7 @@ class SignupScreen extends StatelessWidget {
                                               ),
                                               Separators.normalVertical(),
                                               MyTextField(
+                                                focusNode: _.confPasswordFocusNode,
                                                 controller:
                                                     _.confPasswordController,
                                                 hintText: '',

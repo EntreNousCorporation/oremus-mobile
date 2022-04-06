@@ -77,6 +77,7 @@ class SigninScreen extends StatelessWidget {
                                               ),
                                               Separators.maximumVertical(),
                                               MyTextField(
+                                                focusNode: _.emailFocusNode,
                                                 controller: _.emailController,
                                                 hintText: '',
                                                 labelText: 'E-mail',
@@ -92,6 +93,7 @@ class SigninScreen extends StatelessWidget {
                                               ),
                                               Separators.normalVertical(),
                                               MyTextField(
+                                                focusNode: _.passwordFocusNode,
                                                 controller: _.passwordController,
                                                 hintText: '',
                                                 labelText: 'Mot de passe',

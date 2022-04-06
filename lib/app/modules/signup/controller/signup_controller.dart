@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:oremusapp/app/commons/components/loader_widget.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/email_validator.dart';
@@ -44,37 +43,26 @@ class SignupController extends GetxController {
   var confPasswordErrorMessage = ''.obs;
 
   GlobalKey<FormState> formSignupKey = GlobalKey<FormState>();
+  FocusNode firstnameFocusNode = FocusNode();
+  FocusNode lastnameFocusNode = FocusNode();
+  FocusNode emailFocusNode = FocusNode();
+  FocusNode phoneFocusNode = FocusNode();
+  FocusNode passwordFocusNode = FocusNode();
+  FocusNode confPasswordFocusNode = FocusNode();
 
   @override
   void onInit() {
+    initControllers();
     super.onInit();
+  }
+
+  initControllers() {
     phoneController = TextEditingController(text: '');
     firstnameController = TextEditingController(text: '');
     lastnameController = TextEditingController(text: '');
     emailController = TextEditingController(text: '');
     passwordController = TextEditingController(text: '');
     confPasswordController = TextEditingController(text: '');
-
-    if (flavor == AppConstants.ENV_DEV) {
-      //loginController = TextEditingController(text: 'TOHERO');
-      //passwordController = TextEditingController(text: 'ALO123');
-
-      //loginController = TextEditingController(text: 'SUVAWY');
-      //passwordController = TextEditingController(text: 'A22222');
-
-      //loginController = TextEditingController(text: "0103244851");
-      //passwordController = TextEditingController(text: "DOSSO21");
-
-      //loginController = TextEditingController(text: "W39JZM");
-      //passwordController = TextEditingController(text: "56C2");
-
-    } else {
-      //loginController = TextEditingController(text: "0749435261");
-      //passwordController = TextEditingController(text: "DE2021");
-
-      //loginController = TextEditingController(text: "W39JZM");
-      //passwordController = TextEditingController(text: "56C2");
-    }
   }
 
   signupUser() {
@@ -88,10 +76,10 @@ class SignupController extends GetxController {
     });
 
     String firstname = firstnameController.text.trim().toString().replaceAll(' ', '');
-    String lastname = lastnameController.text.trim().toString();
-    String email = emailController.text.trim().toString();
+    String lastname = lastnameController.text.trim().toString().replaceAll(' ', '');
+    String email = emailController.text.trim().toString().replaceAll(' ', '');
     String phone = phoneController.text.trim().toString().replaceAll(' ', '');
-    String password = passwordController.text.trim().toString();
+    String password = passwordController.text.trim().toString().replaceAll(' ', '');
 
     loading(true);
     lockScreen(true);
@@ -137,47 +125,60 @@ class SignupController extends GetxController {
     String confPassword = confPasswordController.text.trim().toString();
     bool isValidEmail = EmailValidator.validate(email) == true;
 
-    if (lastname.isEmpty) {
-      lastnameErrorMessage.value = 'Le nom est obligatoire';
-    } else {
-      lastnameErrorMessage.value = '';
-    }
-
-    if (firstname.isEmpty) {
-      firstnameErrorMessage.value = 'Le prénom est obligatoire';
-    } else {
-      firstnameErrorMessage.value = '';
-    }
-
-    if (email.isEmpty) {
-      emailErrorMessage.value = "L'email est obligatoire";
-    } else {
-      if (isValidEmail == false) {
-        emailErrorMessage.value = "L'email est incorrect";
+    if (lastnameFocusNode.hasFocus) {
+      if (lastname.isEmpty) {
+        lastnameErrorMessage.value = 'Le nom est obligatoire';
       } else {
-        emailErrorMessage.value = '';
+        lastnameErrorMessage.value = '';
       }
     }
 
-    if (phone.isEmpty) {
-      phoneErrorMessage.value = 'Le téléphone est obligatoire';
-    } else {
-      phoneErrorMessage.value = '';
+    if (firstnameFocusNode.hasFocus) {
+      if (firstname.isEmpty) {
+        firstnameErrorMessage.value = 'Le prénom est obligatoire';
+      } else {
+        firstnameErrorMessage.value = '';
+      }
     }
 
-    if (password.isEmpty) {
-      passwordErrorMessage.value = 'Le mot de passe est obligatoire';
-    } else {
-      passwordErrorMessage.value = '';
+    if (emailFocusNode.hasFocus) {
+      if (email.isEmpty) {
+        emailErrorMessage.value = "L'email est obligatoire";
+      } else {
+        if (isValidEmail == false) {
+          emailErrorMessage.value = "L'email est incorrect";
+        } else {
+          emailErrorMessage.value = '';
+        }
+      }
     }
 
-    if (confPassword.isEmpty) {
-      confPasswordErrorMessage.value = 'La confirmation du mot de passe est obligatoire';
-    } else {
-      confPasswordErrorMessage.value = '';
+    if (phoneFocusNode.hasFocus) {
+      if (phone.isEmpty) {
+        phoneErrorMessage.value = 'Le téléphone est obligatoire';
+      } else {
+        phoneErrorMessage.value = '';
+      }
+    }
+
+    if (passwordFocusNode.hasFocus) {
+      if (password.isEmpty) {
+        passwordErrorMessage.value = 'Le mot de passe est obligatoire';
+      } else {
+        passwordErrorMessage.value = '';
+      }
+    }
+
+    if (confPasswordFocusNode.hasFocus) {
+      if (confPassword.isEmpty) {
+        confPasswordErrorMessage.value = 'La confirmation du mot de passe est obligatoire';
+      } else {
+        confPasswordErrorMessage.value = '';
+      }
     }
 
     bool isSamePassword = password == confPassword;
+
     if (isSamePassword == false) {
       confPasswordErrorMessage.value = 'Les mots de passe sont différents';
     } else {

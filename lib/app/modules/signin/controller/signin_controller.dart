@@ -38,6 +38,8 @@ class SigninController extends GetxController {
   var passwordErrorMessage = ''.obs;
 
   GlobalKey<FormState> formSigninKey = GlobalKey<FormState>();
+  FocusNode emailFocusNode = FocusNode();
+  FocusNode passwordFocusNode = FocusNode();
 
   @override
   void onInit() {
@@ -46,8 +48,8 @@ class SigninController extends GetxController {
     passwordController = TextEditingController(text: '');
 
     if (flavor == AppConstants.ENV_DEV) {
-      //loginController = TextEditingController(text: 'TOHERO');
-      //passwordController = TextEditingController(text: 'ALO123');
+      emailController = TextEditingController(text: 'test@gmail.com');
+      passwordController = TextEditingController(text: 'test');
 
       //loginController = TextEditingController(text: 'SUVAWY');
       //passwordController = TextEditingController(text: 'A22222');
@@ -130,20 +132,24 @@ class SigninController extends GetxController {
     String password = passwordController.text.trim().toString();
     bool isValidEmail = EmailValidator.validate(email) == true;
 
-    if (email.isEmpty) {
-      emailErrorMessage.value = "L'email est obligatoire";
-    } else {
-      if (isValidEmail == false) {
-        emailErrorMessage.value = "L'email est incorrect";
+    if (emailFocusNode.hasFocus) {
+      if (email.isEmpty) {
+        emailErrorMessage.value = "L'email est obligatoire";
       } else {
-        emailErrorMessage.value = '';
+        if (isValidEmail == false) {
+          emailErrorMessage.value = "L'email est incorrect";
+        } else {
+          emailErrorMessage.value = '';
+        }
       }
     }
 
-    if (password.isEmpty) {
-      passwordErrorMessage.value = 'Le mot de passe est obligatoire';
-    } else {
-      passwordErrorMessage.value = '';
+    if (passwordFocusNode.hasFocus) {
+      if (password.isEmpty) {
+        passwordErrorMessage.value = 'Le mot de passe est obligatoire';
+      } else {
+        passwordErrorMessage.value = '';
+      }
     }
 
     isValidForm.value = email.isNotEmpty && isValidEmail && password.isNotEmpty;

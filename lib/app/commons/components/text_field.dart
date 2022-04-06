@@ -33,6 +33,7 @@ class MyTextField extends StatefulWidget {
     this.afterDateNow = false,
     this.isDate = false,
     this.isPhone = false,
+    this.focusNode,
   }) : super(key: key);
 
   final Key? fieldKey;
@@ -60,6 +61,7 @@ class MyTextField extends StatefulWidget {
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onChanged;
   final bool afterDateNow;
+  final FocusNode? focusNode;
 
   @override
   _MyTextFieldState createState() => _MyTextFieldState();
@@ -93,6 +95,7 @@ class _MyTextFieldState extends State<MyTextField> {
   get onChanged => widget.onChanged;
   get isDate => widget.isDate;
   get isPhone => widget.isPhone;
+  get focusNode => widget.focusNode;
   get afterDateNow => widget.afterDateNow;
   get phoneIndicatifController => widget.phoneIndicatifController;
 
@@ -142,6 +145,7 @@ class _MyTextFieldState extends State<MyTextField> {
         onChanged: onChanged,
         keyboardType: keyboardType ?? TextInputType.text,
         textCapitalization: textCapitalization,
+        focusNode: focusNode,
         decoration: InputDecoration(
           filled: true,
           fillColor: colorGrey3,
@@ -203,6 +207,7 @@ class _MyTextFieldState extends State<MyTextField> {
         inputFormatters: maskInputs,
         onChanged: onChanged,
         keyboardType: TextInputType.phone,
+        focusNode: focusNode,
         decoration: InputDecoration(
           filled: true,
           fillColor: colorGrey3,
@@ -281,6 +286,7 @@ class _MyTextFieldState extends State<MyTextField> {
           style: TextStyles.montserratMedium(textColor: colorBlack),
           maxLines: maxLines,
           cursorColor: colorGreen3,
+          focusNode: focusNode,
           decoration: InputDecoration(
             filled: true,
             fillColor: colorGrey3,

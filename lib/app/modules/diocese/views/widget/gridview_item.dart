@@ -26,7 +26,7 @@ class GridviewItem extends StatelessWidget {
             ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(10.0)),
               child: SizedBox(
-                height: Get.width/3.5,
+                height: Get.width/3.7,
                 width: double.infinity,
                 child: Image.asset(
                   'assets/images/diocese_placeholder.jpg',
