@@ -38,10 +38,7 @@ class ParoisseScreen extends StatelessWidget {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(
-                                  top: 16,
-                                  bottom: 0,
-                                  left: 16,
-                                  right: 16),
+                                  top: 16, bottom: 0, left: 16, right: 16),
                               child: Row(
                                 children: [
                                   Visibility(
@@ -52,11 +49,11 @@ class ParoisseScreen extends StatelessWidget {
                                       },
                                       child: Material(
                                         borderRadius:
-                                        BorderRadius.circular(10.0),
+                                            BorderRadius.circular(10.0),
                                         elevation: 10,
                                         color: colorWhite,
                                         shadowColor:
-                                        colorGrey2.withOpacity(0.5),
+                                            colorGrey2.withOpacity(0.5),
                                         child: SizedBox(
                                           height: (Get.width / 9),
                                           width: (Get.width / 9),
@@ -70,7 +67,7 @@ class ParoisseScreen extends StatelessWidget {
                                   ),
                                   Visibility(
                                     visible: false,
-                                      child: Separators.normalHorizontal(),
+                                    child: Separators.normalHorizontal(),
                                   ),
                                   Expanded(
                                     child: SizedBox(
@@ -83,42 +80,47 @@ class ParoisseScreen extends StatelessWidget {
                             ),
                             //Separators.maximumVertical(),
                             _.isDataProcessing.isTrue
-                                ? const Expanded(
+                                ? Expanded(
                                     child: Center(
                                       child: LottieLoadingView(
-                                        size: 25,
+                                        size: Get.width / 4,
                                       ),
                                     ),
                                   )
                                 : _.hasData.isTrue
                                     ? Expanded(
-                                      child: FadeIn(
-                                        duration: const Duration(milliseconds: 500),
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 0,
-                                              bottom: 0,
-                                              left: 16,
-                                              right: 16),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Expanded(
-                                                child: ListView.builder(
-                                                    //physics: const NeverScrollableScrollPhysics(),
-                                                    shrinkWrap: false,
-                                                    itemCount: _.paroisses.length,
-                                                    itemBuilder: (builder, index) {
-                                                      var paroisse = _.paroisses[index];
-                                                  return ParoisseItem(paroisse: paroisse);
-                                                }),
-                                              ),
-                                            ],
+                                        child: FadeIn(
+                                          duration:
+                                              const Duration(milliseconds: 500),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 0,
+                                                bottom: 0,
+                                                left: 16,
+                                                right: 16),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Expanded(
+                                                  child: ListView.builder(
+                                                      //physics: const NeverScrollableScrollPhysics(),
+                                                      shrinkWrap: false,
+                                                      itemCount: _.paroisses.length,
+                                                      itemBuilder:
+                                                          (builder, index) {
+                                                        var paroisse = _.paroisses[index];
+                                                        return ParoisseItem(
+                                                          paroisse: paroisse,
+                                                          index: index,
+                                                        );
+                                                      }),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    )
+                                      )
                                     : Expanded(
                                         child: NotFoundScreen(
                                         message: "Aucune paroisse trouvée !",

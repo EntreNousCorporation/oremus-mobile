@@ -74,7 +74,7 @@ class DioceseScreen extends StatelessWidget {
                             ),
                             Separators.maximumVertical(),
                             _.isDataProcessing.isTrue
-                                ? const Expanded(
+                                ? Expanded(
                                     child: Center(
                                       child: LottieLoadingView(
                                         size: 25,

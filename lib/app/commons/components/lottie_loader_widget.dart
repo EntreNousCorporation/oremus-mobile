@@ -5,21 +5,21 @@ import 'package:lottie/lottie.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 
 class LottieLoadingView extends StatelessWidget {
-  const LottieLoadingView({
+  LottieLoadingView({
     Key? key,
     this.color = colorGreen3,
-    this.size = 20.0,
+    this.size,
   }) : super(key: key);
 
   final Color? color;
-  final double size;
+  double? size;
 
   @override
   Widget build(BuildContext context) {
     return LottieBuilder.asset(
       'assets/images/lottie_church.json',
       repeat: true,
-      width: Get.width / 4,
+      width: size ?? Get.width / 4,
     );
   }
 }

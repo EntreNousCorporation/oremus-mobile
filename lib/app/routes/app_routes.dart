@@ -10,4 +10,7 @@ abstract class Routes {
   //AUTH
   static const SIGNIN = '/signin';
   static const SIGNUP = '/signup';
+
+  //PAROISSE
+  static const PAROISSE_MENU = '/paroisse-menu';
 }

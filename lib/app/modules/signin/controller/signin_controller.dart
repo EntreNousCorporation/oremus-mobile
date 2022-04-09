@@ -74,7 +74,7 @@ class SigninController extends GetxController {
     EasyLoading.show(
       status: 'connection_processing'.tr,
       maskType: EasyLoadingMaskType.black,
-      indicator: const LottieLoadingView(),
+      indicator: LottieLoadingView(),
     ).then((v) {
       unlockBackButton.value = false;
     });

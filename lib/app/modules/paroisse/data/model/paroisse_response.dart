@@ -193,6 +193,9 @@ class ContentPlace {
     data['leader'] = leader;
     data['isArchDiocese'] = isArchDiocese;
     data['type'] = type?.toJson();
+    data['address'] = address?.toJson();
+    data['diocese'] = diocese?.toJson();
+    data['coverImage'] = coverImage?.toJson();
     return data;
   }
 }

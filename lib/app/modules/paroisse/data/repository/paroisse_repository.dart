@@ -27,7 +27,7 @@ class ParoisseRepository implements IParoisseRepository {
     if (response.statusCode != 200) {
       throw Exception(resp);
     } else {
-      log('resp => $resp');
+      //log('resp => $resp');
       return PlaceResponse.fromJson(json.decode(response.bodyString.toString()));
     }
   }

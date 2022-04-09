@@ -70,7 +70,7 @@ class SignupController extends GetxController {
     EasyLoading.show(
       status: 'signup_processing'.tr,
       maskType: EasyLoadingMaskType.black,
-      indicator: const LottieLoadingView(),
+      indicator: LottieLoadingView(),
     ).then((v) {
       unlockBackButton.value = false;
     });
