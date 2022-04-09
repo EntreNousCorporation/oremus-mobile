@@ -30,24 +30,9 @@ class ParoisseController extends GetxController {
 
   var refreshController = RefreshController();
 
-  //CAROUSEL
-  late CarouselController carouselController;
-  late CarouselOptions carouselOptions;
-  var currentSlide = 0.obs;
-
-  final List<String> imgList = [
-    'assets/images/bg_login.jpg',
-    'assets/images/bg_login.jpg',
-    'assets/images/bg_login.jpg',
-    'assets/images/bg_login.jpg',
-    'assets/images/bg_login.jpg',
-    'assets/images/bg_login.jpg'
-  ];
-
   @override
   void onInit() {
     //getUserInfo();
-    initCarousel();
     super.onInit();
   }
   @override
@@ -58,19 +43,6 @@ class ParoisseController extends GetxController {
 
   initPullToRefresh() {
     refreshController = RefreshController(initialRefresh: false);
-  }
-
-  void initCarousel() {
-    carouselController = CarouselController();
-    carouselOptions = CarouselOptions(
-        autoPlay: true,
-        enlargeCenterPage: false,
-        viewportFraction: 1,
-        aspectRatio: 16/9,
-        disableCenter: true,
-        onPageChanged: (index, reason) {
-          currentSlide.value = index;
-        });
   }
 
   getParoisses() {

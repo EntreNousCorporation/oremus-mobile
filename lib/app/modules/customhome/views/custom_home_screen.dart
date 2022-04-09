@@ -11,7 +11,7 @@ import 'package:oremusapp/app/modules/contact/views/contact_screen.dart';
 import 'package:oremusapp/app/modules/customhome/controller/custom_home_controller.dart';
 import 'package:oremusapp/app/modules/customhome/views/widget/drawer_menu.dart';
 import 'package:oremusapp/app/modules/faq/faq_screen.dart';
-import 'package:oremusapp/app/modules/home/views/home_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_screen.dart';
 import 'package:oremusapp/app/modules/profile/views/profile_screen.dart';
 import 'package:oremusapp/app/modules/promos/views/promo_screen.dart';
 import 'package:oremusapp/app/modules/share/views/share_screen.dart';
@@ -31,7 +31,8 @@ class CustomHomeScreen extends StatelessWidget {
           Widget? screenCurrent;
           switch (position) {
             case AppConstants.HOME:
-              screenCurrent = HomeScreen();
+              screenCurrent = ParoisseScreen();
+              //screenCurrent = HomeScreen();
               break;
             case AppConstants.PROFILE:
               screenCurrent = ProfileScreen();
@@ -71,12 +72,11 @@ class CustomHomeScreen extends StatelessWidget {
                         },
                       ),
                       title: Text(
-                        '',
+                        'Oremus',
                         style: TextStyles
                             .montserratBold(
                             textSize:
-                            TextSizes
-                                .twenty,
+                            TextSizes.twenty,
                             textColor:
                             colorWhite),
                       ),

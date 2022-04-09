@@ -1,4 +1,6 @@
 
+import 'dart:ffi';
+
 class PlaceResponse {
   List<ContentPlace>? content;
   Pageable? pageable;
@@ -138,6 +140,9 @@ class ContentPlace {
   TypeContent? type;
   String? leader;
   bool? isArchDiocese;
+  Address? address;
+  Diocese? diocese;
+  CoverImage? coverImage;
 
   ContentPlace({
     this.identifier,
@@ -164,6 +169,15 @@ class ContentPlace {
     isArchDiocese = json['isArchDiocese'];
     type = json['type'] != null
         ? TypeContent.fromJson(json['type'])
+        : null;
+    address = json['address'] != null
+        ? Address.fromJson(json['address'])
+        : null;
+    diocese = json['diocese'] != null
+        ? Diocese.fromJson(json['diocese'])
+        : null;
+    coverImage = json['coverImage'] != null
+        ? CoverImage.fromJson(json['coverImage'])
         : null;
   }
 
@@ -219,7 +233,6 @@ class TypeContent {
   }
 }
 
-
 class TranslateContent {
   int? identifier;
   String? createdAt;
@@ -253,4 +266,103 @@ class TranslateContent {
     return data;
   }
 }
+
+class Address {
+  int? identifier;
+  String? createdAt;
+  String? createdBy;
+  String? updatedAt;
+  String? modifiedBy;
+
+  Address({
+    this.identifier,
+    this.createdAt,
+    this.createdBy,
+    this.updatedAt,
+    this.modifiedBy,
+  });
+
+  Address.fromJson(Map<String, dynamic> json) {
+    identifier = json['identifier'];
+    createdAt = json['createdAt'];
+    createdBy = json['createdBy'];
+    updatedAt = json['updatedAt'];
+    modifiedBy = json['modifiedBy'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['identifier'] = identifier;
+    data['createdAt'] = createdAt;
+    data['createdBy'] = createdBy;
+    data['updatedAt'] = updatedAt;
+    data['modifiedBy'] = modifiedBy;
+    return data;
+  }
+}
+
+class Diocese {
+  int? identifier;
+  String? createdAt;
+  String? createdBy;
+  String? updatedAt;
+  String? modifiedBy;
+  String? name;
+  bool? isArchDiocese;
+
+  Diocese({
+    this.identifier,
+    this.createdAt,
+    this.createdBy,
+    this.updatedAt,
+    this.modifiedBy,
+    this.name,
+    this.isArchDiocese,
+  });
+
+  Diocese.fromJson(Map<String, dynamic> json) {
+    identifier = json['identifier'];
+    createdAt = json['createdAt'];
+    createdBy = json['createdBy'];
+    updatedAt = json['updatedAt'];
+    modifiedBy = json['modifiedBy'];
+    name = json['name'];
+    isArchDiocese = json['isArchDiocese'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['identifier'] = identifier;
+    data['createdAt'] = createdAt;
+    data['createdBy'] = createdBy;
+    data['updatedAt'] = updatedAt;
+    data['modifiedBy'] = modifiedBy;
+    data['name'] = name;
+    data['isArchDiocese'] = isArchDiocese;
+    return data;
+  }
+}
+
+class CoverImage {
+  String? name;
+  String? link;
+
+  CoverImage({
+    this.name,
+    this.link,
+  });
+
+  CoverImage.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    link = json['link'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['name'] = name;
+    data['link'] = link;
+    return data;
+  }
+}
+
 

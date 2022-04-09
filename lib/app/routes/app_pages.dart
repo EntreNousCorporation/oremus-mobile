@@ -33,7 +33,7 @@ class AppPages {
       page: () => const CustomHomeScreen(),
       bindings: [
         CustomHomeBinding(),
-        HomeBinding(),
+        ParoisseBinding(),
       ],
       transition: Transition.fadeIn,
     ),

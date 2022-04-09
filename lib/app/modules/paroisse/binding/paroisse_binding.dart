@@ -6,12 +6,10 @@ import 'package:oremusapp/app/remote/api_client.dart';
 class ParoisseBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<ParoisseController>(
-      () {
-        return ParoisseController(
+    Get.put(
+        ParoisseController(
           paroisseRepository: ParoisseRepository(ApiClientImpl()),
-        );
-      },
-    );
+        ),
+        permanent: true);
   }
 }

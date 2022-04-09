@@ -9,6 +9,7 @@ import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/gridview_item.dart';
 import 'package:oremusapp/app/modules/customhome/views/widget/search_widget.dart';
+import 'package:oremusapp/app/modules/paroisse/views/widget/paroisse_item.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoisseScreen extends StatelessWidget {
@@ -43,41 +44,44 @@ class ParoisseScreen extends StatelessWidget {
                                   right: 16),
                               child: Row(
                                 children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      Get.back();
-                                    },
-                                    child: Material(
-                                      borderRadius:
-                                      BorderRadius.circular(10.0),
-                                      elevation: 10,
-                                      color: colorWhite,
-                                      shadowColor:
-                                      colorGrey2.withOpacity(0.5),
-                                      child: SizedBox(
-                                        height: (Get.width / 9),
-                                        width: (Get.width / 9),
-                                        child: const Icon(
-                                          Icons.arrow_back_ios_rounded,
-                                          color: colorBlack,
+                                  Visibility(
+                                    visible: false,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Get.back();
+                                      },
+                                      child: Material(
+                                        borderRadius:
+                                        BorderRadius.circular(10.0),
+                                        elevation: 10,
+                                        color: colorWhite,
+                                        shadowColor:
+                                        colorGrey2.withOpacity(0.5),
+                                        child: SizedBox(
+                                          height: (Get.width / 9),
+                                          width: (Get.width / 9),
+                                          child: const Icon(
+                                            Icons.arrow_back_ios_rounded,
+                                            color: colorBlack,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                  Separators.normalHorizontal(),
+                                  Visibility(
+                                    visible: false,
+                                      child: Separators.normalHorizontal(),
+                                  ),
                                   Expanded(
-                                    child: Hero(
-                                      tag: 'search',
-                                      child: SizedBox(
-                                        height: (Get.width / 9),
-                                        child: const SearchWidget(),
-                                      ),
+                                    child: SizedBox(
+                                      height: (Get.width / 9),
+                                      child: const SearchWidget(),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            Separators.maximumVertical(),
+                            //Separators.maximumVertical(),
                             _.isDataProcessing.isTrue
                                 ? const Expanded(
                                     child: Center(
@@ -101,26 +105,14 @@ class ParoisseScreen extends StatelessWidget {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Expanded(
-                                                child: GridView.builder(
-                                                  physics:
-                                                      const NeverScrollableScrollPhysics(),
-                                                  shrinkWrap: true,
-                                                  gridDelegate:
-                                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                                    //childAspectRatio: 3 / 2,
-                                                    crossAxisCount: 2,
-                                                    crossAxisSpacing: 0.0,
-                                                    mainAxisSpacing: 16.0,
-                                                  ),
-                                                  itemCount: _.paroisses.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    var paroisse =
-                                                        _.paroisses[index];
-                                                    return GridviewItem(
-                                                        paroisse: paroisse);
-                                                  },
-                                                ),
+                                                child: ListView.builder(
+                                                    //physics: const NeverScrollableScrollPhysics(),
+                                                    shrinkWrap: false,
+                                                    itemCount: _.paroisses.length,
+                                                    itemBuilder: (builder, index) {
+                                                      var paroisse = _.paroisses[index];
+                                                  return ParoisseItem(paroisse: paroisse);
+                                                }),
                                               ),
                                             ],
                                           ),
