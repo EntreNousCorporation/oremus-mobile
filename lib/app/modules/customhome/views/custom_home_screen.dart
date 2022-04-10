@@ -10,7 +10,7 @@ import 'package:oremusapp/app/modules/about/views/about_screen.dart';
 import 'package:oremusapp/app/modules/contact/views/contact_screen.dart';
 import 'package:oremusapp/app/modules/customhome/controller/custom_home_controller.dart';
 import 'package:oremusapp/app/modules/customhome/views/widget/drawer_menu.dart';
-import 'package:oremusapp/app/modules/faq/faq_screen.dart';
+import 'package:oremusapp/app/modules/faq/views/faq_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_screen.dart';
 import 'package:oremusapp/app/modules/profile/views/profile_screen.dart';
 import 'package:oremusapp/app/modules/promos/views/promo_screen.dart';
@@ -31,25 +31,32 @@ class CustomHomeScreen extends StatelessWidget {
           Widget? screenCurrent;
           switch (position) {
             case AppConstants.HOME:
+              logic.title.value = 'Oremus';
               screenCurrent = ParoisseScreen();
               //screenCurrent = HomeScreen();
               break;
             case AppConstants.PROFILE:
+              logic.title.value = logic.menus[position].libelle ?? 'Mon Profil';
               screenCurrent = ProfileScreen();
               break;
             case AppConstants.SHARE_APP:
+              logic.title.value = logic.menus[position].libelle ?? 'Partager l\'application';
               screenCurrent = ShareScreen();
               break;
             case AppConstants.PROMO:
+              logic.title.value = logic.menus[position].libelle ?? 'Codes promo';
               screenCurrent = PromoScreen();
               break;
             case AppConstants.FAQ:
+              logic.title.value = logic.menus[position].libelle ?? 'F.A.Q';
               screenCurrent = FaqScreen();
               break;
             case AppConstants.CONTACTS:
+              logic.title.value = logic.menus[position].libelle ?? 'Contacts';
               screenCurrent = ContactScreen();
               break;
             case AppConstants.ABOUT:
+              logic.title.value = logic.menus[position].libelle ?? 'A propos';
               screenCurrent = AboutScreen();
               break;
           }
@@ -72,7 +79,7 @@ class CustomHomeScreen extends StatelessWidget {
                         },
                       ),
                       title: Text(
-                        'Oremus',
+                        logic.title.value,
                         style: TextStyles
                             .montserratBold(
                             textSize:

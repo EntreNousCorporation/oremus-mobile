@@ -10,9 +10,9 @@ class FaqScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        'F.A.Q',
+        'Bientôt disponible',
         style: TextStyles.montserratRegular(
-            textSize: TextSizes.thirty_eight,
+            textSize: TextSizes.twenty,
             textColor: colorBlack),
       ),
     );

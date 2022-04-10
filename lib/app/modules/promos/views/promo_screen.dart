@@ -10,9 +10,9 @@ class PromoScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        'Promos',
+        'Bientôt disponible',
         style: TextStyles.montserratRegular(
-            textSize: TextSizes.thirty_eight,
+            textSize: TextSizes.twenty,
             textColor: colorBlack),
       ),
     );

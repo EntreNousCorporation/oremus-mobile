@@ -15,6 +15,7 @@ class CustomHomeController extends GetxController {
   RxList<MenuItem> menus = RxList<MenuItem>([]);
   late SimpleHiddenDrawerController drawerController;
   var selectedIndex = 0.obs;
+  var title = ''.obs;
 
   @override
   void onInit() {
