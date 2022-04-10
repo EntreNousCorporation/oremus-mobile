@@ -33,6 +33,7 @@ class MyTextField extends StatefulWidget {
     this.afterDateNow = false,
     this.isDate = false,
     this.isPhone = false,
+    this.filled = true,
     this.focusNode,
   }) : super(key: key);
 
@@ -61,6 +62,7 @@ class MyTextField extends StatefulWidget {
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onChanged;
   final bool afterDateNow;
+  final bool filled;
   final FocusNode? focusNode;
 
   @override
@@ -97,6 +99,7 @@ class _MyTextFieldState extends State<MyTextField> {
   get isPhone => widget.isPhone;
   get focusNode => widget.focusNode;
   get afterDateNow => widget.afterDateNow;
+  get filled => widget.filled;
   get phoneIndicatifController => widget.phoneIndicatifController;
 
   bool _obscureText = true;
@@ -147,7 +150,7 @@ class _MyTextFieldState extends State<MyTextField> {
         textCapitalization: textCapitalization,
         focusNode: focusNode,
         decoration: InputDecoration(
-          filled: true,
+          filled: filled,
           fillColor: colorGrey3,
           border: InputBorder.none,
           counterText: counterText,
@@ -160,7 +163,7 @@ class _MyTextFieldState extends State<MyTextField> {
             borderRadius: BorderRadius.circular(10),
           ),
           errorBorder: InputBorder.none,
-          disabledBorder: InputBorder.none,
+          disabledBorder: const UnderlineInputBorder(),
           hintText: hintText,
           labelText: labelText,
           enabled: enabled,

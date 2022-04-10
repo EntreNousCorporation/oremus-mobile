@@ -5,6 +5,7 @@ import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/operation_type_menu.dart';
 import 'package:oremusapp/app/modules/service/data/repository/service_repository.dart';
+import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin_response.dart';
 import 'package:oremusapp/main.dart';
 
@@ -12,7 +13,7 @@ class ServiceController extends GetxController {
   final ServiceRepository serviceRepository;
   var loading = true.obs;
   var showNotificationCount = 0.obs;
-  var userConnection = SigninResponse().obs;
+  var userConnection = Signin().obs;
 
   RxList<OperationTypeMenu> operations = RxList<OperationTypeMenu>([]);
 
@@ -61,8 +62,8 @@ class ServiceController extends GetxController {
 
   getUserInfo() {
     var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
-    SigninResponse userConnected =
-    SigninResponse.fromJson(jsonDecode(userInfo));
+    Signin userConnected =
+    Signin.fromJson(jsonDecode(userInfo));
     userConnection.value = userConnected;
   }
 }

@@ -1,15 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:carousel_slider/carousel_controller.dart';
-import 'package:carousel_slider/carousel_options.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/paroisse_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
-import 'package:oremusapp/app/modules/signin/data/model/signin_response.dart';
+import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -21,7 +19,7 @@ class ParoisseController extends GetxController {
     required this.paroisseRepository,
   });
 
-  var userConnection = SigninResponse().obs;
+  var userConnection = Signin().obs;
 
   RxList<ContentPlace> paroisses = RxList<ContentPlace>([]);
 
@@ -34,7 +32,7 @@ class ParoisseController extends GetxController {
 
   @override
   void onInit() {
-    //getUserInfo();
+    getUserInfo();
     super.onInit();
   }
   @override
@@ -43,17 +41,12 @@ class ParoisseController extends GetxController {
     super.onReady();
   }
 
-  initPullToRefresh() {
-    refreshController = RefreshController(initialRefresh: false);
-  }
-
   getParoisses() {
     isDataProcessing(true);
 
     log('request getParoisses');
 
     paroisseRepository.getParoisses().then((value) {
-      log('response getParoisses => $value');
       isDataProcessing(false);
       if (value.empty == false) {
         hasData(true);
@@ -68,11 +61,16 @@ class ParoisseController extends GetxController {
         showCustomDialog(
             Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
-          Get.offAndToNamed(Routes.SIGNIN);
+          doLogout();
         });
       }
       debugPrint("error => ${error.toString()}");
     });
+  }
+
+  doLogout() {
+    encryptedBox.put(AppConstants.USER_LOG_INFOS, null);
+    Get.offAllNamed(Routes.SIGNIN);
   }
 
   onRefresh() {
@@ -92,10 +90,12 @@ class ParoisseController extends GetxController {
 
   getUserInfo() {
     var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
+    log('==> ${userInfo}');
     if (userInfo != null) {
-      SigninResponse userConnected =
-      SigninResponse.fromJson(jsonDecode(userInfo));
+      Signin userConnected =
+      Signin.fromJson(jsonDecode(userInfo));
       userConnection.value = userConnected;
+      log('==> ${userConnection.value.toJson()}');
     }
   }
 }

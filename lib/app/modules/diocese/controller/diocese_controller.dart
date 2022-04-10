@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/modules/diocese/data/repository/diocese_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/paroisse_response.dart';
+import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin_response.dart';
 import 'package:oremusapp/main.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -17,7 +18,7 @@ class DioceseController extends GetxController {
     required this.dioceseRepository,
   });
 
-  var userConnection = SigninResponse().obs;
+  var userConnection = Signin().obs;
   RxList<ContentPlace> dioceses = RxList<ContentPlace>([]);
   var unlockBackButton = true.obs;
   var isDataProcessing = false.obs;
@@ -44,8 +45,8 @@ class DioceseController extends GetxController {
 
   getUserInfo() {
     var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
-    SigninResponse userConnected =
-    SigninResponse.fromJson(jsonDecode(userInfo));
+    Signin userConnected =
+    Signin.fromJson(jsonDecode(userInfo));
     userConnection.value = userConnected;
   }
 

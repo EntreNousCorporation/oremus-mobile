@@ -32,32 +32,32 @@ class CustomHomeScreen extends StatelessWidget {
           switch (position) {
             case AppConstants.HOME:
               logic.title.value = 'Oremus';
-              screenCurrent = ParoisseScreen();
+              screenCurrent = const ParoisseScreen();
               //screenCurrent = HomeScreen();
               break;
             case AppConstants.PROFILE:
               logic.title.value = logic.menus[position].libelle ?? 'Mon Profil';
-              screenCurrent = ProfileScreen();
+              screenCurrent = const ProfileScreen();
               break;
             case AppConstants.SHARE_APP:
               logic.title.value = logic.menus[position].libelle ?? 'Partager l\'application';
-              screenCurrent = ShareScreen();
+              screenCurrent = const ShareScreen();
               break;
             case AppConstants.PROMO:
               logic.title.value = logic.menus[position].libelle ?? 'Codes promo';
-              screenCurrent = PromoScreen();
+              screenCurrent = const PromoScreen();
               break;
             case AppConstants.FAQ:
               logic.title.value = logic.menus[position].libelle ?? 'F.A.Q';
-              screenCurrent = FaqScreen();
+              screenCurrent = const FaqScreen();
               break;
             case AppConstants.CONTACTS:
               logic.title.value = logic.menus[position].libelle ?? 'Contacts';
-              screenCurrent = ContactScreen();
+              screenCurrent = const ContactScreen();
               break;
             case AppConstants.ABOUT:
               logic.title.value = logic.menus[position].libelle ?? 'A propos';
-              screenCurrent = AboutScreen();
+              screenCurrent = const AboutScreen();
               break;
           }
           return Container(
@@ -69,7 +69,8 @@ class CustomHomeScreen extends StatelessWidget {
                   child: Scaffold(
                     resizeToAvoidBottomInset: false,
                     appBar: AppBar(
-                      elevation: 4,
+                      elevation: 10,
+                      shadowColor: colorGrey2.withOpacity(0.8),
                       backgroundColor: colorGreen,
                       centerTitle: true,
                       leading: IconButton(
@@ -78,6 +79,18 @@ class CustomHomeScreen extends StatelessWidget {
                           controller.toggle();
                         },
                       ),
+                      actions: [
+                        Visibility(
+                          visible: logic.menus[logic.selectedIndex.value].code == 'profil',
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: const Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Icon(Icons.edit_rounded),
+                            ),
+                          ),
+                        ),
+                      ],
                       title: Text(
                         logic.title.value,
                         style: TextStyles

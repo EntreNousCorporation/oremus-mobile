@@ -5,12 +5,13 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/home/data/model/type_menu.dart';
+import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin_response.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main.dart';
 
 class HomeController extends GetxController {
-  var userConnection = SigninResponse().obs;
+  var userConnection = Signin().obs;
 
   var unlockBackButton = true.obs;
 
@@ -44,7 +45,7 @@ class HomeController extends GetxController {
   getUserInfo() {
     var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
     if (userInfo != null) {
-      userConnection.value = SigninResponse.fromJson(json.decode(userInfo));
+      userConnection.value = Signin.fromJson(json.decode(userInfo));
     }
   }
 

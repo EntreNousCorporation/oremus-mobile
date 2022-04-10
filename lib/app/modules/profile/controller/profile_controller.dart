@@ -1,0 +1,97 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:oremusapp/app/commons/components/dialogs.dart';
+import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/modules/profile/data/model/profile.dart';
+import 'package:oremusapp/app/modules/profile/data/repository/profile_repository.dart';
+import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
+import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:oremusapp/main.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+class ProfileController extends GetxController {
+  final ProfileRepository profileRepository;
+
+  ProfileController({
+    required this.profileRepository,
+  });
+
+  var userConnection = Signin().obs;
+  var isDataProcessing = false.obs;
+  var hasData = false.obs;
+  var userInfo = Profile().obs;
+
+  var refreshController = RefreshController();
+
+  late TextEditingController firstnameController;
+  late TextEditingController lastnameController;
+  late TextEditingController phoneController;
+  late TextEditingController emailController;
+
+  @override
+  void onInit() {
+    getUserInfo();
+    super.onInit();
+  }
+
+  @override
+  void onReady() {
+    getProfile();
+    super.onReady();
+  }
+
+  updateUI(Profile userInfo) {
+    firstnameController = TextEditingController(text: userInfo.firstname);
+    lastnameController = TextEditingController(text: userInfo.lastname);
+    phoneController = TextEditingController(text: userInfo.phone);
+    emailController = TextEditingController(text: userInfo.email);
+  }
+
+  getProfile() {
+    isDataProcessing(true);
+
+    log('request getProfile');
+
+    profileRepository.getProfile(userConnection.value.id ?? '').then((value) {
+      if (refreshController.isRefresh) {
+        refreshController.refreshCompleted();
+      }
+      isDataProcessing(false);
+      hasData(true);
+      userInfo.value = value;
+      updateUI(userInfo.value);
+    }, onError: (error) {
+      if (refreshController.isRefresh) {
+        refreshController.refreshCompleted();
+      }
+      isDataProcessing(false);
+      hasData(false);
+      if (error.toString().contains('401')) {
+        showCustomDialog(
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      }
+      debugPrint("error => ${error.toString()}");
+    });
+  }
+
+  doLogout() {
+    encryptedBox.put(AppConstants.USER_LOG_INFOS, null);
+    Get.deleteAll();
+    Get.offAllNamed(Routes.SIGNIN);
+  }
+
+  getUserInfo() {
+    var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
+    if (userInfo != null) {
+      Signin userConnected = Signin.fromJson(jsonDecode(userInfo));
+      userConnection.value = userConnected;
+    }
+  }
+}

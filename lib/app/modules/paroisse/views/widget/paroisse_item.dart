@@ -98,48 +98,51 @@ class ParoisseItem extends StatelessWidget {
                   ),
                 ),
                 Separators.minimunVertical(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        '${paroisse.diocese?.name}',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
-                        style: TextStyles.montserratBold(
-                            textSize: TextSizes.twelve, textColor: colorBlack),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          '${paroisse.diocese?.name}',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: true,
+                          style: TextStyles.montserratBold(
+                              textSize: TextSizes.twelve, textColor: colorBlack),
+                        ),
                       ),
-                    ),
-                    Separators.minimunHorizontal(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(3.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3),
-                            color: colorGreen,
+                      Separators.minimunHorizontal(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(3.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3),
+                              color: colorGreen,
+                            ),
+                            child: Text(
+                              'Informations',
+                              style: TextStyles.montserratBold(
+                                  textSize: TextSizes.eleven,
+                                  textColor: colorWhite),
+                            ),
                           ),
-                          child: Text(
-                            'Informations',
-                            style: TextStyles.montserratBold(
-                                textSize: TextSizes.eleven,
-                                textColor: colorWhite),
+                          const SizedBox(
+                            width: 8,
                           ),
-                        ),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        const Icon(
-                          Icons.favorite_border,
-                          size: 18,
-                        ),
-                      ],
-                    ),
-                  ],
+                          const Icon(
+                            Icons.favorite_border,
+                            size: 18,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

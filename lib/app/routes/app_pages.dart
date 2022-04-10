@@ -14,6 +14,7 @@ import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_binding.dar
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_detail_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu_detail_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu_screen.dart';
+import 'package:oremusapp/app/modules/profile/binding/profile_binding.dart';
 import 'package:oremusapp/app/modules/service/binding/service_binding.dart';
 import 'package:oremusapp/app/modules/signin/binding/signin_binding.dart';
 import 'package:oremusapp/app/modules/signin/views/signin_screen.dart';
@@ -38,6 +39,7 @@ class AppPages {
       bindings: [
         CustomHomeBinding(),
         ParoisseBinding(),
+        ProfileBinding(),
       ],
       transition: Transition.fadeIn,
     ),
