@@ -76,9 +76,7 @@ class ParoisseScreen extends StatelessWidget {
                                   ),
                                   Separators.normalHorizontal(),
                                   GestureDetector(
-                                    onTap: () {
-                                      Get.back();
-                                    },
+                                    onTap: () {},
                                     child: Material(
                                       borderRadius:
                                       BorderRadius.circular(10.0),

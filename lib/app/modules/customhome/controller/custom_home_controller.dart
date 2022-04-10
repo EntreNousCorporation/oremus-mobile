@@ -5,12 +5,12 @@ import 'package:get/get.dart';
 import 'package:hidden_drawer_menu/controllers/simple_hidden_drawer_controller.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/modules/customhome/data/model/menu_item.dart';
-import 'package:oremusapp/app/modules/signin/data/model/signin_response.dart';
+import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main.dart';
 
 class CustomHomeController extends GetxController {
-  var userConnection = SigninResponse().obs;
+  var userConnection = Signin().obs;
 
   RxList<MenuItem> menus = RxList<MenuItem>([]);
   late SimpleHiddenDrawerController drawerController;
@@ -27,7 +27,7 @@ class CustomHomeController extends GetxController {
   getUserInfo() {
     var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
     if (userInfo != null) {
-      userConnection.value = SigninResponse.fromJson(json.decode(userInfo));
+      userConnection.value = Signin.fromJson(json.decode(userInfo));
     }
   }
 
@@ -39,7 +39,7 @@ class CustomHomeController extends GetxController {
         icon: 'assets/images/icon_nav_home.svg',
       ),
       MenuItem(
-        code: '',
+        code: 'profil',
         libelle: 'Mon profil',
         icon: 'assets/images/icon_user.svg',
       ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/theme/app_dimension.dart';
+import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 
 Future showCustomDialog(BuildContext context,
     {String title = 'INFORMATION',
@@ -19,7 +21,7 @@ Future showCustomDialog(BuildContext context,
           backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             side: const BorderSide(color: Colors.white70, width: 1),
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(10),
           ),
           title: Row(
             children: [
@@ -34,14 +36,18 @@ Future showCustomDialog(BuildContext context,
               Expanded(
                 child: Text(
                   type == 'info' ? title : 'ALERTE',
-                  style: const TextStyle(fontFamily: 'avenir_demi_bold'),
+                  style: TextStyles.montserratSemiBold(
+                      textSize: TextSizes.sixteen,
+                      textColor: colorBlack),
                 ),
               )
             ],
           ),
           content: Text(
             message,
-            style: const TextStyle(fontFamily: 'avenir_demi_bold'),
+            style: TextStyles.montserratSemiBold(
+              textSize: TextSizes.fourteen,
+              textColor: colorBlack),
           ),
           actions: <Widget>[
             TextButton(
@@ -51,10 +57,9 @@ Future showCustomDialog(BuildContext context,
                 },
                 child: Text(
                   positiveLabel.toUpperCase(),
-                  style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green),
+                  style: TextStyles.montserratSemiBold(
+                      textSize: TextSizes.sixteen,
+                      textColor: colorBlack),
                 )),
             Visibility(
               visible: negativeLabel != '',
@@ -65,10 +70,9 @@ Future showCustomDialog(BuildContext context,
                   },
                   child: Text(
                     negativeLabel,
-                    style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red),
+                    style: TextStyles.montserratSemiBold(
+                        textSize: TextSizes.sixteen,
+                        textColor: colorBlack),
                   )),
             ),
           ],
@@ -102,6 +106,9 @@ Future showLoadingDialog(BuildContext context,
                   ),
                   Text(
                     message,
+                    style: TextStyles.montserratSemiBold(
+                        textSize: TextSizes.fourteen,
+                        textColor: colorBlack),
                   ),
                 ],
               )
@@ -122,37 +129,37 @@ showExitDialog(BuildContext context,
         return AlertDialog(
           shape: RoundedRectangleBorder(
             side: const BorderSide(color: Colors.white70, width: 1),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(10),
           ),
           title: Text(
             title,
-            style: const TextStyle(fontFamily: 'avenir_demi_bold'),
+            style: TextStyles.montserratSemiBold(
+                textSize: TextSizes.fourteen,
+                textColor: colorBlack),
           ),
           content: Text(
             message,
-            style: const TextStyle(fontFamily: 'avenir_regular', fontSize: 18),
+            style: TextStyles.montserratRegular(
+                textSize: TextSizes.eighteen,
+                textColor: colorBlack),
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.pop(context, true),
               child: Text(
                 positiveText,
-                style: const TextStyle(
-                  color: colorGreen,
-                  fontSize: 16,
-                  fontFamily: 'avenir_bold',
-                ),
+                style: TextStyles.montserratSemiBold(
+                    textSize: TextSizes.sixteen,
+                    textColor: colorGreen),
               ),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text(
+              child: Text(
                 'NON',
-                style: TextStyle(
-                  color: colorBlack,
-                  fontSize: 16,
-                  fontFamily: 'avenir_bold',
-                ),
+                style: TextStyles.montserratBold(
+                    textSize: TextSizes.sixteen,
+                    textColor: colorBlack),
               ),
             ),
           ],
@@ -171,26 +178,28 @@ showNormalDialog(BuildContext context,
         return AlertDialog(
           shape: RoundedRectangleBorder(
             side: const BorderSide(color: Colors.white70, width: 1),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(10),
           ),
           title: Text(
             title,
-            style: const TextStyle(fontFamily: 'avenir_demi_bold'),
+            style: TextStyles.montserratSemiBold(
+                textSize: TextSizes.fourteen,
+                textColor: colorGreen),
           ),
           content: Text(
             message,
-            style: const TextStyle(fontFamily: 'avenir_regular', fontSize: 18),
+            style: TextStyles.montserratRegular(
+                textSize: TextSizes.eighteen,
+                textColor: colorGreen),
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text(
+              child: Text(
                 'OK',
-                style: TextStyle(
-                  color: colorBlack,
-                  fontSize: 16,
-                  fontFamily: 'avenir_bold',
-                ),
+                style: TextStyles.montserratBold(
+                    textSize: TextSizes.sixteen,
+                    textColor: colorBlack),
               ),
             ),
           ],
