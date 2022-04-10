@@ -70,6 +70,7 @@ class ParoisseController extends GetxController {
 
   doLogout() {
     encryptedBox.put(AppConstants.USER_LOG_INFOS, null);
+    Get.deleteAll();
     Get.offAllNamed(Routes.SIGNIN);
   }
 
