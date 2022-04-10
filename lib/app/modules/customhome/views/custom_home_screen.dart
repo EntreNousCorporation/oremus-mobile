@@ -12,6 +12,7 @@ import 'package:oremusapp/app/modules/customhome/controller/custom_home_controll
 import 'package:oremusapp/app/modules/customhome/views/widget/drawer_menu.dart';
 import 'package:oremusapp/app/modules/faq/views/faq_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_screen.dart';
+import 'package:oremusapp/app/modules/profile/controller/profile_controller.dart';
 import 'package:oremusapp/app/modules/profile/views/profile_screen.dart';
 import 'package:oremusapp/app/modules/promos/views/promo_screen.dart';
 import 'package:oremusapp/app/modules/share/views/share_screen.dart';
@@ -40,11 +41,13 @@ class CustomHomeScreen extends StatelessWidget {
               screenCurrent = const ProfileScreen();
               break;
             case AppConstants.SHARE_APP:
-              logic.title.value = logic.menus[position].libelle ?? 'Partager l\'application';
+              logic.title.value =
+                  logic.menus[position].libelle ?? 'Partager l\'application';
               screenCurrent = const ShareScreen();
               break;
             case AppConstants.PROMO:
-              logic.title.value = logic.menus[position].libelle ?? 'Codes promo';
+              logic.title.value =
+                  logic.menus[position].libelle ?? 'Codes promo';
               screenCurrent = const PromoScreen();
               break;
             case AppConstants.FAQ:
@@ -81,14 +84,19 @@ class CustomHomeScreen extends StatelessWidget {
                       ),
                       actions: [
                         Visibility(
-                          visible: logic.menus[logic.selectedIndex.value].code == 'profil',
-                          child: GestureDetector(
-                            onTap: () {},
-                            child: const Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Icon(Icons.edit_rounded),
-                            ),
-                          ),
+                          visible: logic.menus[logic.selectedIndex.value]
+                              .code == 'profil',
+                          child: GetBuilder<ProfileController>(builder: (logic) {
+                            return GestureDetector(
+                              onTap: () {
+                                logic.goToEditProfile();
+                              },
+                              child: const Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: Icon(Icons.edit_rounded),
+                              ),
+                            );
+                          }),
                         ),
                       ],
                       title: Text(

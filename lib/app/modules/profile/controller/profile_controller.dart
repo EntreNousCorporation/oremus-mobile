@@ -7,6 +7,7 @@ import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/modules/profile/data/model/profile.dart';
 import 'package:oremusapp/app/modules/profile/data/repository/profile_repository.dart';
+import 'package:oremusapp/app/modules/profile/views/edit_profile_screen.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main.dart';
@@ -62,6 +63,7 @@ class ProfileController extends GetxController {
       isDataProcessing(false);
       hasData(true);
       userInfo.value = value;
+      encryptedBox.put(AppConstants.USER_INFOS, jsonEncode(userInfo.value.toJson()));
       updateUI(userInfo.value);
     }, onError: (error) {
       if (refreshController.isRefresh) {
@@ -87,6 +89,7 @@ class ProfileController extends GetxController {
 
   doLogout() {
     encryptedBox.put(AppConstants.USER_LOG_INFOS, null);
+    encryptedBox.put(AppConstants.USER_INFOS, null);
     Get.deleteAll();
     Get.offAllNamed(Routes.SIGNIN);
   }
@@ -96,6 +99,16 @@ class ProfileController extends GetxController {
     if (userInfo != null) {
       Signin userConnected = Signin.fromJson(jsonDecode(userInfo));
       userConnection.value = userConnected;
+    }
+  }
+
+  //EDIT PROFIL SECTION
+  goToEditProfile() async {
+    await Get.toNamed(Routes.EDIT_PROFILE, arguments: jsonEncode(userInfo.value));
+    var userInfos = encryptedBox.get(AppConstants.USER_INFOS);
+    if (userInfos != null) {
+      userInfo.value = Profile.fromJson(jsonDecode(userInfos));
+      updateUI(userInfo.value);
     }
   }
 }

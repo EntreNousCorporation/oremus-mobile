@@ -23,6 +23,8 @@ class EditPasswordScreen extends StatelessWidget {
             backgroundColor: colorWhite,
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
+              elevation: 10,
+              shadowColor: colorGrey2.withOpacity(0.8),
               leading: GestureDetector(
                 onTap: () {
                   Get.back();

@@ -16,7 +16,9 @@ import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_binding.dar
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_detail_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu_detail_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu_screen.dart';
+import 'package:oremusapp/app/modules/profile/binding/edit_profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/binding/profile_binding.dart';
+import 'package:oremusapp/app/modules/profile/views/edit_profile_screen.dart';
 import 'package:oremusapp/app/modules/service/binding/service_binding.dart';
 import 'package:oremusapp/app/modules/signin/binding/signin_binding.dart';
 import 'package:oremusapp/app/modules/signin/views/signin_screen.dart';
@@ -95,6 +97,12 @@ class AppPages {
       name: Routes.EDIT_PASSWORD,
       page: () => const EditPasswordScreen(),
       binding: EditPasswordBinding(),
+      transition: Transition.circularReveal,
+    ),
+    GetPage(
+      name: Routes.EDIT_PROFILE,
+      page: () => const EditProfileScreen(),
+      binding: EditProfileBinding(),
       transition: Transition.circularReveal,
     ),
   ];
