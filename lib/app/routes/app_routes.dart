@@ -17,4 +17,5 @@ abstract class Routes {
 
   //PROFILE
   static const EDIT_PASSWORD = '/edit-password';
+  static const EDIT_PROFILE = '/edit-profile';
 }

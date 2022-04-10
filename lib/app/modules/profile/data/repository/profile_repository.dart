@@ -49,4 +49,22 @@ class ProfileRepository implements IProfileRepository {
       return Profile.fromJson(json.decode(response.bodyString.toString()));
     }
   }
+
+  @override
+  Future<Profile> updateProfile(String userId, Signin request) async {
+    Response response = await _apiClient.doRequest(
+      endpoint: "/users/fo-agents/$userId",
+      method: HttpMethod.put,
+      body: jsonEncode(request.toJson()),
+      useBearer: true,
+    );
+    final String resp = json.encode(response.bodyString.toString());
+    log('resp => ${response.statusCode}');
+
+    if (response.statusCode != 200) {
+      throw Exception(resp);
+    } else {
+      return Profile.fromJson(json.decode(response.bodyString.toString()));
+    }
+  }
 }
