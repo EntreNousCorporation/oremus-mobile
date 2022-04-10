@@ -6,6 +6,8 @@ class Signin {
   //LOGIN
   String? username;
   String? password;
+  String? oldPassword;
+  String? newPassword;
 
   //SIGNUP
   String? phone;
@@ -18,6 +20,8 @@ class Signin {
     this.username,
     this.profile,
     this.password,
+    this.oldPassword,
+    this.newPassword,
     this.phone,
     this.firstname,
     this.lastname,
@@ -29,6 +33,8 @@ class Signin {
     profile: json["profile"],
     username: json["username"],
     password: json["password"],
+    oldPassword: json["oldPassword"],
+    newPassword: json["newPassword"],
     phone: json["phone"],
     firstname: json["firstname"],
     lastname: json["lastname"],
@@ -40,6 +46,8 @@ class Signin {
     "profile": profile,
     "username": username,
     "password": password,
+    "oldPassword": oldPassword,
+    "newPassword": newPassword,
     "phone": phone,
     "firstname": firstname,
     "lastname": lastname,

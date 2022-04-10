@@ -81,6 +81,10 @@ class ProfileController extends GetxController {
     });
   }
 
+  goToEditPassword() {
+    Get.toNamed(Routes.EDIT_PASSWORD);
+  }
+
   doLogout() {
     encryptedBox.put(AppConstants.USER_LOG_INFOS, null);
     Get.deleteAll();

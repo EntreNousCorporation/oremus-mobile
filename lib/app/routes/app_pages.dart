@@ -4,6 +4,8 @@ import 'package:oremusapp/app/modules/customhome/binding/custom_home_binding.dar
 import 'package:oremusapp/app/modules/customhome/views/custom_home_screen.dart';
 import 'package:oremusapp/app/modules/diocese/binding/diocese_binding.dart';
 import 'package:oremusapp/app/modules/diocese/views/diocese_screen.dart';
+import 'package:oremusapp/app/modules/editpassword/binding/edit_password_binding.dart';
+import 'package:oremusapp/app/modules/editpassword/views/edit_password_screen.dart';
 import 'package:oremusapp/app/modules/formation/binding/formation_binding.dart';
 import 'package:oremusapp/app/modules/home/binding/home_binding.dart';
 import 'package:oremusapp/app/modules/home/views/home_screen.dart';
@@ -87,6 +89,12 @@ class AppPages {
       name: Routes.PAROISSE_MENU_DETAIL,
       page: () => const ParoisseMenuDetailScreen(),
       binding: ParoisseMenuDetailBinding(),
+      transition: Transition.circularReveal,
+    ),
+    GetPage(
+      name: Routes.EDIT_PASSWORD,
+      page: () => const EditPasswordScreen(),
+      binding: EditPasswordBinding(),
       transition: Transition.circularReveal,
     ),
   ];

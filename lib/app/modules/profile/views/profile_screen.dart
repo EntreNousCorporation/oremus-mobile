@@ -9,7 +9,9 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/profile/controller/profile_controller.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:oremusapp/app/commons/utils.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -134,7 +136,7 @@ class ProfileScreen extends StatelessWidget {
                                                 ),
                                                 Separators.minimunVertical(),
                                                 Text(
-                                                  '${_.userInfo.value.phone}',
+                                                  '${_.userInfo.value.phone?.phoneFormat()}',
                                                   textAlign: TextAlign.center,
                                                   style: TextStyles
                                                       .montserratRegular(
@@ -145,90 +147,108 @@ class ProfileScreen extends StatelessWidget {
                                                 ),
                                                 Separators.maximumVertical(),
                                                 Separators.maximumVertical(),
-                                                Material(
-                                                  elevation: 6,
-                                                  color: colorGrey2,
-                                                  shadowColor: colorGrey2
-                                                      .withOpacity(0.5),
-                                                  borderRadius:
-                                                      BorderRadius.circular(50),
-                                                  child: SizedBox(
-                                                    height: 50,
-                                                    child: Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: Row(
-                                                            children: [
-                                                              Separators
-                                                                  .normalHorizontal(),
-                                                              const Icon(Icons
-                                                                  .notifications),
-                                                              Separators
-                                                                  .minimunHorizontal(),
-                                                              Text(
-                                                                'Notifications',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style: TextStyles.montserratRegular(
-                                                                    textSize:
-                                                                        TextSizes
-                                                                            .fourteen,
-                                                                    textColor:
-                                                                        colorBlack),
-                                                              ),
-                                                            ],
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    showSimpleNotification(
+                                                      const Center(
+                                                        child: Text('Bientôt disponible'),
+                                                      ),
+                                                      background: Colors.red,
+                                                    );
+                                                  },
+                                                  child: Material(
+                                                    elevation: 6,
+                                                    color: colorGrey2,
+                                                    shadowColor: colorGrey2
+                                                        .withOpacity(0.5),
+                                                    borderRadius:
+                                                        BorderRadius.circular(50),
+                                                    child: SizedBox(
+                                                      height: 50,
+                                                      child: Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Row(
+                                                              children: [
+                                                                Separators
+                                                                    .normalHorizontal(),
+                                                                const Icon(Icons
+                                                                    .notifications),
+                                                                Separators
+                                                                    .minimunHorizontal(),
+                                                                Text(
+                                                                  'Notifications',
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
+                                                                  style: TextStyles.montserratRegular(
+                                                                      textSize:
+                                                                          TextSizes
+                                                                              .fourteen,
+                                                                      textColor:
+                                                                          colorBlack),
+                                                                ),
+                                                              ],
+                                                            ),
                                                           ),
-                                                        ),
-                                                        const Icon(Icons
-                                                            .arrow_forward_ios_rounded),
-                                                        Separators
-                                                            .normalHorizontal(),
-                                                      ],
+                                                          const Icon(Icons
+                                                              .arrow_forward_ios_rounded),
+                                                          Separators
+                                                              .normalHorizontal(),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
                                                 Separators.normalVertical(),
-                                                Material(
-                                                  elevation: 6,
-                                                  color: colorGrey2,
-                                                  shadowColor: colorGrey2
-                                                      .withOpacity(0.5),
-                                                  borderRadius:
-                                                      BorderRadius.circular(50),
-                                                  child: SizedBox(
-                                                    height: 50,
-                                                    child: Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: Row(
-                                                            children: [
-                                                              Separators
-                                                                  .normalHorizontal(),
-                                                              const Icon(
-                                                                  Icons.lock),
-                                                              Separators
-                                                                  .minimunHorizontal(),
-                                                              Text(
-                                                                'Modifier votre mot de passe',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style: TextStyles.montserratRegular(
-                                                                    textSize:
-                                                                        TextSizes
-                                                                            .fourteen,
-                                                                    textColor:
-                                                                        colorBlack),
-                                                              ),
-                                                            ],
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    _.goToEditPassword();
+                                                  },
+                                                  child: Material(
+                                                    elevation: 6,
+                                                    color: colorGrey2,
+                                                    shadowColor: colorGrey2
+                                                        .withOpacity(0.5),
+                                                    borderRadius:
+                                                        BorderRadius.circular(50),
+                                                    child: SizedBox(
+                                                      height: 50,
+                                                      child: Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Row(
+                                                              children: [
+                                                                Separators
+                                                                    .normalHorizontal(),
+                                                                const Icon(
+                                                                    Icons.lock),
+                                                                Separators
+                                                                    .minimunHorizontal(),
+                                                                Hero(
+                                                                  tag: 'update-password',
+                                                                  child: Text(
+                                                                    'Modifier votre mot de passe',
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                    style: TextStyles.montserratRegular(
+                                                                        textSize:
+                                                                            TextSizes
+                                                                                .fourteen,
+                                                                        textColor:
+                                                                            colorBlack),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
                                                           ),
-                                                        ),
-                                                        const Icon(Icons
-                                                            .arrow_forward_ios_rounded),
-                                                        Separators
-                                                            .normalHorizontal(),
-                                                      ],
+                                                          const Icon(Icons
+                                                              .arrow_forward_ios_rounded),
+                                                          Separators
+                                                              .normalHorizontal(),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
