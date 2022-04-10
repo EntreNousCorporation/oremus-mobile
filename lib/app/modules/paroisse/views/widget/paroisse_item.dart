@@ -24,8 +24,8 @@ class ParoisseItem extends StatelessWidget {
       builder: (logic) {
         return Padding(
           padding: const EdgeInsets.only(
-            top: 8.0,
-            bottom: 32.0,
+            top: 16.0,
+            bottom: 24.0,
           ),
           child: Material(
             borderRadius: BorderRadius.circular(10.0),

@@ -3,6 +3,7 @@ import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 
 class NotFoundScreen extends StatelessWidget {
@@ -34,14 +35,15 @@ class NotFoundScreen extends StatelessWidget {
             child: Container(
               color: colorWhite,
               child: Lottie.asset(lottieIcon,
-                  repeat: repeated, width: Get.width / 2),
+                  repeat: repeated, width: Get.width / 2.5),
             ),
           ),
           Separators.normalVertical(),
           Text(
             message,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 18, fontFamily: 'montserrat_regular'),
+            style: TextStyles.montserratMedium(
+                textSize: TextSizes.eighteen, textColor: colorBlack),
           ),
         ],
       ),

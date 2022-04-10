@@ -5,21 +5,23 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
+import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/home/views/widget/menu_grid_item.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu_controller.dart';
+import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu_detail_controller.dart';
 
-class ParoisseMenuScreen extends StatelessWidget {
-  const ParoisseMenuScreen({Key? key}) : super(key: key);
+class ParoisseMenuDetailScreen extends StatelessWidget {
+  const ParoisseMenuDetailScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: colorGreen,
       child: SafeArea(
-        child: GetBuilder<ParoisseMenuController>(
+        child: GetBuilder<ParoisseMenuDetailController>(
             initState: (state) {},
             builder: (_) {
               return KeyboardDismisser(
@@ -38,10 +40,7 @@ class ParoisseMenuScreen extends StatelessWidget {
                           onTap: () {
                             Get.back();
                           },
-                          child: const Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Icon(Icons.arrow_back_ios_rounded),
-                          ),
+                          child: const Icon(Icons.arrow_back_ios_rounded),
                         ),
                         actions: [
                           GestureDetector(
@@ -63,7 +62,8 @@ class ParoisseMenuScreen extends StatelessWidget {
                                   textSize: TextSizes.eighteen,
                                   textColor: colorWhite),
                             ),
-                            background: (_.paroisseSelected.value.coverImage?.link?.isNotEmpty ==
+                            background: (_.paroisseSelected.value.coverImage
+                                        ?.link?.isNotEmpty ==
                                     true)
                                 ? Stack(
                                     children: [
@@ -72,7 +72,9 @@ class ParoisseMenuScreen extends StatelessWidget {
                                         child: CachedNetworkImage(
                                           width: Get.width,
                                           height: Get.width,
-                                          imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                          imageUrl: _.paroisseSelected.value
+                                                  .coverImage?.link ??
+                                              '',
                                           fit: BoxFit.cover,
                                           placeholder: (context, url) =>
                                               LottieLoadingView(
@@ -85,7 +87,9 @@ class ParoisseMenuScreen extends StatelessWidget {
                                         height: Get.width,
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
-                                          color: Colors.black54.withOpacity(0.3),),
+                                          color:
+                                              Colors.black54.withOpacity(0.3),
+                                        ),
                                       ),
                                     ],
                                   )
@@ -103,27 +107,38 @@ class ParoisseMenuScreen extends StatelessWidget {
                                         height: Get.width,
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
-                                            color: Colors.black54.withOpacity(0.3),),
+                                          color:
+                                              Colors.black54.withOpacity(0.3),
+                                        ),
                                       ),
                                     ],
                                   )),
                       ),
-                      const SliverPadding(padding: EdgeInsets.symmetric(vertical: 8)),
-                      SliverGrid(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          childAspectRatio: 3 / 2,
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 0.0,
-                          mainAxisSpacing: 0.0,
+                      const SliverPadding(
+                          padding: EdgeInsets.symmetric(vertical: 8)),
+                      SliverFillRemaining(
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Hero(
+                                tag: _.code.value,
+                                child: Text(
+                                  _.getTypeTitle(_.code.value),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyles.montserratBold(
+                                    textSize: TextSizes.eighteen,
+                                    textColor: colorGreen,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                  child: NotFoundScreen(
+                                message: '${_.getTypeMessage(_.code.value)}',
+                              )),
+                            ],
+                          ),
                         ),
-                        delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                var menu = _.menus[index];
-                            return MenuGridItem(item: menu);
-                          },
-                          childCount: _.menus.length,
-                        ),
-                      ),
+                      )
                     ],
                   ),
                 ),

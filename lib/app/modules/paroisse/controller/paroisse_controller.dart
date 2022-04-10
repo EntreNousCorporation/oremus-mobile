@@ -5,10 +5,12 @@ import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/paroisse_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin_response.dart';
+import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -62,6 +64,13 @@ class ParoisseController extends GetxController {
     }, onError: (error) {
       isDataProcessing(false);
       hasData(false);
+      if (error.toString().contains('401')) {
+        showCustomDialog(
+            Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          Get.offAndToNamed(Routes.SIGNIN);
+        });
+      }
       debugPrint("error => ${error.toString()}");
     });
   }

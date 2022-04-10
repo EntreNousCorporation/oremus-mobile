@@ -60,13 +60,17 @@ class _MenuGridItemState extends State<MenuGridItem> {
               Separators.minimunVertical(),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(
-                  item.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyles.montserratBold(
-                    textSize: TextSizes.thirteen,
-                    textColor: _isPressed ? colorWhite : colorBlack,
+                child: Hero(
+                  tag: item.code,
+                  child: Text(
+                    item.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: TextStyles.montserratBold(
+                      textSize: TextSizes.thirteen,
+                      textColor: _isPressed ? colorWhite : colorBlack,
+                    ),
                   ),
                 ),
               ),
