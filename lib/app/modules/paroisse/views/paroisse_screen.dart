@@ -74,22 +74,26 @@ class ParoisseScreen extends StatelessWidget {
                                       child: const SearchWidget(),
                                     ),
                                   ),
-                                  Separators.normalHorizontal(),
-                                  GestureDetector(
-                                    onTap: () {},
-                                    child: Material(
-                                      borderRadius:
-                                      BorderRadius.circular(10.0),
-                                      elevation: 10,
-                                      color: colorWhite,
-                                      shadowColor:
-                                      colorGrey2.withOpacity(0.5),
-                                      child: SizedBox(
-                                        height: (Get.width / 9),
-                                        width: (Get.width / 9),
-                                        child: const Icon(
-                                          Icons.filter_list_rounded,
-                                          color: colorPurpleLight,
+                                  Visibility(
+                                    visible: false,
+                                    child: Separators.normalHorizontal(),
+                                  ),
+                                  Visibility(
+                                    visible: false,
+                                    child: GestureDetector(
+                                      onTap: () {},
+                                      child: Material(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        elevation: 10,
+                                        color: colorWhite,
+                                        shadowColor: colorGrey2.withOpacity(0.5),
+                                        child: SizedBox(
+                                          height: (Get.width / 9),
+                                          width: (Get.width / 9),
+                                          child: const Icon(
+                                            Icons.filter_list_rounded,
+                                            color: colorPurpleLight,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -125,10 +129,12 @@ class ParoisseScreen extends StatelessWidget {
                                                   child: ListView.builder(
                                                       //physics: const NeverScrollableScrollPhysics(),
                                                       shrinkWrap: false,
-                                                      itemCount: _.paroisses.length,
+                                                      itemCount:
+                                                          _.paroisses.length,
                                                       itemBuilder:
                                                           (builder, index) {
-                                                        var paroisse = _.paroisses[index];
+                                                        var paroisse =
+                                                            _.paroisses[index];
                                                         return ParoisseItem(
                                                           paroisse: paroisse,
                                                           index: index,

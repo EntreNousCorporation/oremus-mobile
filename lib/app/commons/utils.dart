@@ -34,7 +34,7 @@ extension StringExtension on String {
 
     value = replaceAll(" ", "");
     try{
-      value = formatter.format(int.parse(value)).replaceAll(',', ' '); // tu as été smart, c'est bien 🙂
+      value = formatter.format(int.parse(value)).replaceAll(',', '  '); // tu as été smart, c'est bien 🙂
     } catch(error){
       value = "";
     }

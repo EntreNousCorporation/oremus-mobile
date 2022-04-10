@@ -26,6 +26,11 @@ class ProfileController extends GetxController {
 
   var refreshController = RefreshController();
 
+  late TextEditingController firstnameController;
+  late TextEditingController lastnameController;
+  late TextEditingController phoneController;
+  late TextEditingController emailController;
+
   @override
   void onInit() {
     getUserInfo();
@@ -36,6 +41,13 @@ class ProfileController extends GetxController {
   void onReady() {
     getProfile();
     super.onReady();
+  }
+
+  updateUI(Profile userInfo) {
+    firstnameController = TextEditingController(text: userInfo.firstname);
+    lastnameController = TextEditingController(text: userInfo.lastname);
+    phoneController = TextEditingController(text: userInfo.phone);
+    emailController = TextEditingController(text: userInfo.email);
   }
 
   getProfile() {
@@ -50,6 +62,7 @@ class ProfileController extends GetxController {
       isDataProcessing(false);
       hasData(true);
       userInfo.value = value;
+      updateUI(userInfo.value);
     }, onError: (error) {
       if (refreshController.isRefresh) {
         refreshController.refreshCompleted();
@@ -66,6 +79,10 @@ class ProfileController extends GetxController {
       }
       debugPrint("error => ${error.toString()}");
     });
+  }
+
+  goToEditPassword() {
+    Get.toNamed(Routes.EDIT_PASSWORD);
   }
 
   doLogout() {
