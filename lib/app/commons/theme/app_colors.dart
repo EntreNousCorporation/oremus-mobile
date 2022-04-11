@@ -10,6 +10,7 @@ const Color colorGreyDrawer = Color(0xFFa1a6b0);
 const Color colorRed = Color(0xFFe93322);
 
 const Color colorGreen1 = Color(0xFFe2f7d5);
+const Color colorBrown = Color(0xFF72604A);
 const Color colorBlue2 = Color(0xFF5080ea);
 const Color colorGreen3 = Color(0xFF68D52E);
 const Color colorWhite = Color(0xFFFFFFFF);
@@ -24,7 +25,6 @@ const Color colorBlack1 = Color(0xFF070606);
 const Color colorTurquois = Color(0xFF8caeb4);
 const Color colorBlue = Color(0xFF252424);
 const Color colorBlack = Color(0xFF000000);
-const Color colorBrown = Color(0xFF4D2E13);
 const Color colorGreySeparator = Color(0xFF707070);
 const Color colorGreyHint = Color(0x29292566);
 const Color colorGreyBorder = Color(0x4D2E1322);
