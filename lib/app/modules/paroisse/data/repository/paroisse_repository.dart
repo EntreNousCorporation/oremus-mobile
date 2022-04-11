@@ -31,4 +31,22 @@ class ParoisseRepository implements IParoisseRepository {
       return PlaceResponse.fromJson(json.decode(response.bodyString.toString()));
     }
   }
+
+  @override
+  Future<ContentPlace> getLiturgicalCelebration(int idParoisse) async {
+    Response response = await _apiClient.doRequest(
+      endpoint: "/places-of-worship/$idParoisse/liturgical-celebrations",
+      method: HttpMethod.get,
+      useBearer: true,
+    );
+    final String resp = json.encode(response.bodyString.toString());
+    log('resp => ${response.statusCode}');
+
+    if (response.statusCode != 200) {
+      throw Exception(resp);
+    } else {
+      //log('resp => $resp');
+      return ContentPlace.fromJson(json.decode(response.bodyString.toString()));
+    }
+  }
 }

@@ -1,6 +1,3 @@
-
-import 'dart:ffi';
-
 class PlaceResponse {
   List<ContentPlace>? content;
   Pageable? pageable;
@@ -136,12 +133,14 @@ class ContentPlace {
   String? createdBy;
   String? modifiedBy;
   String? name;
+  String? code;
   String? description;
   TypeContent? type;
   String? leader;
   bool? isArchDiocese;
   Address? address;
   Diocese? diocese;
+  Localisation? localisation;
   CoverImage? coverImage;
 
   ContentPlace({
@@ -151,6 +150,7 @@ class ContentPlace {
     this.createdBy,
     this.modifiedBy,
     this.name,
+    this.code,
     this.description,
     this.type,
     this.leader,
@@ -164,6 +164,7 @@ class ContentPlace {
     createdBy = json['createdBy'];
     modifiedBy = json['modifiedBy'];
     name = json['name'];
+    code = json['code'];
     description = json['description'];
     leader = json['leader'];
     isArchDiocese = json['isArchDiocese'];
@@ -175,6 +176,9 @@ class ContentPlace {
         : null;
     diocese = json['diocese'] != null
         ? Diocese.fromJson(json['diocese'])
+        : null;
+    localisation = json['localisation'] != null
+        ? Localisation.fromJson(json['localisation'])
         : null;
     coverImage = json['coverImage'] != null
         ? CoverImage.fromJson(json['coverImage'])
@@ -189,12 +193,14 @@ class ContentPlace {
     data['createdBy'] = createdBy;
     data['modifiedBy'] = modifiedBy;
     data['name'] = name;
+    data['code'] = code;
     data['description'] = description;
     data['leader'] = leader;
     data['isArchDiocese'] = isArchDiocese;
     data['type'] = type?.toJson();
     data['address'] = address?.toJson();
     data['diocese'] = diocese?.toJson();
+    data['localisation'] = localisation?.toJson();
     data['coverImage'] = coverImage?.toJson();
     return data;
   }
@@ -276,6 +282,10 @@ class Address {
   String? createdBy;
   String? updatedAt;
   String? modifiedBy;
+  String? name;
+  String? municipality;
+  String? city;
+  String? neighbourhood;
 
   Address({
     this.identifier,
@@ -283,6 +293,10 @@ class Address {
     this.createdBy,
     this.updatedAt,
     this.modifiedBy,
+    this.name,
+    this.municipality,
+    this.city,
+    this.neighbourhood,
   });
 
   Address.fromJson(Map<String, dynamic> json) {
@@ -291,6 +305,10 @@ class Address {
     createdBy = json['createdBy'];
     updatedAt = json['updatedAt'];
     modifiedBy = json['modifiedBy'];
+    name = json['name'];
+    municipality = json['municipality'];
+    city = json['city'];
+    neighbourhood = json['neighbourhood'];
   }
 
   Map<String, dynamic> toJson() {
@@ -300,6 +318,10 @@ class Address {
     data['createdBy'] = createdBy;
     data['updatedAt'] = updatedAt;
     data['modifiedBy'] = modifiedBy;
+    data['name'] = name;
+    data['municipality'] = municipality;
+    data['city'] = city;
+    data['neighbourhood'] = neighbourhood;
     return data;
   }
 }
@@ -342,6 +364,48 @@ class Diocese {
     data['modifiedBy'] = modifiedBy;
     data['name'] = name;
     data['isArchDiocese'] = isArchDiocese;
+    return data;
+  }
+}
+
+class Localisation {
+  int? identifier;
+  String? createdAt;
+  String? createdBy;
+  String? updatedAt;
+  String? modifiedBy;
+  dynamic longitude;
+  dynamic latitude;
+
+  Localisation({
+    this.identifier,
+    this.createdAt,
+    this.createdBy,
+    this.updatedAt,
+    this.modifiedBy,
+    this.longitude,
+    this.latitude,
+  });
+
+  Localisation.fromJson(Map<String, dynamic> json) {
+    identifier = json['identifier'];
+    createdAt = json['createdAt'];
+    createdBy = json['createdBy'];
+    updatedAt = json['updatedAt'];
+    modifiedBy = json['modifiedBy'];
+    longitude = json['longitude'];
+    latitude = json['latitude'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['identifier'] = identifier;
+    data['createdAt'] = createdAt;
+    data['createdBy'] = createdBy;
+    data['updatedAt'] = updatedAt;
+    data['modifiedBy'] = modifiedBy;
+    data['longitude'] = longitude;
+    data['latitude'] = latitude;
     return data;
   }
 }
