@@ -1,20 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:carousel_slider/carousel_controller.dart';
-import 'package:carousel_slider/carousel_options.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/home/data/model/type_menu.dart';
-import 'package:oremusapp/app/modules/paroisse/data/model/paroisse.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/paroisse_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
-import 'package:oremusapp/app/modules/signin/data/model/signin_response.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
-import 'package:oremusapp/main.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoisseMenuController extends GetxController {
   final ParoisseRepository paroisseRepository;
@@ -127,5 +119,12 @@ class ParoisseMenuController extends GetxController {
         },
       ),
     ];
+  }
+
+  goToMap() {
+    Get.toNamed(
+      Routes.PAROISSE_MAP,
+      arguments: jsonEncode(paroisseSelected.value.toJson()),
+    );
   }
 }

@@ -80,7 +80,7 @@ class CustomHomeController extends GetxController {
 
   doLogout() {
     encryptedBox.put(AppConstants.USER_LOG_INFOS, null);
-    Get.deleteAll();
+    Get.deleteAll(force: true);
     Get.offAllNamed(Routes.SIGNIN);
   }
 }

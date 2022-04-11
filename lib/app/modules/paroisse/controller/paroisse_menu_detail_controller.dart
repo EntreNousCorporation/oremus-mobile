@@ -69,4 +69,11 @@ class ParoisseMenuDetailController extends GetxController {
         return 'Aucune information trouvée';
     }
   }
+
+  goToMap() {
+    Get.toNamed(
+      Routes.PAROISSE_MAP,
+      arguments: jsonEncode(paroisseSelected.value.toJson()),
+    );
+  }
 }

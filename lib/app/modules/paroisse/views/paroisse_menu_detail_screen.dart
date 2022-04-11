@@ -44,7 +44,9 @@ class ParoisseMenuDetailScreen extends StatelessWidget {
                         ),
                         actions: [
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              _.goToMap();
+                            },
                             child: const Padding(
                               padding: EdgeInsets.all(16.0),
                               child: Icon(Icons.map_rounded),

@@ -14,6 +14,7 @@ abstract class Routes {
   //PAROISSE
   static const PAROISSE_MENU = '/paroisse-menu';
   static const PAROISSE_MENU_DETAIL = '/paroisse-menu-detail';
+  static const PAROISSE_MAP = '/paroisse-map';
 
   //PROFILE
   static const EDIT_PASSWORD = '/edit-password';

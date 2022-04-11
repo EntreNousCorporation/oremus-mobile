@@ -12,8 +12,10 @@ import 'package:oremusapp/app/modules/home/views/home_screen.dart';
 import 'package:oremusapp/app/modules/landing/binding/landing_binding.dart';
 import 'package:oremusapp/app/modules/landing/views/landing_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_binding.dart';
+import 'package:oremusapp/app/modules/paroisse/binding/paroisse_map_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_detail_binding.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_map_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu_detail_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu_screen.dart';
 import 'package:oremusapp/app/modules/profile/binding/edit_profile_binding.dart';
@@ -91,6 +93,12 @@ class AppPages {
       name: Routes.PAROISSE_MENU_DETAIL,
       page: () => const ParoisseMenuDetailScreen(),
       binding: ParoisseMenuDetailBinding(),
+      transition: Transition.circularReveal,
+    ),
+    GetPage(
+      name: Routes.PAROISSE_MAP,
+      page: () => ParoisseMapScreen(),
+      binding: ParoisseMapBinding(),
       transition: Transition.circularReveal,
     ),
     GetPage(
