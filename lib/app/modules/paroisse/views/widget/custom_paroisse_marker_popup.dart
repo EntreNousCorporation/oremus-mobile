@@ -3,6 +3,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import "package:latlong2/latlong.dart" as latLng;
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/theme/app_dimension.dart';
+import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/paroisse_response.dart';
 
 class CustomParoisseMarkerPopup extends StatelessWidget {
@@ -51,11 +53,9 @@ class CustomParoisseMarkerPopup extends StatelessWidget {
                 overflow: TextOverflow.fade,
                 softWrap: true,
                 maxLines: 2,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14.0,
-                  color: colorGreen
-                ),
+                style: TextStyles.montserratSemiBold(
+                    textSize: TextSizes.fourteen,
+                    textColor: colorGreen),
               ),
             ),
             const Padding(padding: EdgeInsets.symmetric(vertical: 4.0)),
@@ -63,7 +63,9 @@ class CustomParoisseMarkerPopup extends StatelessWidget {
               visible: (paroisse.address != null && paroisse.address?.name != null && paroisse.address?.name?.isNotEmpty == true),
               child: Text(
                 '${paroisse.address?.name}',
-                style: const TextStyle(fontSize: 12.0, fontFamily: 'avenir_regular'),
+                style: TextStyles.montserratRegular(
+                    textSize: TextSizes.twelve,
+                    textColor: colorBlack),
               ),
             ),
             const Padding(padding: EdgeInsets.symmetric(vertical: 2.0)),
@@ -76,7 +78,9 @@ class CustomParoisseMarkerPopup extends StatelessWidget {
                   //const Padding(padding: EdgeInsets.symmetric(horizontal: 2.0)),
                   Text(
                     '${paroisse.address?.city}',
-                    style: const TextStyle(fontSize: 12.0),
+                    style: TextStyles.montserratRegular(
+                        textSize: TextSizes.twelve,
+                        textColor: colorBlack),
                   ),
                 ],
               ),
@@ -91,7 +95,9 @@ class CustomParoisseMarkerPopup extends StatelessWidget {
                   //const Padding(padding: EdgeInsets.symmetric(horizontal: 2.0)),
                   Text(
                     '${paroisse.address?.municipality}',
-                    style: const TextStyle(fontSize: 12.0, fontFamily: 'avenir_regular'),
+                    style: TextStyles.montserratRegular(
+                        textSize: TextSizes.twelve,
+                        textColor: colorBlack),
                   )
                 ],
               ),
