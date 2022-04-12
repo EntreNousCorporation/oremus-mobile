@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hidden_drawer_menu/hidden_drawer_menu.dart';
@@ -30,7 +32,7 @@ class CustomHomeScreen extends StatelessWidget {
         screenSelectedBuilder: (position, controller) {
           logic.drawerController = controller;
           Widget? screenCurrent;
-          switch (position) {
+          switch (logic.menus[position].code) {
             case AppConstants.HOME:
               logic.title.value = 'Oremus';
               screenCurrent = const ParoisseScreen();
@@ -86,14 +88,11 @@ class CustomHomeScreen extends StatelessWidget {
                         Visibility(
                           visible: logic.menus[logic.selectedIndex.value].code == AppConstants.PROFILE,
                           child: GetBuilder<ProfileController>(builder: (logic) {
-                            return GestureDetector(
-                              onTap: () {
+                            return IconButton(
+                              onPressed: () {
                                 logic.goToEditProfile();
                               },
-                              child: const Padding(
-                                padding: EdgeInsets.all(16.0),
-                                child: Icon(Icons.edit_rounded),
-                              ),
+                              icon: const Icon(Icons.edit_rounded),
                             );
                           }),
                         ),
