@@ -63,10 +63,25 @@ class AboutScreen extends StatelessWidget {
             RichText(
               textAlign: TextAlign.justify,
               text: TextSpan(
-                text: 'L’application ',
+                text: '"',
                 style: TextStyles.montserratRegular(
                     textSize: TextSizes.fourteen, textColor: colorBlack),
                 children: <TextSpan>[
+                  TextSpan(
+                      text: '85% ',
+                      style: TextStyles.montserratSemiBold(
+                          textSize: TextSizes.fourteen, textColor: colorBlack),
+                  ),
+                  TextSpan(
+                      text: 'de Chrétiens interrogés souhaitent un service PLUS pour faciliter l’accès aux services ecclésiastiques" \n\n',
+                      style: TextStyles.montserratRegular(
+                          textSize: TextSizes.fourteen, textColor: colorBlack),
+                  ),
+                  TextSpan(
+                      text: 'L’application ',
+                      style: TextStyles.montserratRegular(
+                          textSize: TextSizes.fourteen, textColor: colorBlack),
+                  ),
                   TextSpan(
                       text: 'Oremus ',
                       style: TextStyles.montserratSemiBold(
@@ -79,12 +94,12 @@ class AboutScreen extends StatelessWidget {
                   ),
                   TextSpan(
                     text: '"Allez ! De toutes les nations faites des disciples" ',
-                    style: TextStyles.montserratSemiBold(
+                    style: TextStyles.montserratSemiBoldItalic(
                         textSize: TextSizes.fourteen, textColor: colorBlack),
                   ),
                   TextSpan(
                     text: 'Matthieu 28:19\n\n',
-                    style: TextStyles.montserratRegular(
+                    style: TextStyles.montserratItalic(
                         textSize: TextSizes.fourteen, textColor: colorBlack),
                   ),
                   TextSpan(
@@ -99,6 +114,11 @@ class AboutScreen extends StatelessWidget {
                   ),
                   TextSpan(
                     text: 'que nous sommes dans toutes les nations y compris dans le digital considéré comme un autre univers (métaverse).\n\n',
+                    style: TextStyles.montserratRegular(
+                        textSize: TextSizes.fourteen, textColor: colorBlack),
+                  ),
+                  TextSpan(
+                    text: 'Votre contribution est la bienvenue.\n\n',
                     style: TextStyles.montserratRegular(
                         textSize: TextSizes.fourteen, textColor: colorBlack),
                   ),
@@ -125,7 +145,7 @@ class AboutScreen extends StatelessWidget {
                         textSize: TextSizes.fourteen, textColor: colorBlack),
                   ),
                   TextSpan(
-                    text: '0709443336\n\n',
+                    text: '07 58 30 39 59\n\n',
                     style: TextStyles.montserratRegular(
                         textSize: TextSizes.fourteen, textColor: colorBlue2),
                     recognizer: TapGestureRecognizer()..onTap = () async {
@@ -137,7 +157,7 @@ class AboutScreen extends StatelessWidget {
                     }
                   ),
                   TextSpan(
-                    text: 'Nous tenons à remercier tous nos donateurs : Franck F. Antony A., Franck Z. B., Marc-Landry D., Claude G., Samuel G., Fidel G., Olivier G., Nasselin, Stéphane A., Eva K., Joel D. et tous ceux qui voudront bien se joindre à cette initiative.',
+                    text: 'Nous remercions tous nos bienfaiteurs, contributeurs et mentors pour leur apport sous toutes formes.',
                     style: TextStyles.montserratRegular(
                         textSize: TextSizes.fourteen, textColor: colorBlack),
                   ),

@@ -34,6 +34,34 @@ class TextStyles {
           fontSize: textSize,
           color: textColor,
           fontWeight: FontWeight.bold);
+
+  static TextStyle montserratItalic(
+          {double textSize = TextSizes.sixteen,
+          Color textColor = colorGrey1}) =>
+      const TextStyle().copyWith(
+          fontFamily: "montserrat_italic", fontSize: textSize, color: textColor);
+
+  static TextStyle montserratMediumItalic(
+          {double textSize = TextSizes.sixteen,
+          Color textColor = colorGrey1}) =>
+      const TextStyle().copyWith(
+          fontFamily: "montserrat_medium_italic", fontSize: textSize, color: textColor);
+
+  static TextStyle montserratBoldItalic(
+          {double textSize = TextSizes.twenty, Color textColor = colorBlack}) =>
+      const TextStyle().copyWith(
+          fontFamily: "montserrat_bold_italic",
+          fontSize: textSize,
+          color: textColor,
+          fontWeight: FontWeight.bold);
+
+  static TextStyle montserratSemiBoldItalic(
+          {double textSize = TextSizes.twelve, Color textColor = colorBlack}) =>
+      const TextStyle().copyWith(
+          fontFamily: "montserrat_semi_bold_italic",
+          fontSize: textSize,
+          color: textColor,
+          fontWeight: FontWeight.bold);
 }
 
 class Separators {
