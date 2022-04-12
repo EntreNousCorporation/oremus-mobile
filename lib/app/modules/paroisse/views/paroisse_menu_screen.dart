@@ -34,24 +34,18 @@ class ParoisseMenuScreen extends StatelessWidget {
                         backgroundColor: colorGreen,
                         elevation: 10,
                         shadowColor: colorGrey2.withOpacity(0.8),
-                        leading: GestureDetector(
-                          onTap: () {
+                        leading: IconButton(
+                          onPressed: () {
                             Get.back();
                           },
-                          child: const Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Icon(Icons.arrow_back_ios_rounded),
-                          ),
+                          icon: const Icon(Icons.arrow_back_ios_rounded),
                         ),
                         actions: [
-                          GestureDetector(
-                            onTap: () {
+                          IconButton(
+                            onPressed: () {
                               _.goToMap();
                             },
-                            child: const Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Icon(Icons.map_rounded),
-                            ),
+                            icon: const Icon(Icons.map_rounded),
                           ),
                         ],
                         flexibleSpace: FlexibleSpaceBar(
@@ -65,7 +59,8 @@ class ParoisseMenuScreen extends StatelessWidget {
                                   textSize: TextSizes.eighteen,
                                   textColor: colorWhite),
                             ),
-                            background: (_.paroisseSelected.value.coverImage?.link?.isNotEmpty ==
+                            background: (_.paroisseSelected.value.coverImage
+                                        ?.link?.isNotEmpty ==
                                     true)
                                 ? Stack(
                                     children: [
@@ -74,7 +69,9 @@ class ParoisseMenuScreen extends StatelessWidget {
                                         child: CachedNetworkImage(
                                           width: Get.width,
                                           height: Get.width,
-                                          imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                          imageUrl: _.paroisseSelected.value
+                                                  .coverImage?.link ??
+                                              '',
                                           fit: BoxFit.cover,
                                           placeholder: (context, url) =>
                                               LottieLoadingView(
@@ -87,7 +84,9 @@ class ParoisseMenuScreen extends StatelessWidget {
                                         height: Get.width,
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
-                                          color: Colors.black54.withOpacity(0.3),),
+                                          color:
+                                              Colors.black54.withOpacity(0.3),
+                                        ),
                                       ),
                                     ],
                                   )
@@ -105,22 +104,26 @@ class ParoisseMenuScreen extends StatelessWidget {
                                         height: Get.width,
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
-                                            color: Colors.black54.withOpacity(0.3),),
+                                          color:
+                                              Colors.black54.withOpacity(0.3),
+                                        ),
                                       ),
                                     ],
                                   )),
                       ),
-                      const SliverPadding(padding: EdgeInsets.symmetric(vertical: 8)),
+                      const SliverPadding(
+                          padding: EdgeInsets.symmetric(vertical: 8)),
                       SliverGrid(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                           childAspectRatio: 3 / 2,
                           crossAxisCount: 2,
                           crossAxisSpacing: 0.0,
                           mainAxisSpacing: 0.0,
                         ),
                         delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                var menu = _.menus[index];
+                          (context, index) {
+                            var menu = _.menus[index];
                             return MenuGridItem(item: menu);
                           },
                           childCount: _.menus.length,

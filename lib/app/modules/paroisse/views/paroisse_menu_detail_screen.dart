@@ -36,21 +36,18 @@ class ParoisseMenuDetailScreen extends StatelessWidget {
                         backgroundColor: colorGreen,
                         elevation: 10,
                         shadowColor: colorGrey2.withOpacity(0.8),
-                        leading: GestureDetector(
-                          onTap: () {
+                        leading: IconButton(
+                          onPressed: () {
                             Get.back();
                           },
-                          child: const Icon(Icons.arrow_back_ios_rounded),
+                          icon: const Icon(Icons.arrow_back_ios_rounded),
                         ),
                         actions: [
-                          GestureDetector(
-                            onTap: () {
+                          IconButton(
+                            onPressed: () {
                               _.goToMap();
                             },
-                            child: const Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Icon(Icons.map_rounded),
-                            ),
+                            icon: const Icon(Icons.map_rounded),
                           ),
                         ],
                         flexibleSpace: FlexibleSpaceBar(
