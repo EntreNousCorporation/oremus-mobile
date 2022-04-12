@@ -38,6 +38,7 @@ dependencies:
   flutter_map: ^0.14.0
   flutter_map_marker_popup: ^2.1.2
   url_launcher: ^6.0.20
+  accordion: ^2.2.3
 
 dev_dependencies:
   flutter_test:

@@ -23,7 +23,7 @@ class ParoisseScreen extends StatelessWidget {
             initState: (state) {},
             builder: (_) {
               return WillPopScope(
-                onWillPop: () async => _.unlockBackButton.value,
+                onWillPop: () async => false,
                 child: KeyboardDismisser(
                   child: SmartRefresher(
                     controller: _.refreshController,

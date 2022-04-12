@@ -129,8 +129,8 @@ class AboutScreen extends StatelessWidget {
                     style: TextStyles.montserratRegular(
                         textSize: TextSizes.fourteen, textColor: colorBlue2),
                     recognizer: TapGestureRecognizer()..onTap = () async {
-                      if (await canLaunch("tel:+2250709443336") == true) {
-                        launch("tel:+2250709443336");
+                      if (await canLaunch("https://wa.me/2250758303959") == true) {
+                        launch("https://wa.me/2250758303959");
                       } else {
                         log("Can't launch phone number");
                       }
