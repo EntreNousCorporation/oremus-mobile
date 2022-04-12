@@ -67,21 +67,25 @@ class _MenuState extends State<DrawerMenu> with TickerProviderStateMixin {
                         textSize: TextSizes.thirty_eight,
                         textColor: colorWhite),
                   ),
-                  Expanded(child: Container()),
+                  //Expanded(child: Container()),
+                  SizedBox(height: Get.width/10,),
                   GetBuilder<CustomHomeController>(builder: (logic) {
-                    return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: logic.menus.length,
-                        itemBuilder: (context, index) {
-                          var menu = logic.menus[index];
-                          menu.isSelected = (index == logic.selectedIndex.value);
-                          return DrawerMenuItem(
-                            menu: menu,
-                            index: index,
-                          );
-                        });
+                    return Expanded(
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: logic.menus.length,
+                          itemBuilder: (context, index) {
+                            var menu = logic.menus[index];
+                            menu.isSelected = (index == logic.selectedIndex.value);
+                            return DrawerMenuItem(
+                              menu: menu,
+                              index: index,
+                            );
+                          }),
+                    );
                   }),
-                  Expanded(child: Container()),
+                  //Expanded(child: Container()),
+                  SizedBox(height: Get.width/10,),
                   GetBuilder<CustomHomeController>(builder: (logic) {
                     return GestureDetector(
                       onTap: () {

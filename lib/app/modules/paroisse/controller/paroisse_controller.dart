@@ -85,13 +85,20 @@ class ParoisseController extends GetxController {
       }
     }, onError: (error) {
       refreshController.refreshCompleted();
+      if (error.toString().contains('401')) {
+        showCustomDialog(
+          Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      }
       debugPrint("error => ${error.toString()}");
     });
   }
 
   getUserInfo() {
     var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
-    log('==> ${userInfo}');
+    log('==> $userInfo');
     if (userInfo != null) {
       Signin userConnected =
       Signin.fromJson(jsonDecode(userInfo));

@@ -84,8 +84,7 @@ class CustomHomeScreen extends StatelessWidget {
                       ),
                       actions: [
                         Visibility(
-                          visible: logic.menus[logic.selectedIndex.value]
-                              .code == 'profil',
+                          visible: logic.menus[logic.selectedIndex.value].code == AppConstants.PROFILE,
                           child: GetBuilder<ProfileController>(builder: (logic) {
                             return GestureDetector(
                               onTap: () {

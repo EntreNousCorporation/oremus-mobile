@@ -14,7 +14,7 @@ class CustomHomeController extends GetxController {
 
   RxList<MenuItem> menus = RxList<MenuItem>([]);
   late SimpleHiddenDrawerController drawerController;
-  var selectedIndex = 0.obs;
+  var selectedIndex = AppConstants.HOME.obs; //home
   var title = ''.obs;
 
   @override
@@ -34,41 +34,45 @@ class CustomHomeController extends GetxController {
   initMenus() {
     menus.value = [
       MenuItem(
-        code: '',
+        code: AppConstants.HOME,
         libelle: 'Accueil',
         icon: 'assets/images/icon_nav_home.svg',
       ),
       MenuItem(
-        code: 'profil',
+        code: AppConstants.PROFILE,
         libelle: 'Mon profil',
         icon: 'assets/images/icon_user.svg',
       ),
       MenuItem(
-        code: '',
+        code: AppConstants.SHARE_APP,
         libelle: "Partager l'application",
         icon: 'assets/images/icon_settings.svg',
       ),
       MenuItem(
-        code: '',
+        code: AppConstants.PROMO,
         libelle: 'Codes promo',
         icon: 'assets/images/icon_settings.svg',
+        isVisible: false,
       ),
       MenuItem(
-        code: '',
+        code: AppConstants.FAQ,
         libelle: 'F.A.Q',
         icon: 'assets/images/icon_settings.svg',
       ),
       MenuItem(
-        code: '',
+        code: AppConstants.CONTACTS,
         libelle: 'Contacts',
         icon: 'assets/images/icon_phone.svg',
+        isVisible: false,
       ),
       MenuItem(
-        code: '',
+        code: AppConstants.ABOUT,
         libelle: 'A propos',
         icon: 'assets/images/icon_settings.svg',
       ),
     ];
+    menus.value = menus.where((element) => element.isVisible).toList();
+    log("${menus.length}");
   }
 
   doRedirection(int index, SimpleHiddenDrawerController controller) {

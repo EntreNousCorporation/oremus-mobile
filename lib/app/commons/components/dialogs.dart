@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
@@ -17,65 +19,68 @@ Future showCustomDialog(BuildContext context,
       context: context,
       barrierDismissible: dismissible,
       builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            side: const BorderSide(color: Colors.white70, width: 1),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: Row(
-            children: [
-              Icon(
-                Icons.info,
-                color: type == 'info' ? Colors.green : Colors.red,
-                size: 35.0,
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Expanded(
-                child: Text(
-                  type == 'info' ? title : 'ALERTE',
-                  style: TextStyles.montserratSemiBold(
-                      textSize: TextSizes.sixteen,
-                      textColor: colorBlack),
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 0.5, sigmaY: 0.5),
+          child: AlertDialog(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              side: const BorderSide(color: Colors.white70, width: 1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            title: Row(
+              children: [
+                Icon(
+                  Icons.info,
+                  color: type == 'info' ? Colors.green : Colors.red,
+                  size: 35.0,
                 ),
-              )
-            ],
-          ),
-          content: Text(
-            message,
-            style: TextStyles.montserratSemiBold(
-              textSize: TextSizes.fourteen,
-              textColor: colorBlack),
-          ),
-          actions: <Widget>[
-            TextButton(
-                onPressed: () {
-                  Navigator.pop(context, true);
-                  if (positiveCallBack != null) positiveCallBack();
-                },
-                child: Text(
-                  positiveLabel.toUpperCase(),
-                  style: TextStyles.montserratSemiBold(
-                      textSize: TextSizes.sixteen,
-                      textColor: colorBlack),
-                )),
-            Visibility(
-              visible: negativeLabel != '',
-              child: TextButton(
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: Text(
+                    type == 'info' ? title : 'ALERTE',
+                    style: TextStyles.montserratSemiBold(
+                        textSize: TextSizes.sixteen,
+                        textColor: colorBlack),
+                  ),
+                )
+              ],
+            ),
+            content: Text(
+              message,
+              style: TextStyles.montserratSemiBold(
+                textSize: TextSizes.fourteen,
+                textColor: colorBlack),
+            ),
+            actions: <Widget>[
+              TextButton(
                   onPressed: () {
-                    Navigator.pop(context, false);
-                    if (negativeCallBack != null) negativeCallBack();
+                    Navigator.pop(context, true);
+                    if (positiveCallBack != null) positiveCallBack();
                   },
                   child: Text(
-                    negativeLabel,
+                    positiveLabel.toUpperCase(),
                     style: TextStyles.montserratSemiBold(
                         textSize: TextSizes.sixteen,
                         textColor: colorBlack),
                   )),
-            ),
-          ],
+              Visibility(
+                visible: negativeLabel != '',
+                child: TextButton(
+                    onPressed: () {
+                      Navigator.pop(context, false);
+                      if (negativeCallBack != null) negativeCallBack();
+                    },
+                    child: Text(
+                      negativeLabel,
+                      style: TextStyles.montserratSemiBold(
+                          textSize: TextSizes.sixteen,
+                          textColor: colorBlack),
+                    )),
+              ),
+            ],
+          ),
         );
       });
 }
@@ -126,43 +131,46 @@ showExitDialog(BuildContext context,
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            side: const BorderSide(color: Colors.white70, width: 1),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: Text(
-            title,
-            style: TextStyles.montserratSemiBold(
-                textSize: TextSizes.fourteen,
-                textColor: colorBlack),
-          ),
-          content: Text(
-            message,
-            style: TextStyles.montserratRegular(
-                textSize: TextSizes.eighteen,
-                textColor: colorBlack),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(
-                positiveText,
-                style: TextStyles.montserratSemiBold(
-                    textSize: TextSizes.sixteen,
-                    textColor: colorGreen),
-              ),
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 0.5, sigmaY: 0.5),
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(
+              side: const BorderSide(color: Colors.white70, width: 1),
+              borderRadius: BorderRadius.circular(10),
             ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(
-                'NON',
-                style: TextStyles.montserratBold(
-                    textSize: TextSizes.sixteen,
-                    textColor: colorBlack),
-              ),
+            title: Text(
+              title,
+              style: TextStyles.montserratSemiBold(
+                  textSize: TextSizes.fourteen,
+                  textColor: colorBlack),
             ),
-          ],
+            content: Text(
+              message,
+              style: TextStyles.montserratRegular(
+                  textSize: TextSizes.eighteen,
+                  textColor: colorBlack),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text(
+                  positiveText,
+                  style: TextStyles.montserratSemiBold(
+                      textSize: TextSizes.sixteen,
+                      textColor: colorGreen),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text(
+                  'NON',
+                  style: TextStyles.montserratBold(
+                      textSize: TextSizes.sixteen,
+                      textColor: colorBlack),
+                ),
+              ),
+            ],
+          ),
         );
       });
 }
