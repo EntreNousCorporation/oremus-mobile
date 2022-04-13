@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:like_button/like_button.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
@@ -102,7 +103,7 @@ class ParoisseItem extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Expanded(
                         child: Text(
@@ -111,33 +112,55 @@ class ParoisseItem extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           softWrap: true,
                           style: TextStyles.montserratBold(
-                              textSize: TextSizes.twelve, textColor: colorBlack),
+                              textSize: TextSizes.thirteen, textColor: colorBlack),
                         ),
                       ),
-                      Separators.minimunHorizontal(),
+                      Separators.normalHorizontal(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Container(
-                            padding: const EdgeInsets.all(3.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(3),
-                              color: colorGreen,
-                            ),
-                            child: Text(
-                              'Informations',
-                              style: TextStyles.montserratBold(
-                                  textSize: TextSizes.eleven,
-                                  textColor: colorWhite),
+                          GestureDetector(
+                            onTap: () {
+                              Get.toNamed(
+                                Routes.PAROISSE_MENU,
+                                arguments: [
+                                  index,
+                                  jsonEncode(paroisse.toJson())
+                                ],
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3),
+                                color: colorGreen,
+                              ),
+                              child: Text(
+                                'Informations',
+                                style: TextStyles.montserratBold(
+                                    textSize: TextSizes.eleven,
+                                    textColor: colorWhite),
+                              ),
                             ),
                           ),
                           const SizedBox(
-                            width: 8,
+                            width: 10,
                           ),
-                          const Icon(
-                            Icons.favorite_border,
-                            size: 18,
+                          LikeButton(
+                            size: 25,
+                            circleColor:
+                            const CircleColor(start: Color(0xff93291E), end: Color(0xFFED213A)),
+                            bubblesColor: const BubblesColor(
+                              dotPrimaryColor: Color(0xFFED213A),
+                              dotSecondaryColor: Color(0xff93291E),
+                            ),
+                            likeBuilder: (bool isLiked) {
+                              return Icon(
+                                isLiked ? Icons.favorite : Icons.favorite_border,
+                                color: isLiked ? Color(0xFFED213A) : Colors.grey,
+                                size: 25,
+                              );
+                            },
                           ),
                         ],
                       ),

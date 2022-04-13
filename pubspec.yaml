@@ -39,6 +39,7 @@ dependencies:
   flutter_map_marker_popup: ^2.1.2
   url_launcher: ^6.0.20
   accordion: ^2.2.3
+  like_button: ^2.0.4
 
 dev_dependencies:
   flutter_test:

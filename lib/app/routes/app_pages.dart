@@ -89,7 +89,7 @@ class AppPages {
       name: Routes.PAROISSE_MENU,
       page: () => const ParoisseMenuScreen(),
       binding: ParoisseMenuBinding(),
-      transition: Transition.circularReveal,
+      transition: Transition.fadeIn,
     ),
     GetPage(
       name: Routes.PAROISSE_MENU_DETAIL,
