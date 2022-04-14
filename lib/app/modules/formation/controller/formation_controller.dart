@@ -6,7 +6,6 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/formation/data/repository/formation_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/operation_type_menu.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
-import 'package:oremusapp/app/modules/signin/data/model/signin_response.dart';
 import 'package:oremusapp/main.dart';
 
 class FormationController extends GetxController {

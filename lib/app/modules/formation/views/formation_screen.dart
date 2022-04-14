@@ -3,9 +3,7 @@ import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/app_navigation_bar.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
-import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/formation/controller/formation_controller.dart';
-import 'package:oremusapp/app/modules/customhome/views/widget/search_widget.dart';
 
 class FormationScreen extends StatelessWidget {
   const FormationScreen({Key? key}) : super(key: key);

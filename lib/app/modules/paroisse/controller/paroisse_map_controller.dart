@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
 import 'package:get/get.dart';
+import "package:latlong2/latlong.dart" as latLng;
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/paroisse_response.dart';
-import "package:latlong2/latlong.dart" as latLng;
 import 'package:oremusapp/app/modules/paroisse/views/widget/custom_paroisse_marker_popup.dart';
 
 class ParoisseMapController extends GetxController {

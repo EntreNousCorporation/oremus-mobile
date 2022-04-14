@@ -20,7 +20,7 @@ dependencies:
   flutter_fadein: ^2.0.0
   keyboard_dismisser: ^2.0.0
   jiffy: ^4.1.0
-  firebase_core: ^1.10.0
+  firebase_core: ^1.14.1
   firebase_crashlytics: ^2.3.0
   fcm_config: ^3.1.8
   lottie: ^1.2.1

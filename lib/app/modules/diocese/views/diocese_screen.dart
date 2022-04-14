@@ -6,8 +6,8 @@ import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/diocese/controller/diocese_controller.dart';
 import 'package:oremusapp/app/modules/customhome/views/widget/search_widget.dart';
+import 'package:oremusapp/app/modules/diocese/controller/diocese_controller.dart';
 import 'package:oremusapp/app/modules/diocese/views/widget/gridview_item.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 

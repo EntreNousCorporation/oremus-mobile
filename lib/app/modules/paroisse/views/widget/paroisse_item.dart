@@ -157,7 +157,7 @@ class ParoisseItem extends StatelessWidget {
                             likeBuilder: (bool isLiked) {
                               return Icon(
                                 isLiked ? Icons.favorite : Icons.favorite_border,
-                                color: isLiked ? Color(0xFFED213A) : Colors.grey,
+                                color: isLiked ? const Color(0xFFED213A) : Colors.grey,
                                 size: 25,
                               );
                             },

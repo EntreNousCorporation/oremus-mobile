@@ -3,8 +3,6 @@ import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/app_navigation_bar.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
-import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/customhome/views/widget/search_widget.dart';
 import 'package:oremusapp/app/modules/service/controller/service_controller.dart';
 
 class ServiceScreen extends StatelessWidget {

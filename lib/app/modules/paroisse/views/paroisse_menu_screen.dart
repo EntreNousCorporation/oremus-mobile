@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,39 +16,40 @@ class ParoisseMenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: colorGreen,
-      child: SafeArea(
-        child: GetBuilder<ParoisseMenuController>(
-            initState: (state) {},
-            builder: (_) {
-              return KeyboardDismisser(
-                child: Scaffold(
-                  resizeToAvoidBottomInset: true,
-                  body: CustomScrollView(
-                    slivers: [
-                      SliverAppBar(
-                        expandedHeight: Get.width / 1.7,
-                        floating: false,
-                        pinned: true,
-                        backgroundColor: colorGreen,
-                        elevation: 10,
-                        shadowColor: colorGrey2.withOpacity(0.8),
-                        leading: IconButton(
+      child: GetBuilder<ParoisseMenuController>(
+          initState: (state) {},
+          builder: (_) {
+            return KeyboardDismisser(
+              child: Scaffold(
+                resizeToAvoidBottomInset: true,
+                body: CustomScrollView(
+                  slivers: [
+                    SliverAppBar(
+                      expandedHeight: Get.width / 1.7,
+                      floating: false,
+                      pinned: true,
+                      backgroundColor: colorGreen,
+                      elevation: 10,
+                      shadowColor: colorGrey2.withOpacity(0.8),
+                      leading: IconButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        icon: const Icon(Icons.arrow_back_ios_rounded),
+                      ),
+                      actions: [
+                        IconButton(
                           onPressed: () {
-                            Get.back();
+                            _.goToMap();
                           },
-                          icon: const Icon(Icons.arrow_back_ios_rounded),
+                          icon: const Icon(Icons.map_rounded),
                         ),
-                        actions: [
-                          IconButton(
-                            onPressed: () {
-                              _.goToMap();
-                            },
-                            icon: const Icon(Icons.map_rounded),
-                          ),
-                        ],
-                        flexibleSpace: FlexibleSpaceBar(
-                            centerTitle: true,
-                            title: Text(
+                      ],
+                      flexibleSpace: FlexibleSpaceBar(
+                          centerTitle: true,
+                          title: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text(
                               '${_.paroisseSelected.value.name}',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -59,82 +58,82 @@ class ParoisseMenuScreen extends StatelessWidget {
                                   textSize: TextSizes.eighteen,
                                   textColor: colorWhite),
                             ),
-                            background: (_.paroisseSelected.value.coverImage
-                                        ?.link?.isNotEmpty ==
-                                    true)
-                                ? Stack(
-                                    children: [
-                                      Hero(
-                                        tag: 'tag${_.indexSelected.value}',
-                                        child: CachedNetworkImage(
-                                          width: Get.width,
-                                          height: Get.width,
-                                          imageUrl: _.paroisseSelected.value
-                                                  .coverImage?.link ??
-                                              '',
-                                          fit: BoxFit.cover,
-                                          placeholder: (context, url) =>
-                                              LottieLoadingView(
-                                                  size: Get.width / 6),
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(Icons.error),
-                                        ),
-                                      ),
-                                      Container(
+                          ),
+                          background: (_.paroisseSelected.value.coverImage
+                                      ?.link?.isNotEmpty ==
+                                  true)
+                              ? Stack(
+                                  children: [
+                                    Hero(
+                                      tag: 'tag${_.indexSelected.value}',
+                                      child: CachedNetworkImage(
+                                        width: Get.width,
                                         height: Get.width,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          color:
-                                              Colors.black54.withOpacity(0.3),
-                                        ),
+                                        imageUrl: _.paroisseSelected.value
+                                                .coverImage?.link ??
+                                            '',
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) =>
+                                            LottieLoadingView(
+                                                size: Get.width / 6),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.error),
                                       ),
-                                    ],
-                                  )
-                                : Stack(
-                                    children: [
-                                      Hero(
-                                        tag: 'tag${_.indexSelected.value}',
-                                        child: Image.asset(
-                                          'assets/images/bg_login.jpg',
-                                          width: Get.width,
-                                          fit: BoxFit.cover,
-                                        ),
+                                    ),
+                                    Container(
+                                      height: Get.width,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color:
+                                            Colors.black54.withOpacity(0.3),
                                       ),
-                                      Container(
-                                        height: Get.width,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          color:
-                                              Colors.black54.withOpacity(0.3),
-                                        ),
+                                    ),
+                                  ],
+                                )
+                              : Stack(
+                                  children: [
+                                    Hero(
+                                      tag: 'tag${_.indexSelected.value}',
+                                      child: Image.asset(
+                                        'assets/images/bg_login.jpg',
+                                        width: Get.width,
+                                        fit: BoxFit.cover,
                                       ),
-                                    ],
-                                  )),
+                                    ),
+                                    Container(
+                                      height: Get.width,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color:
+                                            Colors.black54.withOpacity(0.3),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                    ),
+                    const SliverPadding(
+                        padding: EdgeInsets.symmetric(vertical: 8)),
+                    SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: 3 / 2,
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 0.0,
+                        mainAxisSpacing: 0.0,
                       ),
-                      const SliverPadding(
-                          padding: EdgeInsets.symmetric(vertical: 8)),
-                      SliverGrid(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          childAspectRatio: 3 / 2,
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 0.0,
-                          mainAxisSpacing: 0.0,
-                        ),
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            var menu = _.menus[index];
-                            return MenuGridItem(item: menu);
-                          },
-                          childCount: _.menus.length,
-                        ),
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          var menu = _.menus[index];
+                          return MenuGridItem(item: menu);
+                        },
+                        childCount: _.menus.length,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              );
-            }),
-      ),
+              ),
+            );
+          }),
     );
   }
 }

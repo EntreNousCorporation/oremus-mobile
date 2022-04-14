@@ -5,8 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/button.dart';
-import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
-import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/components/text_field.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/formatters/object_separator_input_formatter.dart';
@@ -14,10 +12,6 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/profile/controller/edit_profile_controller.dart';
-import 'package:oremusapp/app/modules/profile/controller/profile_controller.dart';
-import 'package:overlay_support/overlay_support.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:oremusapp/app/commons/utils.dart';
 
 class EditProfileScreen extends StatelessWidget {
   const EditProfileScreen({Key? key}) : super(key: key);
