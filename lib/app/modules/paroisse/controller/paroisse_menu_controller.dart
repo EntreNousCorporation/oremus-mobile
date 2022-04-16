@@ -1,12 +1,17 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:oremusapp/app/commons/components/dialogs.dart';
+import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/home/data/model/type_menu.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/paroisse_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:oremusapp/main.dart';
 
 class ParoisseMenuController extends GetxController {
   final ParoisseRepository paroisseRepository;
@@ -19,6 +24,9 @@ class ParoisseMenuController extends GetxController {
   var indexSelected = 0.obs;
 
   RxList<TypeMenu> menus = RxList<TypeMenu>([]);
+  RxList<LiturgicalCelebrationResponse> masses = RxList<LiturgicalCelebrationResponse>([]);
+  RxList<LiturgicalCelebrationResponse> confessions = RxList<LiturgicalCelebrationResponse>([]);
+  RxList<LiturgicalCelebrationResponse> liturgicalCelebrations = RxList<LiturgicalCelebrationResponse>([]);
 
   @override
   void onInit() {
@@ -27,11 +35,16 @@ class ParoisseMenuController extends GetxController {
     super.onInit();
   }
 
+  @override
+  void onReady() {
+    getLiturgicalCelebrations();
+    super.onReady();
+  }
+
   getArguments() {
     if (Get.arguments != null) {
       indexSelected.value = Get.arguments[0];
-      paroisseSelected.value =
-          ContentPlace.fromJson(jsonDecode(Get.arguments[1]));
+      paroisseSelected.value = ContentPlace.fromJson(jsonDecode(Get.arguments[1]));
       log('==> ${paroisseSelected.value.identifier}');
     }
   }
@@ -45,11 +58,13 @@ class ParoisseMenuController extends GetxController {
         isPngImage: true,
         activeTint: colorBlack,
         goToPage: () {
+          liturgicalCelebrations.value = masses.value;
           Get.toNamed(
             Routes.PAROISSE_MENU_DETAIL,
             arguments: [
               'HM',
               jsonEncode(paroisseSelected.value.toJson()),
+              jsonEncode(liturgicalCelebrations.value).toString(),
             ],
           );
         },
@@ -61,11 +76,13 @@ class ParoisseMenuController extends GetxController {
         isPngImage: true,
         activeTint: colorBlack,
         goToPage: () {
+          liturgicalCelebrations.value = confessions.value;
           Get.toNamed(
             Routes.PAROISSE_MENU_DETAIL,
             arguments: [
               'HC',
               jsonEncode(paroisseSelected.value.toJson()),
+              jsonEncode(liturgicalCelebrations.value).toString(),
             ],
           );
         },
@@ -126,5 +143,35 @@ class ParoisseMenuController extends GetxController {
       Routes.PAROISSE_MAP,
       arguments: jsonEncode(paroisseSelected.value.toJson()),
     );
+  }
+
+  getLiturgicalCelebrations() {
+
+    log('request getLiturgicalCelebrations');
+
+    var idParoisse = paroisseSelected.value.identifier;
+    paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
+      if (value.isEmpty == false) {
+        masses.value = value.where((element) => element.type?.code == 'MASS').toList();
+        confessions.value = value.where((element) => element.type?.code == 'CONFESSION').toList();
+        log('${masses.length}');
+        log('${confessions.length}');
+      }
+    }, onError: (error) {
+      if (error.toString().contains('401')) {
+        showCustomDialog(
+          Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      }
+      debugPrint("error => ${error.toString()}");
+    });
+  }
+
+  doLogout() {
+    encryptedBox.put(AppConstants.USER_LOG_INFOS, null);
+    Get.deleteAll(force: true);
+    Get.offAllNamed(Routes.SIGNIN);
   }
 }

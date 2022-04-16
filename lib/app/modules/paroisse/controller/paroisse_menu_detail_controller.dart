@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:oremusapp/app/modules/home/data/model/type_menu.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/paroisse_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
@@ -16,9 +17,14 @@ class ParoisseMenuDetailController extends GetxController {
 
   var code = ''.obs;
   var paroisseSelected = ContentPlace().obs;
-  var indexSelected = 0.obs;
+  var indexDaySelected = 0.obs;
+  var openingTime = OpeningTime().obs;
 
   RxList<TypeMenu> menus = RxList<TypeMenu>([]);
+
+  //RxList<LiturgicalCelebrationResponse> masses = RxList<LiturgicalCelebrationResponse>([]);
+  //RxList<LiturgicalCelebrationResponse> confessions = RxList<LiturgicalCelebrationResponse>([]);
+  RxList<LiturgicalCelebrationResponse> liturgicalCelebrations = RxList<LiturgicalCelebrationResponse>([]);
 
   @override
   void onInit() {
@@ -30,8 +36,29 @@ class ParoisseMenuDetailController extends GetxController {
     if (Get.arguments != null) {
       code.value = Get.arguments[0];
       paroisseSelected.value = ContentPlace.fromJson(jsonDecode(Get.arguments[1]));
+      if (code.value == 'HM' || code.value == 'HC') {
+        liturgicalCelebrations.value = getMasses(Get.arguments[2]);
+        for (var element in liturgicalCelebrations.value) {
+          element.openingTime?.sort((a, b) => a.dayOfWeek.toString().compareTo(b.dayOfWeek.toString()));
+        }
+      }
       log('==> ${paroisseSelected.value.identifier}');
     }
+  }
+
+  List<LiturgicalCelebrationResponse> getMasses(String massesToConverted) {
+    Iterable l = json.decode(massesToConverted);
+    return l.map((model) => LiturgicalCelebrationResponse.fromJson(model)).toList();
+  }
+
+  daySelected(OpeningTime ot) {
+    if (openingTime.value == ot) {
+      openingTime.value = OpeningTime();
+    } else {
+      openingTime.value = ot;
+    }
+    //openingTime.value.isSelected = (indexDaySelected.value == index);
+    //update();
   }
 
   getTypeTitle(String code) {

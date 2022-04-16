@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/enums.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/paroisse_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/interface_paroisse_repository.dart';
 import 'package:oremusapp/app/remote/api_client.dart';
@@ -33,7 +34,7 @@ class ParoisseRepository implements IParoisseRepository {
   }
 
   @override
-  Future<ContentPlace> getLiturgicalCelebration(int idParoisse) async {
+  Future<List<LiturgicalCelebrationResponse>> getLiturgicalCelebration(int idParoisse) async {
     Response response = await _apiClient.doRequest(
       endpoint: "/places-of-worship/$idParoisse/liturgical-celebrations",
       method: HttpMethod.get,
@@ -46,7 +47,7 @@ class ParoisseRepository implements IParoisseRepository {
       throw Exception(resp);
     } else {
       //log('resp => $resp');
-      return ContentPlace.fromJson(json.decode(response.bodyString.toString()));
+      return (jsonDecode(response.bodyString.toString()) as List).map((i) => LiturgicalCelebrationResponse.fromJson(i)).toList();
     }
   }
 }
