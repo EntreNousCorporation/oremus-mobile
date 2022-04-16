@@ -111,7 +111,7 @@ class ParoisseMenuController extends GetxController {
         activeTint: colorBlack,
         goToPage: () {
           Get.toNamed(
-            Routes.PAROISSE_MENU_DETAIL,
+            Routes.PAROISSE_ACTIVITY_MOVEMENT,
             arguments: [
               'AM',
               jsonEncode(paroisseSelected.value.toJson()),

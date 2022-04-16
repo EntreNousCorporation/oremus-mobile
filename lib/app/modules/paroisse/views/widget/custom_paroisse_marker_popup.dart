@@ -116,7 +116,7 @@ class CustomParoisseMarker extends Marker {
     height: size ?? 35,
     width: size ?? 35,
     point: latLng.LatLng(paroisse.localisation?.latitude ?? 0.0, paroisse.localisation?.longitude ?? 0.0),
-    builder: (BuildContext ctx) => SvgPicture.asset('assets/images/icon_default_pin.svg'),
+    builder: (BuildContext ctx) => SvgPicture.asset('assets/images/icon_default_pin.svg', color: colorRed),
   );
 
   final ContentPlace paroisse;

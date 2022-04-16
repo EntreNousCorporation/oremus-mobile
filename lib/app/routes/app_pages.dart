@@ -12,10 +12,12 @@ import 'package:oremusapp/app/modules/home/binding/home_binding.dart';
 import 'package:oremusapp/app/modules/home/views/home_screen.dart';
 import 'package:oremusapp/app/modules/landing/binding/landing_binding.dart';
 import 'package:oremusapp/app/modules/landing/views/landing_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/binding/paroisse_activity_movement_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_map_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_detail_binding.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_activity_movement_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_map_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu_detail_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu_screen.dart';
@@ -49,11 +51,11 @@ class AppPages {
         ProfileBinding(),
         FaqBinding(),
       ],
-      transition: Transition.fadeIn,
+      transition: Transition.circularReveal,
     ),
     GetPage(
       name: Routes.INITIAL,
-      page: () => LandingScreen(),
+      page: () => const LandingScreen(),
       bindings: [
         LandingBinding(),
         ParoisseBinding(),
@@ -99,8 +101,14 @@ class AppPages {
     ),
     GetPage(
       name: Routes.PAROISSE_MAP,
-      page: () => ParoisseMapScreen(),
+      page: () => const ParoisseMapScreen(),
       binding: ParoisseMapBinding(),
+      transition: Transition.circularReveal,
+    ),
+    GetPage(
+      name: Routes.PAROISSE_ACTIVITY_MOVEMENT,
+      page: () => const ParoisseActivityMovementScreen(),
+      binding: ParoisseActivityMovementBinding(),
       transition: Transition.circularReveal,
     ),
     GetPage(

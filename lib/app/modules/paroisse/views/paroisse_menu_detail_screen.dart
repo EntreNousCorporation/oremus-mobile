@@ -124,112 +124,110 @@ class ParoisseMenuDetailScreen extends StatelessWidget {
                     const SliverPadding(
                         padding: EdgeInsets.symmetric(vertical: 8)),
                     SliverFillRemaining(
-                      child: Center(
-                        child: Column(
-                          children: [
-                            Hero(
-                              tag: _.code.value,
-                              child: Text(
-                                _.getTypeTitle(_.code.value),
-                                textAlign: TextAlign.center,
-                                style: TextStyles.montserratBold(
-                                  textSize: TextSizes.eighteen,
-                                  textColor: colorGreen,
-                                ),
+                      child: Column(
+                        children: [
+                          Hero(
+                            tag: _.code.value,
+                            child: Text(
+                              _.getTypeTitle(_.code.value),
+                              textAlign: TextAlign.center,
+                              style: TextStyles.montserratBold(
+                                textSize: TextSizes.eighteen,
+                                textColor: colorGreen,
                               ),
                             ),
-                            _.liturgicalCelebrations.value.isNotEmpty ? Expanded(
-                              child: Accordion(
-                                disableScrolling: false,
-                                maxOpenSections: 1,
-                                leftIcon: Image.asset(
-                                  _.code.value == 'HM' ? 'assets/images/icon_paroisse.png' : 'assets/images/icon_diocese.jpg',
-                                  height: 25,
-                                  color: colorWhite,
-                                ),
-                                headerBackgroundColor: colorBrown,
-                                contentBorderColor: colorBrown,
-                                children:
-                                _.liturgicalCelebrations.value.map((value) {
-                                  return AccordionSection(
-                                    isOpen: false,
-                                    header: Text(
-                                      '${value.name}',
-                                      style: TextStyles.montserratSemiBold(
-                                          textSize: TextSizes.sixteen,
-                                          textColor: colorWhite),
-                                    ),
-                                    content: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          height: Get.width / 10,
-                                          width: Get.width,
-                                          child: ListView.builder(
-                                              itemCount:
-                                              value.openingTime?.length,
-                                              shrinkWrap: true,
-                                              scrollDirection: Axis.horizontal,
-                                              itemBuilder: (context, index) {
-                                                var openingTime =
-                                                value.openingTime?[index];
-                                                return DayItem(
-                                                    openingTime: openingTime);
-                                              }),
-                                        ),
-                                        Separators.minimunVertical(),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: Get.width/4),
-                                          child: Divider(color: colorBrown.withOpacity(0.5)),
-                                        ),
-                                        GetX<ParoisseMenuDetailController>(
-                                          builder: (logic) {
-                                            return Column(
-                                              children: _.openingTime.value.slots?.map((timeSlot) {
-                                                return Row(
-                                                  children: [
-                                                    Visibility(
-                                                      visible: false,
-                                                      child: Container(
-                                                        height: 25,
-                                                        width: 5,
-                                                        decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(10),
-                                                          color: colorBrown,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const Icon(Icons.access_time, size: 25,),
-                                                    Padding(
-                                                      padding:
-                                                      const EdgeInsets.all(8.0),
-                                                      child: Text(
-                                                        '${timeSlot.startTime}',
-                                                        style: TextStyles
-                                                            .montserratSemiBold(
-                                                            textSize:
-                                                            TextSizes.eighteen,
-                                                            textColor: colorBlack),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                );
-                                              }).toList() ?? [],
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }).toList(),
+                          ),
+                          _.liturgicalCelebrations.value.isNotEmpty ? Expanded(
+                            child: Accordion(
+                              disableScrolling: false,
+                              maxOpenSections: 1,
+                              leftIcon: Image.asset(
+                                _.code.value == 'HM' ? 'assets/images/icon_paroisse.png' : 'assets/images/icon_diocese.jpg',
+                                height: 25,
+                                color: colorWhite,
                               ),
-                              /*child: NotFoundScreen(
-                                message: '${_.getTypeMessage(_.code.value)}',
-                              ),*/
-                            ) : Expanded(child: NotFoundScreen(message: 'Horaires non disponible pour l\'instant')),
-                          ],
-                        ),
+                              headerBackgroundColor: colorBrown,
+                              contentBorderColor: colorBrown,
+                              children:
+                              _.liturgicalCelebrations.value.map((value) {
+                                return AccordionSection(
+                                  isOpen: false,
+                                  header: Text(
+                                    '${value.name}',
+                                    style: TextStyles.montserratSemiBold(
+                                        textSize: TextSizes.sixteen,
+                                        textColor: colorWhite),
+                                  ),
+                                  content: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        height: Get.width / 10,
+                                        width: Get.width,
+                                        child: ListView.builder(
+                                            itemCount:
+                                            value.openingTime?.length,
+                                            shrinkWrap: true,
+                                            scrollDirection: Axis.horizontal,
+                                            itemBuilder: (context, index) {
+                                              var openingTime =
+                                              value.openingTime?[index];
+                                              return DayItem(
+                                                  openingTime: openingTime);
+                                            }),
+                                      ),
+                                      Separators.minimunVertical(),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: Get.width/4),
+                                        child: Divider(color: colorBrown.withOpacity(0.5)),
+                                      ),
+                                      GetX<ParoisseMenuDetailController>(
+                                        builder: (logic) {
+                                          return Column(
+                                            children: _.openingTime.value.slots?.map((timeSlot) {
+                                              return Row(
+                                                children: [
+                                                  Visibility(
+                                                    visible: false,
+                                                    child: Container(
+                                                      height: 25,
+                                                      width: 5,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(10),
+                                                        color: colorBrown,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const Icon(Icons.access_time, size: 25,),
+                                                  Padding(
+                                                    padding:
+                                                    const EdgeInsets.all(8.0),
+                                                    child: Text(
+                                                      '${_.getTime(timeSlot.startTime ?? '')}',
+                                                      style: TextStyles
+                                                          .montserratSemiBold(
+                                                          textSize:
+                                                          TextSizes.eighteen,
+                                                          textColor: colorBlack),
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            }).toList() ?? [],
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                            /*child: NotFoundScreen(
+                              message: '${_.getTypeMessage(_.code.value)}',
+                            ),*/
+                          ) : Expanded(child: NotFoundScreen(message: 'Horaires non disponible pour l\'instant')),
+                        ],
                       ),
                     )
                   ],

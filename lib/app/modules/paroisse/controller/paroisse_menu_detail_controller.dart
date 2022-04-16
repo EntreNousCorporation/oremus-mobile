@@ -61,6 +61,12 @@ class ParoisseMenuDetailController extends GetxController {
     //update();
   }
 
+  getTime(String timeToConverted) {
+    var hour = timeToConverted.split(':').first;
+    var minutes = timeToConverted.split(':')[1];
+    return '${hour}h$minutes';
+  }
+
   getTypeTitle(String code) {
     switch (code) {
       case 'HM':
