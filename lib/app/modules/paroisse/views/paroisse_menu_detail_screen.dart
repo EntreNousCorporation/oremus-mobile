@@ -138,12 +138,12 @@ class ParoisseMenuDetailScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            Expanded(
+                            _.liturgicalCelebrations.value.isNotEmpty ? Expanded(
                               child: Accordion(
                                 disableScrolling: false,
                                 maxOpenSections: 1,
                                 leftIcon: Image.asset(
-                                  'assets/images/icon_paroisse.png',
+                                  _.code.value == 'HM' ? 'assets/images/icon_paroisse.png' : 'assets/images/icon_diocese.jpg',
                                   height: 25,
                                   color: colorWhite,
                                 ),
@@ -227,7 +227,7 @@ class ParoisseMenuDetailScreen extends StatelessWidget {
                               /*child: NotFoundScreen(
                                 message: '${_.getTypeMessage(_.code.value)}',
                               ),*/
-                            ),
+                            ) : Expanded(child: NotFoundScreen(message: 'Horaires non disponible pour l\'instant')),
                           ],
                         ),
                       ),

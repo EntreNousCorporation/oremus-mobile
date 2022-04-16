@@ -39,11 +39,14 @@ class NotFoundScreen extends StatelessWidget {
             ),
           ),
           Separators.normalVertical(),
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: TextStyles.montserratMedium(
-                textSize: TextSizes.eighteen, textColor: colorBlack),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: Get.width/10),
+            child: Text(
+              message,
+              textAlign: TextAlign.center,
+              style: TextStyles.montserratMedium(
+                  textSize: TextSizes.eighteen, textColor: colorBlack),
+            ),
           ),
         ],
       ),
