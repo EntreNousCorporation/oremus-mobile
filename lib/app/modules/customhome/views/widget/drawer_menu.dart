@@ -46,7 +46,7 @@ class _MenuState extends State<DrawerMenu> with TickerProviderStateMixin {
     return Stack(
       children: <Widget>[
         Container(
-          color: colorBrown,
+          color: colorGreenSemiLight,
           width: double.maxFinite,
           height: double.maxFinite,
         ),

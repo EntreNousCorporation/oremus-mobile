@@ -11,6 +11,7 @@ const Color colorRed = Color(0xFFe93322);
 
 const Color colorGreen1 = Color(0xFFe2f7d5);
 const Color colorBrown = Color(0xFF72604A);
+const Color colorGreenSemiLight = Color(0xFF448446);
 const Color colorBlue2 = Color(0xFF5080ea);
 const Color colorGreen3 = Color(0xFF68D52E);
 const Color colorWhite = Color(0xFFFFFFFF);

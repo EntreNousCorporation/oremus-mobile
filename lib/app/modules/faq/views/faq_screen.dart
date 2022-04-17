@@ -21,8 +21,8 @@ class FaqScreen extends StatelessWidget {
           disableScrolling: true,
           maxOpenSections: 1,
           leftIcon: SvgPicture.asset('assets/images/logo.svg', height: 30,),
-          headerBackgroundColor: colorGreen,
-          contentBorderColor: colorGreen,
+          headerBackgroundColor: colorGreenSemiLight,
+          contentBorderColor: colorGreenSemiLight,
           children: [
             AccordionSection(
               isOpen: false,

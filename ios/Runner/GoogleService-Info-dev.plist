@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>393738947675-7ptgqjgq5e2bvimv1499rlraqn3gslp2.apps.googleusercontent.com</string>
+	<string>393738947675-gs0b2nloadqnut2ovce1hk37u1clmtsm.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.393738947675-7ptgqjgq5e2bvimv1499rlraqn3gslp2</string>
+	<string>com.googleusercontent.apps.393738947675-gs0b2nloadqnut2ovce1hk37u1clmtsm</string>
 	<key>API_KEY</key>
 	<string>AIzaSyDJ3facKkCovOIoQh30ePapI3wBpTVxIy8</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>ci.oremus.app.oremusapp</string>
+	<string>ci.oremus.app.oremusapp.dev</string>
 	<key>PROJECT_ID</key>
 	<string>oremus-test</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:393738947675:ios:f7276845d091ecee7e837e</string>
+	<string>1:393738947675:ios:32e0679df7f5c5207e837e</string>
 </dict>
 </plist>

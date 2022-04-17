@@ -140,7 +140,7 @@ class _MyTextFieldState extends State<MyTextField> {
         keyboardAppearance: Brightness.light,
         onSaved: onSaved,
         validator: validator,
-        style: TextStyles.montserratMedium(textColor: colorBlack),
+        style: TextStyles.montserratMedium(textColor: colorBlack,),
         maxLines: maxLines,
         maxLength: maxLength,
         cursorColor: colorGreen,
@@ -150,6 +150,7 @@ class _MyTextFieldState extends State<MyTextField> {
         textCapitalization: textCapitalization,
         focusNode: focusNode,
         decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8),
           filled: filled,
           fillColor: colorGrey3,
           border: InputBorder.none,
@@ -212,6 +213,7 @@ class _MyTextFieldState extends State<MyTextField> {
         keyboardType: TextInputType.phone,
         focusNode: focusNode,
         decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8),
           filled: true,
           fillColor: colorGrey3,
           border: InputBorder.none,
@@ -291,6 +293,7 @@ class _MyTextFieldState extends State<MyTextField> {
           cursorColor: colorGreen3,
           focusNode: focusNode,
           decoration: InputDecoration(
+            contentPadding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8),
             filled: true,
             fillColor: colorGrey3,
             border: InputBorder.none,

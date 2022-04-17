@@ -47,6 +47,7 @@ class CustomHomeController extends GetxController {
         code: AppConstants.SHARE_APP,
         libelle: "Partager l'application",
         icon: 'assets/images/icon_settings.svg',
+        isVisible: false,
       ),
       MenuItem(
         code: AppConstants.PROMO,
