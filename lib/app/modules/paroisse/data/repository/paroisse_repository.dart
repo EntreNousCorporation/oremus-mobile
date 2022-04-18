@@ -7,7 +7,8 @@ import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/activity_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/movement_response.dart';
-import 'package:oremusapp/app/modules/paroisse/data/model/paroisse_response.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/place_user.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/interface_paroisse_repository.dart';
 import 'package:oremusapp/app/remote/api_client.dart';
 import 'package:oremusapp/main.dart';
@@ -85,6 +86,23 @@ class ParoisseRepository implements IParoisseRepository {
       throw Exception(resp);
     } else {
       return (jsonDecode(response.bodyString.toString()) as List).map((i) => MovementResponse.fromJson(i)).toList();
+    }
+  }
+
+  @override
+  Future<List<PlaceUser>> getPlaceOfWorshipUsers(int idParoisse) async {
+    Response response = await _apiClient.doRequest(
+      endpoint: "/places-of-worship/$idParoisse/users",
+      method: HttpMethod.get,
+      useBearer: true,
+    );
+    final String resp = json.encode(response.bodyString.toString());
+    log('resp => ${response.statusCode}');
+
+    if (response.statusCode != 200) {
+      throw Exception(resp);
+    } else {
+      return (jsonDecode(response.bodyString.toString()) as List).map((i) => PlaceUser.fromJson(i)).toList();
     }
   }
 

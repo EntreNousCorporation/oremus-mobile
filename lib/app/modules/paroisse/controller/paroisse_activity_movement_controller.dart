@@ -9,7 +9,7 @@ import 'package:oremusapp/app/modules/home/data/model/type_menu.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/activity_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/movement_response.dart';
-import 'package:oremusapp/app/modules/paroisse/data/model/paroisse_response.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main.dart';

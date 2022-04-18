@@ -5,7 +5,7 @@ import "package:latlong2/latlong.dart" as latLng;
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/paroisse/data/model/paroisse_response.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 
 class CustomParoisseMarkerPopup extends StatelessWidget {
   CustomParoisseMarkerPopup({Key? key, required this.paroisse})

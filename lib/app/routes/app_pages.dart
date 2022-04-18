@@ -17,10 +17,12 @@ import 'package:oremusapp/app/modules/paroisse/binding/paroisse_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_map_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_detail_binding.dart';
+import 'package:oremusapp/app/modules/paroisse/binding/paroisse_presby_team_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_activity_movement_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_map_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu_detail_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_presby_team_screen.dart';
 import 'package:oremusapp/app/modules/profile/binding/edit_profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/binding/profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/views/edit_profile_screen.dart';
@@ -133,6 +135,12 @@ class AppPages {
       name: Routes.PAROISSE_ACTIVITY_MOVEMENT,
       page: () => const ParoisseActivityMovementScreen(),
       binding: ParoisseActivityMovementBinding(),
+      transition: Transition.circularReveal,
+    ),
+    GetPage(
+      name: Routes.PAROISSE_PRESBY_TEAM,
+      page: () => const ParoisseBresbyTeamScreen(),
+      binding: ParoissePresbyTeamBinding(),
       transition: Transition.circularReveal,
     ),
     GetPage(

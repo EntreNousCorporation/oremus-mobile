@@ -1,11 +1,7 @@
-import 'dart:developer';
 
 import 'package:accordion/accordion.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
@@ -14,10 +10,8 @@ import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu_detail_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/day_item.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ParoisseMenuDetailScreen extends StatelessWidget {
   const ParoisseMenuDetailScreen({Key? key}) : super(key: key);
@@ -141,11 +135,7 @@ class ParoisseMenuDetailScreen extends StatelessWidget {
                             child: Accordion(
                               disableScrolling: false,
                               maxOpenSections: 1,
-                              leftIcon: Image.asset(
-                                _.code.value == 'HM' ? 'assets/images/icon_paroisse.png' : 'assets/images/icon_diocese.jpg',
-                                height: 25,
-                                color: colorWhite,
-                              ),
+                              leftIcon: SvgPicture.asset(_.code.value == 'HM' ? 'assets/images/messe.svg' : 'assets/images/confession_icon.svg', height: 25, color: colorWhite,),
                               headerBackgroundColor: colorBrown,
                               contentBorderColor: colorBrown,
                               children:

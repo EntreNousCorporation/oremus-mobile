@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/modules/diocese/data/repository/diocese_repository.dart';
-import 'package:oremusapp/app/modules/paroisse/data/model/paroisse_response.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin_response.dart';
 import 'package:oremusapp/main.dart';

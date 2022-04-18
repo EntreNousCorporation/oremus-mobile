@@ -55,7 +55,7 @@ class _MenuGridItemState extends State<MenuGridItem> {
                   ? Image.asset(item.icon, height: Get.width / 8)
                   : SvgPicture.asset(
                       item.icon,
-                      height: Get.width / 8,
+                      height: Get.width / 10,
                     ),
               Separators.minimunVertical(),
               Padding(

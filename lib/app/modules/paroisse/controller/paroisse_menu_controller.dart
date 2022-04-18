@@ -8,7 +8,7 @@ import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/home/data/model/type_menu.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
-import 'package:oremusapp/app/modules/paroisse/data/model/paroisse_response.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main.dart';
@@ -54,8 +54,8 @@ class ParoisseMenuController extends GetxController {
       TypeMenu(
         code: 'HM',
         title: 'Horaires des messes',
-        icon: 'assets/images/icon_paroisse.png',
-        isPngImage: true,
+        icon: 'assets/images/messe.svg',
+        isPngImage: false,
         activeTint: colorBlack,
         goToPage: () {
           liturgicalCelebrations.value = masses.value;
@@ -72,8 +72,8 @@ class ParoisseMenuController extends GetxController {
       TypeMenu(
         code: 'HC',
         title: 'Horaires des confessions',
-        icon: 'assets/images/icon_diocese.jpg',
-        isPngImage: true,
+        icon: 'assets/images/confession_icon.svg',
+        isPngImage: false,
         activeTint: colorBlack,
         goToPage: () {
           liturgicalCelebrations.value = confessions.value;
@@ -90,8 +90,8 @@ class ParoisseMenuController extends GetxController {
       TypeMenu(
         code: 'HB',
         title: 'Horaires des bureaux',
-        icon: 'assets/images/icon_services.png',
-        isPngImage: true,
+        icon: 'assets/images/calendar.svg',
+        isPngImage: false,
         activeTint: colorBlack,
         goToPage: () {
           Get.toNamed(
@@ -106,8 +106,8 @@ class ParoisseMenuController extends GetxController {
       TypeMenu(
         code: 'AM',
         title: 'Activités & mouvements',
-        icon: 'assets/images/icon_formation.png',
-        isPngImage: true,
+        icon: 'assets/images/group.svg',
+        isPngImage: false,
         activeTint: colorBlack,
         goToPage: () {
           Get.toNamed(
@@ -122,12 +122,12 @@ class ParoisseMenuController extends GetxController {
       TypeMenu(
         code: 'EP',
         title: 'Equipe presbytérale',
-        icon: 'assets/images/team.png',
-        isPngImage: true,
+        icon: 'assets/images/priest_icon.svg',
+        isPngImage: false,
         activeTint: colorBlack,
         goToPage: () {
           Get.toNamed(
-            Routes.PAROISSE_MENU_DETAIL,
+            Routes.PAROISSE_PRESBY_TEAM,
             arguments: [
               'EP',
               jsonEncode(paroisseSelected.value.toJson()),

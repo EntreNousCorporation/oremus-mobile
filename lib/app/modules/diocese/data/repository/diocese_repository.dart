@@ -5,7 +5,7 @@ import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/diocese/data/repository/interface_diocese_repository.dart';
-import 'package:oremusapp/app/modules/paroisse/data/model/paroisse_response.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/remote/api_client.dart';
 
 class DioceseRepository implements IDioceseRepository {
