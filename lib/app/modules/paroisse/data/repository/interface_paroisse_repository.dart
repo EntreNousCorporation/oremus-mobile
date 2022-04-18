@@ -8,4 +8,6 @@ abstract class IParoisseRepository {
   Future<List<LiturgicalCelebrationResponse>> getLiturgicalCelebration(int idParoisse);
   Future<List<ActivityResponse>> getActivities(int idParoisse);
   Future<List<MovementResponse>> getMouvements(int idParoisse);
+  void addFavorite(ContentPlace paroisse);
+  void deleteFavorite(ContentPlace paroisse);
 }

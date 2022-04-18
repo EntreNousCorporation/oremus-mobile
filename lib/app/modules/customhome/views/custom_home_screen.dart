@@ -84,7 +84,7 @@ class CustomHomeScreen extends StatelessWidget {
                       ),
                       actions: [
                         Visibility(
-                          visible: logic.menus[logic.selectedIndex.value].code == AppConstants.PROFILE,
+                          visible: (logic.menus[logic.selectedIndex.value].code == AppConstants.PROFILE) && (logic.userConnection.value.isBoUser == false),
                           child: GetBuilder<ProfileController>(builder: (logic) {
                             return IconButton(
                               onPressed: () {

@@ -15,6 +15,8 @@ class Signin {
   String? lastname;
   String? email;
 
+  bool? isBoUser;
+
   Signin({
     this.id,
     this.username,
@@ -26,6 +28,7 @@ class Signin {
     this.firstname,
     this.lastname,
     this.email,
+    this.isBoUser,
   });
 
   factory Signin.fromJson(Map<String, dynamic> json) => Signin(
@@ -39,6 +42,7 @@ class Signin {
     firstname: json["firstname"],
     lastname: json["lastname"],
     email: json["email"],
+    isBoUser: json["isBoUser"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -52,5 +56,6 @@ class Signin {
     "firstname": firstname,
     "lastname": lastname,
     "email": email,
+    "isBoUser": isBoUser,
   };
 }

@@ -14,6 +14,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:oremusapp/app/commons/components/custom_animation.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/lang/translation_service.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/configs/flavor_settings.dart';
@@ -31,9 +32,9 @@ void main() async {
       final settings = await _getFlavorSettings();
       appUrl = settings.apiBaseUrl;
 
-      await Hive.initFlutter()
-          .then((value) => log('==== HIVE INIT SUCCESS===='));
-      await configureEncryptedHive();
+      await DB.initDatabase();
+      //await Hive.initFlutter().then((value) => log('==== HIVE INIT SUCCESS===='));
+      //await configureEncryptedHive();
 
       Jiffy.locale('fr');
       configOrientation();
@@ -78,24 +79,6 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
-}
-
-configureEncryptedHive() async {
-  const FlutterSecureStorage secureStorage = FlutterSecureStorage();
-  var containsEncryption =
-      await secureStorage.read(key: AppConstants.STORAGE_KEY);
-  if (containsEncryption == null) {
-    var key = Hive.generateSecureKey();
-    log('key $key');
-    await secureStorage.write(
-        key: AppConstants.STORAGE_KEY, value: base64UrlEncode(key));
-  }
-  log('containsEncryption $containsEncryption');
-  var encryptionKey = base64Url
-      .decode(await secureStorage.read(key: AppConstants.STORAGE_KEY) ?? '');
-  log('encryptionKey $encryptionKey');
-  encryptedBox = await Hive.openBox(AppConstants.BOX_NAME,
-      encryptionCipher: HiveAesCipher(encryptionKey));
 }
 
 Future<FlavorSettings> _getFlavorSettings() async {

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -136,7 +137,7 @@ class ParoisseItem extends StatelessWidget {
                                 color: colorGreen,
                               ),
                               child: Text(
-                                'Informations',
+                                '${paroisse.address?.municipality}',
                                 style: TextStyles.montserratBold(
                                     textSize: TextSizes.eleven,
                                     textColor: colorWhite),
@@ -147,6 +148,10 @@ class ParoisseItem extends StatelessWidget {
                             width: 10,
                           ),
                           LikeButton(
+                            /*onTap: ((isLiked) async {
+                              logic.showMessageFavorite(logic.isLiked.value);
+                              return !isLiked;
+                            }),*/
                             size: 25,
                             circleColor:
                             const CircleColor(start: Color(0xff93291E), end: Color(0xFFED213A)),
@@ -155,9 +160,17 @@ class ParoisseItem extends StatelessWidget {
                               dotSecondaryColor: Color(0xff93291E),
                             ),
                             likeBuilder: (bool isLiked) {
+                              log('${isLiked}');
+                              log('${logic.isLiked.value}');
+                              logic.isLiked.value = isLiked;
+                              if (isLiked) {
+                                logic.saveFavorite(paroisse, isLiked);
+                              } else {
+                                logic.removeFavorite(paroisse, isLiked);
+                              }
                               return Icon(
                                 isLiked ? Icons.favorite : Icons.favorite_border,
-                                color: isLiked ? const Color(0xFFED213A) : Colors.grey,
+                                color: isLiked ? const Color(0xFFED213A) : colorGrey1,
                                 size: 25,
                               );
                             },

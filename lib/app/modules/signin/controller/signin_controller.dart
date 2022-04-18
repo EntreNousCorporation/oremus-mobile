@@ -98,7 +98,8 @@ class SigninController extends GetxController {
       Map<String, dynamic> payload = Jwt.parseJwt(value.accessToken ?? '');
       var userConnection = Signin(
         username: payload['username'],
-        id: payload['sub']
+        id: payload['sub'],
+        isBoUser: value.isBoUser,
       );
       encryptedBox.put(AppConstants.USER_LOG_INFOS, jsonEncode(userConnection.toJson()));
       Get.toNamed(Routes.CUSTOM_HOME);

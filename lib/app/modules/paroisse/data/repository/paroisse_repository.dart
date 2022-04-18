@@ -10,6 +10,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/movement_response.dart
 import 'package:oremusapp/app/modules/paroisse/data/model/paroisse_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/interface_paroisse_repository.dart';
 import 'package:oremusapp/app/remote/api_client.dart';
+import 'package:oremusapp/main.dart';
 
 class ParoisseRepository implements IParoisseRepository {
 
@@ -85,5 +86,15 @@ class ParoisseRepository implements IParoisseRepository {
     } else {
       return (jsonDecode(response.bodyString.toString()) as List).map((i) => MovementResponse.fromJson(i)).toList();
     }
+  }
+
+  @override
+  void addFavorite(ContentPlace paroisse) {
+
+  }
+
+  @override
+  void deleteFavorite(ContentPlace paroisse) {
+
   }
 }

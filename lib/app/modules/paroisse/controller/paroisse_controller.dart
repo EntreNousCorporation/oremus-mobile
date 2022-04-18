@@ -5,11 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/theme/app_dimension.dart';
+import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/paroisse_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoisseController extends GetxController {
@@ -27,6 +31,7 @@ class ParoisseController extends GetxController {
 
   var isDataProcessing = false.obs;
   var hasData = false.obs;
+  var isLiked = false.obs;
 
   var refreshController = RefreshController();
 
@@ -51,6 +56,7 @@ class ParoisseController extends GetxController {
       if (value.empty == false) {
         hasData(true);
         paroisses.value = value.content ?? [];
+        paroisses.value.sort((p1, p2) => p1.name!.compareTo(p2.name!));
       } else {
         hasData(false);
       }
@@ -66,6 +72,40 @@ class ParoisseController extends GetxController {
       }
       debugPrint("error => ${error.toString()}");
     });
+  }
+
+  saveFavorite(ContentPlace paroisse, bool state) {
+    paroisseRepository.addFavorite(paroisse);
+    //showMessageFavorite(state);
+  }
+
+  removeFavorite(ContentPlace paroisse, bool state) {
+    paroisseRepository.addFavorite(paroisse);
+    //showMessageFavorite(state);
+  }
+
+  showMessageFavorite(bool state) {
+    if (state) {
+      showSimpleNotification(
+        Center(
+            child: Text(
+              'Ce lieu de culte a été rajouté dans vos favoris',
+              style: TextStyles.montserratRegular(
+                  textSize: TextSizes.sixteen, textColor: colorWhite),
+            )),
+        background: colorGreenSemiLight,
+      );
+    } else {
+      showSimpleNotification(
+        Center(
+            child: Text(
+              'Ce lieu de culte a été retiré des favoris',
+              style: TextStyles.montserratRegular(
+                  textSize: TextSizes.sixteen, textColor: colorWhite),
+            )),
+        background: colorRed,
+      );
+    }
   }
 
   doLogout() {

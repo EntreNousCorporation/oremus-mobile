@@ -56,8 +56,9 @@ class ProfileScreen extends StatelessWidget {
                                                 left: 16,
                                                 right: 16),
                                             child: Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 16.0),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 16.0),
                                               child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
@@ -70,22 +71,30 @@ class ProfileScreen extends StatelessWidget {
                                                       Hero(
                                                         tag: 'avatar',
                                                         child: Material(
-                                                          borderRadius: BorderRadius.circular(110.0),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      110.0),
                                                           elevation: 6,
                                                           color: colorWhite,
-                                                          shadowColor: colorGrey2.withOpacity(0.5),
+                                                          shadowColor:
+                                                              colorGrey2
+                                                                  .withOpacity(
+                                                                      0.5),
                                                           child: ClipRRect(
                                                             borderRadius:
                                                                 BorderRadius
-                                                                    .circular(110),
+                                                                    .circular(
+                                                                        110),
                                                             child: Container(
                                                               color:
                                                                   colorGreenlight2,
                                                               child: SizedBox(
                                                                 width: 110,
                                                                 height: 110,
-                                                                child: SvgPicture.asset(
-                                                                    'assets/images/avatar.svg'),
+                                                                child: SvgPicture
+                                                                    .asset(
+                                                                        'assets/images/avatar.svg'),
                                                               ),
                                                             ),
                                                           ),
@@ -120,8 +129,8 @@ class ProfileScreen extends StatelessWidget {
                                                   Text(
                                                     '${_.userInfo.value.firstname} ${_.userInfo.value.lastname}',
                                                     textAlign: TextAlign.center,
-                                                    style:
-                                                        TextStyles.montserratBold(
+                                                    style: TextStyles
+                                                        .montserratBold(
                                                             textSize: TextSizes
                                                                 .eighteen,
                                                             textColor:
@@ -155,7 +164,8 @@ class ProfileScreen extends StatelessWidget {
                                                     onTap: () {
                                                       showSimpleNotification(
                                                         const Center(
-                                                          child: Text('Bientôt disponible'),
+                                                          child: Text(
+                                                              'Bientôt disponible'),
                                                         ),
                                                         background: Colors.red,
                                                       );
@@ -166,7 +176,8 @@ class ProfileScreen extends StatelessWidget {
                                                       shadowColor: colorGrey2
                                                           .withOpacity(0.5),
                                                       borderRadius:
-                                                          BorderRadius.circular(50),
+                                                          BorderRadius.circular(
+                                                              50),
                                                       child: SizedBox(
                                                         height: 50,
                                                         child: Row(
@@ -177,11 +188,11 @@ class ProfileScreen extends StatelessWidget {
                                                                   Separators
                                                                       .normalHorizontal(),
                                                                   const Icon(Icons
-                                                                      .notifications),
+                                                                      .favorite),
                                                                   Separators
                                                                       .minimunHorizontal(),
                                                                   Text(
-                                                                    'Notifications',
+                                                                    'Mes favoris',
                                                                     textAlign:
                                                                         TextAlign
                                                                             .center,
@@ -215,7 +226,8 @@ class ProfileScreen extends StatelessWidget {
                                                       shadowColor: colorGrey2
                                                           .withOpacity(0.5),
                                                       borderRadius:
-                                                          BorderRadius.circular(50),
+                                                          BorderRadius.circular(
+                                                              50),
                                                       child: SizedBox(
                                                         height: 50,
                                                         child: Row(
@@ -226,20 +238,21 @@ class ProfileScreen extends StatelessWidget {
                                                                   Separators
                                                                       .normalHorizontal(),
                                                                   const Icon(
-                                                                      Icons.lock),
+                                                                      Icons
+                                                                          .lock),
                                                                   Separators
                                                                       .minimunHorizontal(),
                                                                   Hero(
-                                                                    tag: 'update-password',
+                                                                    tag:
+                                                                        'update-password',
                                                                     child: Text(
                                                                       'Modifier votre mot de passe',
                                                                       textAlign:
                                                                           TextAlign
                                                                               .center,
                                                                       style: TextStyles.montserratRegular(
-                                                                          textSize:
-                                                                              TextSizes
-                                                                                  .fourteen,
+                                                                          textSize: TextSizes
+                                                                              .fourteen,
                                                                           textColor:
                                                                               colorBlack),
                                                                     ),
@@ -251,6 +264,58 @@ class ProfileScreen extends StatelessWidget {
                                                                 .arrow_forward_ios_rounded),
                                                             Separators
                                                                 .normalHorizontal(),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Separators.normalVertical(),
+                                                  Visibility(
+                                                    visible: false,
+                                                    child: Material(
+                                                      elevation: 6,
+                                                      color: colorGrey2,
+                                                      shadowColor: colorGrey2.withOpacity(0.5),
+                                                      borderRadius:
+                                                          BorderRadius.circular(50),
+                                                      child: SizedBox(
+                                                        height: 50,
+                                                        child: Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: Row(
+                                                                children: [
+                                                                  Separators
+                                                                      .normalHorizontal(),
+                                                                  const Icon(Icons.fingerprint_rounded),
+                                                                  Separators
+                                                                      .minimunHorizontal(),
+                                                                  Expanded(
+                                                                    child: Text(
+                                                                      'Connexion biométrique',
+                                                                      textAlign:
+                                                                          TextAlign.start,
+                                                                      maxLines: 2,
+                                                                      overflow: TextOverflow.ellipsis,
+                                                                      style: TextStyles.montserratRegular(
+                                                                          textSize:
+                                                                              TextSizes
+                                                                                  .fourteen,
+                                                                          textColor:
+                                                                              colorBlack),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            Switch(
+                                                               activeColor: colorGreenSemiLight,
+                                                                value: _.isActive.value,
+                                                                onChanged: (value) {
+                                                                 _.updateBiometriqueUI();
+                                                                 _.showMessageBiometrique(value);
+                                                                }),
+                                                            Separators.normalHorizontal(),
                                                           ],
                                                         ),
                                                       ),

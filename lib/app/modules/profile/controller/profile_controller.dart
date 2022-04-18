@@ -5,11 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/theme/app_dimension.dart';
+import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/profile/data/model/profile.dart';
 import 'package:oremusapp/app/modules/profile/data/repository/profile_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ProfileController extends GetxController {
@@ -23,6 +27,7 @@ class ProfileController extends GetxController {
   var isDataProcessing = false.obs;
   var hasData = false.obs;
   var userInfo = Profile().obs;
+  var isActive = true.obs;
 
   var refreshController = RefreshController();
 
@@ -80,6 +85,34 @@ class ProfileController extends GetxController {
       }
       debugPrint("error => ${error.toString()}");
     });
+  }
+
+  updateBiometriqueUI() {
+    isActive.toggle();
+  }
+
+  showMessageBiometrique(bool state) {
+    if (state) {
+      showSimpleNotification(
+        Center(
+            child: Text(
+              'Authentification biométrique activée',
+              style: TextStyles.montserratRegular(
+                  textSize: TextSizes.sixteen, textColor: colorWhite),
+            )),
+        background: colorGreenSemiLight,
+      );
+    } else {
+      showSimpleNotification(
+        Center(
+            child: Text(
+              'Authentification biométrique désactivée',
+              style: TextStyles.montserratRegular(
+                  textSize: TextSizes.sixteen, textColor: colorWhite),
+            )),
+        background: colorRed,
+      );
+    }
   }
 
   goToEditPassword() {
