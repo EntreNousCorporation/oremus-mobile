@@ -24,6 +24,12 @@ import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu_screen.dart';
 import 'package:oremusapp/app/modules/profile/binding/edit_profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/binding/profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/views/edit_profile_screen.dart';
+import 'package:oremusapp/app/modules/resetpassword/bindings/otp_binding.dart';
+import 'package:oremusapp/app/modules/resetpassword/bindings/init_reset_password_binding.dart';
+import 'package:oremusapp/app/modules/resetpassword/bindings/reset_password_binding.dart';
+import 'package:oremusapp/app/modules/resetpassword/views/init_reset_password_screen.dart';
+import 'package:oremusapp/app/modules/resetpassword/views/otp_screen.dart';
+import 'package:oremusapp/app/modules/resetpassword/views/reset_password_screen.dart';
 import 'package:oremusapp/app/modules/service/binding/service_binding.dart';
 import 'package:oremusapp/app/modules/signin/binding/signin_binding.dart';
 import 'package:oremusapp/app/modules/signin/views/signin_screen.dart';
@@ -85,6 +91,24 @@ class AppPages {
       name: Routes.SIGNUP,
       page: () => const SignupScreen(),
       binding: SignupBinding(),
+      transition: Transition.circularReveal,
+    ),
+    GetPage(
+      name: Routes.INIT_RESET_PASSWORD,
+      page: () => const InitResetPasswordScreen(),
+      binding: InitResetPasswordBinding(),
+      transition: Transition.circularReveal,
+    ),
+    GetPage(
+      name: Routes.CHECK_OTP,
+      page: () => const OtpScreen(),
+      binding: OtpBinding(),
+      transition: Transition.circularReveal,
+    ),
+    GetPage(
+      name: Routes.RESET_PASSWORD,
+      page: () => const ResetPasswordScreen(),
+      binding: ResetPasswordBinding(),
       transition: Transition.circularReveal,
     ),
     GetPage(

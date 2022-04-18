@@ -3,6 +3,7 @@ import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
+import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
@@ -162,12 +163,8 @@ class ProfileScreen extends StatelessWidget {
                                                   Separators.maximumVertical(),
                                                   GestureDetector(
                                                     onTap: () {
-                                                      showSimpleNotification(
-                                                        const Center(
-                                                          child: Text(
-                                                              'Bientôt disponible'),
-                                                        ),
-                                                        background: Colors.red,
+                                                      showNotification(
+                                                          message: 'Bientôt disponible',
                                                       );
                                                     },
                                                     child: Material(

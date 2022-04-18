@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 Future showCustomDialog(BuildContext context,
     {String title = 'INFORMATION',
@@ -213,4 +214,17 @@ showNormalDialog(BuildContext context,
           ],
         );
       });
+}
+
+showNotification({required String message, Color? bgColor = colorRed}) {
+  return showSimpleNotification(
+    Center(
+      child: Text(
+        message,
+        style: TextStyles.montserratSemiBold(
+            textSize: TextSizes.fourteen, textColor: colorWhite),
+      ),
+    ),
+    background: bgColor,
+  );
 }

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -106,12 +107,13 @@ class SigninScreen extends StatelessWidget {
                                                 },
                                                 errorText: _.passwordErrorMessage.value,
                                               ),
-                                              Visibility(
-                                                visible: false,
-                                                child: Separators.normalVertical(),
-                                              ),
-                                              Visibility(
-                                                visible: false,
+                                              //Separators.normalVertical(),
+                                              MaterialButton(
+                                                elevation: 0,
+                                                padding: const EdgeInsets.only(right: 0),
+                                                onPressed: () {
+                                                  _.goToForgotPassword();
+                                                },
                                                 child: Row(
                                                   mainAxisAlignment:
                                                   MainAxisAlignment.end,
@@ -128,8 +130,8 @@ class SigninScreen extends StatelessWidget {
                                                   ],
                                                 ),
                                               ),
-                                              //Separators.normalVertical(),
-                                              Separators.maximumVertical(),
+                                              Separators.normalVertical(),
+                                              //Separators.maximumVertical(),
                                               SizedBox(
                                                 width: Get.width / 3.5,
                                                 height: 40,

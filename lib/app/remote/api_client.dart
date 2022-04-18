@@ -78,6 +78,8 @@ class ApiClientImpl extends GetConnect implements ApiClient {
       case 200:
       case 201:
       case 202:
+      case 204:
+      case 205:
         return response;
       case 400:
         throw BadRequestException(400, response.body.toString());

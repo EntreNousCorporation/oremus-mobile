@@ -10,6 +10,9 @@ abstract class Routes {
   //AUTH
   static const SIGNIN = '/signin';
   static const SIGNUP = '/signup';
+  static const INIT_RESET_PASSWORD = '/init-reset-password';
+  static const CHECK_OTP = '/check-otp';
+  static const RESET_PASSWORD = '/reset-password';
 
   //PAROISSE
   static const PAROISSE_MENU = '/paroisse-menu';

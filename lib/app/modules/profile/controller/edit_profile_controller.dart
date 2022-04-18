@@ -111,7 +111,10 @@ class EditProfileController extends GetxController {
       });
       lockScreen(false);
       encryptedBox.put(AppConstants.USER_INFOS, jsonEncode(value.toJson()));
-      showSimpleNotification(const Center(child: Text('Profil modifié avec succès')), background: colorGreen4);
+      showNotification(
+          message: 'Profil modifié avec succès',
+          bgColor: colorGreen4
+      );
     }, onError: (error) {
       EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;
@@ -120,9 +123,14 @@ class EditProfileController extends GetxController {
       debugPrint("error => ${error.toString()}");
       if (error.toString().isNotEmpty && error is Map) {
         var errorResponse = ErrorResponse.fromJson(json.decode(error.toString()));
-        showSimpleNotification(Center(child: Text(errorResponse.debugMessage.toString())), background: Colors.red);
+        showNotification(
+            message: errorResponse.debugMessage.toString(),
+        );
       } else {
-        showSimpleNotification(const Center(child: Text("Une erreur est survenue")), background: Colors.red);
+        showNotification(
+            message: "Une erreur est survenue",
+            bgColor: colorGreen4
+        );
       }
     });
   }

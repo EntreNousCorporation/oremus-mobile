@@ -86,24 +86,13 @@ class ParoisseController extends GetxController {
 
   showMessageFavorite(bool state) {
     if (state) {
-      showSimpleNotification(
-        Center(
-            child: Text(
-              'Ce lieu de culte a été rajouté dans vos favoris',
-              style: TextStyles.montserratRegular(
-                  textSize: TextSizes.sixteen, textColor: colorWhite),
-            )),
-        background: colorGreenSemiLight,
+      showNotification(
+          message: 'Ce lieu de culte a été rajouté dans vos favoris',
+          bgColor: colorGreenSemiLight
       );
     } else {
-      showSimpleNotification(
-        Center(
-            child: Text(
-              'Ce lieu de culte a été retiré des favoris',
-              style: TextStyles.montserratRegular(
-                  textSize: TextSizes.sixteen, textColor: colorWhite),
-            )),
-        background: colorRed,
+      showNotification(
+          message: 'Ce lieu de culte a été retiré des favoris',
       );
     }
   }

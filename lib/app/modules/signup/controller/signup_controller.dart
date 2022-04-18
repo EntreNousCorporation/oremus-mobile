@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/email_validator.dart';
@@ -99,7 +100,10 @@ class SignupController extends GetxController {
       });
       log('value => ${value.accessToken}');
       lockScreen(false);
-      showSimpleNotification(const Center(child: Text('Inscription effectué avec succès')), background: colorGreen);
+      showNotification(
+          message: "Inscription effectué avec succès",
+          bgColor: colorGreen
+      );
       Get.back();
     }, onError: (error) {
       EasyLoading.dismiss(animation: true).then((v) {
@@ -109,9 +113,13 @@ class SignupController extends GetxController {
       debugPrint("error => ${error.toString()}");
       if (error.toString().isNotEmpty && error is Map) {
         var errorResponse = ErrorResponse.fromJson(json.decode(error.toString()));
-        showSimpleNotification(Center(child: Text(errorResponse.debugMessage.toString())), background: Colors.red);
+        showNotification(
+            message: errorResponse.debugMessage.toString(),
+        );
       } else {
-        showSimpleNotification(const Center(child: Text("Une erreur est survenue")), background: Colors.red);
+        showNotification(
+            message: "Une erreur est survenue",
+        );
       }
     });
   }

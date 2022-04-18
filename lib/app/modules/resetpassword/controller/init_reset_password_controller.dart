@@ -12,6 +12,7 @@ import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/email_validator.dart';
 import 'package:oremusapp/app/commons/storage_request.dart';
 import 'package:oremusapp/app/commons/utils.dart';
+import 'package:oremusapp/app/modules/resetpassword/data/repository/reset_password_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
@@ -19,13 +20,12 @@ import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main.dart';
 import 'package:overlay_support/overlay_support.dart';
 
-class SigninController extends GetxController {
-  final SigninRepository signinRepository;
+class InitResetPasswordController extends GetxController {
+  final ResetPasswordRepository resetPasswordRepository;
 
-  SigninController({required this.signinRepository});
+  InitResetPasswordController({required this.resetPasswordRepository});
 
   late TextEditingController emailController;
-  late TextEditingController passwordController;
 
   var unlockBackButton = true.obs;
 
@@ -36,74 +36,37 @@ class SigninController extends GetxController {
   var isValidForm = false.obs;
 
   var emailErrorMessage = ''.obs;
-  var passwordErrorMessage = ''.obs;
 
   GlobalKey<FormState> formSigninKey = GlobalKey<FormState>();
   FocusNode emailFocusNode = FocusNode();
-  FocusNode passwordFocusNode = FocusNode();
 
   @override
   void onInit() {
     super.onInit();
     emailController = TextEditingController(text: '');
-    passwordController = TextEditingController(text: '');
-
-    if (flavor == AppConstants.ENV_DEV) {
-      emailController = TextEditingController(text: 'amourssou11@gmail.com');
-      passwordController = TextEditingController(text: 'test');
-      checkForm();
-      //loginController = TextEditingController(text: 'SUVAWY');
-      //passwordController = TextEditingController(text: 'A22222');
-
-      //loginController = TextEditingController(text: "0103244851");
-      //passwordController = TextEditingController(text: "DOSSO21");
-
-      //loginController = TextEditingController(text: "W39JZM");
-      //passwordController = TextEditingController(text: "56C2");
-
-    } else {
-      //loginController = TextEditingController(text: "0749435261");
-      //passwordController = TextEditingController(text: "DE2021");
-
-      //loginController = TextEditingController(text: "W39JZM");
-      //passwordController = TextEditingController(text: "56C2");
-    }
   }
 
-  connectUser() {
+  doInitResetPassword() {
     hideKeyboard();
     EasyLoading.show(
-      status: 'connection_processing'.tr,
+      status: 'Traitement en cours...',
       maskType: EasyLoadingMaskType.black,
       indicator: LottieLoadingView(),
     ).then((v) {
       unlockBackButton.value = false;
     });
 
-    String login = emailController.text.trim().toString().replaceAll(' ', '');
-    String password = passwordController.text.trim().toString();
+    String username = emailController.text.trim().toString().replaceAll(' ', '');
 
     loading(true);
     lockScreen(true);
-    Signin request = Signin(username: login, password: password);
 
-    log('request connectUser => ${request.toJson().toString()}');
-
-    signinRepository.loginUser(request).then((value) {
+    resetPasswordRepository.initResetPassword(username).then((value) {
       EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;
       });
-      log('value => ${value.accessToken}');
       lockScreen(false);
-      StorageRequest.saveData(AppConstants.KEY_TOKEN, value.accessToken);
-      Map<String, dynamic> payload = Jwt.parseJwt(value.accessToken ?? '');
-      var userConnection = Signin(
-        username: payload['username'],
-        id: payload['sub'],
-        isBoUser: value.isBoUser,
-      );
-      encryptedBox.put(AppConstants.USER_LOG_INFOS, jsonEncode(userConnection.toJson()));
-      Get.toNamed(Routes.CUSTOM_HOME);
+      goToCheckOtp();
     }, onError: (error) {
       EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;
@@ -113,27 +76,22 @@ class SigninController extends GetxController {
       if (error.toString().isNotEmpty && error is Map) {
         var errorResponse = ErrorResponse.fromJson(json.decode(error.toString()));
         showNotification(
-          message: errorResponse.debugMessage.toString()
+            message: errorResponse.debugMessage.toString(),
         );
       } else {
         showNotification(
-            message: "Login et/ou mot de passe incorrect"
+            message: "L'e-mail est incorrect",
         );
       }
     });
   }
 
-  goToSignup() {
-    Get.toNamed(Routes.SIGNUP);
-  }
-
-  goToForgotPassword() {
-    Get.toNamed(Routes.INIT_RESET_PASSWORD);
+  goToCheckOtp() {
+    Get.toNamed(Routes.CHECK_OTP, arguments: emailController.text.trim().toString().replaceAll(' ', ''));
   }
 
   void checkForm() {
     String email = emailController.text.trim().toString().replaceAll(' ', '');
-    String password = passwordController.text.trim().toString();
     bool isValidEmail = EmailValidator.validate(email) == true;
 
     if (emailFocusNode.hasFocus) {
@@ -147,25 +105,12 @@ class SigninController extends GetxController {
         }
       }
     }
-
-    if (passwordFocusNode.hasFocus) {
-      if (password.isEmpty) {
-        passwordErrorMessage.value = 'Le mot de passe est obligatoire';
-      } else {
-        passwordErrorMessage.value = '';
-      }
-    }
-
-    isValidForm.value = email.isNotEmpty && isValidEmail && password.isNotEmpty;
-    log('email => $email');
-    log('isValidEmail => $isValidEmail');
-    log('isValidForm => ${isValidForm.value}');
+    isValidForm.value = email.isNotEmpty && isValidEmail;
   }
 
   @override
   void dispose() {
     emailController.dispose();
-    passwordController.dispose();
     super.dispose();
   }
 }

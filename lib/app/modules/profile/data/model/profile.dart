@@ -10,6 +10,7 @@ class Profile {
   bool? isEnabled;
   String? email;
   Role? role;
+  bool? isBoUser;
 
   Profile({
     this.identifier,
@@ -23,6 +24,7 @@ class Profile {
     this.isEnabled,
     this.email,
     this.role,
+    this.isBoUser,
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) => Profile(
@@ -36,6 +38,7 @@ class Profile {
         lastname: json["lastname"],
         isEnabled: json["isEnabled"],
         email: json["email"],
+        isBoUser: json["isBoUser"],
         role: json['role'] != null ? Role.fromJson(json['role']) : null,
       );
 
@@ -50,6 +53,7 @@ class Profile {
         "lastname": lastname,
         "isEnabled": isEnabled,
         "email": email,
+        "isBoUser": isBoUser,
         "role": role?.toJson(),
       };
 }

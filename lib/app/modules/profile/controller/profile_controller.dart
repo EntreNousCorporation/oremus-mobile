@@ -93,24 +93,13 @@ class ProfileController extends GetxController {
 
   showMessageBiometrique(bool state) {
     if (state) {
-      showSimpleNotification(
-        Center(
-            child: Text(
-              'Authentification biométrique activée',
-              style: TextStyles.montserratRegular(
-                  textSize: TextSizes.sixteen, textColor: colorWhite),
-            )),
-        background: colorGreenSemiLight,
+      showNotification(
+          message: 'Authentification biométrique activée',
+          bgColor: colorGreenSemiLight
       );
     } else {
-      showSimpleNotification(
-        Center(
-            child: Text(
-              'Authentification biométrique désactivée',
-              style: TextStyles.montserratRegular(
-                  textSize: TextSizes.sixteen, textColor: colorWhite),
-            )),
-        background: colorRed,
+      showNotification(
+          message: 'Authentification biométrique désactivée',
       );
     }
   }
