@@ -12,12 +12,10 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/profile/data/model/profile.dart';
 import 'package:oremusapp/app/modules/profile/data/repository/profile_repository.dart';
-import 'package:oremusapp/app/modules/profile/views/edit_profile_screen.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class EditProfileController extends GetxController {

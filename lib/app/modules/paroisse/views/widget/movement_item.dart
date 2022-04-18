@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/paroisse/data/model/activity_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/movement_response.dart';
 
 class MovementItem extends StatelessWidget {

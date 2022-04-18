@@ -1,9 +1,7 @@
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/button.dart';
@@ -12,7 +10,6 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/resetpassword/controller/init_reset_password_controller.dart';
-import 'package:oremusapp/app/modules/signin/controller/signin_controller.dart';
 
 class InitResetPasswordScreen extends StatelessWidget {
   const InitResetPasswordScreen({Key? key}) : super(key: key);

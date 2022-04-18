@@ -6,7 +6,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
-import 'package:oremusapp/app/commons/components/loader_widget.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/email_validator.dart';
@@ -17,7 +16,6 @@ import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.d
 import 'package:oremusapp/app/remote/error_response.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main.dart';
-import 'package:overlay_support/overlay_support.dart';
 
 class SigninController extends GetxController {
   final SigninRepository signinRepository;

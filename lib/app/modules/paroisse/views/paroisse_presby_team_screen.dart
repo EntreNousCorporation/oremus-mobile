@@ -1,9 +1,7 @@
 
-import 'package:accordion/accordion.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
@@ -11,9 +9,7 @@ import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu_detail_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_presby_team_controller.dart';
-import 'package:oremusapp/app/modules/paroisse/views/widget/day_item.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/presby_team_item.dart';
 
 class ParoisseBresbyTeamScreen extends StatelessWidget {

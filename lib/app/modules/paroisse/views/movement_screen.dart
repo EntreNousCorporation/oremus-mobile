@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_activity_movement_controller.dart';
-import 'package:oremusapp/app/modules/paroisse/views/widget/activity_item.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/movement_item.dart';
 
 class MovementScreen extends StatelessWidget {

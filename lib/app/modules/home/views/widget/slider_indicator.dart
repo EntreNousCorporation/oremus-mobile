@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/home/controller/home_controller.dart';
-import 'package:oremusapp/app/modules/paroisse/controller/paroisse_controller.dart';
 
 class SliderIndicator extends StatelessWidget {
   SliderIndicator({Key? key, required this.controller}) : super(key: key);

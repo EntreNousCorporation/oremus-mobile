@@ -11,7 +11,6 @@ import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_user.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/interface_paroisse_repository.dart';
 import 'package:oremusapp/app/remote/api_client.dart';
-import 'package:oremusapp/main.dart';
 
 class ParoisseRepository implements IParoisseRepository {
 

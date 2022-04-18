@@ -26,8 +26,8 @@ import 'package:oremusapp/app/modules/paroisse/views/paroisse_presby_team_screen
 import 'package:oremusapp/app/modules/profile/binding/edit_profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/binding/profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/views/edit_profile_screen.dart';
-import 'package:oremusapp/app/modules/resetpassword/bindings/otp_binding.dart';
 import 'package:oremusapp/app/modules/resetpassword/bindings/init_reset_password_binding.dart';
+import 'package:oremusapp/app/modules/resetpassword/bindings/otp_binding.dart';
 import 'package:oremusapp/app/modules/resetpassword/bindings/reset_password_binding.dart';
 import 'package:oremusapp/app/modules/resetpassword/views/init_reset_password_screen.dart';
 import 'package:oremusapp/app/modules/resetpassword/views/otp_screen.dart';

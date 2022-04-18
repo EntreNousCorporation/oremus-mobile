@@ -6,7 +6,6 @@ import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/profile/data/model/profile.dart';
 import 'package:oremusapp/app/modules/resetpassword/data/repository/interface_reset_password_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
-import 'package:oremusapp/app/modules/signin/data/model/signin_response.dart';
 import 'package:oremusapp/app/remote/api_client.dart';
 
 class ResetPasswordRepository implements IResetPasswordRepository {
