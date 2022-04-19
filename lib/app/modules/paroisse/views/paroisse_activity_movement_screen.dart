@@ -122,7 +122,7 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
                         child: Column(
                           children: <Widget>[
                             ButtonsTabBar(
-                              backgroundColor: colorBrown,
+                              backgroundColor: colorGreenSemiLight,
                               unselectedBackgroundColor: Colors.transparent,
                               unselectedLabelStyle: TextStyles.montserratBold(
                                 textSize: TextSizes.fourteen,
@@ -132,9 +132,9 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
                                 textSize: TextSizes.fourteen,
                                 textColor: colorWhite,
                               ),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                              contentPadding: EdgeInsets.symmetric(horizontal: Get.width/9),
                               borderWidth: 1,
-                              borderColor: colorBrown,
+                              borderColor: colorGreenSemiLight,
                               tabs: _.menusTab.value.map((e) {
                                 return Tab(text: e);
                               }).toList(),

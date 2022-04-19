@@ -34,7 +34,7 @@ class ActivityItem extends StatelessWidget {
                       '${activity.name}',
                       style: TextStyles.montserratBold(
                         textSize: TextSizes.sixteen,
-                        textColor: colorGreen,
+                        textColor: colorGreenSemiLight,
                       ),
                     ),
                     Text(

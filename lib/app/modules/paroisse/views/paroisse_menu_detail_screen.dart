@@ -127,7 +127,7 @@ class ParoisseMenuDetailScreen extends StatelessWidget {
                               textAlign: TextAlign.center,
                               style: TextStyles.montserratBold(
                                 textSize: TextSizes.eighteen,
-                                textColor: colorGreen,
+                                textColor: colorGreenSemiLight,
                               ),
                             ),
                           ),
@@ -136,8 +136,8 @@ class ParoisseMenuDetailScreen extends StatelessWidget {
                               disableScrolling: false,
                               maxOpenSections: 1,
                               leftIcon: SvgPicture.asset(_.code.value == 'HM' ? 'assets/images/messe.svg' : 'assets/images/confession_icon.svg', height: 25, color: colorWhite,),
-                              headerBackgroundColor: colorBrown,
-                              contentBorderColor: colorBrown,
+                              headerBackgroundColor: colorGreenSemiLight,
+                              contentBorderColor: colorGreenSemiLight,
                               children:
                               _.liturgicalCelebrations.value.map((value) {
                                 return AccordionSection(

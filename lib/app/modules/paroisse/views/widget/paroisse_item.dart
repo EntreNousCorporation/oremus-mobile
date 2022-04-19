@@ -134,7 +134,7 @@ class ParoisseItem extends StatelessWidget {
                               padding: const EdgeInsets.all(3.0),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(3),
-                                color: colorGreen,
+                                color: colorGreenSemiLight,
                               ),
                               child: Text(
                                 '${paroisse.address?.municipality}',

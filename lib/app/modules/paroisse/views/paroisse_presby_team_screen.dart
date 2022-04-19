@@ -120,7 +120,7 @@ class ParoisseBresbyTeamScreen extends StatelessWidget {
                               textAlign: TextAlign.center,
                               style: TextStyles.montserratBold(
                                 textSize: TextSizes.eighteen,
-                                textColor: colorGreen,
+                                textColor: colorGreenSemiLight,
                               ),
                             ),
                           ),

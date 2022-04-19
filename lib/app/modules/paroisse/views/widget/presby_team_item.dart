@@ -27,8 +27,11 @@ class PresbyTeamItem extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SvgPicture.asset('assets/images/priest_icon.svg', height: 30,
-                    colorBlendMode: BlendMode.plus),
+                SvgPicture.asset(
+                  'assets/images/priest_icon.svg',
+                  height: 30,
+                  color: colorGreenSemiLight,
+                ),
                 Separators.normalHorizontal(),
                 Expanded(
                   child: Column(
@@ -36,9 +39,9 @@ class PresbyTeamItem extends StatelessWidget {
                     children: [
                       Text(
                         '${logic.getPresbyType(user.type ?? '')}',
-                        style: TextStyles.montserratMedium(
+                        style: TextStyles.montserratSemiBold(
                           textSize: TextSizes.sixteen,
-                          textColor: colorBlack,
+                          textColor: colorGreenSemiLight,
                         ),
                       ),
                       Text(

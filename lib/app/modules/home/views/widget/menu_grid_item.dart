@@ -52,10 +52,11 @@ class _MenuGridItemState extends State<MenuGridItem> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               item.isPngImage
-                  ? Image.asset(item.icon, height: Get.width / 8)
+                  ? Image.asset(item.icon, height: Get.width / 8, color: colorGreenSemiLight,)
                   : SvgPicture.asset(
                       item.icon,
                       height: Get.width / 10,
+                color: colorGreenSemiLight,
                     ),
               Separators.minimunVertical(),
               Padding(

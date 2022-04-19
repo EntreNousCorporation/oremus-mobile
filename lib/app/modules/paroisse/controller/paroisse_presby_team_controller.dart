@@ -85,7 +85,7 @@ class ParoissePresbyTeamController extends GetxController {
       isDataProcessing(false);
       if (value.isEmpty == false) {
         hasData(true);
-        presbyTeams.value = value.where((element) => (element.type != null) && (element.type?.toLowerCase() == "vicar" || element.type?.toLowerCase() == "parish")).toList();
+        presbyTeams.value = value.where((element) => (element.type != null) && (element.type?.toLowerCase() == "vicar" || element.type?.toLowerCase() == "clergyman")).toList();
         presbyTeams.value.sort((a, b) => a.firstname!.compareTo(b.firstname!));
         log('${presbyTeams.length}');
       } else {
@@ -110,8 +110,8 @@ class ParoissePresbyTeamController extends GetxController {
       case 'vicar':
       case 'VICAR':
         return 'Vicaire';
-      case 'parish':
-      case 'PARISH':
+      case 'clergyman':
+      case 'CLERGYMAN':
         return 'Curé';
       default:
         return '';

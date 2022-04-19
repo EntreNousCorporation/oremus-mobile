@@ -34,7 +34,7 @@ class MovementItem extends StatelessWidget {
                       '${movement.name}',
                       style: TextStyles.montserratBold(
                         textSize: TextSizes.sixteen,
-                        textColor: colorGreen,
+                        textColor: colorGreenSemiLight,
                       ),
                     ),
                     Text(
