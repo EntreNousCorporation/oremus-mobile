@@ -46,7 +46,7 @@ class CustomHomeController extends GetxController {
       MenuItem(
         code: AppConstants.SHARE_APP,
         libelle: "Partager l'application",
-        icon: 'assets/images/icon_settings.svg',
+        icon: 'assets/images/share_icon.svg',
         isVisible: false,
       ),
       MenuItem(
@@ -58,7 +58,7 @@ class CustomHomeController extends GetxController {
       MenuItem(
         code: AppConstants.FAQ,
         libelle: 'F.A.Q',
-        icon: 'assets/images/icon_settings.svg',
+        icon: 'assets/images/faq_icon.svg',
       ),
       MenuItem(
         code: AppConstants.CONTACTS,
