@@ -1,9 +1,8 @@
-
-import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
+import 'package:oremusapp/app/commons/buttons_tabbar.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
@@ -53,7 +52,7 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
                           centerTitle: true,
                           title: Padding(
                             padding:
-                            const EdgeInsets.symmetric(horizontal: 8.0),
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
                               '${_.paroisseSelected.value.name}',
                               maxLines: 2,
@@ -65,54 +64,54 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
                             ),
                           ),
                           background: (_.paroisseSelected.value.coverImage?.link
-                              ?.isNotEmpty ==
-                              true)
+                                      ?.isNotEmpty ==
+                                  true)
                               ? Stack(
-                            children: [
-                              Hero(
-                                tag: 'tag${_.indexDaySelected.value}',
-                                child: CachedNetworkImage(
-                                  width: Get.width,
-                                  height: Get.width,
-                                  imageUrl: _.paroisseSelected.value
-                                      .coverImage?.link ??
-                                      '',
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) =>
-                                      LottieLoadingView(
-                                          size: Get.width / 6),
-                                  errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                                ),
-                              ),
-                              Container(
-                                height: Get.width,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: Colors.black54.withOpacity(0.3),
-                                ),
-                              ),
-                            ],
-                          )
+                                  children: [
+                                    Hero(
+                                      tag: 'tag${_.indexDaySelected.value}',
+                                      child: CachedNetworkImage(
+                                        width: Get.width,
+                                        height: Get.width,
+                                        imageUrl: _.paroisseSelected.value
+                                                .coverImage?.link ??
+                                            '',
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) =>
+                                            LottieLoadingView(
+                                                size: Get.width / 6),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.error),
+                                      ),
+                                    ),
+                                    Container(
+                                      height: Get.width,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: Colors.black54.withOpacity(0.3),
+                                      ),
+                                    ),
+                                  ],
+                                )
                               : Stack(
-                            children: [
-                              Hero(
-                                tag: 'tag${_.indexDaySelected.value}',
-                                child: Image.asset(
-                                  'assets/images/bg_login.jpg',
-                                  width: Get.width,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Container(
-                                height: Get.width,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: Colors.black54.withOpacity(0.3),
-                                ),
-                              ),
-                            ],
-                          )),
+                                  children: [
+                                    Hero(
+                                      tag: 'tag${_.indexDaySelected.value}',
+                                      child: Image.asset(
+                                        'assets/images/bg_login.jpg',
+                                        width: Get.width,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Container(
+                                      height: Get.width,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: Colors.black54.withOpacity(0.3),
+                                      ),
+                                    ),
+                                  ],
+                                )),
                     ),
                     const SliverPadding(
                         padding: EdgeInsets.symmetric(vertical: 0)),
@@ -128,12 +127,13 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
                                 textSize: TextSizes.fourteen,
                                 textColor: colorBlack,
                               ),
+                              contentPadding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              borderWidth: 1,
                               labelStyle: TextStyles.montserratBold(
                                 textSize: TextSizes.fourteen,
                                 textColor: colorWhite,
                               ),
-                              contentPadding: EdgeInsets.symmetric(horizontal: Get.width/9),
-                              borderWidth: 1,
                               borderColor: colorGreenSemiLight,
                               tabs: _.menusTab.value.map((e) {
                                 return Tab(text: e);
