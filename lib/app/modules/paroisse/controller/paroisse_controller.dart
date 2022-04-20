@@ -108,6 +108,7 @@ class ParoisseController extends GetxController {
       refreshController.refreshCompleted();
       if (value.empty == false) {
         paroisses.value = value.content ?? [];
+        paroisses.value.sort((p1, p2) => p1.name!.compareTo(p2.name!));
       }
     }, onError: (error) {
       refreshController.refreshCompleted();

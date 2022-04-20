@@ -16,40 +16,47 @@ class DayItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetX<ParoisseMenuDetailController>(builder: (logic) {
-      return GestureDetector(
-        onTap: () {
-          log(getDay(openingTime?.dayOfWeek));
-          logic.daySelected(openingTime ?? OpeningTime());
-        },
-        child: Padding(
-          padding:
-          const EdgeInsets.symmetric(
-              horizontal: 8.0),
-          child: Container(
-            width: Get.width / 3.5,
-            decoration: BoxDecoration(
-              color: logic.openingTime.value == openingTime ? colorBrown : colorWhite,
-              border: Border.all(color: colorBrown),
-              borderRadius: BorderRadius.circular(Get.width/10),
-            ),
-            child: Padding(
-              padding:
-              const EdgeInsets.all(
-                  8.0),
-              child: Text(
-                getDay(openingTime?.dayOfWeek),
-                textAlign:
-                TextAlign.center,
-                style: TextStyles
-                    .montserratSemiBold(
-                    textSize:
-                    TextSizes
-                        .fourteen,
-                    textColor: logic.openingTime.value == openingTime ? colorWhite : colorBlack),
+    return GetBuilder<ParoisseMenuDetailController>(builder: (logic) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Container(
+              height: 30,
+              width: 5,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: colorGreenSemiLight,
               ),
             ),
-          ),
+            Separators.minimunHorizontal(),
+            Text(
+              '${getDay(openingTime?.dayOfWeek)}:',
+              textAlign:
+              TextAlign.start,
+              style: TextStyles
+                  .montserratSemiBold(
+                  textSize:
+                  TextSizes
+                      .fourteen,
+                  textColor: colorBlack),
+            ),
+        Row(
+          children: openingTime?.slots?.map((timeSlot) {
+            return Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    '${logic.getTime(timeSlot.startTime ?? '')}',
+                    style: TextStyles.montserratSemiBold(textSize: TextSizes.fourteen, textColor: colorBlack),
+                  ),
+                ),
+              ],
+            );
+          }).toList() ?? [],
+        ),
+          ],
         ),
       );
     });

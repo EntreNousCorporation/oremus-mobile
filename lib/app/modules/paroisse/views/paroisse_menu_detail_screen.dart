@@ -115,8 +115,7 @@ class ParoisseMenuDetailScreen extends StatelessWidget {
                             ],
                           )),
                     ),
-                    const SliverPadding(
-                        padding: EdgeInsets.symmetric(vertical: 8)),
+                    const SliverPadding(padding: EdgeInsets.symmetric(vertical: 8)),
                     SliverFillRemaining(
                       child: Column(
                         children: [
@@ -149,65 +148,23 @@ class ParoisseMenuDetailScreen extends StatelessWidget {
                                         textColor: colorWhite),
                                   ),
                                   content: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       SizedBox(
-                                        height: Get.width / 10,
+                                        //height: Get.width / 10,
                                         width: Get.width,
                                         child: ListView.builder(
+                                          physics: NeverScrollableScrollPhysics(),
                                             itemCount:
                                             value.openingTime?.length,
                                             shrinkWrap: true,
-                                            scrollDirection: Axis.horizontal,
+                                            scrollDirection: Axis.vertical,
                                             itemBuilder: (context, index) {
-                                              var openingTime =
-                                              value.openingTime?[index];
-                                              return DayItem(
-                                                  openingTime: openingTime);
+                                              var openingTime = value.openingTime?[index];
+                                              return DayItem(openingTime: openingTime);
                                             }),
                                       ),
                                       Separators.minimunVertical(),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: Get.width/4),
-                                        child: Divider(color: colorBrown.withOpacity(0.5)),
-                                      ),
-                                      GetX<ParoisseMenuDetailController>(
-                                        builder: (logic) {
-                                          return Column(
-                                            children: _.openingTime.value.slots?.map((timeSlot) {
-                                              return Row(
-                                                children: [
-                                                  Visibility(
-                                                    visible: false,
-                                                    child: Container(
-                                                      height: 25,
-                                                      width: 5,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(10),
-                                                        color: colorBrown,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const Icon(Icons.access_time, size: 25,),
-                                                  Padding(
-                                                    padding:
-                                                    const EdgeInsets.all(8.0),
-                                                    child: Text(
-                                                      '${_.getTime(timeSlot.startTime ?? '')}',
-                                                      style: TextStyles
-                                                          .montserratSemiBold(
-                                                          textSize:
-                                                          TextSizes.eighteen,
-                                                          textColor: colorBlack),
-                                                    ),
-                                                  ),
-                                                ],
-                                              );
-                                            }).toList() ?? [],
-                                          );
-                                        },
-                                      ),
                                     ],
                                   ),
                                 );
