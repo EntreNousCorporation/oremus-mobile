@@ -113,6 +113,7 @@ class ParoisseScreen extends StatelessWidget {
                                               left: 16,
                                               right: 16),
                                           child: SmartRefresher(
+                                            //header: BezierCircleHeader(),
                                             physics: const BouncingScrollPhysics(),
                                             controller: _.refreshController,
                                             onRefresh: _.onRefresh,

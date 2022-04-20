@@ -121,7 +121,7 @@ class AppPages {
     ),
     GetPage(
       name: Routes.PAROISSE_MENU_DETAIL,
-      page: () => const ParoisseMenuDetailScreen(),
+      page: () => ParoisseMenuDetailScreen(),
       binding: ParoisseMenuDetailBinding(),
       transition: Transition.circularReveal,
     ),

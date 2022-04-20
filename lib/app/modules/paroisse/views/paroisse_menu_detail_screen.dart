@@ -1,3 +1,4 @@
+import 'dart:math';
 
 import 'package:accordion/accordion.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -11,13 +12,15 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu_detail_controller.dart';
+import 'package:oremusapp/app/modules/paroisse/views/widget/day1_item.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/day_item.dart';
 
 class ParoisseMenuDetailScreen extends StatelessWidget {
-  const ParoisseMenuDetailScreen({Key? key}) : super(key: key);
+  ParoisseMenuDetailScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Container(
       color: colorGreen,
       child: GetBuilder<ParoisseMenuDetailController>(
@@ -54,7 +57,7 @@ class ParoisseMenuDetailScreen extends StatelessWidget {
                           centerTitle: true,
                           title: Padding(
                             padding:
-                            const EdgeInsets.symmetric(horizontal: 8.0),
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
                               '${_.paroisseSelected.value.name}',
                               maxLines: 2,
@@ -66,56 +69,57 @@ class ParoisseMenuDetailScreen extends StatelessWidget {
                             ),
                           ),
                           background: (_.paroisseSelected.value.coverImage?.link
-                              ?.isNotEmpty ==
-                              true)
+                                      ?.isNotEmpty ==
+                                  true)
                               ? Stack(
-                            children: [
-                              Hero(
-                                tag: 'tag${_.indexDaySelected.value}',
-                                child: CachedNetworkImage(
-                                  width: Get.width,
-                                  height: Get.width,
-                                  imageUrl: _.paroisseSelected.value
-                                      .coverImage?.link ??
-                                      '',
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) =>
-                                      LottieLoadingView(
-                                          size: Get.width / 6),
-                                  errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                                ),
-                              ),
-                              Container(
-                                height: Get.width,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: Colors.black54.withOpacity(0.3),
-                                ),
-                              ),
-                            ],
-                          )
+                                  children: [
+                                    Hero(
+                                      tag: 'tag${_.indexDaySelected.value}',
+                                      child: CachedNetworkImage(
+                                        width: Get.width,
+                                        height: Get.width,
+                                        imageUrl: _.paroisseSelected.value
+                                                .coverImage?.link ??
+                                            '',
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) =>
+                                            LottieLoadingView(
+                                                size: Get.width / 6),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.error),
+                                      ),
+                                    ),
+                                    Container(
+                                      height: Get.width,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: Colors.black54.withOpacity(0.3),
+                                      ),
+                                    ),
+                                  ],
+                                )
                               : Stack(
-                            children: [
-                              Hero(
-                                tag: 'tag${_.indexDaySelected.value}',
-                                child: Image.asset(
-                                  'assets/images/bg_login.jpg',
-                                  width: Get.width,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Container(
-                                height: Get.width,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: Colors.black54.withOpacity(0.3),
-                                ),
-                              ),
-                            ],
-                          )),
+                                  children: [
+                                    Hero(
+                                      tag: 'tag${_.indexDaySelected.value}',
+                                      child: Image.asset(
+                                        'assets/images/bg_login.jpg',
+                                        width: Get.width,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Container(
+                                      height: Get.width,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: Colors.black54.withOpacity(0.3),
+                                      ),
+                                    ),
+                                  ],
+                                )),
                     ),
-                    const SliverPadding(padding: EdgeInsets.symmetric(vertical: 8)),
+                    const SliverPadding(
+                        padding: EdgeInsets.symmetric(vertical: 8)),
                     SliverFillRemaining(
                       child: Column(
                         children: [
@@ -147,33 +151,25 @@ class ParoisseMenuDetailScreen extends StatelessWidget {
                                         textSize: TextSizes.sixteen,
                                         textColor: colorWhite),
                                   ),
-                                  content: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        //height: Get.width / 10,
-                                        width: Get.width,
-                                        child: ListView.builder(
-                                          physics: NeverScrollableScrollPhysics(),
-                                            itemCount:
-                                            value.openingTime?.length,
-                                            shrinkWrap: true,
-                                            scrollDirection: Axis.vertical,
-                                            itemBuilder: (context, index) {
-                                              var openingTime = value.openingTime?[index];
-                                              return DayItem(openingTime: openingTime);
-                                            }),
-                                      ),
-                                      Separators.minimunVertical(),
-                                    ],
-                                  ),
+                                  content: ListView.builder(
+                                    physics: const NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount: value.openingTime?.length,
+                                      itemBuilder: (context, i) {
+                                      var openingTime = value.openingTime?[i];
+                                        return Day1Item(openingTime: openingTime);
+                                      }),
                                 );
                               }).toList(),
                             ),
                             /*child: NotFoundScreen(
                               message: '${_.getTypeMessage(_.code.value)}',
                             ),*/
-                          ) : Expanded(child: NotFoundScreen(message: 'Horaires non disponible pour l\'instant')),
+                                )
+                              : Expanded(
+                                  child: NotFoundScreen(
+                                      message:
+                                          'Horaires non disponible pour l\'instant')),
                         ],
                       ),
                     )
@@ -184,4 +180,29 @@ class ParoisseMenuDetailScreen extends StatelessWidget {
           }),
     );
   }
+
+  final List<Events> listOfEvents = [
+    Events(time: "5pm", eventName: "New Icon", description: "Mobile App"),
+    Events(time: "3 - 4pm", eventName: "Design Stand Up", description: "Hangouts"),
+    Events(time: "12pm", eventName: "Lunch Break", description: "Main Room"),
+    Events(time: "9 - 11am", eventName: "Finish Home Screen", description: "Web App"),
+  ];
+
+  final List<Color> listOfColors = [Constants.kPurpleColor,Constants.kGreenColor,Constants.kRedColor];
+
+
+}
+class Events {
+  final String time;
+  final String eventName;
+  final String description;
+
+  Events({required this.time, required this.eventName, required this.description});
+
+}
+
+class Constants {
+  static const kPurpleColor = Color(0xFFB97DFE);
+  static const kRedColor = Color(0xFFFE4067);
+  static const kGreenColor = Color(0xFFADE9E3);
 }

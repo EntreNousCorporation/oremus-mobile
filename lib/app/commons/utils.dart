@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:jiffy/jiffy.dart';
 
 extension StringExtension on String {
   String toCapitalize() {
@@ -66,6 +67,10 @@ String getDay(int code) {
     default:
       return '';
   }
+}
+
+String getCurrentDay() {
+  return getDay(Jiffy(DateTime.now()).day);
 }
 
 hideKeyboard() {
