@@ -43,7 +43,7 @@ dependencies:
   accordion: ^2.2.3
   like_button: ^2.0.4
   pin_code_fields: ^7.3.0
-  timelines: ^0.1.0
+  #timelines: ^0.1.0
 
 dev_dependencies:
   flutter_test:
