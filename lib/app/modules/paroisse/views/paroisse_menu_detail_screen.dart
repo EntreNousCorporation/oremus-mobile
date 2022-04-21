@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:accordion/accordion.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +11,6 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu_detail_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/day1_item.dart';
-import 'package:oremusapp/app/modules/paroisse/views/widget/day_item.dart';
 
 class ParoisseMenuDetailScreen extends StatelessWidget {
   ParoisseMenuDetailScreen({Key? key}) : super(key: key);
