@@ -6,7 +6,9 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
@@ -32,23 +34,35 @@ class ParoisseController extends GetxController {
 
   var refreshController = RefreshController();
 
+  late TextEditingController searchController;
+  var isSearchFieldEmpty = true.obs;
+  var searchCriteria = SearchCriteria().obs;
+
   @override
   void onInit() {
     getUserInfo();
+    initController();
     super.onInit();
   }
+
   @override
   void onReady() {
     getParoisses();
     super.onReady();
   }
 
+  initController() {
+    searchController = TextEditingController(text: '');
+  }
+
   getParoisses() {
+    hideKeyboard();
+    searchCriteria.value.name = searchController.text.trim();
     isDataProcessing(true);
 
     log('request getParoisses');
 
-    paroisseRepository.getParoisses().then((value) {
+    paroisseRepository.getParoisses(searchCriteria: searchCriteria.value).then((value) {
       isDataProcessing(false);
       if (value.empty == false) {
         hasData(true);
@@ -104,6 +118,7 @@ class ParoisseController extends GetxController {
 
     log('request onRefresh');
 
+    resetSearchField();
     paroisseRepository.getParoisses().then((value) {
       refreshController.refreshCompleted();
       if (value.empty == false) {
@@ -132,5 +147,12 @@ class ParoisseController extends GetxController {
       userConnection.value = userConnected;
       log('==> ${userConnection.value.toJson()}');
     }
+  }
+
+  //SEARCH SECTION
+  resetSearchField() {
+    searchController.clear();
+    isSearchFieldEmpty.value = true;
+    hideKeyboard();
   }
 }

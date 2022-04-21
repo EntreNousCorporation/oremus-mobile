@@ -37,41 +37,6 @@ class ParoisseScreen extends StatelessWidget {
                                 top: 16, bottom: 0, left: 16, right: 16),
                             child: Row(
                               children: [
-                                Visibility(
-                                  visible: false,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Get.back();
-                                    },
-                                    child: Material(
-                                      borderRadius:
-                                          BorderRadius.circular(10.0),
-                                      elevation: 10,
-                                      color: colorWhite,
-                                      shadowColor:
-                                          colorGrey2.withOpacity(0.5),
-                                      child: SizedBox(
-                                        height: (Get.width / 9),
-                                        width: (Get.width / 9),
-                                        child: const Icon(
-                                          Icons.arrow_back_ios_rounded,
-                                          color: colorBlack,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Visibility(
-                                  visible: false,
-                                  child: Separators.normalHorizontal(),
-                                ),
-                                Expanded(
-                                  child: SizedBox(
-                                    height: (Get.width / 9),
-                                    child: const SearchWidget(),
-                                  ),
-                                ),
-                                Separators.normalHorizontal(),
                                 GestureDetector(
                                   onTap: () {},
                                   child: Material(
@@ -84,6 +49,35 @@ class ParoisseScreen extends StatelessWidget {
                                       width: (Get.width / 9),
                                       child: const Icon(
                                         Icons.filter_list_rounded,
+                                        color: colorPurpleLight,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Separators.normalHorizontal(),
+                                Expanded(
+                                  child: SizedBox(
+                                    height: (Get.width / 9),
+                                    child: const SearchWidget(),
+                                  ),
+                                ),
+                                Separators.normalHorizontal(),
+                                GestureDetector(
+                                  onTap: () {
+                                    _.getParoisses();
+                                  },
+                                  child: Material(
+                                    borderRadius:
+                                    BorderRadius.circular(10.0),
+                                    elevation: 10,
+                                    color: colorWhite,
+                                    shadowColor:
+                                    colorGrey2.withOpacity(0.5),
+                                    child: SizedBox(
+                                      height: (Get.width / 9),
+                                      width: (Get.width / 9),
+                                      child: const Icon(
+                                        Icons.search_rounded,
                                         color: colorPurpleLight,
                                       ),
                                     ),

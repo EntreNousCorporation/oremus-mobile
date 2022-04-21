@@ -9,8 +9,11 @@ import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration
 import 'package:oremusapp/app/modules/paroisse/data/model/movement_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_user.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/interface_paroisse_repository.dart';
 import 'package:oremusapp/app/remote/api_client.dart';
+import 'package:oremusapp/app/remote/custom_exception.dart';
+import 'package:oremusapp/app/remote/error_response.dart';
 
 class ParoisseRepository implements IParoisseRepository {
 
@@ -19,9 +22,12 @@ class ParoisseRepository implements IParoisseRepository {
   ParoisseRepository(this._apiClient);
 
   @override
-  Future<PlaceResponse> getParoisses({int? page = 0}) async {
+  Future<PlaceResponse> getParoisses({
+    int? page = 0,
+    SearchCriteria? searchCriteria,
+  }) async {
     Response response = await _apiClient.doRequest(
-      endpoint: "/places-of-worship?page=$page&size=${AppConstants.PAGING_SIZE}",
+      endpoint: "/places-of-worship?page=$page&size=${AppConstants.PAGING_SIZE}${(searchCriteria?.name == null || searchCriteria?.name?.isEmpty == true) ? '' : '&name=${searchCriteria?.name}'}${(searchCriteria?.type == null || searchCriteria?.type?.isEmpty == true) ? '' : '&type=${searchCriteria?.type}'}${(searchCriteria?.diocese == null || searchCriteria?.diocese?.isEmpty == true) ? '' : '&diocese=${searchCriteria?.diocese}'}${(searchCriteria?.city == null || searchCriteria?.city?.isEmpty == true) ? '' : '&city=${searchCriteria?.city}'}${(searchCriteria?.municipality == null || searchCriteria?.municipality?.isEmpty == true) ? '' : '&municipality=${searchCriteria?.municipality}'}${(searchCriteria?.neighborhood == null || searchCriteria?.neighborhood?.isEmpty == true) ? '' : '&neighborhood=${searchCriteria?.neighborhood}'}",
       method: HttpMethod.get,
       useBearer: true,
     );
@@ -99,7 +105,8 @@ class ParoisseRepository implements IParoisseRepository {
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      throw Exception(resp);
+      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      throw CustomException(e.debugMessage, e.status);
     } else {
       return (jsonDecode(response.bodyString.toString()) as List).map((i) => PlaceUser.fromJson(i)).toList();
     }

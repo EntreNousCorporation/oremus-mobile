@@ -1,12 +1,12 @@
 class CustomException implements Exception {
-  final _message;
-  final _code;
+  final message;
+  final code;
 
-  CustomException(this._message, this._code);
+  CustomException(this.code, this.message);
 
   @override
   String toString() {
-    return "$_code:$_message";
+    return "$code: $message";
   }
 }
 
