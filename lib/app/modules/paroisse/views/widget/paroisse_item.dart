@@ -15,7 +15,8 @@ import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
 class ParoisseItem extends StatelessWidget {
-  ParoisseItem({Key? key, required this.paroisse, required this.index}) : super(key: key);
+  ParoisseItem({Key? key, required this.paroisse, required this.index})
+      : super(key: key);
 
   final ContentPlace paroisse;
   final int index;
@@ -44,10 +45,7 @@ class ParoisseItem extends StatelessWidget {
                   onTap: () {
                     Get.toNamed(
                       Routes.PAROISSE_MENU,
-                      arguments: [
-                        index,
-                        jsonEncode(paroisse.toJson())
-                      ],
+                      arguments: [index, jsonEncode(paroisse.toJson())],
                     );
                   },
                   child: Stack(
@@ -61,6 +59,7 @@ class ParoisseItem extends StatelessWidget {
                           width: double.infinity,
                           child: (paroisse.coverImage?.link?.isNotEmpty == true)
                               ? Hero(
+                                  transitionOnUserGestures: true,
                                   tag: 'tag$index',
                                   child: Flow(
                                     delegate: ParallaxFlowDelegate(
@@ -71,12 +70,16 @@ class ParoisseItem extends StatelessWidget {
                                     children: [
                                       CachedNetworkImage(
                                         key: _backgroundImageKey,
-                                        imageUrl: paroisse.coverImage?.link ?? '',
+                                        imageUrl:
+                                            paroisse.coverImage?.link ?? '',
                                         fit: BoxFit.cover,
-                                        placeholder: (context, url) =>
-                                            SizedBox(width: Get.width / 4, height: Get.width / 4, child: LottieLoadingView(size: Get.width / 6)),
+                                        placeholder: (context, url) => SizedBox(
+                                            width: Get.width / 4,
+                                            height: Get.width / 4,
+                                            child: LottieLoadingView(
+                                                size: Get.width / 6)),
                                         errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
+                                            const Icon(Icons.error),
                                       ),
                                     ],
                                   ),
@@ -125,7 +128,8 @@ class ParoisseItem extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           softWrap: true,
                           style: TextStyles.montserratBold(
-                              textSize: TextSizes.thirteen, textColor: colorBlack),
+                              textSize: TextSizes.thirteen,
+                              textColor: colorBlack),
                         ),
                       ),
                       Separators.normalHorizontal(),
@@ -165,8 +169,9 @@ class ParoisseItem extends StatelessWidget {
                               return !isLiked;
                             }),*/
                             size: 25,
-                            circleColor:
-                            const CircleColor(start: Color(0xff93291E), end: Color(0xFFED213A)),
+                            circleColor: const CircleColor(
+                                start: Color(0xff93291E),
+                                end: Color(0xFFED213A)),
                             bubblesColor: const BubblesColor(
                               dotPrimaryColor: Color(0xFFED213A),
                               dotSecondaryColor: Color(0xff93291E),
@@ -181,8 +186,12 @@ class ParoisseItem extends StatelessWidget {
                                 logic.removeFavorite(paroisse, isLiked);
                               }
                               return Icon(
-                                isLiked ? Icons.favorite : Icons.favorite_border,
-                                color: isLiked ? const Color(0xFFED213A) : colorGrey1,
+                                isLiked
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: isLiked
+                                    ? const Color(0xFFED213A)
+                                    : colorGrey1,
                                 size: 25,
                               );
                             },
@@ -208,7 +217,6 @@ class ParallaxFlowDelegate extends FlowDelegate {
     required this.backgroundImageKey,
   }) : super(repaint: scrollable.position);
 
-
   final ScrollableState scrollable;
   final BuildContext listItemContext;
   final GlobalKey backgroundImageKey;
@@ -233,7 +241,7 @@ class ParallaxFlowDelegate extends FlowDelegate {
     // scrollable area.
     final viewportDimension = scrollable.position.viewportDimension;
     final scrollFraction =
-    (listItemOffset.dy / viewportDimension).clamp(0.0, 1.0);
+        (listItemOffset.dy / viewportDimension).clamp(0.0, 1.0);
 
     // Calculate the vertical alignment of the background
     // based on the scroll percent.
@@ -246,13 +254,13 @@ class ParallaxFlowDelegate extends FlowDelegate {
             .size;
     final listItemSize = context.size;
     final childRect =
-    verticalAlignment.inscribe(backgroundSize, Offset.zero & listItemSize);
+        verticalAlignment.inscribe(backgroundSize, Offset.zero & listItemSize);
 
     // Paint the background.
     context.paintChild(
       0,
       transform:
-      Transform.translate(offset: Offset(0.0, childRect.top)).transform,
+          Transform.translate(offset: Offset(0.0, childRect.top)).transform,
     );
   }
 
@@ -333,7 +341,7 @@ class RenderParallax extends RenderBox
     // and then scale its height based on the image's aspect ratio.
     final background = child!;
     final backgroundImageConstraints =
-    BoxConstraints.tightFor(width: size.width);
+        BoxConstraints.tightFor(width: size.width);
     background.layout(backgroundImageConstraints, parentUsesSize: true);
 
     // Set the background's local offset, which is zero.
@@ -348,12 +356,12 @@ class RenderParallax extends RenderBox
     // Calculate the global position of this list item.
     final scrollableBox = scrollable.context.findRenderObject() as RenderBox;
     final backgroundOffset =
-    localToGlobal(size.centerLeft(Offset.zero), ancestor: scrollableBox);
+        localToGlobal(size.centerLeft(Offset.zero), ancestor: scrollableBox);
 
     // Determine the percent position of this list item within the
     // scrollable area.
     final scrollFraction =
-    (backgroundOffset.dy / viewportDimension).clamp(0.0, 1.0);
+        (backgroundOffset.dy / viewportDimension).clamp(0.0, 1.0);
 
     // Calculate the vertical alignment of the background
     // based on the scroll percent.
@@ -365,7 +373,7 @@ class RenderParallax extends RenderBox
     final backgroundSize = background.size;
     final listItemSize = size;
     final childRect =
-    verticalAlignment.inscribe(backgroundSize, Offset.zero & listItemSize);
+        verticalAlignment.inscribe(backgroundSize, Offset.zero & listItemSize);
 
     // Paint the background.
     context.paintChild(

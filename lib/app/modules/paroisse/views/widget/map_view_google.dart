@@ -16,15 +16,15 @@ class MapViewGoogle extends StatelessWidget {
           zoom: 17.4746,
         ),
         zoomControlsEnabled: false,
-        myLocationButtonEnabled: true,
-        myLocationEnabled: true,
+        myLocationButtonEnabled: false,
+        myLocationEnabled: false,
         mapToolbarEnabled: false,
         buildingsEnabled: true,
         compassEnabled: false,
         trafficEnabled: true,
         liteModeEnabled: false,
         zoomGesturesEnabled: true,
-        markers: _.eventMarkers.value,
+        markers: _.worshipPlaceMarkers.value,
         mapType: _.typeMapValue.value == 'Plan' ? MapType.normal : MapType.satellite,
         onTap: (LatLng position) {
           _.mapController.value.hideInfoWindow!();

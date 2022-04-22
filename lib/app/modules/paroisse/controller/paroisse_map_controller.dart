@@ -1,12 +1,13 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:marker_icon/marker_icon.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
@@ -22,7 +23,7 @@ class ParoisseMapController extends GetxController {
 
   //Google Map
   var mapController = CustomInfoWindowController().obs;
-  var eventMarkers = Rx<Set<Marker>>(Set());
+  var worshipPlaceMarkers = Rx<Set<Marker>>({});
   List<String> typeMaps = [
     "Plan",
     "Satellite",
@@ -35,6 +36,12 @@ class ParoisseMapController extends GetxController {
     getArguments();
     initControllers();
     super.onInit();
+  }
+
+  @override
+  void onReady() {
+    //initControllers();
+    super.onReady();
   }
 
   @override
@@ -56,11 +63,148 @@ class ParoisseMapController extends GetxController {
         "assets/images/icon_default_pin.svg");
   }
 
-  initControllers() {
-    eventMarkers.value.add(
+  initControllers() async {
+    /*await MarkerIcon.svgAsset(
+      assetName: 'assets/images/icon_default_pin.svg',
+      context: Get.context!,
+      size: 40,
+    ).then((bitmap) {
+      log("message 2");
+      worshipPlaceMarkers.value.add(
+        Marker(
+            markerId: MarkerId('${paroisseSelected.value.identifier}'),
+            //icon: bitmap, //todo - pourquoi le marker n'est pas mis à jour au 1er lancement de la map
+            position: LatLng(paroisseSelected.value.localisation?.latitude ?? 0.0,
+                paroisseSelected.value.localisation?.longitude ?? 0.0),
+            onTap: () {
+              mapController.value.addInfoWindow!(
+                SizedBox(
+                  width: Get.width / 1.2,
+                  child: Material(
+                    borderRadius: BorderRadius.circular(10.0),
+                    elevation: 10,
+                    color: colorWhite,
+                    shadowColor: colorGrey2.withOpacity(0.5),
+                    child: Column(
+                      children: [
+                        Separators.normalVertical(),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Material(
+                                borderRadius: BorderRadius.circular(10.0),
+                                elevation: 10,
+                                color: colorWhite,
+                                shadowColor: colorGrey2.withOpacity(0.8),
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10.0)),
+                                  child: paroisseSelected
+                                      .value.coverImage?.link !=
+                                      null
+                                      ? CachedNetworkImage(
+                                    width: Get.width / 5,
+                                    height: Get.width / 5,
+                                    imageUrl: paroisseSelected
+                                        .value.coverImage?.link ??
+                                        '',
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) =>
+                                        LottieLoadingView(
+                                            size: Get.width / 6),
+                                    errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
+                                  )
+                                      : Image.asset(
+                                    'assets/images/bg_login.jpg',
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Separators.normalHorizontal(),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${paroisseSelected.value.name}',
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyles.montserratMedium(
+                                          textSize: TextSizes.eighteen,
+                                          textColor: colorBlack),
+                                    ),
+                                    Text(
+                                      '${paroisseSelected.value.address?.municipality}',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyles.montserratRegular(
+                                          textSize: TextSizes.sixteen,
+                                          textColor: colorGrey1),
+                                    ),
+                                    Text(
+                                      '${paroisseSelected.value.address?.neighbourhood}',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyles.montserratRegular(
+                                        textSize: TextSizes.sixteen,
+                                        textColor: colorGrey1,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Separators.normalVertical(),
+                        TextButton.icon(
+                          style: TextButton.styleFrom(
+                              backgroundColor: colorGreenSemiLight),
+                          icon: const Icon(
+                            Icons.pin_drop_rounded,
+                            color: colorWhite,
+                          ),
+                          label: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Text(
+                              'Voir itinéraire',
+                              style: TextStyles.montserratMedium(
+                                  textSize: TextSizes.sixteen,
+                                  textColor: colorWhite),
+                            ),
+                          ),
+                          onPressed: () {
+                            mapController.value.hideInfoWindow!();
+                            showCustomDialog(Get.context!,
+                                message:
+                                "Vous serez redirigés vers une autre application",
+                                negativeLabel: 'Annuler',
+                                negativeCallBack: () {},
+                                positiveLabel: 'Continuer', positiveCallBack: () {
+                                  launchMapRoutes();
+                                });
+                          },
+                        ),
+                        Separators.normalVertical(),
+                      ],
+                    ),
+                  ),
+                ),
+                LatLng(paroisseSelected.value.localisation?.latitude ?? 0.0,
+                    paroisseSelected.value.localisation?.longitude ?? 0.0),
+              );
+            }),
+      );
+    });*/
+
+    worshipPlaceMarkers.value.add(
       Marker(
           markerId: MarkerId('${paroisseSelected.value.identifier}'),
-          //icon: getIcon(),
+          //icon: bitmap, //todo - pourquoi le marker n'est pas mis à jour au 1er lancement de la map
           position: LatLng(paroisseSelected.value.localisation?.latitude ?? 0.0,
               paroisseSelected.value.localisation?.longitude ?? 0.0),
           onTap: () {
@@ -90,25 +234,25 @@ class ParoisseMapController extends GetxController {
                                 borderRadius: const BorderRadius.all(
                                     Radius.circular(10.0)),
                                 child: paroisseSelected
-                                            .value.coverImage?.link !=
-                                        null
+                                    .value.coverImage?.link !=
+                                    null
                                     ? CachedNetworkImage(
-                                        width: Get.width / 5,
-                                        height: Get.width / 5,
-                                        imageUrl: paroisseSelected
-                                                .value.coverImage?.link ??
-                                            '',
-                                        fit: BoxFit.cover,
-                                        placeholder: (context, url) =>
-                                            LottieLoadingView(
-                                                size: Get.width / 6),
-                                        errorWidget: (context, url, error) =>
-                                            const Icon(Icons.error),
-                                      )
+                                  width: Get.width / 5,
+                                  height: Get.width / 5,
+                                  imageUrl: paroisseSelected
+                                      .value.coverImage?.link ??
+                                      '',
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) =>
+                                      LottieLoadingView(
+                                          size: Get.width / 6),
+                                  errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                                )
                                     : Image.asset(
-                                        'assets/images/bg_login.jpg',
-                                        fit: BoxFit.cover,
-                                      ),
+                                  'assets/images/bg_login.jpg',
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                             Separators.normalHorizontal(),
@@ -168,12 +312,12 @@ class ParoisseMapController extends GetxController {
                           mapController.value.hideInfoWindow!();
                           showCustomDialog(Get.context!,
                               message:
-                                  "Vous serez redirigés vers une autre application",
+                              "Vous serez redirigés vers une autre application",
                               negativeLabel: 'Annuler',
                               negativeCallBack: () {},
                               positiveLabel: 'Continuer', positiveCallBack: () {
-                            launchMapRoutes();
-                          });
+                                launchMapRoutes();
+                              });
                         },
                       ),
                       Separators.normalVertical(),
