@@ -87,7 +87,7 @@ class ParoissePresbyTeamController extends GetxController {
       if (value.isEmpty == false) {
         hasData(true);
         presbyTeams.value = value.where((element) => (element.type != null) && (element.type?.toLowerCase() == "vicar" || element.type?.toLowerCase() == "clergyman")).toList();
-        presbyTeams.value.sort((a, b) => a.firstname!.compareTo(b.firstname!));
+        presbyTeams.value.sort((a, b) => a.type!.compareTo(b.type!));
         log('${presbyTeams.length}');
       } else {
         hasData(false);
@@ -99,7 +99,7 @@ class ParoissePresbyTeamController extends GetxController {
       debugPrint('${err.code}');
       if (err.code == 401) {
         showCustomDialog(
-          Get.context!, message: err.message /*'Votre session a expiré\nVeuillez-vous reconnecter svp'*/,
+          Get.context!, message: "Vous n’êtes pas autorisé à accéder à cette ressource",
         ).then((value) {
           //doLogout();
         });

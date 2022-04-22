@@ -54,6 +54,15 @@ class PresbyTeamItem extends StatelessWidget {
                     ],
                   ),
                 ),
+                Separators.normalHorizontal(),
+                Visibility(
+                  visible: false,
+                  child: Container(
+                    height: 10,
+                    width: 1,
+                    color: colorGreenSemiLight,
+                  ),
+                ),
               ],
             ),
           ),
