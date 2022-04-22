@@ -1,5 +1,6 @@
 import UIKit
 import Flutter
+import GoogleMaps
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -20,6 +21,7 @@ import Flutter
         let flavor = Bundle.main.infoDictionary?["Oremus - Flavor"]
         result(flavor)
     })
+    GMSServices.provideAPIKey("AIzaSyCTR_9q5d6380xtzxM__KL5Ph96gqvQucg")
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }

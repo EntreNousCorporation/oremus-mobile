@@ -55,17 +55,6 @@ Future showCustomDialog(BuildContext context,
                 textColor: colorBlack),
             ),
             actions: <Widget>[
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context, true);
-                    if (positiveCallBack != null) positiveCallBack();
-                  },
-                  child: Text(
-                    positiveLabel.toUpperCase(),
-                    style: TextStyles.montserratSemiBold(
-                        textSize: TextSizes.sixteen,
-                        textColor: colorBlack),
-                  )),
               Visibility(
                 visible: negativeLabel != '',
                 child: TextButton(
@@ -76,10 +65,24 @@ Future showCustomDialog(BuildContext context,
                     child: Text(
                       negativeLabel,
                       style: TextStyles.montserratSemiBold(
-                          textSize: TextSizes.sixteen,
+                          textSize: TextSizes.fourteen,
                           textColor: colorBlack),
                     )),
               ),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                    if (positiveCallBack != null) positiveCallBack();
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundColor: colorGreenSemiLight,
+                  ),
+                  child: Text(
+                    positiveLabel,
+                    style: TextStyles.montserratSemiBold(
+                        textSize: TextSizes.fourteen,
+                        textColor: colorWhite),
+                  )),
             ],
           ),
         );

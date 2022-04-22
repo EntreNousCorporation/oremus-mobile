@@ -1,33 +1,46 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
 import 'package:get/get.dart';
-import "package:latlong2/latlong.dart" as latLng;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:oremusapp/app/commons/components/dialogs.dart';
+import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
-import 'package:oremusapp/app/modules/paroisse/views/widget/custom_paroisse_marker_popup.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ParoisseMapController extends GetxController {
   ParoisseMapController();
 
   var paroisseSelected = ContentPlace().obs;
 
-  RxList<CustomParoisseMarker> markers = RxList<CustomParoisseMarker>([]);
-  var mapController = MapController().obs;
-  final PopupController popupLayerController = PopupController();
-  late MapOptions mapOptions;
-  late TileLayerOptions tileLayerOptions;
+  //Google Map
+  var mapController = CustomInfoWindowController().obs;
+  var eventMarkers = Rx<Set<Marker>>(Set());
+  List<String> typeMaps = [
+    "Plan",
+    "Satellite",
+  ];
+  var typeMapValue = "Plan".obs;
+  //===========================================
 
   @override
   void onInit() {
     getArguments();
     initControllers();
     super.onInit();
+  }
+
+  @override
+  void dispose() {
+    mapController.value.dispose();
+    super.dispose();
   }
 
   getArguments() {
@@ -37,35 +50,153 @@ class ParoisseMapController extends GetxController {
     }
   }
 
+  getIcon() async {
+    return await BitmapDescriptor.fromAssetImage(
+        createLocalImageConfiguration(Get.context!),
+        "assets/images/icon_default_pin.svg");
+  }
+
   initControllers() {
-    mapOptions = MapOptions(
-      controller: mapController.value,
-      center: latLng.LatLng(
-          paroisseSelected.value.localisation?.latitude ?? 5.357314,
-          paroisseSelected.value.localisation?.longitude ?? -4.008363,
-      ),
-      zoom: 12.0,
-      interactiveFlags: InteractiveFlag.all,
-      onTap: (tapPosition, latlong) => popupLayerController.hideAllPopups(),
+    eventMarkers.value.add(
+      Marker(
+          markerId: MarkerId('${paroisseSelected.value.identifier}'),
+          //icon: getIcon(),
+          position: LatLng(paroisseSelected.value.localisation?.latitude ?? 0.0,
+              paroisseSelected.value.localisation?.longitude ?? 0.0),
+          onTap: () {
+            mapController.value.addInfoWindow!(
+              SizedBox(
+                width: Get.width / 1.2,
+                child: Material(
+                  borderRadius: BorderRadius.circular(10.0),
+                  elevation: 10,
+                  color: colorWhite,
+                  shadowColor: colorGrey2.withOpacity(0.5),
+                  child: Column(
+                    children: [
+                      Separators.normalVertical(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Material(
+                              borderRadius: BorderRadius.circular(10.0),
+                              elevation: 10,
+                              color: colorWhite,
+                              shadowColor: colorGrey2.withOpacity(0.8),
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(10.0)),
+                                child: paroisseSelected
+                                            .value.coverImage?.link !=
+                                        null
+                                    ? CachedNetworkImage(
+                                        width: Get.width / 5,
+                                        height: Get.width / 5,
+                                        imageUrl: paroisseSelected
+                                                .value.coverImage?.link ??
+                                            '',
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) =>
+                                            LottieLoadingView(
+                                                size: Get.width / 6),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.error),
+                                      )
+                                    : Image.asset(
+                                        'assets/images/bg_login.jpg',
+                                        fit: BoxFit.cover,
+                                      ),
+                              ),
+                            ),
+                            Separators.normalHorizontal(),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${paroisseSelected.value.name}',
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyles.montserratMedium(
+                                        textSize: TextSizes.eighteen,
+                                        textColor: colorBlack),
+                                  ),
+                                  Text(
+                                    '${paroisseSelected.value.address?.municipality}',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyles.montserratRegular(
+                                        textSize: TextSizes.sixteen,
+                                        textColor: colorGrey1),
+                                  ),
+                                  Text(
+                                    '${paroisseSelected.value.address?.neighbourhood}',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyles.montserratRegular(
+                                      textSize: TextSizes.sixteen,
+                                      textColor: colorGrey1,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Separators.normalVertical(),
+                      TextButton.icon(
+                        style: TextButton.styleFrom(
+                            backgroundColor: colorGreenSemiLight),
+                        icon: const Icon(
+                          Icons.pin_drop_rounded,
+                          color: colorWhite,
+                        ),
+                        label: Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Text(
+                            'Voir itinéraire',
+                            style: TextStyles.montserratMedium(
+                                textSize: TextSizes.sixteen,
+                                textColor: colorWhite),
+                          ),
+                        ),
+                        onPressed: () {
+                          mapController.value.hideInfoWindow!();
+                          showCustomDialog(Get.context!,
+                              message:
+                                  "Vous serez redirigés vers une autre application",
+                              negativeLabel: 'Annuler',
+                              negativeCallBack: () {},
+                              positiveLabel: 'Continuer', positiveCallBack: () {
+                            launchMapRoutes();
+                          });
+                        },
+                      ),
+                      Separators.normalVertical(),
+                    ],
+                  ),
+                ),
+              ),
+              LatLng(paroisseSelected.value.localisation?.latitude ?? 0.0,
+                  paroisseSelected.value.localisation?.longitude ?? 0.0),
+            );
+          }),
     );
+  }
 
-    tileLayerOptions = TileLayerOptions(
-      urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      subdomains: ['a', 'b', 'c'],
-      fastReplace: true,
-      attributionAlignment: Alignment.bottomLeft,
-      attributionBuilder: (_) {
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            "© Oremus",
-            style: TextStyles.montserratMedium(
-                textSize: TextSizes.eighteen, textColor: colorBlack),
-          ),
-        );
-      },
-    );
+  launchMapRoutes() async {
+    //String url = "https://www.google.com/maps/dir/?api=1&destination=${paroisseSelected.value.localisation?.latitude ?? 0.0},${paroisseSelected.value.localisation?.longitude ?? 0.0}&travelmode=driving&dir_action=navigate";
 
-    markers.add(CustomParoisseMarker(paroisse: paroisseSelected.value));
+    String url =
+        "https://www.google.com/maps/dir/?api=1&origin=${paroisseSelected.value.localisation?.latitude ?? 0.0},${paroisseSelected.value.localisation?.longitude ?? 0.0}&destination=${paroisseSelected.value.localisation?.latitude ?? 0.0},${paroisseSelected.value.localisation?.longitude ?? 0.0}&travelmode=driving&dir_action=navigate";
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

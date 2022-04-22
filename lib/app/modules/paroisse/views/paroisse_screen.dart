@@ -37,24 +37,30 @@ class ParoisseScreen extends StatelessWidget {
                                 top: 16, bottom: 0, left: 16, right: 16),
                             child: Row(
                               children: [
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: Material(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    elevation: 10,
-                                    color: colorWhite,
-                                    shadowColor: colorGrey2.withOpacity(0.5),
-                                    child: SizedBox(
-                                      height: (Get.width / 9),
-                                      width: (Get.width / 9),
-                                      child: const Icon(
-                                        Icons.filter_list_rounded,
-                                        color: colorPurpleLight,
+                                Visibility(
+                                  visible: false,
+                                  child: GestureDetector(
+                                    onTap: () {},
+                                    child: Material(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      elevation: 10,
+                                      color: colorWhite,
+                                      shadowColor: colorGrey2.withOpacity(0.5),
+                                      child: SizedBox(
+                                        height: (Get.width / 9),
+                                        width: (Get.width / 9),
+                                        child: const Icon(
+                                          Icons.filter_list_rounded,
+                                          color: colorPurpleLight,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                                Separators.normalHorizontal(),
+                                Visibility(
+                                  visible: false,
+                                  child: Separators.normalHorizontal(),
+                                ),
                                 Expanded(
                                   child: SizedBox(
                                     height: (Get.width / 9),
@@ -67,12 +73,10 @@ class ParoisseScreen extends StatelessWidget {
                                     _.getParoisses();
                                   },
                                   child: Material(
-                                    borderRadius:
-                                    BorderRadius.circular(10.0),
+                                    borderRadius: BorderRadius.circular(10.0),
                                     elevation: 10,
                                     color: colorWhite,
-                                    shadowColor:
-                                    colorGrey2.withOpacity(0.5),
+                                    shadowColor: colorGrey2.withOpacity(0.5),
                                     child: SizedBox(
                                       height: (Get.width / 9),
                                       width: (Get.width / 9),
@@ -108,18 +112,18 @@ class ParoisseScreen extends StatelessWidget {
                                               right: 16),
                                           child: SmartRefresher(
                                             //header: BezierCircleHeader(),
-                                            physics: const BouncingScrollPhysics(),
+                                            physics:
+                                                const BouncingScrollPhysics(),
                                             controller: _.refreshController,
                                             onRefresh: _.onRefresh,
                                             child: ListView.builder(
-                                                physics: const NeverScrollableScrollPhysics(),
+                                                physics:
+                                                    const NeverScrollableScrollPhysics(),
                                                 shrinkWrap: false,
-                                                itemCount:
-                                                _.paroisses.length,
-                                                itemBuilder:
-                                                    (builder, index) {
+                                                itemCount: _.paroisses.length,
+                                                itemBuilder: (builder, index) {
                                                   var paroisse =
-                                                  _.paroisses[index];
+                                                      _.paroisses[index];
                                                   return ParoisseItem(
                                                     paroisse: paroisse,
                                                     index: index,

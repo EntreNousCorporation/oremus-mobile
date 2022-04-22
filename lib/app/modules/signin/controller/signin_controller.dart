@@ -47,9 +47,9 @@ class SigninController extends GetxController {
     passwordController = TextEditingController(text: '');
 
     if (flavor == AppConstants.ENV_DEV) {
-      //emailController = TextEditingController(text: 'amourssou11@gmail.com');
-      //passwordController = TextEditingController(text: 'test');
-      //checkForm();
+      emailController = TextEditingController(text: 'amourssou11@gmail.com');
+      passwordController = TextEditingController(text: 'test');
+      checkForm();
 
       //loginController = TextEditingController(text: 'SUVAWY');
       //passwordController = TextEditingController(text: 'A22222');
