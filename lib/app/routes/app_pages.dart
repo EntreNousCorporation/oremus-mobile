@@ -12,12 +12,14 @@ import 'package:oremusapp/app/modules/home/binding/home_binding.dart';
 import 'package:oremusapp/app/modules/home/views/home_screen.dart';
 import 'package:oremusapp/app/modules/landing/binding/landing_binding.dart';
 import 'package:oremusapp/app/modules/landing/views/landing_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/binding/filter_paroisse_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_activity_movement_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_map_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_detail_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_presby_team_binding.dart';
+import 'package:oremusapp/app/modules/paroisse/views/filter/filter_paroisse_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_activity_movement_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_map_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu_detail_screen.dart';
@@ -117,6 +119,12 @@ class AppPages {
       name: Routes.PAROISSE_MENU,
       page: () => const ParoisseMenuScreen(),
       binding: ParoisseMenuBinding(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: Routes.FILTER_PAROISSE,
+      page: () => const FilterParoisseScreen(),
+      binding: FilterParoisseBinding(),
       transition: Transition.fadeIn,
     ),
     GetPage(

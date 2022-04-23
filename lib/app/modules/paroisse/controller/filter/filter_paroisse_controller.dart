@@ -8,6 +8,7 @@ import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/place_type.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
@@ -15,27 +16,27 @@ import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class ParoisseController extends GetxController {
+class FilterParoisseController extends GetxController {
   final ParoisseRepository paroisseRepository;
 
-  ParoisseController({
+  FilterParoisseController({
     required this.paroisseRepository,
   });
 
   var userConnection = Signin().obs;
 
-  RxList<ContentPlace> paroisses = RxList<ContentPlace>([]);
-
+  RxList<PlaceType> paroisseTypes = RxList<PlaceType>([]);
+  var placeTypeSelected = PlaceType().obs;
   var unlockBackButton = true.obs;
 
   var isDataProcessing = false.obs;
   var hasData = false.obs;
-  var isLiked = false.obs;
 
-  var refreshController = RefreshController();
+  late TextEditingController dioceseController;
+  late TextEditingController cityController;
+  late TextEditingController municipalityController;
+  late TextEditingController neighborhoodController;
 
-  late TextEditingController searchController;
-  var isSearchFieldEmpty = true.obs;
   var searchCriteria = SearchCriteria().obs;
 
   @override
@@ -47,33 +48,32 @@ class ParoisseController extends GetxController {
 
   @override
   void onReady() {
-    getParoisses();
+    getParoisseType();
     super.onReady();
   }
 
   @override
   void dispose() {
-    refreshController.dispose();
     super.dispose();
   }
 
   initController() {
-    searchController = TextEditingController(text: '');
+    dioceseController = TextEditingController(text: '');
+    cityController = TextEditingController(text: '');
+    municipalityController = TextEditingController(text: '');
+    neighborhoodController = TextEditingController(text: '');
   }
 
-  getParoisses() {
+  getParoisseType() {
     hideKeyboard();
-    searchCriteria.value.name = searchController.text.trim();
-    isDataProcessing(true);
 
-    log('request getParoisses');
+    log('request getParoisseType');
 
-    paroisseRepository.getParoisses(searchCriteria: searchCriteria.value).then((value) {
+    paroisseRepository.getPlaceOfWorshipTypes().then((value) {
       isDataProcessing(false);
-      if (value.empty == false) {
+      if (value.isNotEmpty == true) {
         hasData(true);
-        paroisses.value = value.content ?? [];
-        //paroisses.value.sort((p1, p2) => p1.name!.compareTo(p2.name!));
+        paroisseTypes.value = value;
       } else {
         hasData(false);
       }
@@ -120,30 +120,6 @@ class ParoisseController extends GetxController {
     Get.offAllNamed(Routes.SIGNIN);
   }
 
-  onRefresh() {
-
-    log('request onRefresh');
-
-    resetSearchField();
-    paroisseRepository.getParoisses().then((value) {
-      refreshController.refreshCompleted();
-      if (value.empty == false) {
-        paroisses.value = value.content ?? [];
-        //paroisses.value.sort((p1, p2) => p1.name!.compareTo(p2.name!));
-      }
-    }, onError: (error) {
-      refreshController.refreshCompleted();
-      if (error.toString().contains('401')) {
-        showCustomDialog(
-          Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-        ).then((value) {
-          doLogout();
-        });
-      }
-      debugPrint("error => ${error.toString()}");
-    });
-  }
-
   getUserInfo() {
     var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
     log('==> $userInfo');
@@ -155,16 +131,55 @@ class ParoisseController extends GetxController {
     }
   }
 
-  goToAdvancedSearch() async {
-    searchCriteria.value = await Get.toNamed(Routes.FILTER_PAROISSE);
-    log('searchCriteria => ${searchCriteria.value.toJson().toString()}');
-    log('searchCriteria isEmpty => ${searchCriteria.value.isCriteriaEmpty}');
+  resetControllers() {
+    dioceseController.clear();
+    searchCriteria.value.diocese = null;
+    cityController.clear();
+    searchCriteria.value.city = null;
+    municipalityController.clear();
+    searchCriteria.value.municipality = null;
+    neighborhoodController.clear();
+    searchCriteria.value.neighborhood = null;
   }
 
-  //SEARCH SECTION
-  resetSearchField() {
-    searchController.clear();
-    isSearchFieldEmpty.value = true;
+  doResetFilter() {
+    placeTypeSelected.value = PlaceType();
+    searchCriteria.value.type = null;
+    resetControllers();
     hideKeyboard();
+  }
+
+  onPlaceTypeSelected(PlaceType pt) {
+    if (placeTypeSelected.value == pt) {
+      placeTypeSelected.value = PlaceType();
+    } else {
+      placeTypeSelected.value = pt;
+      searchCriteria.value.type = pt.code;
+    }
+  }
+
+  int getCriteriaCount() {
+    var sum = 0;
+    if (searchCriteria.value.type != null && searchCriteria.value.type?.isNotEmpty == true) {
+      sum += 1;
+    }
+    if (searchCriteria.value.diocese != null && searchCriteria.value.diocese?.isNotEmpty == true) {
+      sum += 1;
+    }
+    if (searchCriteria.value.city != null && searchCriteria.value.city?.isNotEmpty == true) {
+      sum += 1;
+    }
+    if (searchCriteria.value.municipality != null && searchCriteria.value.municipality?.isNotEmpty == true) {
+      sum += 1;
+    }
+    if (searchCriteria.value.neighborhood != null && searchCriteria.value.neighborhood?.isNotEmpty == true) {
+      sum += 1;
+    }
+    return sum;
+  }
+
+  goBackToParoisse() {
+    searchCriteria.value.countCriteria = getCriteriaCount();
+    Get.back(result: searchCriteria.value);
   }
 }

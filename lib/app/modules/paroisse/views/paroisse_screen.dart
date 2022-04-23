@@ -39,30 +39,26 @@ class ParoisseScreen extends StatelessWidget {
                                 top: 16, bottom: 0, left: 16, right: 16),
                             child: Row(
                               children: [
-                                Visibility(
-                                  visible: false,
-                                  child: GestureDetector(
-                                    onTap: () {},
-                                    child: Material(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      elevation: 10,
-                                      color: colorWhite,
-                                      shadowColor: colorGrey2.withOpacity(0.5),
-                                      child: SizedBox(
-                                        height: (Get.width / 9),
-                                        width: (Get.width / 9),
-                                        child: const Icon(
-                                          Icons.filter_list_rounded,
-                                          color: colorPurpleLight,
-                                        ),
+                                GestureDetector(
+                                  onTap: () {
+                                    _.goToAdvancedSearch();
+                                  },
+                                  child: Material(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    elevation: 10,
+                                    color: colorWhite,
+                                    shadowColor: colorGrey2.withOpacity(0.5),
+                                    child: SizedBox(
+                                      height: (Get.width / 9),
+                                      width: (Get.width / 9),
+                                      child: const Icon(
+                                        Icons.filter_list_rounded,
+                                        color: colorPurpleLight,
                                       ),
                                     ),
                                   ),
                                 ),
-                                Visibility(
-                                  visible: false,
-                                  child: Separators.normalHorizontal(),
-                                ),
+                                Separators.normalHorizontal(),
                                 Expanded(
                                   child: SizedBox(
                                     height: (Get.width / 9),

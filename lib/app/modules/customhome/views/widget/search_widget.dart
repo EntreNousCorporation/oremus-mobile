@@ -39,8 +39,8 @@ class SearchWidget extends StatelessWidget {
             ),
             errorBorder: InputBorder.none,
             disabledBorder: InputBorder.none,
-            hintText: 'Rechercher',
-            hintStyle: TextStyles.montserratRegular(
+            hintText: 'Recherche par nom',
+            hintStyle: TextStyles.montserratItalic(
                 textColor: colorPurpleLight, textSize: 14),
             //prefixIcon: const Icon(Icons.search, color: colorPurpleLight,),
             suffixIcon: logic.isSearchFieldEmpty.isFalse

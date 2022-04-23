@@ -8,6 +8,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/activity_response.dart
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/movement_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/place_type.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_user.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/interface_paroisse_repository.dart';
@@ -16,7 +17,6 @@ import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
 
 class ParoisseRepository implements IParoisseRepository {
-
   final ApiClient _apiClient;
 
   ParoisseRepository(this._apiClient);
@@ -27,7 +27,8 @@ class ParoisseRepository implements IParoisseRepository {
     SearchCriteria? searchCriteria,
   }) async {
     Response response = await _apiClient.doRequest(
-      endpoint: "/places-of-worship?page=$page&size=${AppConstants.PAGING_SIZE}${(searchCriteria?.name == null || searchCriteria?.name?.isEmpty == true) ? '' : '&name=${searchCriteria?.name}'}${(searchCriteria?.type == null || searchCriteria?.type?.isEmpty == true) ? '' : '&type=${searchCriteria?.type}'}${(searchCriteria?.diocese == null || searchCriteria?.diocese?.isEmpty == true) ? '' : '&diocese=${searchCriteria?.diocese}'}${(searchCriteria?.city == null || searchCriteria?.city?.isEmpty == true) ? '' : '&city=${searchCriteria?.city}'}${(searchCriteria?.municipality == null || searchCriteria?.municipality?.isEmpty == true) ? '' : '&municipality=${searchCriteria?.municipality}'}${(searchCriteria?.neighborhood == null || searchCriteria?.neighborhood?.isEmpty == true) ? '' : '&neighborhood=${searchCriteria?.neighborhood}'}",
+      endpoint:
+          "/places-of-worship?page=$page&size=${AppConstants.PAGING_SIZE}&sort=name%2CASC${(searchCriteria?.name == null || searchCriteria?.name?.isEmpty == true) ? '' : '&name=${searchCriteria?.name}'}${(searchCriteria?.type == null || searchCriteria?.type?.isEmpty == true) ? '' : '&type=${searchCriteria?.type}'}${(searchCriteria?.diocese == null || searchCriteria?.diocese?.isEmpty == true) ? '' : '&diocese=${searchCriteria?.diocese}'}${(searchCriteria?.city == null || searchCriteria?.city?.isEmpty == true) ? '' : '&city=${searchCriteria?.city}'}${(searchCriteria?.municipality == null || searchCriteria?.municipality?.isEmpty == true) ? '' : '&municipality=${searchCriteria?.municipality}'}${(searchCriteria?.neighborhood == null || searchCriteria?.neighborhood?.isEmpty == true) ? '' : '&neighborhood=${searchCriteria?.neighborhood}'}",
       method: HttpMethod.get,
       useBearer: true,
     );
@@ -38,12 +39,14 @@ class ParoisseRepository implements IParoisseRepository {
       throw Exception(resp);
     } else {
       //log('resp => $resp');
-      return PlaceResponse.fromJson(json.decode(response.bodyString.toString()));
+      return PlaceResponse.fromJson(
+          json.decode(response.bodyString.toString()));
     }
   }
 
   @override
-  Future<List<LiturgicalCelebrationResponse>> getLiturgicalCelebration(int idParoisse) async {
+  Future<List<LiturgicalCelebrationResponse>> getLiturgicalCelebration(
+      int idParoisse) async {
     Response response = await _apiClient.doRequest(
       endpoint: "/places-of-worship/$idParoisse/liturgical-celebrations",
       method: HttpMethod.get,
@@ -56,7 +59,9 @@ class ParoisseRepository implements IParoisseRepository {
       throw Exception(resp);
     } else {
       //log('resp => $resp');
-      return (jsonDecode(response.bodyString.toString()) as List).map((i) => LiturgicalCelebrationResponse.fromJson(i)).toList();
+      return (jsonDecode(response.bodyString.toString()) as List)
+          .map((i) => LiturgicalCelebrationResponse.fromJson(i))
+          .toList();
     }
   }
 
@@ -73,7 +78,9 @@ class ParoisseRepository implements IParoisseRepository {
     if (response.statusCode != 200) {
       throw Exception(resp);
     } else {
-      return (jsonDecode(response.bodyString.toString()) as List).map((i) => ActivityResponse.fromJson(i)).toList();
+      return (jsonDecode(response.bodyString.toString()) as List)
+          .map((i) => ActivityResponse.fromJson(i))
+          .toList();
     }
   }
 
@@ -90,7 +97,9 @@ class ParoisseRepository implements IParoisseRepository {
     if (response.statusCode != 200) {
       throw Exception(resp);
     } else {
-      return (jsonDecode(response.bodyString.toString()) as List).map((i) => MovementResponse.fromJson(i)).toList();
+      return (jsonDecode(response.bodyString.toString()) as List)
+          .map((i) => MovementResponse.fromJson(i))
+          .toList();
     }
   }
 
@@ -105,20 +114,41 @@ class ParoisseRepository implements IParoisseRepository {
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e =
+          ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
       throw CustomException(e.debugMessage, e.status);
     } else {
-      return (jsonDecode(response.bodyString.toString()) as List).map((i) => PlaceUser.fromJson(i)).toList();
+      return (jsonDecode(response.bodyString.toString()) as List)
+          .map((i) => PlaceUser.fromJson(i))
+          .toList();
     }
   }
 
   @override
-  void addFavorite(ContentPlace paroisse) {
+  Future<List<PlaceType>> getPlaceOfWorshipTypes({int? page = 0}) async {
+    Response response = await _apiClient.doRequest(
+      endpoint:
+          "/types-of-worship?page=$page&size=${AppConstants.PAGING_SIZE}&sort=code%2CASC",
+      method: HttpMethod.get,
+      useBearer: true,
+    );
+    final String resp = json.encode(response.bodyString.toString());
+    log('resp => ${response.statusCode}');
 
+    if (response.statusCode != 200) {
+      var e =
+          ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      throw CustomException(e.debugMessage, e.status);
+    } else {
+      return (jsonDecode(response.bodyString.toString()) as List)
+          .map((i) => PlaceType.fromJson(i))
+          .toList();
+    }
   }
 
   @override
-  void deleteFavorite(ContentPlace paroisse) {
+  void addFavorite(ContentPlace paroisse) {}
 
-  }
+  @override
+  void deleteFavorite(ContentPlace paroisse) {}
 }
