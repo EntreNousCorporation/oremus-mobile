@@ -26,7 +26,7 @@ class FilterParoisseScreen extends StatelessWidget {
     return Container(
       color: colorGreen,
       child: SafeArea(
-        child: GetBuilder<FilterParoisseController>(
+        child: GetX<FilterParoisseController>(
             initState: (state) {},
             builder: (_) {
               return WillPopScope(
@@ -117,6 +117,7 @@ class FilterParoisseScreen extends StatelessWidget {
                                       controller: _.dioceseController,
                                       onChanged: (value) {
                                         _.searchCriteria.value.diocese = value;
+                                        _.canDoApplyAction();
                                       },
                                     ),
                                     Separators.normalVertical(),
@@ -132,6 +133,7 @@ class FilterParoisseScreen extends StatelessWidget {
                                       controller: _.cityController,
                                       onChanged: (value) {
                                         _.searchCriteria.value.city = value;
+                                        _.canDoApplyAction();
                                       },
                                     ),
                                     Separators.normalVertical(),
@@ -148,6 +150,7 @@ class FilterParoisseScreen extends StatelessWidget {
                                       onChanged: (value) {
                                         _.searchCriteria.value.municipality =
                                             value;
+                                        _.canDoApplyAction();
                                       },
                                     ),
                                     Separators.normalVertical(),
@@ -164,6 +167,7 @@ class FilterParoisseScreen extends StatelessWidget {
                                       onChanged: (value) {
                                         _.searchCriteria.value.neighborhood =
                                             value;
+                                        _.canDoApplyAction();
                                       },
                                     ),
                                   ],
@@ -174,6 +178,10 @@ class FilterParoisseScreen extends StatelessWidget {
                             CustomButton(
                               text: 'Appliquer les filtres',
                               textSize: TextSizes.eighteen,
+                              actionColor: colorGreenSemiLight,
+                              enabled: _.enabledApplyButton.value == false ? false : true,
+                              borderColor: _.enabledApplyButton.value == false ? colorGrey1 : colorGreen,
+                              bgcolor: _.enabledApplyButton.value == false ? colorGrey1 : colorGreen,
                               action: () {
                                 _.goBackToParoisse();
                               },

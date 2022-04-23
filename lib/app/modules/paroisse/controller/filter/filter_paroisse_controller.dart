@@ -38,6 +38,7 @@ class FilterParoisseController extends GetxController {
   late TextEditingController neighborhoodController;
 
   var searchCriteria = SearchCriteria().obs;
+  var enabledApplyButton = false.obs;
 
   @override
   void onInit() {
@@ -146,6 +147,7 @@ class FilterParoisseController extends GetxController {
     placeTypeSelected.value = PlaceType();
     searchCriteria.value.type = null;
     resetControllers();
+    canDoApplyAction();
     hideKeyboard();
   }
 
@@ -156,6 +158,7 @@ class FilterParoisseController extends GetxController {
       placeTypeSelected.value = pt;
       searchCriteria.value.type = pt.code;
     }
+    canDoApplyAction();
   }
 
   int getCriteriaCount() {
@@ -176,6 +179,10 @@ class FilterParoisseController extends GetxController {
       sum += 1;
     }
     return sum;
+  }
+
+  canDoApplyAction() {
+    enabledApplyButton.value = searchCriteria.value.isCriteriaEmpty == false;
   }
 
   goBackToParoisse() {
