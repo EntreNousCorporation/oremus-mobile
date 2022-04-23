@@ -48,6 +48,7 @@ class FilterParoisseScreen extends StatelessWidget {
                               children: [
                                 IconButton(
                                   onPressed: () {
+                                    _.doResetFilter();
                                     _.goBackToParoisse();
                                   },
                                   icon: const Icon(Icons.cancel_rounded,

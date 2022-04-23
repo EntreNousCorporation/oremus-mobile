@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_controller.dart';
 
@@ -41,7 +42,7 @@ class SearchWidget extends StatelessWidget {
             disabledBorder: InputBorder.none,
             hintText: 'Recherche par nom',
             hintStyle: TextStyles.montserratItalic(
-                textColor: colorPurpleLight, textSize: 14),
+                textColor: colorPurpleLight, textSize: TextSizes.fourteen),
             //prefixIcon: const Icon(Icons.search, color: colorPurpleLight,),
             suffixIcon: logic.isSearchFieldEmpty.isFalse
                 ? FadeIn(

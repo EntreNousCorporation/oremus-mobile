@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
@@ -7,6 +8,7 @@ import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/customhome/views/widget/search_widget.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_controller.dart';
@@ -48,14 +50,22 @@ class ParoisseScreen extends StatelessWidget {
                                     elevation: 10,
                                     color: colorWhite,
                                     shadowColor: colorGrey2.withOpacity(0.5),
-                                    child: SizedBox(
-                                      height: (Get.width / 9),
-                                      width: (Get.width / 9),
-                                      child: const Icon(
-                                        Icons.filter_list_rounded,
-                                        color: colorPurpleLight,
+                                    child: Badge(
+                                      showBadge: _.searchCriteria.value.isCriteriaEmpty == false ? true : false,
+                                      badgeContent: Text(
+                                        '${_.searchCriteria.value.countCriteria}',
+                                        style: TextStyles.montserratRegular(
+                                            textColor: colorWhite, textSize: TextSizes.thirteen),
                                       ),
-                                    ),
+                                      child: SizedBox(
+                                        height: (Get.width / 9),
+                                        width: (Get.width / 9),
+                                        child: const Icon(
+                                          Icons.filter_list_rounded,
+                                          color: colorPurpleLight,
+                                        ),
+                                      ),
+                                    )
                                   ),
                                 ),
                                 Separators.normalHorizontal(),
