@@ -42,6 +42,7 @@ class FilterParoisseController extends GetxController {
 
   @override
   void onInit() {
+    log('onInit');
     getUserInfo();
     initController();
     super.onInit();
@@ -49,6 +50,7 @@ class FilterParoisseController extends GetxController {
 
   @override
   void onReady() {
+    log('onReady');
     getParoisseType();
     super.onReady();
   }
@@ -69,7 +71,7 @@ class FilterParoisseController extends GetxController {
     hideKeyboard();
 
     log('request getParoisseType');
-
+    isDataProcessing(true);
     paroisseRepository.getPlaceOfWorshipTypes().then((value) {
       isDataProcessing(false);
       if (value.isNotEmpty == true) {

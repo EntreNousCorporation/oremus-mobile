@@ -43,41 +43,6 @@ class ParoisseScreen extends StatelessWidget {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    _.goToAdvancedSearch();
-                                  },
-                                  child: Material(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    elevation: 10,
-                                    color: colorWhite,
-                                    shadowColor: colorGrey2.withOpacity(0.5),
-                                    child: Badge(
-                                      showBadge: _.searchCriteria.value.isCriteriaEmpty == false ? true : false,
-                                      badgeContent: Text(
-                                        '${_.searchCriteria.value.countCriteria}',
-                                        style: TextStyles.montserratRegular(
-                                            textColor: colorWhite, textSize: TextSizes.thirteen),
-                                      ),
-                                      child: SizedBox(
-                                        height: (Get.width / 9),
-                                        width: (Get.width / 9),
-                                        child: const Icon(
-                                          Icons.filter_list_rounded,
-                                          color: colorPurpleLight,
-                                        ),
-                                      ),
-                                    )
-                                  ),
-                                ),
-                                Separators.normalHorizontal(),
-                                Expanded(
-                                  child: SizedBox(
-                                    height: (Get.width / 9),
-                                    child: const SearchWidget(),
-                                  ),
-                                ),
-                                Separators.normalHorizontal(),
-                                GestureDetector(
-                                  onTap: () {
                                     _.getParoisses();
                                   },
                                   child: Material(
@@ -93,6 +58,41 @@ class ParoisseScreen extends StatelessWidget {
                                         color: colorPurpleLight,
                                       ),
                                     ),
+                                  ),
+                                ),
+                                Separators.normalHorizontal(),
+                                Expanded(
+                                  child: SizedBox(
+                                    height: (Get.width / 9),
+                                    child: const SearchWidget(),
+                                  ),
+                                ),
+                                Separators.normalHorizontal(),
+                                GestureDetector(
+                                  onTap: () {
+                                    _.goToAdvancedSearch();
+                                  },
+                                  child: Material(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      elevation: 10,
+                                      color: colorWhite,
+                                      shadowColor: colorGrey2.withOpacity(0.5),
+                                      child: Badge(
+                                        showBadge: (_.searchCriteria.value.isCriteriaEmpty == false) ? true : false,
+                                        badgeContent: Text(
+                                          '${_.searchCriteria.value.countCriteria}',
+                                          style: TextStyles.montserratRegular(
+                                              textColor: colorWhite, textSize: TextSizes.thirteen),
+                                        ),
+                                        child: SizedBox(
+                                          height: (Get.width / 9),
+                                          width: (Get.width / 9),
+                                          child: const Icon(
+                                            Icons.filter_list_rounded,
+                                            color: colorPurpleLight,
+                                          ),
+                                        ),
+                                      )
                                   ),
                                 ),
                               ],

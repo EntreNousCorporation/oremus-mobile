@@ -5,6 +5,7 @@ import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/button.dart';
+import 'package:oremusapp/app/commons/components/loader_widget.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/components/text_field.dart';
@@ -92,19 +93,29 @@ class FilterParoisseScreen extends StatelessWidget {
                                         textSize: TextSizes.fourteen,
                                       ),
                                     ),
-                                    Separators.minimunVertical(),
-                                    SizedBox(
-                                      height: 50,
-                                      child: ListView.builder(
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: _.paroisseTypes.length,
-                                          itemBuilder: (context, index) {
-                                            var placeType =
+                                    _.isDataProcessing.isTrue ? Center(
+                                      child: LoadingView(
+                                        size: Get.width / 20,
+                                        color: colorGreenSemiLight,
+                                      ),
+                                    ) : _.hasData.isTrue ? Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Separators.minimunVertical(),
+                                        SizedBox(
+                                          height: Get.width/8,
+                                          child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: _.paroisseTypes.length,
+                                              itemBuilder: (context, index) {
+                                                var placeType =
                                                 _.paroisseTypes[index];
-                                            return PlaceTypeItem(
-                                                placeType: placeType);
-                                          }),
-                                    ),
+                                                return PlaceTypeItem(
+                                                    placeType: placeType);
+                                              }),
+                                        ),
+                                      ],
+                                    ) : Container(),
                                     Separators.normalVertical(),
                                     Text(
                                       'Diocèse',
