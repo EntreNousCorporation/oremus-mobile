@@ -32,6 +32,8 @@ class ParoisseController extends GetxController {
   var hasData = false.obs;
   var isLiked = false.obs;
 
+  var page = 0.obs;
+
   var refreshController = RefreshController();
 
   late TextEditingController searchController;
@@ -70,12 +72,16 @@ class ParoisseController extends GetxController {
 
     paroisseRepository.getParoisses(searchCriteria: searchCriteria.value).then((value) {
       isDataProcessing(false);
-      if (value.empty == false) {
+      paroisses.value = value.content ?? [];
+      if (paroisses.isNotEmpty == true) {
         hasData(true);
-        paroisses.value = value.content ?? [];
-        //paroisses.value.sort((p1, p2) => p1.name!.compareTo(p2.name!));
       } else {
         hasData(false);
+      }
+      if (value.last == false) {
+        page.value += 1;
+      } else {
+        refreshController.loadNoData();
       }
     }, onError: (error) {
       isDataProcessing(false);
@@ -124,12 +130,14 @@ class ParoisseController extends GetxController {
 
     log('request onRefresh');
 
-    resetSearchField();
-    paroisseRepository.getParoisses().then((value) {
+    resetSearch();
+    paroisseRepository.getParoisses(searchCriteria: searchCriteria.value).then((value) {
       refreshController.refreshCompleted();
-      if (value.empty == false) {
-        paroisses.value = value.content ?? [];
-        //paroisses.value.sort((p1, p2) => p1.name!.compareTo(p2.name!));
+      paroisses.value = value.content ?? [];
+      if (value.last == false) {
+        page.value += 1;
+      } else {
+        refreshController.loadNoData();
       }
     }, onError: (error) {
       refreshController.refreshCompleted();
@@ -143,6 +151,37 @@ class ParoisseController extends GetxController {
       debugPrint("error => ${error.toString()}");
     });
   }
+
+
+  onLoading() {
+    hideKeyboard();
+    searchCriteria.value.name = searchController.text.trim();
+
+    log('request onLoading');
+
+    paroisseRepository.getParoisses(page: page.value, searchCriteria: searchCriteria.value).then((value) {
+      paroisses.value.addAll(value.content ?? []);
+      paroisses.refresh();
+      refreshController.loadComplete();
+      log('${paroisses.length}');
+      if (value.last == false) {
+        page.value += 1;
+      } else {
+        refreshController.loadNoData();
+      }
+    }, onError: (error) {
+      refreshController.loadFailed();
+      if (error.toString().contains('401')) {
+        showCustomDialog(
+          Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      }
+      debugPrint("error => ${error.toString()}");
+    });
+  }
+
 
   getUserInfo() {
     var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
@@ -158,13 +197,16 @@ class ParoisseController extends GetxController {
   goToAdvancedSearch() async {
     searchCriteria.value = await Get.toNamed(Routes.FILTER_PAROISSE);
     searchCriteria.refresh();
+    resetSearch();
     getParoisses();
     log('searchCriteria => ${searchCriteria.value.toJson().toString()}');
     log('searchCriteria isEmpty => ${searchCriteria.value.isCriteriaEmpty}');
   }
 
   //SEARCH SECTION
-  resetSearchField() {
+  resetSearch() {
+    refreshController.loadComplete();
+    page.value = 0;
     searchController.clear();
     isSearchFieldEmpty.value = true;
     hideKeyboard();

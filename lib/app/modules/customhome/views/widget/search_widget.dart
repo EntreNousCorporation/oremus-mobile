@@ -50,7 +50,7 @@ class SearchWidget extends StatelessWidget {
                     child: IconButton(
                       onPressed: () {
                         //clean search bar
-                        logic.resetSearchField();
+                        logic.resetSearch();
                         logic.getParoisses();
                       },
                       icon: const Icon(Icons.cancel,

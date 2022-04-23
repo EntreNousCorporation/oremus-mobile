@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:badges/badges.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
@@ -78,11 +79,16 @@ class ParoisseScreen extends StatelessWidget {
                                       color: colorWhite,
                                       shadowColor: colorGrey2.withOpacity(0.5),
                                       child: Badge(
-                                        showBadge: (_.searchCriteria.value.isCriteriaEmpty == false) ? true : false,
+                                        showBadge: (_.searchCriteria.value
+                                                    .isCriteriaEmpty ==
+                                                false)
+                                            ? true
+                                            : false,
                                         badgeContent: Text(
                                           '${_.searchCriteria.value.countCriteria}',
                                           style: TextStyles.montserratRegular(
-                                              textColor: colorWhite, textSize: TextSizes.thirteen),
+                                              textColor: colorWhite,
+                                              textSize: TextSizes.thirteen),
                                         ),
                                         child: SizedBox(
                                           height: (Get.width / 9),
@@ -92,8 +98,7 @@ class ParoisseScreen extends StatelessWidget {
                                             color: colorPurpleLight,
                                           ),
                                         ),
-                                      )
-                                  ),
+                                      )),
                                 ),
                               ],
                             ),
@@ -121,13 +126,88 @@ class ParoisseScreen extends StatelessWidget {
                                           child: SmartRefresher(
                                             //header: BezierCircleHeader(),
                                             enablePullDown: true,
-                                            onLoading: () {
-                                              log('ça loguer');
-                                            },
+                                            enablePullUp: true,
+                                            onRefresh: _.onRefresh,
+                                            onLoading: _.onLoading,
+                                            footer: CustomFooter(
+                                              builder: (BuildContext context,
+                                                  LoadStatus? mode) {
+                                                Widget body;
+                                                if (mode == LoadStatus.idle) {
+                                                  body = Container();
+                                                } else if (mode ==
+                                                    LoadStatus.loading) {
+                                                  body = LottieLoadingView();
+                                                } else if (mode ==
+                                                    LoadStatus.failed) {
+                                                  body = Text(
+                                                    "Une erreur est survenue lors du chargement",
+                                                    style: TextStyles
+                                                        .montserratBold(
+                                                            textSize: TextSizes
+                                                                .thirteen,
+                                                            textColor:
+                                                                colorBlack),
+                                                  );
+                                                } else if (mode ==
+                                                    LoadStatus.canLoading) {
+                                                  body = Text(
+                                                    "Charger plus de paroisse",
+                                                    style: TextStyles
+                                                        .montserratBold(
+                                                            textSize: TextSizes
+                                                                .thirteen,
+                                                            textColor:
+                                                                colorBlack),
+                                                  );
+                                                } else {
+                                                  body = Column(
+                                                    children: [
+                                                      SizedBox(
+                                                        width: Get.width / 1.7,
+                                                        height: 4,
+                                                        child: Container(
+                                                          decoration:
+                                                          BoxDecoration(
+                                                                borderRadius: BorderRadius.circular(10),
+                                                            gradient:
+                                                                const LinearGradient(
+                                                              begin: Alignment
+                                                                  .topRight,
+                                                              end: Alignment
+                                                                  .bottomLeft,
+                                                              colors: [
+                                                                colorGreen,
+                                                                colorGreenSemiLight,
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Separators
+                                                          .minimunVertical(),
+                                                      Text(
+                                                        "Aucune donnée à charger",
+                                                        style: TextStyles
+                                                            .montserratBold(
+                                                                textSize:
+                                                                    TextSizes
+                                                                        .thirteen,
+                                                                textColor:
+                                                                    colorBlack),
+                                                      ),
+                                                    ],
+                                                  );
+                                                }
+                                                return SizedBox(
+                                                  height: 55.0,
+                                                  child: Center(child: body),
+                                                );
+                                              },
+                                            ),
                                             physics:
                                                 const BouncingScrollPhysics(),
                                             controller: _.refreshController,
-                                            onRefresh: _.onRefresh,
                                             child: ListView.builder(
                                                 physics:
                                                     const NeverScrollableScrollPhysics(),

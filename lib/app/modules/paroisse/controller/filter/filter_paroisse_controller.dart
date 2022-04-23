@@ -156,6 +156,7 @@ class FilterParoisseController extends GetxController {
   onPlaceTypeSelected(PlaceType pt) {
     if (placeTypeSelected.value == pt) {
       placeTypeSelected.value = PlaceType();
+      searchCriteria.value.type = null;
     } else {
       placeTypeSelected.value = pt;
       searchCriteria.value.type = pt.code;
