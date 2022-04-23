@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/paroisse/controller/paroisse_presby_team_controller.dart';
+import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_presby_team_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_user.dart';
 
 class PresbyTeamItem extends StatelessWidget {

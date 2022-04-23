@@ -20,11 +20,11 @@ import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_binding.dar
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_detail_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_presby_team_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/views/filter/filter_paroisse_screen.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_activity_movement_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_activity_movement_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_map_screen.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu_detail_screen.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu_screen.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_presby_team_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_menu_detail_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_menu_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_presby_team_screen.dart';
 import 'package:oremusapp/app/modules/profile/binding/edit_profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/binding/profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/views/edit_profile_screen.dart';
