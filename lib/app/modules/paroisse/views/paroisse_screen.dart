@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
@@ -112,6 +114,10 @@ class ParoisseScreen extends StatelessWidget {
                                               right: 16),
                                           child: SmartRefresher(
                                             //header: BezierCircleHeader(),
+                                            enablePullDown: true,
+                                            onLoading: () {
+                                              log('ça loguer');
+                                            },
                                             physics:
                                                 const BouncingScrollPhysics(),
                                             controller: _.refreshController,

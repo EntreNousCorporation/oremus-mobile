@@ -177,29 +177,4 @@ class ParoisseMenuDetailScreen extends StatelessWidget {
           }),
     );
   }
-
-  final List<Events> listOfEvents = [
-    Events(time: "5pm", eventName: "New Icon", description: "Mobile App"),
-    Events(time: "3 - 4pm", eventName: "Design Stand Up", description: "Hangouts"),
-    Events(time: "12pm", eventName: "Lunch Break", description: "Main Room"),
-    Events(time: "9 - 11am", eventName: "Finish Home Screen", description: "Web App"),
-  ];
-
-  final List<Color> listOfColors = [Constants.kPurpleColor,Constants.kGreenColor,Constants.kRedColor];
-
-
-}
-class Events {
-  final String time;
-  final String eventName;
-  final String description;
-
-  Events({required this.time, required this.eventName, required this.description});
-
-}
-
-class Constants {
-  static const kPurpleColor = Color(0xFFB97DFE);
-  static const kRedColor = Color(0xFFFE4067);
-  static const kGreenColor = Color(0xFFADE9E3);
 }

@@ -21,9 +21,6 @@ class ParoisseMenuDetailController extends GetxController {
   var openingTime = OpeningTime().obs;
 
   RxList<TypeMenu> menus = RxList<TypeMenu>([]);
-
-  //RxList<LiturgicalCelebrationResponse> masses = RxList<LiturgicalCelebrationResponse>([]);
-  //RxList<LiturgicalCelebrationResponse> confessions = RxList<LiturgicalCelebrationResponse>([]);
   RxList<LiturgicalCelebrationResponse> liturgicalCelebrations = RxList<LiturgicalCelebrationResponse>([]);
 
   @override
@@ -49,16 +46,6 @@ class ParoisseMenuDetailController extends GetxController {
   List<LiturgicalCelebrationResponse> getMasses(String massesToConverted) {
     Iterable l = json.decode(massesToConverted);
     return l.map((model) => LiturgicalCelebrationResponse.fromJson(model)).toList();
-  }
-
-  daySelected(OpeningTime ot) {
-    if (openingTime.value == ot) {
-      openingTime.value = OpeningTime();
-    } else {
-      openingTime.value = ot;
-    }
-    //openingTime.value.isSelected = (indexDaySelected.value == index);
-    //update();
   }
 
   getTime(String timeToConverted) {

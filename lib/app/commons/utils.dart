@@ -49,6 +49,7 @@ extension StringExtension on String {
 }
 
 String getDay(int code) {
+  //log('getCurrentDay 2 => ${getDay(Jiffy(DateTime.now()).day - 1)}');
   switch (code) {
     case 0:
       return 'Lundi';
@@ -70,7 +71,7 @@ String getDay(int code) {
 }
 
 String getCurrentDay() {
-  return getDay(Jiffy(DateTime.now()).day);
+  return getDay(Jiffy(DateTime.now()).day -1);
 }
 
 hideKeyboard() {

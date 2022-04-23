@@ -51,6 +51,12 @@ class ParoisseController extends GetxController {
     super.onReady();
   }
 
+  @override
+  void dispose() {
+    refreshController.dispose();
+    super.dispose();
+  }
+
   initController() {
     searchController = TextEditingController(text: '');
   }
