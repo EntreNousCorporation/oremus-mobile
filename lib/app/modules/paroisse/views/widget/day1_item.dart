@@ -18,43 +18,49 @@ class Day1Item extends StatelessWidget {
       return Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 10, bottom: 40, top: 10, right: 10),
+            padding: const EdgeInsets.only(left: 10, bottom: 20, top: 20, right: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SizedBox(width: Get.width * 0.1),
-                SizedBox(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        getDay(openingTime?.dayOfWeek),
-                        textAlign:
-                        TextAlign.start,
-                        style: TextStyles
-                            .montserratSemiBold(
-                            textSize:
-                            TextSizes
-                                .sixteen,
-                            textColor: getCurrentDay() == getDay(openingTime?.dayOfWeek) ? colorGreenSemiLight : colorBlack),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: openingTime?.slots?.map((timeSlot) {
-                          return Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Text(
-                                  '${logic.getTime(timeSlot.startTime ?? '')}',
-                                  style: TextStyles.montserratSemiBold(textSize: TextSizes.fourteen, textColor: getCurrentDay() == getDay(openingTime?.dayOfWeek) ? colorGreenSemiLight.withOpacity(0.5) : colorGrey1),
-                                ),
-                              ),
-                            ],
-                          );
-                        }).toList() ?? [],
-                      ),
-                    ],
+                Expanded(
+                  child: SizedBox(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          getDay(openingTime?.dayOfWeek),
+                          textAlign:
+                          TextAlign.start,
+                          style: TextStyles
+                              .montserratSemiBold(
+                              textSize:
+                              TextSizes
+                                  .sixteen,
+                              textColor: getCurrentDay() == getDay(openingTime?.dayOfWeek) ? colorGreenSemiLight : colorBlack),
+                        ),
+                        SizedBox(
+                          height: 20,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            children: openingTime?.slots?.map((timeSlot) {
+                              return Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: Text(
+                                      '${logic.getTime(timeSlot.startTime ?? '')}',
+                                      style: TextStyles.montserratSemiBold(textSize: TextSizes.fourteen, textColor: getCurrentDay() == getDay(openingTime?.dayOfWeek) ? colorGreenSemiLight.withOpacity(0.5) : colorGrey1),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }).toList() ?? [],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 )
               ],
@@ -69,9 +75,9 @@ class Day1Item extends StatelessWidget {
             ),
           ),
           Positioned(
-            bottom: 5,
+            bottom: 10,
             child: Padding(
-              padding: const EdgeInsets.only(left: 10, bottom: 50, top: 10, right: 0),
+              padding: const EdgeInsets.only(left: 10, bottom: 20, top: 20, right: 0),
               child: Container(
                 height: 20.0,
                 width: 20.0,
