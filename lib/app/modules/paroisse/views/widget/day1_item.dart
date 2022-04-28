@@ -39,25 +39,18 @@ class Day1Item extends StatelessWidget {
                                   .sixteen,
                               textColor: getCurrentDay() == getDay(openingTime?.dayOfWeek) ? colorGreenSemiLight : colorBlack),
                         ),
-                        SizedBox(
-                          height: 20,
-                          child: ListView(
-                            scrollDirection: Axis.horizontal,
-                            shrinkWrap: true,
-                            children: openingTime?.slots?.map((timeSlot) {
-                              return Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: Text(
-                                      '${logic.getTime(timeSlot.startTime ?? '')}',
-                                      style: TextStyles.montserratSemiBold(textSize: TextSizes.fourteen, textColor: getCurrentDay() == getDay(openingTime?.dayOfWeek) ? colorGreenSemiLight.withOpacity(0.5) : colorGrey1),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }).toList() ?? [],
-                          ),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: openingTime?.slots?.map((timeSlot) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Text(
+                                '${logic.getTime(timeSlot.startTime ?? '')}',
+                                style: TextStyles.montserratSemiBold(textSize: TextSizes.fourteen, textColor: getCurrentDay() == getDay(openingTime?.dayOfWeek) ? colorGreenSemiLight.withOpacity(0.5) : colorGrey1),
+                              ),
+                            );
+                          }).toList() ?? [],
                         ),
                       ],
                     ),

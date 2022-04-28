@@ -141,7 +141,7 @@ class ParoisseMenuDetailScreen extends StatelessWidget {
                               children:
                               _.liturgicalCelebrations.value.map((value) {
                                 return AccordionSection(
-                                  isOpen: false,
+                                  isOpen: true,
                                   header: Text(
                                     '${value.name}',
                                     style: TextStyles.montserratSemiBold(
