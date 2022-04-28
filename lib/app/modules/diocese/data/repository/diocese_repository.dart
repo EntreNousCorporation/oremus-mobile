@@ -17,7 +17,7 @@ class DioceseRepository implements IDioceseRepository {
   @override
   Future<PlaceResponse> getDioceses({int? page = 0}) async {
     Response response = await _apiClient.doRequest(
-      endpoint: "/dioceses?page=$page&size=${AppConstants.PAGING_SIZE}",
+      endpoint: "/dioceses?page=$page&size=${AppConstants.PAGING_SIZE}&sort=name%2CASC",
       method: HttpMethod.get,
       useBearer: true,
     );

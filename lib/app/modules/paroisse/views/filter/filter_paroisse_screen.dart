@@ -15,6 +15,7 @@ import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/customhome/views/widget/search_widget.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/filter/filter_paroisse_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_controller.dart';
+import 'package:oremusapp/app/modules/paroisse/views/widget/diocese_item.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/paroisse_item.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/place_type_item.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -87,18 +88,18 @@ class FilterParoisseScreen extends StatelessWidget {
                                   children: [
                                     Separators.normalVertical(),
                                     Text(
-                                      'Type paroisse',
+                                      'Type de lieu de culte',
                                       style: TextStyles.montserratMedium(
                                         textColor: colorGrey1,
                                         textSize: TextSizes.fourteen,
                                       ),
                                     ),
-                                    _.isDataProcessing.isTrue ? Center(
+                                    _.isWorshipPlaceDataProcessing.isTrue ? Center(
                                       child: LoadingView(
                                         size: Get.width / 20,
                                         color: colorGreenSemiLight,
                                       ),
-                                    ) : _.hasData.isTrue ? Column(
+                                    ) : _.hasWorshipPlaceData.isTrue ? Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Separators.minimunVertical(),
@@ -124,14 +125,29 @@ class FilterParoisseScreen extends StatelessWidget {
                                         textSize: TextSizes.fourteen,
                                       ),
                                     ),
-                                    Separators.minimunVertical(),
-                                    MyTextField(
-                                      controller: _.dioceseController,
-                                      onChanged: (value) {
-                                        _.searchCriteria.value.diocese = value;
-                                        _.canDoApplyAction();
-                                      },
-                                    ),
+                                    _.isDioceseDataProcessing.isTrue ? Center(
+                                      child: LoadingView(
+                                        size: Get.width / 20,
+                                        color: colorGreenSemiLight,
+                                      ),
+                                    ) : _.hasDioceseData.isTrue ? Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Separators.minimunVertical(),
+                                        SizedBox(
+                                          height: Get.width/8,
+                                          child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: _.dioceses.length,
+                                              itemBuilder: (context, index) {
+                                                var diocese =
+                                                _.dioceses[index];
+                                                return DioceseItem(
+                                                    diocese: diocese);
+                                              }),
+                                        ),
+                                      ],
+                                    ) : Container(),
                                     Separators.normalVertical(),
                                     Text(
                                       'Ville',

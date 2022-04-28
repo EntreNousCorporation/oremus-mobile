@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:oremusapp/app/modules/diocese/data/repository/diocese_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/filter/filter_paroisse_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
@@ -10,6 +11,7 @@ class FilterParoisseBinding implements Bindings {
     Get.put(
         FilterParoisseController(
           paroisseRepository: ParoisseRepository(ApiClientImpl()),
+          dioceseRepository: DioceseRepository(ApiClientImpl()),
         ),
         permanent: true);
   }

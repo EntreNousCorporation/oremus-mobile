@@ -7,6 +7,7 @@ import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/utils.dart';
+import 'package:oremusapp/app/modules/diocese/data/repository/diocese_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_type.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
@@ -18,19 +19,26 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class FilterParoisseController extends GetxController {
   final ParoisseRepository paroisseRepository;
+  final DioceseRepository dioceseRepository;
 
   FilterParoisseController({
     required this.paroisseRepository,
+    required this.dioceseRepository,
   });
 
   var userConnection = Signin().obs;
 
   RxList<PlaceType> paroisseTypes = RxList<PlaceType>([]);
+  RxList<ContentPlace> dioceses = RxList<ContentPlace>([]);
   var placeTypeSelected = PlaceType().obs;
+  var dioceseSelected = ContentPlace().obs;
   var unlockBackButton = true.obs;
 
-  var isDataProcessing = false.obs;
-  var hasData = false.obs;
+  var isWorshipPlaceDataProcessing = false.obs;
+  var hasWorshipPlaceData = false.obs;
+
+  var isDioceseDataProcessing = false.obs;
+  var hasDioceseData = false.obs;
 
   late TextEditingController dioceseController;
   late TextEditingController cityController;
@@ -52,6 +60,7 @@ class FilterParoisseController extends GetxController {
   void onReady() {
     log('onReady');
     getParoisseType();
+    getDioceses();
     super.onReady();
   }
 
@@ -71,18 +80,47 @@ class FilterParoisseController extends GetxController {
     hideKeyboard();
 
     log('request getParoisseType');
-    isDataProcessing(true);
+    isWorshipPlaceDataProcessing(true);
     paroisseRepository.getPlaceOfWorshipTypes().then((value) {
-      isDataProcessing(false);
+      isWorshipPlaceDataProcessing(false);
       if (value.isNotEmpty == true) {
-        hasData(true);
+        hasWorshipPlaceData(true);
         paroisseTypes.value = value;
       } else {
-        hasData(false);
+        hasWorshipPlaceData(false);
       }
     }, onError: (error) {
-      isDataProcessing(false);
-      hasData(false);
+      isWorshipPlaceDataProcessing(false);
+      hasWorshipPlaceData(false);
+      if (error.toString().contains('401')) {
+        showCustomDialog(
+            Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      }
+      debugPrint("error => ${error.toString()}");
+    });
+  }
+
+  getDioceses() {
+    hideKeyboard();
+
+    log('request getDioceses');
+    isDioceseDataProcessing(true);
+    dioceseRepository.getDioceses().then((value) {
+      isDioceseDataProcessing(false);
+
+      if (value.empty == false) {
+        hasDioceseData(true);
+        dioceses.value = value.content ?? [];
+      } else {
+        hasDioceseData(false);
+      }
+
+    }, onError: (error) {
+      isDioceseDataProcessing(false);
+      hasDioceseData(false);
       if (error.toString().contains('401')) {
         showCustomDialog(
             Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
@@ -160,6 +198,17 @@ class FilterParoisseController extends GetxController {
     } else {
       placeTypeSelected.value = pt;
       searchCriteria.value.type = pt.code;
+    }
+    canDoApplyAction();
+  }
+
+  onDioceseSelected(ContentPlace cp) {
+    if (dioceseSelected.value == cp) {
+      dioceseSelected.value = ContentPlace();
+      searchCriteria.value.diocese = null;
+    } else {
+      dioceseSelected.value = cp;
+      searchCriteria.value.diocese = cp.name;
     }
     canDoApplyAction();
   }

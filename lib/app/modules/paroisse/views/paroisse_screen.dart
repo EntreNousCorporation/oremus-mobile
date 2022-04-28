@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:badges/badges.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
@@ -44,7 +41,7 @@ class ParoisseScreen extends StatelessWidget {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    _.getParoisses();
+                                    _.doLaunchSimpleSearch();
                                   },
                                   child: Material(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -152,7 +149,7 @@ class ParoisseScreen extends StatelessWidget {
                                                 } else if (mode ==
                                                     LoadStatus.canLoading) {
                                                   body = Text(
-                                                    "Charger plus de paroisse",
+                                                    "Charger plus de paroisses",
                                                     style: TextStyles
                                                         .montserratBold(
                                                             textSize: TextSizes
