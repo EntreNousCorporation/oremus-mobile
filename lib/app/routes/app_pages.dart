@@ -6,12 +6,8 @@ import 'package:oremusapp/app/modules/diocese/binding/diocese_binding.dart';
 import 'package:oremusapp/app/modules/diocese/views/diocese_screen.dart';
 import 'package:oremusapp/app/modules/editpassword/binding/edit_password_binding.dart';
 import 'package:oremusapp/app/modules/editpassword/views/edit_password_screen.dart';
-import 'package:oremusapp/app/modules/faq/binding/faq_binding.dart';
-import 'package:oremusapp/app/modules/formation/binding/formation_binding.dart';
 import 'package:oremusapp/app/modules/home/binding/home_binding.dart';
 import 'package:oremusapp/app/modules/home/views/home_screen.dart';
-import 'package:oremusapp/app/modules/landing/binding/landing_binding.dart';
-import 'package:oremusapp/app/modules/landing/views/landing_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/filter_paroisse_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_activity_movement_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_binding.dart';
@@ -59,19 +55,6 @@ class AppPages {
         CustomHomeBinding(),
         ParoisseBinding(),
         ProfileBinding(),
-        FaqBinding(),
-      ],
-      transition: Transition.circularReveal,
-    ),
-    GetPage(
-      name: Routes.INITIAL,
-      page: () => const LandingScreen(),
-      bindings: [
-        LandingBinding(),
-        ParoisseBinding(),
-        DioceseBinding(),
-        FormationBinding(),
-        ServiceBinding(),
       ],
       transition: Transition.circularReveal,
     ),
