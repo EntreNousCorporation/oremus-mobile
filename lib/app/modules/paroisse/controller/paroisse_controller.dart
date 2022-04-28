@@ -40,6 +40,9 @@ class ParoisseController extends GetxController {
   var isSearchFieldEmpty = true.obs;
   var searchCriteria = SearchCriteria().obs;
 
+  var previousSimpleSearchValue = ''.obs;
+  var currentSimpleSearchValue = ''.obs;
+
   @override
   void onInit() {
     getUserInfo();
@@ -61,6 +64,13 @@ class ParoisseController extends GetxController {
 
   initController() {
     searchController = TextEditingController(text: '');
+  }
+
+  doLaunchSimpleSearch() {
+    if (currentSimpleSearchValue.value != previousSimpleSearchValue.value) {
+      previousSimpleSearchValue.value = currentSimpleSearchValue.value;
+      getParoisses();
+    }
   }
 
   getParoisses() {
@@ -209,6 +219,8 @@ class ParoisseController extends GetxController {
     page.value = 0;
     searchController.clear();
     isSearchFieldEmpty.value = true;
+    previousSimpleSearchValue.value = '';
+    currentSimpleSearchValue.value = '';
     hideKeyboard();
   }
 }

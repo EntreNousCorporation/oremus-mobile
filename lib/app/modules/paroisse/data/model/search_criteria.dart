@@ -1,3 +1,4 @@
+///Class used to collect all criterias of advanced search
 class SearchCriteria {
   String? name;
   String? type;
