@@ -18,8 +18,9 @@ import 'package:oremusapp/app/modules/paroisse/binding/paroisse_presby_team_bind
 import 'package:oremusapp/app/modules/paroisse/views/filter/filter_paroisse_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_activity_movement_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_map_screen.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_menu_detail_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_confession_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_menu_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_messe_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_presby_team_screen.dart';
 import 'package:oremusapp/app/modules/profile/binding/edit_profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/binding/profile_binding.dart';
@@ -111,8 +112,14 @@ class AppPages {
       transition: Transition.fadeIn,
     ),
     GetPage(
-      name: Routes.PAROISSE_MENU_DETAIL,
-      page: () => ParoisseMenuDetailScreen(),
+      name: Routes.PAROISSE_CONFESSION,
+      page: () => const ParoisseConfessionScreen(),
+      binding: ParoisseMenuDetailBinding(),
+      transition: Transition.circularReveal,
+    ),
+    GetPage(
+      name: Routes.PAROISSE_MESSE,
+      page: () => const ParoisseMesseScreen(),
       binding: ParoisseMenuDetailBinding(),
       transition: Transition.circularReveal,
     ),

@@ -41,6 +41,7 @@ class ParoisseMapController extends GetxController {
   @override
   void onReady() {
     //initControllers();
+    showInfoWindow();
     super.onReady();
   }
 
@@ -201,6 +202,7 @@ class ParoisseMapController extends GetxController {
       );
     });*/
 
+    log("============= showInfoWindow 1 =============");
     worshipPlaceMarkers.value.add(
       Marker(
           markerId: MarkerId('${paroisseSelected.value.identifier}'),
@@ -212,6 +214,7 @@ class ParoisseMapController extends GetxController {
   }
 
   showInfoWindow() {
+    log("============= showInfoWindow =============");
     mapController.value.addInfoWindow!(
       SizedBox(
         width: Get.width / 1.2,

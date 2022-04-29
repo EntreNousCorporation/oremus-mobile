@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:grouped_list/grouped_list.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/components/not_found_page.dart';
@@ -10,14 +11,14 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_menu_detail_controller.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/day1_item.dart';
 
-class ParoisseMenuDetailScreen extends StatelessWidget {
-  ParoisseMenuDetailScreen({Key? key}) : super(key: key);
+class ParoisseMesseScreen extends StatelessWidget {
+  const ParoisseMesseScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return Container(
       color: colorGreen,
       child: GetBuilder<ParoisseMenuDetailController>(
@@ -131,15 +132,15 @@ class ParoisseMenuDetailScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          _.liturgicalCelebrations.value.isNotEmpty ? Expanded(
+                          _.massesRecurrent.value.isNotEmpty ? Expanded(
                             child: Accordion(
                               disableScrolling: false,
                               maxOpenSections: 1,
-                              leftIcon: SvgPicture.asset(_.code.value == 'HM' ? 'assets/images/messe.svg' : 'assets/images/confession_icon.svg', height: 25, color: colorWhite,),
+                              leftIcon: SvgPicture.asset('assets/images/messe.svg', height: 25, color: colorWhite,),
                               headerBackgroundColor: colorGreenSemiLight,
                               contentBorderColor: colorGreenSemiLight,
                               children:
-                              _.liturgicalCelebrations.value.map((value) {
+                              _.massesRecurrent.value.map((value) {
                                 return AccordionSection(
                                   isOpen: true,
                                   header: Text(
@@ -149,24 +150,61 @@ class ParoisseMenuDetailScreen extends StatelessWidget {
                                         textColor: colorWhite),
                                   ),
                                   content: ListView.builder(
-                                    physics: const NeverScrollableScrollPhysics(),
+                                      physics: const NeverScrollableScrollPhysics(),
                                       shrinkWrap: true,
                                       itemCount: value.openingTime?.length,
                                       itemBuilder: (context, i) {
-                                      var openingTime = value.openingTime?[i];
+                                        var openingTime = value.openingTime?[i];
                                         return Day1Item(openingTime: openingTime);
                                       }),
                                 );
                               }).toList(),
-                            ),
-                            /*child: NotFoundScreen(
-                              message: '${_.getTypeMessage(_.code.value)}',
-                            ),*/
-                                )
-                              : Expanded(
-                                  child: NotFoundScreen(
-                                      message:
-                                          'Horaires non disponible pour l\'instant')),
+                            ),) : Expanded(child: NotFoundScreen(message: 'Horaires non disponible pour l\'instant')),
+
+                          /*GroupedListView<LiturgicalCelebrationResponse?, String>(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            elements: _.massess.value,
+                            useStickyGroupSeparators: true,
+                            groupBy: (liturgicalCelebration) => '${liturgicalCelebration?.isRecurrent}',
+                            groupHeaderBuilder: (transHeader) =>
+                                Text(transHeader?.isRecurrent == false ? "Messes spéciales" : "Autres messes",
+                                    style: TextStyle(
+                                      fontFamily: 'avenir_demi_bold',
+                                      fontSize: 15,
+                                    )),
+                            //order: GroupedListOrder.DESC,
+                            itemBuilder: (context, transaction) {
+                              return Expanded(
+                                child: Accordion(
+                                  disableScrolling: false,
+                                  maxOpenSections: 1,
+                                  leftIcon: SvgPicture.asset('assets/images/messe.svg', height: 25, color: colorWhite,),
+                                  headerBackgroundColor: colorGreenSemiLight,
+                                  contentBorderColor: colorGreenSemiLight,
+                                  children:
+                                  _.massess.value.map((value) {
+                                    return AccordionSection(
+                                      isOpen: true,
+                                      header: Text(
+                                        '${value.name}',
+                                        style: TextStyles.montserratSemiBold(
+                                            textSize: TextSizes.sixteen,
+                                            textColor: colorWhite),
+                                      ),
+                                      content: ListView.builder(
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount: value.openingTime?.length,
+                                          itemBuilder: (context, i) {
+                                            var openingTime = value.openingTime?[i];
+                                            return Day1Item(openingTime: openingTime);
+                                          }),
+                                    );
+                                  }).toList(),
+                                ),);
+                            },
+                          ),*/
                         ],
                       ),
                     )

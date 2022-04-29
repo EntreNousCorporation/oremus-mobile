@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
@@ -44,7 +45,8 @@ class ParoisseMenuController extends GetxController {
   getArguments() {
     if (Get.arguments != null) {
       indexSelected.value = Get.arguments[0];
-      paroisseSelected.value = ContentPlace.fromJson(jsonDecode(Get.arguments[1]));
+      paroisseSelected.value =
+          ContentPlace.fromJson(jsonDecode(Get.arguments[1]));
       log('==> ${paroisseSelected.value.identifier}');
     }
   }
@@ -60,7 +62,7 @@ class ParoisseMenuController extends GetxController {
         goToPage: () {
           liturgicalCelebrations.value = masses.value;
           Get.toNamed(
-            Routes.PAROISSE_MENU_DETAIL,
+            Routes.PAROISSE_MESSE,
             arguments: [
               'HM',
               jsonEncode(paroisseSelected.value.toJson()),
@@ -78,7 +80,7 @@ class ParoisseMenuController extends GetxController {
         goToPage: () {
           liturgicalCelebrations.value = confessions.value;
           Get.toNamed(
-            Routes.PAROISSE_MENU_DETAIL,
+            Routes.PAROISSE_CONFESSION,
             arguments: [
               'HC',
               jsonEncode(paroisseSelected.value.toJson()),
@@ -94,13 +96,13 @@ class ParoisseMenuController extends GetxController {
         isPngImage: false,
         activeTint: colorBlack,
         goToPage: () {
-          Get.toNamed(
-            Routes.PAROISSE_MENU_DETAIL,
+          /*Get.toNamed(
+            Routes.PAROISSE_CONFESSION,
             arguments: [
               'HB',
               jsonEncode(paroisseSelected.value.toJson()),
             ],
-          );
+          );*/
         },
       ),
       TypeMenu(
@@ -146,21 +148,23 @@ class ParoisseMenuController extends GetxController {
   }
 
   getLiturgicalCelebrations() {
-
     log('request getLiturgicalCelebrations');
 
     var idParoisse = paroisseSelected.value.identifier;
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       if (value.isEmpty == false) {
-        masses.value = value.where((element) => element.type?.code == 'MASS').toList();
-        confessions.value = value.where((element) => element.type?.code == 'CONFESSION').toList();
-        log('${masses.length}');
-        log('${confessions.length}');
+        masses.value = value.where((element) => (element.type?.code != 'CONFESSION')).toList();
+        confessions.value = value
+            .where((element) => element.type?.code == 'CONFESSION')
+            .toList();
+        log('masses => ${masses.length}');
+        log('confessions => ${confessions.length}');
       }
     }, onError: (error) {
       if (error.toString().contains('401')) {
         showCustomDialog(
-          Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });

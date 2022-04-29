@@ -7,6 +7,7 @@ class LiturgicalCelebrationResponse {
   String? createdBy;
   String? modifiedBy;
   String? name;
+  String? startDate;
   String? description;
   LiturgicalType? type;
   bool? isRecurrent;
@@ -19,6 +20,7 @@ class LiturgicalCelebrationResponse {
     this.createdBy,
     this.modifiedBy,
     this.name,
+    this.startDate,
     this.description,
     this.type,
     this.isRecurrent,
@@ -37,6 +39,7 @@ class LiturgicalCelebrationResponse {
     createdBy = json['createdBy'];
     modifiedBy = json['modifiedBy'];
     name = json['name'];
+    startDate = json['startDate'];
     description = json['description'];
     type = json['type'] != null ? LiturgicalType.fromJson(json['type']) : null;
     isRecurrent = json['isRecurrent'];
@@ -53,6 +56,7 @@ class LiturgicalCelebrationResponse {
     data['createdBy'] = createdBy;
     data['modifiedBy'] = modifiedBy;
     data['name'] = name;
+    data['startDate'] = startDate;
     data['description'] = description;
     data['type'] = type?.toJson();
     data['isRecurrent'] = isRecurrent;
