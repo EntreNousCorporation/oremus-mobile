@@ -116,4 +116,8 @@ class ProfileController extends GetxController {
       updateUI(userInfo.value);
     }
   }
+
+  goToFavorites() {
+    Get.toNamed(Routes.FAVORITES);
+  }
 }

@@ -4,7 +4,7 @@ import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/paroisse/controller/paroisse_map_controller.dart';
+import 'package:oremusapp/app/modules/paroisse/controller/map/paroisse_map_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/map_type_choice.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/map_view_google.dart';
 

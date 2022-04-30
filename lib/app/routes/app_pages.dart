@@ -6,6 +6,8 @@ import 'package:oremusapp/app/modules/diocese/binding/diocese_binding.dart';
 import 'package:oremusapp/app/modules/diocese/views/diocese_screen.dart';
 import 'package:oremusapp/app/modules/editpassword/binding/edit_password_binding.dart';
 import 'package:oremusapp/app/modules/editpassword/views/edit_password_screen.dart';
+import 'package:oremusapp/app/modules/favorite/binding/favorite_binding.dart';
+import 'package:oremusapp/app/modules/favorite/views/favorites_screen.dart';
 import 'package:oremusapp/app/modules/home/binding/home_binding.dart';
 import 'package:oremusapp/app/modules/home/views/home_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/filter_paroisse_binding.dart';
@@ -150,6 +152,12 @@ class AppPages {
       name: Routes.EDIT_PROFILE,
       page: () => const EditProfileScreen(),
       binding: EditProfileBinding(),
+      transition: Transition.circularReveal,
+    ),
+    GetPage(
+      name: Routes.FAVORITES,
+      page: () => const FavoritesScreen(),
+      binding: FavoriteBinding(),
       transition: Transition.circularReveal,
     ),
   ];

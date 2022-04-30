@@ -20,7 +20,7 @@ abstract class AppConstants {
 
   //VALIDATOR
   static const INPUT_NUM_REGEX = "[0-9\\s]";
-  static const INPUT_NAME_REGEX = "[a-zA-Z\\s]";
+  static const INPUT_NAME_REGEX = "[a-zA-Z\\s\\-']";
 
   //CREDENTIALS
   static const KEY_TOKEN = "KEY_TOKEN";

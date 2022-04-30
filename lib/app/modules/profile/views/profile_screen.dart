@@ -162,9 +162,7 @@ class ProfileScreen extends StatelessWidget {
                                                   Separators.maximumVertical(),
                                                   GestureDetector(
                                                     onTap: () {
-                                                      showNotification(
-                                                          message: 'Bientôt disponible',
-                                                      );
+                                                      _.goToFavorites();
                                                     },
                                                     child: Material(
                                                       elevation: 6,

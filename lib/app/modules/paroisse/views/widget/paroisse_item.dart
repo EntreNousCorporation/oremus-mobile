@@ -15,9 +15,14 @@ import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
 class ParoisseItem extends StatelessWidget {
-  ParoisseItem({Key? key, required this.paroisse, required this.index})
-      : super(key: key);
+  ParoisseItem({
+    Key? key,
+    required this.paroisse,
+    required this.index,
+    this.fromFavoriteUI = false,
+  }) : super(key: key);
 
+  final bool fromFavoriteUI;
   final ContentPlace paroisse;
   final int index;
   final GlobalKey _backgroundImageKey = GlobalKey();
@@ -45,7 +50,10 @@ class ParoisseItem extends StatelessWidget {
                   onTap: () {
                     Get.toNamed(
                       Routes.PAROISSE_MENU,
-                      arguments: [index, jsonEncode(paroisse.toJson())],
+                      arguments: [
+                        index,
+                        jsonEncode(paroisse.toJson()),
+                      ],
                     );
                   },
                   child: Stack(
@@ -163,41 +171,43 @@ class ParoisseItem extends StatelessWidget {
                           const SizedBox(
                             width: 10,
                           ),
-                          LikeButton(
-                            //isLiked: logic.isLiked.value,
-                            onTap: (isLiked) async {
-                              log('isLiked => $isLiked');
-                              if (isLiked) {
-                                logic.removeFavorite(paroisse, isLiked);
-                              } else {
-                                logic.saveFavorite(paroisse, isLiked);
-                              }
-                              //logic.showMessageFavorite(logic.isLiked.value);
-                              return !isLiked;
-                            },
-                            size: 25,
-                            circleColor: const CircleColor(
-                                start: Color(0xff93291E),
-                                end: Color(0xFFED213A)),
-                            bubblesColor: const BubblesColor(
-                              dotPrimaryColor: Color(0xFFED213A),
-                              dotSecondaryColor: Color(0xff93291E),
-                            ),
-                            likeBuilder: (bool isLiked) {
-                              //log('${isLiked}');
-                              //log('${logic.isLiked.value}');
-                              //logic.isLiked.value = isLiked;
-                              return Icon(
-                                isLiked
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: isLiked
-                                    ? const Color(0xFFED213A)
-                                    : colorGrey1,
-                                size: 25,
-                              );
-                            },
-                          ),
+                          fromFavoriteUI
+                              ? const Icon(
+                                  Icons.favorite,
+                                  color: Color(0xFFED213A),
+                                  size: 25,
+                                )
+                              : LikeButton(
+                                  //isLiked: fromFavoriteUI,
+                                  onTap: (isLiked) async {
+                                    log('isLiked => $isLiked');
+                                    if (isLiked) {
+                                      logic.removeFavorite(paroisse, isLiked);
+                                    } else {
+                                      logic.saveFavorite(paroisse, isLiked);
+                                    }
+                                    return !isLiked;
+                                  },
+                                  size: 25,
+                                  circleColor: const CircleColor(
+                                      start: Color(0xff93291E),
+                                      end: Color(0xFFED213A)),
+                                  bubblesColor: const BubblesColor(
+                                    dotPrimaryColor: Color(0xFFED213A),
+                                    dotSecondaryColor: Color(0xff93291E),
+                                  ),
+                                  likeBuilder: (bool isLiked) {
+                                    return Icon(
+                                      isLiked
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+                                      color: isLiked
+                                          ? const Color(0xFFED213A)
+                                          : colorGrey1,
+                                      size: 25,
+                                    );
+                                  },
+                                ),
                         ],
                       ),
                     ],

@@ -151,23 +151,23 @@ class ParoisseRepository implements IParoisseRepository {
   void addFavorite(ContentPlace paroisse) {
     log('saveFavorite 2');
     var favorites = getAllFavorites();
-    favorites.add(paroisse);
-    DB.saveData(AppConstants.KEY_LIST_FAVORITES, jsonEncode(favorites).toString(),);
-    log('favorites length => ${favorites.length}');
+    var hasParoisse = favorites.indexWhere((element) => element.identifier == paroisse.identifier);
+    if (hasParoisse == -1) { //pas trouvé donc on peut ajouter
+      favorites.add(paroisse);
+      DB.saveData(AppConstants.KEY_LIST_FAVORITES, jsonEncode(favorites).toString(),);
+      log('favorites length => ${favorites.length}');
+    } else {
+      log('favorites always exist');
+    }
   }
 
   @override
   void deleteFavorite(ContentPlace paroisse) {
     log('removeFavorite 2');
     var favorites = getAllFavorites();
-    var isRemoved = favorites.remove(paroisse);
-    log('isRemoved => $isRemoved');
-    if (isRemoved) {
-      log('Favoris supprimé');
-      DB.saveData(AppConstants.KEY_LIST_FAVORITES, jsonEncode(favorites).toString());
-    } else {
-      log('Favoris non supprimé');
-    }
+    favorites.removeWhere((element) => element.identifier == paroisse.identifier);
+    log('Favoris supprimé');
+    DB.saveData(AppConstants.KEY_LIST_FAVORITES, jsonEncode(favorites).toString());
     log('favorites length => ${favorites.length}');
   }
 
