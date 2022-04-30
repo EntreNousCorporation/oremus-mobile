@@ -166,6 +166,7 @@ class FilterParoisseController extends GetxController {
 
   doResetFilter() {
     placeTypeSelected.value = PlaceType();
+    dioceseSelected.value = ContentPlace();
     searchCriteria.value.type = null;
     resetControllers();
     canDoApplyAction();

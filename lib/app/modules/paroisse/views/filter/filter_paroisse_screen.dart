@@ -32,7 +32,7 @@ class FilterParoisseScreen extends StatelessWidget {
                       width: double.infinity,
                       child: Padding(
                         padding: const EdgeInsets.only(
-                            top: 16, bottom: 32, left: 16, right: 16),
+                            top: 16, bottom: 8, left: 16, right: 16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
