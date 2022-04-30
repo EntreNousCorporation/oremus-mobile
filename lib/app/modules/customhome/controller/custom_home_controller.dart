@@ -5,11 +5,15 @@ import 'package:hidden_drawer_menu/controllers/simple_hidden_drawer_controller.d
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/modules/customhome/data/model/menu_item.dart';
-import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
+import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
 class CustomHomeController extends GetxController {
-  var userConnection = Signin().obs;
+  SigninRepository signinRepository;
+
+  CustomHomeController({
+    required this.signinRepository,
+  });
 
   RxList<MenuItem> menus = RxList<MenuItem>([]);
   late SimpleHiddenDrawerController drawerController;
@@ -65,6 +69,10 @@ class CustomHomeController extends GetxController {
     ];
     menus.value = menus.where((element) => element.isVisible).toList();
     log("${menus.length}");
+  }
+
+  bool userCanUpdateProfile() {
+    return signinRepository.getUserSigninInfo()?.isBoUser == false;
   }
 
   doRedirection(int index, SimpleHiddenDrawerController controller) {
