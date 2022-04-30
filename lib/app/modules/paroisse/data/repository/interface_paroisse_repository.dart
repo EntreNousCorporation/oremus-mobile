@@ -19,6 +19,7 @@ abstract class IParoisseRepository {
   Future<List<PlaceType>> getPlaceOfWorshipTypes({int? page = 0});
 
   //For DB
+  List<ContentPlace> getAllFavorites();
   void addFavorite(ContentPlace paroisse);
   void deleteFavorite(ContentPlace paroisse);
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -163,10 +164,17 @@ class ParoisseItem extends StatelessWidget {
                             width: 10,
                           ),
                           LikeButton(
-                            /*onTap: ((isLiked) async {
-                              logic.showMessageFavorite(logic.isLiked.value);
+                            //isLiked: logic.isLiked.value,
+                            onTap: (isLiked) async {
+                              log('isLiked => $isLiked');
+                              if (isLiked) {
+                                logic.removeFavorite(paroisse, isLiked);
+                              } else {
+                                logic.saveFavorite(paroisse, isLiked);
+                              }
+                              //logic.showMessageFavorite(logic.isLiked.value);
                               return !isLiked;
-                            }),*/
+                            },
                             size: 25,
                             circleColor: const CircleColor(
                                 start: Color(0xff93291E),
@@ -178,12 +186,7 @@ class ParoisseItem extends StatelessWidget {
                             likeBuilder: (bool isLiked) {
                               //log('${isLiked}');
                               //log('${logic.isLiked.value}');
-                              logic.isLiked.value = isLiked;
-                              if (isLiked) {
-                                logic.saveFavorite(paroisse, isLiked);
-                              } else {
-                                logic.removeFavorite(paroisse, isLiked);
-                              }
+                              //logic.isLiked.value = isLiked;
                               return Icon(
                                 isLiked
                                     ? Icons.favorite

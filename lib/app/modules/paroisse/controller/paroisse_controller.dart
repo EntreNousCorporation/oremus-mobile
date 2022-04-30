@@ -103,12 +103,14 @@ class ParoisseController extends GetxController {
   }
 
   saveFavorite(ContentPlace paroisse, bool state) {
+    log('saveFavorite 1');
     paroisseRepository.addFavorite(paroisse);
     //showMessageFavorite(state);
   }
 
   removeFavorite(ContentPlace paroisse, bool state) {
-    paroisseRepository.addFavorite(paroisse);
+    log('removeFavorite 1');
+    paroisseRepository.deleteFavorite(paroisse);
     //showMessageFavorite(state);
   }
 
@@ -126,7 +128,7 @@ class ParoisseController extends GetxController {
   }
 
   doLogout() {
-    DB.saveData(AppConstants.USER_LOG_INFOS, null);
+    DB.saveData(AppConstants.KEY_USER_LOG_INFOS, null);
     Get.deleteAll(force: true);
     Get.offAllNamed(Routes.SIGNIN);
   }

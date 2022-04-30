@@ -72,7 +72,7 @@ class ProfileRepository implements IProfileRepository {
 
   @override
   Profile? getUserProfile() {
-    var userProfile = DB.getData(AppConstants.USER_INFOS);
+    var userProfile = DB.getData(AppConstants.KEY_USER_INFOS);
     if (userProfile != null) {
       return Profile.fromJson(jsonDecode(userProfile));
     }
@@ -81,6 +81,6 @@ class ProfileRepository implements IProfileRepository {
 
   @override
   void saveUserProfile(Profile? profile) {
-    DB.saveData(AppConstants.USER_INFOS, jsonEncode(profile?.toJson()));
+    DB.saveData(AppConstants.KEY_USER_INFOS, jsonEncode(profile?.toJson()));
   }
 }

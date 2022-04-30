@@ -125,7 +125,7 @@ class ParoissePresbyTeamController extends GetxController {
   }
 
   doLogout() {
-    DB.saveData(AppConstants.USER_LOG_INFOS, null);
+    DB.saveData(AppConstants.KEY_USER_LOG_INFOS, null);
     Get.deleteAll(force: true);
     Get.offAllNamed(Routes.SIGNIN);
   }

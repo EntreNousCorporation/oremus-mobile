@@ -37,7 +37,7 @@ class SigninRepository implements ISigninRepository {
 
   @override
   Signin? getUserSigninInfo() {
-    var userInfo = DB.getData(AppConstants.USER_LOG_INFOS);
+    var userInfo = DB.getData(AppConstants.KEY_USER_LOG_INFOS);
     if (userInfo != null) {
       return Signin.fromJson(json.decode(userInfo));
     }
@@ -46,6 +46,6 @@ class SigninRepository implements ISigninRepository {
 
   @override
   void saveUserSigninInfo(Signin? signin) {
-    DB.saveData(AppConstants.USER_LOG_INFOS, jsonEncode(signin?.toJson()));
+    DB.saveData(AppConstants.KEY_USER_LOG_INFOS, jsonEncode(signin?.toJson()));
   }
 }

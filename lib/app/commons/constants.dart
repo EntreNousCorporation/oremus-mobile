@@ -4,8 +4,9 @@ abstract class AppConstants {
   static const ENV_DEV = 'dev';
   static const ENV_PROD = 'prod';
 
-  static const USER_LOG_INFOS = 'USER_LOG_INFO';
-  static const USER_INFOS = 'USER_INFOS';
+  static const KEY_LIST_FAVORITES = 'LIST_FAVORITES';
+  static const KEY_USER_LOG_INFOS = 'USER_LOG_INFO';
+  static const KEY_USER_INFOS = 'USER_INFOS';
   static const FCM_TOKEN = 'FCM_TOKEN';
 
   static const APP_NAME = 'OREMUS';
