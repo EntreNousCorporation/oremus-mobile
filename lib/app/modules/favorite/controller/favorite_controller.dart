@@ -33,6 +33,7 @@ class FavoriteController extends GetxController {
 
   getAllFavorites() {
     favorites.value = paroisseRepository.getAllFavorites();
+    favorites.sort((a, b) => a.name!.compareTo(b.name!));
     log('favorites => ${favorites.length}');
   }
 }
