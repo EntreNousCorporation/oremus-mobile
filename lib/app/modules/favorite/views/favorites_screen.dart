@@ -40,7 +40,7 @@ class FavoritesScreen extends StatelessWidget {
                         icon: const Icon(Icons.arrow_back_ios_rounded),
                       ),
                       title: Text(
-                        'Mes favoris',
+                        _.favorites.isNotEmpty ? 'Mes favoris (${_.favorites.length})' : 'Mes favoris',
                         style: TextStyles.montserratBold(
                             textSize: TextSizes.sixteen, textColor: colorWhite),
                       ),
@@ -62,17 +62,22 @@ class FavoritesScreen extends StatelessWidget {
                                           bottom: 0,
                                           left: 16,
                                           right: 16),
-                                      child: ListView.builder(
-                                          shrinkWrap: false,
-                                          itemCount: _.favorites.length,
-                                          itemBuilder: (builder, index) {
+                                      child: AnimatedList(
+                                        key: _.key,
+                                        initialItemCount: _.favorites.length,
+                                          itemBuilder:
+                                          (context, index, animation) {
                                             var paroisse = _.favorites[index];
-                                            return ParoisseItem(
-                                              paroisse: paroisse,
-                                              index: index,
-                                              fromFavoriteUI: true,
-                                            );
-                                          }),
+                                        return SizeTransition(
+                                          key: UniqueKey(),
+                                          sizeFactor: animation,
+                                          child: ParoisseItem(
+                                            paroisse: paroisse,
+                                            index: index,
+                                            fromFavoriteUI: true,
+                                          ),
+                                        );
+                                      }),
                                     ),
                                   ),
                                 )

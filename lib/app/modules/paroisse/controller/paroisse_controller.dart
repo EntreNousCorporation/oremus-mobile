@@ -77,7 +77,8 @@ class ParoisseController extends GetxController {
 
     log('request getParoisses');
 
-    paroisseRepository.getParoisses(searchCriteria: searchCriteria.value).then((value) {
+    paroisseRepository.getParoisses(searchCriteria: searchCriteria.value).then(
+        (value) {
       isDataProcessing(false);
       paroisses.value = value.content ?? [];
       for (var paroisse in paroisses) {
@@ -98,7 +99,8 @@ class ParoisseController extends GetxController {
       hasData(false);
       if (error.toString().contains('401')) {
         showCustomDialog(
-            Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
@@ -109,11 +111,11 @@ class ParoisseController extends GetxController {
 
   ///Réinitialisation de la liste des paroisses
   onRefresh() {
-
     log('request onRefresh');
 
     resetSearch();
-    paroisseRepository.getParoisses(searchCriteria: searchCriteria.value).then((value) {
+    paroisseRepository.getParoisses(searchCriteria: searchCriteria.value).then(
+        (value) {
       refreshController.refreshCompleted();
       paroisses.value = value.content ?? [];
       for (var paroisse in paroisses) {
@@ -128,7 +130,8 @@ class ParoisseController extends GetxController {
       refreshController.refreshCompleted();
       if (error.toString().contains('401')) {
         showCustomDialog(
-          Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
@@ -144,7 +147,9 @@ class ParoisseController extends GetxController {
 
     log('request onLoading');
 
-    paroisseRepository.getParoisses(page: page.value, searchCriteria: searchCriteria.value).then((value) {
+    paroisseRepository
+        .getParoisses(page: page.value, searchCriteria: searchCriteria.value)
+        .then((value) {
       paroisses.value.addAll(value.content ?? []);
       for (var paroisse in paroisses) {
         paroisse.isFavorite = isWorshipPlaceFavorite(paroisse);
@@ -161,7 +166,8 @@ class ParoisseController extends GetxController {
       refreshController.loadFailed();
       if (error.toString().contains('401')) {
         showCustomDialog(
-          Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
@@ -174,7 +180,8 @@ class ParoisseController extends GetxController {
   bool isWorshipPlaceFavorite(ContentPlace paroisse) {
     var isFavorite = false;
     var favorites = paroisseRepository.getAllFavorites();
-    var hasParoisse = favorites.indexWhere((element) => element.identifier == paroisse.identifier);
+    var hasParoisse = favorites
+        .indexWhere((element) => element.identifier == paroisse.identifier);
     if (hasParoisse != -1) {
       isFavorite = true;
     } else {
@@ -199,11 +206,10 @@ class ParoisseController extends GetxController {
     if (state) {
       showNotification(
           message: 'Ce lieu de culte a été rajouté dans vos favoris',
-          bgColor: colorGreenSemiLight
-      );
+          bgColor: colorGreenSemiLight);
     } else {
       showNotification(
-          message: 'Ce lieu de culte a été retiré des favoris',
+        message: 'Ce lieu de culte a été retiré des favoris',
       );
     }
   }
@@ -217,10 +223,7 @@ class ParoisseController extends GetxController {
   goToParoisseDetail(ContentPlace paroisse, int index) async {
     await Get.toNamed(
       Routes.PAROISSE_MENU,
-      arguments: [
-        index,
-        jsonEncode(paroisse.toJson())
-      ],
+      arguments: [index, jsonEncode(paroisse.toJson())],
     );
     //on met à jour la liste au cas où favoris mis à jour
     paroisses[index].isFavorite = isWorshipPlaceFavorite(paroisse);
