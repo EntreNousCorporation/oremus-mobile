@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_user.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
-import 'package:oremusapp/main.dart';
 
 class ParoissePresbyTeamController extends GetxController {
   final ParoisseRepository paroisseRepository;
@@ -125,7 +125,7 @@ class ParoissePresbyTeamController extends GetxController {
   }
 
   doLogout() {
-    encryptedBox.put(AppConstants.USER_LOG_INFOS, null);
+    DB.saveData(AppConstants.USER_LOG_INFOS, null);
     Get.deleteAll(force: true);
     Get.offAllNamed(Routes.SIGNIN);
   }

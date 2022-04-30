@@ -1,13 +1,10 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/modules/diocese/data/repository/diocese_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
-import 'package:oremusapp/main.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class DioceseController extends GetxController {
@@ -29,7 +26,6 @@ class DioceseController extends GetxController {
   void onInit() {
     super.onInit();
     initPullToRefresh();
-    getUserInfo();
   }
 
   @override
@@ -40,13 +36,6 @@ class DioceseController extends GetxController {
 
   initPullToRefresh() {
     refreshController = RefreshController(initialRefresh: false);
-  }
-
-  getUserInfo() {
-    var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
-    Signin userConnected =
-    Signin.fromJson(jsonDecode(userInfo));
-    userConnection.value = userConnected;
   }
 
   getDioceses() {

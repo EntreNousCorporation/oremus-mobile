@@ -1,24 +1,15 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/button.dart';
 import 'package:oremusapp/app/commons/components/loader_widget.dart';
-import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
-import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/components/text_field.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/customhome/views/widget/search_widget.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/filter/filter_paroisse_controller.dart';
-import 'package:oremusapp/app/modules/paroisse/controller/paroisse_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/diocese_item.dart';
-import 'package:oremusapp/app/modules/paroisse/views/widget/paroisse_item.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/place_type_item.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class FilterParoisseScreen extends StatelessWidget {
   const FilterParoisseScreen({Key? key}) : super(key: key);

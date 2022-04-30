@@ -1,18 +1,16 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
-import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
-import 'package:oremusapp/main.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoisseController extends GetxController {
@@ -21,8 +19,6 @@ class ParoisseController extends GetxController {
   ParoisseController({
     required this.paroisseRepository,
   });
-
-  var userConnection = Signin().obs;
 
   RxList<ContentPlace> paroisses = RxList<ContentPlace>([]);
 
@@ -45,7 +41,6 @@ class ParoisseController extends GetxController {
 
   @override
   void onInit() {
-    getUserInfo();
     initController();
     super.onInit();
   }
@@ -131,7 +126,7 @@ class ParoisseController extends GetxController {
   }
 
   doLogout() {
-    encryptedBox.put(AppConstants.USER_LOG_INFOS, null);
+    DB.saveData(AppConstants.USER_LOG_INFOS, null);
     Get.deleteAll(force: true);
     Get.offAllNamed(Routes.SIGNIN);
   }
@@ -190,18 +185,6 @@ class ParoisseController extends GetxController {
       }
       debugPrint("error => ${error.toString()}");
     });
-  }
-
-
-  getUserInfo() {
-    var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
-    log('==> $userInfo');
-    if (userInfo != null) {
-      Signin userConnected =
-      Signin.fromJson(jsonDecode(userInfo));
-      userConnection.value = userConnected;
-      log('==> ${userConnection.value.toJson()}');
-    }
   }
 
   goToAdvancedSearch() async {

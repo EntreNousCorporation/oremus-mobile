@@ -1,13 +1,12 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:hidden_drawer_menu/controllers/simple_hidden_drawer_controller.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/modules/customhome/data/model/menu_item.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
-import 'package:oremusapp/main.dart';
 
 class CustomHomeController extends GetxController {
   var userConnection = Signin().obs;
@@ -19,16 +18,8 @@ class CustomHomeController extends GetxController {
 
   @override
   void onInit() {
-    getUserInfo();
     initMenus();
     super.onInit();
-  }
-
-  getUserInfo() {
-    var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
-    if (userInfo != null) {
-      userConnection.value = Signin.fromJson(json.decode(userInfo));
-    }
   }
 
   initMenus() {
@@ -84,7 +75,7 @@ class CustomHomeController extends GetxController {
   }
 
   doLogout() {
-    encryptedBox.put(AppConstants.USER_LOG_INFOS, null);
+    DB.saveData(AppConstants.USER_LOG_INFOS, null);
     Get.deleteAll(force: true);
     Get.offAllNamed(Routes.SIGNIN);
   }

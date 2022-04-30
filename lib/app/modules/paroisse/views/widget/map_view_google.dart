@@ -34,6 +34,7 @@ class MapViewGoogle extends StatelessWidget {
         },
         onMapCreated: (GoogleMapController controller) {
           _.mapController.value.googleMapController = controller;
+          //_.showInfoWindow();
         },
       );
     });

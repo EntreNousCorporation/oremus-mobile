@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:get/get_connect/http/src/response/response.dart';
+import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/profile/data/model/profile.dart';
 import 'package:oremusapp/app/modules/profile/data/repository/interface_profile_repository.dart';
@@ -66,5 +68,19 @@ class ProfileRepository implements IProfileRepository {
     } else {
       return Profile.fromJson(json.decode(response.bodyString.toString()));
     }
+  }
+
+  @override
+  Profile? getUserProfile() {
+    var userProfile = DB.getData(AppConstants.USER_INFOS);
+    if (userProfile != null) {
+      return Profile.fromJson(jsonDecode(userProfile));
+    }
+    return null;
+  }
+
+  @override
+  void saveUserProfile(Profile? profile) {
+    DB.saveData(AppConstants.USER_INFOS, jsonEncode(profile?.toJson()));
   }
 }

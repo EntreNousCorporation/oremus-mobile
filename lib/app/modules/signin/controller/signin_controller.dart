@@ -50,22 +50,8 @@ class SigninController extends GetxController {
       emailController = TextEditingController(text: 'amourssou11@gmail.com');
       passwordController = TextEditingController(text: 'test');
       checkForm();
-
-      //loginController = TextEditingController(text: 'SUVAWY');
-      //passwordController = TextEditingController(text: 'A22222');
-
-      //loginController = TextEditingController(text: "0103244851");
-      //passwordController = TextEditingController(text: "DOSSO21");
-
-      //loginController = TextEditingController(text: "W39JZM");
-      //passwordController = TextEditingController(text: "56C2");
-
     } else {
-      //loginController = TextEditingController(text: "0749435261");
-      //passwordController = TextEditingController(text: "DE2021");
 
-      //loginController = TextEditingController(text: "W39JZM");
-      //passwordController = TextEditingController(text: "56C2");
     }
   }
 
@@ -101,7 +87,7 @@ class SigninController extends GetxController {
         id: payload['sub'],
         isBoUser: value.isBoUser,
       );
-      encryptedBox.put(AppConstants.USER_LOG_INFOS, jsonEncode(userConnection.toJson()));
+      signinRepository.saveUserSigninInfo(userConnection);
       Get.toNamed(Routes.CUSTOM_HOME);
     }, onError: (error) {
       EasyLoading.dismiss(animation: true).then((v) {

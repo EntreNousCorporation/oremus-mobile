@@ -21,7 +21,6 @@ import 'package:overlay_support/overlay_support.dart';
 
 var appUrl;
 var flavor;
-var encryptedBox;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -83,8 +82,7 @@ class MyApp extends StatelessWidget {
 }
 
 Future<FlavorSettings> _getFlavorSettings() async {
-  flavor =
-      await const MethodChannel('flavor').invokeMethod<String>('getFlavor');
+  flavor = await const MethodChannel('flavor').invokeMethod<String>('getFlavor');
 
   log('STARTED WITH FLAVOR $flavor');
 

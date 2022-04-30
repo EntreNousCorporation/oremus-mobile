@@ -7,22 +7,25 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/email_validator.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/profile/data/model/profile.dart';
 import 'package:oremusapp/app/modules/profile/data/repository/profile_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
+import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
-import 'package:oremusapp/main.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class EditProfileController extends GetxController {
   final ProfileRepository profileRepository;
+  final SigninRepository signinRepository;
 
   EditProfileController({
     required this.profileRepository,
+    required this.signinRepository,
   });
 
   var unlockBackButton = true.obs;
@@ -33,7 +36,6 @@ class EditProfileController extends GetxController {
   var lockScreen = false.obs;
   var isValidForm = false.obs;
 
-  var userConnection = Signin().obs;
   var isDataProcessing = false.obs;
   var hasData = false.obs;
   var userInfo = Profile().obs;
@@ -57,7 +59,6 @@ class EditProfileController extends GetxController {
 
   @override
   void onInit() {
-    getUserInfo();
     getArguments();
     super.onInit();
   }
@@ -103,12 +104,13 @@ class EditProfileController extends GetxController {
 
     log('request signupUser => ${request.toJson().toString()}');
 
-    profileRepository.updateProfile(userConnection.value.id ?? '', request).then((value) {
+    var userId = signinRepository.getUserSigninInfo()?.id ?? '';
+    profileRepository.updateProfile(userId, request).then((value) {
       EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;
       });
       lockScreen(false);
-      encryptedBox.put(AppConstants.USER_INFOS, jsonEncode(value.toJson()));
+      profileRepository.saveUserProfile(value);
       showNotification(
           message: 'Profil modifié avec succès',
           bgColor: colorGreen4
@@ -134,7 +136,7 @@ class EditProfileController extends GetxController {
   }
 
   doLogout() {
-    encryptedBox.put(AppConstants.USER_LOG_INFOS, null);
+    DB.saveData(AppConstants.USER_LOG_INFOS, null);
     Get.deleteAll(force: true);
     Get.offAllNamed(Routes.SIGNIN);
   }
@@ -183,13 +185,5 @@ class EditProfileController extends GetxController {
     }
 
     isValidForm.value = lastname.isNotEmpty && firstname.isNotEmpty && email.isNotEmpty && isValidEmail && phone.isNotEmpty;
-  }
-
-  getUserInfo() {
-    var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
-    if (userInfo != null) {
-      Signin userConnected = Signin.fromJson(jsonDecode(userInfo));
-      userConnection.value = userConnected;
-    }
   }
 }

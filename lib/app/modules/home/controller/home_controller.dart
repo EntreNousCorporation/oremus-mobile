@@ -1,16 +1,11 @@
-import 'dart:convert';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/home/data/model/type_menu.dart';
-import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
-import 'package:oremusapp/main.dart';
 
 class HomeController extends GetxController {
-  var userConnection = Signin().obs;
 
   var unlockBackButton = true.obs;
 
@@ -35,17 +30,9 @@ class HomeController extends GetxController {
 
   @override
   void onInit() {
-    getUserInfo();
     initCarousel();
     initMenus();
     super.onInit();
-  }
-
-  getUserInfo() {
-    var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
-    if (userInfo != null) {
-      userConnection.value = Signin.fromJson(json.decode(userInfo));
-    }
   }
 
   void initCarousel() {

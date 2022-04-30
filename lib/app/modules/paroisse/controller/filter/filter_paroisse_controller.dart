@@ -1,10 +1,10 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/diocese/data/repository/diocese_repository.dart';
@@ -12,10 +12,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_type.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
-import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
-import 'package:oremusapp/main.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class FilterParoisseController extends GetxController {
   final ParoisseRepository paroisseRepository;
@@ -25,8 +22,6 @@ class FilterParoisseController extends GetxController {
     required this.paroisseRepository,
     required this.dioceseRepository,
   });
-
-  var userConnection = Signin().obs;
 
   RxList<PlaceType> paroisseTypes = RxList<PlaceType>([]);
   RxList<ContentPlace> dioceses = RxList<ContentPlace>([]);
@@ -50,15 +45,12 @@ class FilterParoisseController extends GetxController {
 
   @override
   void onInit() {
-    log('onInit');
-    getUserInfo();
     initController();
     super.onInit();
   }
 
   @override
   void onReady() {
-    log('onReady');
     getParoisseType();
     getDioceses();
     super.onReady();
@@ -156,20 +148,9 @@ class FilterParoisseController extends GetxController {
   }
 
   doLogout() {
-    encryptedBox.put(AppConstants.USER_LOG_INFOS, null);
+    DB.saveData(AppConstants.USER_LOG_INFOS, null);
     Get.deleteAll(force: true);
     Get.offAllNamed(Routes.SIGNIN);
-  }
-
-  getUserInfo() {
-    var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
-    log('==> $userInfo');
-    if (userInfo != null) {
-      Signin userConnected =
-      Signin.fromJson(jsonDecode(userInfo));
-      userConnection.value = userConnected;
-      log('==> ${userConnection.value.toJson()}');
-    }
   }
 
   resetControllers() {

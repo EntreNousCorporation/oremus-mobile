@@ -7,19 +7,22 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/profile/data/repository/profile_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
+import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
-import 'package:oremusapp/main.dart';
 
 class EditPasswordController extends GetxController {
   final ProfileRepository profileRepository;
+  final SigninRepository signinRepository;
 
   EditPasswordController({
     required this.profileRepository,
+    required this.signinRepository,
   });
 
   var userConnection = Signin().obs;
@@ -47,7 +50,6 @@ class EditPasswordController extends GetxController {
 
   @override
   void onInit() {
-    getUserInfo();
     initControllers();
     super.onInit();
   }
@@ -74,7 +76,7 @@ class EditPasswordController extends GetxController {
     loading(true);
     lockScreen(true);
     Signin request = Signin(
-        username: userConnection.value.username,
+        username: signinRepository.getUserSigninInfo()?.username,
         oldPassword: oldPassword,
         newPassword: newPassword);
 
@@ -122,7 +124,7 @@ class EditPasswordController extends GetxController {
   }
 
   doLogout() {
-    encryptedBox.put(AppConstants.USER_LOG_INFOS, null);
+    DB.saveData(AppConstants.USER_LOG_INFOS, null);
     Get.deleteAll(force: true);
     Get.offAllNamed(Routes.SIGNIN);
   }
@@ -170,13 +172,5 @@ class EditPasswordController extends GetxController {
         newPassword.isNotEmpty &&
         confPassword.isNotEmpty &&
         isSamePassword;
-  }
-
-  getUserInfo() {
-    var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
-    if (userInfo != null) {
-      Signin userConnected = Signin.fromJson(jsonDecode(userInfo));
-      userConnection.value = userConnected;
-    }
   }
 }

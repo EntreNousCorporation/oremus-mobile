@@ -4,6 +4,6 @@ import 'package:oremusapp/app/modules/paroisse/controller/paroisse_map_controlle
 class ParoisseMapBinding implements Bindings {
   @override
   void dependencies() {
-    Get.put(ParoisseMapController());
+    Get.put(ParoisseMapController(), permanent: false);
   }
 }

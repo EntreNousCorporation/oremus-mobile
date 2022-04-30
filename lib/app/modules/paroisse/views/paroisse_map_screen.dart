@@ -19,7 +19,7 @@ class ParoisseMapScreen extends StatelessWidget {
         alignment: Alignment.topLeft,
         children: [
           const MapViewGoogle(),
-          GetBuilder<ParoisseMapController>(builder: (logic) {
+          GetX<ParoisseMapController>(builder: (logic) {
             return CustomInfoWindow(
               controller: logic.mapController.value,
               width: Get.width/1.2,

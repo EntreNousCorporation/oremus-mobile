@@ -5,22 +5,23 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/profile/data/model/profile.dart';
 import 'package:oremusapp/app/modules/profile/data/repository/profile_repository.dart';
-import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
+import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
-import 'package:oremusapp/main.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ProfileController extends GetxController {
   final ProfileRepository profileRepository;
+  final SigninRepository signinRepository;
 
   ProfileController({
     required this.profileRepository,
+    required this.signinRepository,
   });
 
-  var userConnection = Signin().obs;
   var isDataProcessing = false.obs;
   var hasData = false.obs;
   var userInfo = Profile().obs;
@@ -34,22 +35,16 @@ class ProfileController extends GetxController {
   late TextEditingController emailController;
 
   @override
-  void onInit() {
-    getUserInfo();
-    super.onInit();
-  }
-
-  @override
   void onReady() {
     getProfile();
     super.onReady();
   }
 
-  updateUI(Profile userInfo) {
-    firstnameController = TextEditingController(text: userInfo.firstname);
-    lastnameController = TextEditingController(text: userInfo.lastname);
-    phoneController = TextEditingController(text: userInfo.phone);
-    emailController = TextEditingController(text: userInfo.email);
+  updateUI(Profile? userInfo) {
+    firstnameController = TextEditingController(text: userInfo?.firstname ?? 'N/A');
+    lastnameController = TextEditingController(text: userInfo?.lastname ?? 'N/A');
+    phoneController = TextEditingController(text: userInfo?.phone ?? 'N/A');
+    emailController = TextEditingController(text: userInfo?.email ?? 'N/A');
   }
 
   getProfile() {
@@ -57,15 +52,16 @@ class ProfileController extends GetxController {
 
     log('request getProfile');
 
-    profileRepository.getProfile(userConnection.value.id ?? '').then((value) {
+    var userId = signinRepository.getUserSigninInfo()?.id ?? '';
+    profileRepository.getProfile(userId).then((value) {
       if (refreshController.isRefresh) {
         refreshController.refreshCompleted();
       }
       isDataProcessing(false);
       hasData(true);
       userInfo.value = value;
-      encryptedBox.put(AppConstants.USER_INFOS, jsonEncode(userInfo.value.toJson()));
       updateUI(userInfo.value);
+      profileRepository.saveUserProfile(value);
     }, onError: (error) {
       if (refreshController.isRefresh) {
         refreshController.refreshCompleted();
@@ -106,26 +102,17 @@ class ProfileController extends GetxController {
   }
 
   doLogout() {
-    encryptedBox.put(AppConstants.USER_LOG_INFOS, null);
-    encryptedBox.put(AppConstants.USER_INFOS, null);
+    DB.saveData(AppConstants.USER_LOG_INFOS, null);
+    DB.saveData(AppConstants.USER_INFOS, null);
     Get.deleteAll(force: true);
     Get.offAllNamed(Routes.SIGNIN);
-  }
-
-  getUserInfo() {
-    var userInfo = encryptedBox.get(AppConstants.USER_LOG_INFOS);
-    if (userInfo != null) {
-      Signin userConnected = Signin.fromJson(jsonDecode(userInfo));
-      userConnection.value = userConnected;
-    }
   }
 
   //EDIT PROFIL SECTION
   goToEditProfile() async {
     await Get.toNamed(Routes.EDIT_PROFILE, arguments: jsonEncode(userInfo.value));
-    var userInfos = encryptedBox.get(AppConstants.USER_INFOS);
-    if (userInfos != null) {
-      userInfo.value = Profile.fromJson(jsonDecode(userInfos));
+    if (profileRepository.getUserProfile() != null) {
+      userInfo.value = profileRepository.getUserProfile()!;
       updateUI(userInfo.value);
     }
   }

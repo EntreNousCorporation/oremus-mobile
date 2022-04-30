@@ -16,8 +16,8 @@ import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_binding.dar
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_detail_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_presby_team_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/views/filter/filter_paroisse_screen.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_activity_movement_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_map_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_activity_movement_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_confession_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_menu_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_messe_screen.dart';
@@ -31,7 +31,6 @@ import 'package:oremusapp/app/modules/resetpassword/bindings/reset_password_bind
 import 'package:oremusapp/app/modules/resetpassword/views/init_reset_password_screen.dart';
 import 'package:oremusapp/app/modules/resetpassword/views/otp_screen.dart';
 import 'package:oremusapp/app/modules/resetpassword/views/reset_password_screen.dart';
-import 'package:oremusapp/app/modules/service/binding/service_binding.dart';
 import 'package:oremusapp/app/modules/signin/binding/signin_binding.dart';
 import 'package:oremusapp/app/modules/signin/views/signin_screen.dart';
 import 'package:oremusapp/app/modules/signup/binding/signup_binding.dart';
