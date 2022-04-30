@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -68,6 +69,7 @@ class ParoisseController extends GetxController {
     }
   }
 
+  ///Chargement initial des paroisses
   getParoisses() {
     hideKeyboard();
     searchCriteria.value.name = searchController.text.trim();
@@ -78,6 +80,9 @@ class ParoisseController extends GetxController {
     paroisseRepository.getParoisses(searchCriteria: searchCriteria.value).then((value) {
       isDataProcessing(false);
       paroisses.value = value.content ?? [];
+      for (var paroisse in paroisses) {
+        paroisse.isFavorite = isWorshipPlaceFavorite(paroisse);
+      }
       if (paroisses.isNotEmpty == true) {
         hasData(true);
       } else {
@@ -102,14 +107,90 @@ class ParoisseController extends GetxController {
     });
   }
 
+  ///Réinitialisation de la liste des paroisses
+  onRefresh() {
+
+    log('request onRefresh');
+
+    resetSearch();
+    paroisseRepository.getParoisses(searchCriteria: searchCriteria.value).then((value) {
+      refreshController.refreshCompleted();
+      paroisses.value = value.content ?? [];
+      for (var paroisse in paroisses) {
+        paroisse.isFavorite = isWorshipPlaceFavorite(paroisse);
+      }
+      if (value.last == false) {
+        page.value += 1;
+      } else {
+        refreshController.loadNoData();
+      }
+    }, onError: (error) {
+      refreshController.refreshCompleted();
+      if (error.toString().contains('401')) {
+        showCustomDialog(
+          Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      }
+      debugPrint("error => ${error.toString()}");
+    });
+  }
+
+  ///Pagination des paroisses
+  onLoading() {
+    hideKeyboard();
+    searchCriteria.value.name = searchController.text.trim();
+
+    log('request onLoading');
+
+    paroisseRepository.getParoisses(page: page.value, searchCriteria: searchCriteria.value).then((value) {
+      paroisses.value.addAll(value.content ?? []);
+      for (var paroisse in paroisses) {
+        paroisse.isFavorite = isWorshipPlaceFavorite(paroisse);
+      }
+      paroisses.refresh();
+      refreshController.loadComplete();
+      log('${paroisses.length}');
+      if (value.last == false) {
+        page.value += 1;
+      } else {
+        refreshController.loadNoData();
+      }
+    }, onError: (error) {
+      refreshController.loadFailed();
+      if (error.toString().contains('401')) {
+        showCustomDialog(
+          Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      }
+      debugPrint("error => ${error.toString()}");
+    });
+  }
+
+  ///on vérifie si la paroisse est dans la liste des favoris
+  bool isWorshipPlaceFavorite(ContentPlace paroisse) {
+    var isFavorite = false;
+    var favorites = paroisseRepository.getAllFavorites();
+    var hasParoisse = favorites.indexWhere((element) => element.identifier == paroisse.identifier);
+    if (hasParoisse != -1) {
+      isFavorite = true;
+    } else {
+      isFavorite = false;
+    }
+    return isFavorite;
+  }
+
   saveFavorite(ContentPlace paroisse, bool state) {
-    log('saveFavorite 1');
+    log('saveFavorite 1 => ${paroisse.isFavorite}');
     paroisseRepository.addFavorite(paroisse);
     //showMessageFavorite(state);
   }
 
   removeFavorite(ContentPlace paroisse, bool state) {
-    log('removeFavorite 1');
+    log('removeFavorite 1 => ${paroisse.isFavorite}');
     paroisseRepository.deleteFavorite(paroisse);
     //showMessageFavorite(state);
   }
@@ -133,60 +214,17 @@ class ParoisseController extends GetxController {
     Get.offAllNamed(Routes.SIGNIN);
   }
 
-  onRefresh() {
-
-    log('request onRefresh');
-
-    resetSearch();
-    paroisseRepository.getParoisses(searchCriteria: searchCriteria.value).then((value) {
-      refreshController.refreshCompleted();
-      paroisses.value = value.content ?? [];
-      if (value.last == false) {
-        page.value += 1;
-      } else {
-        refreshController.loadNoData();
-      }
-    }, onError: (error) {
-      refreshController.refreshCompleted();
-      if (error.toString().contains('401')) {
-        showCustomDialog(
-          Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-        ).then((value) {
-          doLogout();
-        });
-      }
-      debugPrint("error => ${error.toString()}");
-    });
-  }
-
-
-  onLoading() {
-    hideKeyboard();
-    searchCriteria.value.name = searchController.text.trim();
-
-    log('request onLoading');
-
-    paroisseRepository.getParoisses(page: page.value, searchCriteria: searchCriteria.value).then((value) {
-      paroisses.value.addAll(value.content ?? []);
-      paroisses.refresh();
-      refreshController.loadComplete();
-      log('${paroisses.length}');
-      if (value.last == false) {
-        page.value += 1;
-      } else {
-        refreshController.loadNoData();
-      }
-    }, onError: (error) {
-      refreshController.loadFailed();
-      if (error.toString().contains('401')) {
-        showCustomDialog(
-          Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-        ).then((value) {
-          doLogout();
-        });
-      }
-      debugPrint("error => ${error.toString()}");
-    });
+  goToParoisseDetail(ContentPlace paroisse, int index) async {
+    await Get.toNamed(
+      Routes.PAROISSE_MENU,
+      arguments: [
+        index,
+        jsonEncode(paroisse.toJson())
+      ],
+    );
+    //on met à jour la liste au cas où favoris mis à jour
+    paroisses[index].isFavorite = isWorshipPlaceFavorite(paroisse);
+    paroisses.refresh();
   }
 
   goToAdvancedSearch() async {

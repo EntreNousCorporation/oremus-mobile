@@ -211,8 +211,7 @@ class ParoisseScreen extends StatelessWidget {
                                                 shrinkWrap: false,
                                                 itemCount: _.paroisses.length,
                                                 itemBuilder: (builder, index) {
-                                                  var paroisse =
-                                                      _.paroisses[index];
+                                                  var paroisse = _.paroisses[index];
                                                   return ParoisseItem(
                                                     paroisse: paroisse,
                                                     index: index,

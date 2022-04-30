@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
+import 'package:like_button/like_button.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
@@ -16,7 +19,7 @@ class ParoisseMenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: colorGreen,
-      child: GetBuilder<ParoisseMenuController>(
+      child: GetX<ParoisseMenuController>(
           initState: (state) {},
           builder: (_) {
             return KeyboardDismisser(
@@ -38,6 +41,39 @@ class ParoisseMenuScreen extends StatelessWidget {
                         icon: const Icon(Icons.arrow_back_ios_rounded),
                       ),
                       actions: [
+                        LikeButton(
+                          isLiked: _.paroisseSelected.value.isFavorite,
+                          onTap: (isLiked) async {
+                            log('isLiked => $isLiked');
+                            _.paroisseSelected.value.isFavorite = !isLiked;
+                            if (isLiked) {
+                              _.removeFavorite(_.paroisseSelected.value, isLiked);
+                            } else {
+                              _.saveFavorite(_.paroisseSelected.value, isLiked);
+                            }
+                            return !isLiked;
+                          },
+                          size: 25,
+                          circleColor: const CircleColor(
+                              start: Color(0xff93291E),
+                              end: Color(0xFFED213A)),
+                          bubblesColor: const BubblesColor(
+                            dotPrimaryColor: Color(0xFFED213A),
+                            dotSecondaryColor: Color(0xff93291E),
+                          ),
+                          likeBuilder: (bool isLiked) {
+                            return Icon(
+                              isLiked
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: isLiked
+                                  ? const Color(0xFFED213A)
+                                  : colorWhite,
+                              size: 25,
+                            );
+                          },
+                        ),
+                        Separators.minimunHorizontal(),
                         IconButton(
                           onPressed: () {
                             _.goToMap();
@@ -48,7 +84,8 @@ class ParoisseMenuScreen extends StatelessWidget {
                       flexibleSpace: FlexibleSpaceBar(
                           centerTitle: true,
                           title: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
                               '${_.paroisseSelected.value.name}',
                               maxLines: 2,
@@ -59,8 +96,8 @@ class ParoisseMenuScreen extends StatelessWidget {
                                   textColor: colorWhite),
                             ),
                           ),
-                          background: (_.paroisseSelected.value.coverImage
-                                      ?.link?.isNotEmpty ==
+                          background: (_.paroisseSelected.value.coverImage?.link
+                                      ?.isNotEmpty ==
                                   true)
                               ? Stack(
                                   children: [
@@ -84,8 +121,7 @@ class ParoisseMenuScreen extends StatelessWidget {
                                       height: Get.width,
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
-                                        color:
-                                            Colors.black54.withOpacity(0.3),
+                                        color: Colors.black54.withOpacity(0.3),
                                       ),
                                     ),
                                   ],
@@ -104,8 +140,7 @@ class ParoisseMenuScreen extends StatelessWidget {
                                       height: Get.width,
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
-                                        color:
-                                            Colors.black54.withOpacity(0.3),
+                                        color: Colors.black54.withOpacity(0.3),
                                       ),
                                     ),
                                   ],

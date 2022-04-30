@@ -1,9 +1,12 @@
 
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
+import 'package:like_button/like_button.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
@@ -42,6 +45,39 @@ class ParoisseBresbyTeamScreen extends StatelessWidget {
                         icon: const Icon(Icons.arrow_back_ios_rounded),
                       ),
                       actions: [
+                        LikeButton(
+                          isLiked: _.paroisseSelected.value.isFavorite,
+                          onTap: (isLiked) async {
+                            log('isLiked => $isLiked');
+                            _.paroisseSelected.value.isFavorite = !isLiked;
+                            if (isLiked) {
+                              _.removeFavorite(_.paroisseSelected.value, isLiked);
+                            } else {
+                              _.saveFavorite(_.paroisseSelected.value, isLiked);
+                            }
+                            return !isLiked;
+                          },
+                          size: 25,
+                          circleColor: const CircleColor(
+                              start: Color(0xff93291E),
+                              end: Color(0xFFED213A)),
+                          bubblesColor: const BubblesColor(
+                            dotPrimaryColor: Color(0xFFED213A),
+                            dotSecondaryColor: Color(0xff93291E),
+                          ),
+                          likeBuilder: (bool isLiked) {
+                            return Icon(
+                              isLiked
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: isLiked
+                                  ? const Color(0xFFED213A)
+                                  : colorWhite,
+                              size: 25,
+                            );
+                          },
+                        ),
+                        Separators.minimunHorizontal(),
                         IconButton(
                           onPressed: () {
                             _.goToMap();

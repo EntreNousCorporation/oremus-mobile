@@ -136,4 +136,16 @@ class ParoissePresbyTeamController extends GetxController {
       arguments: jsonEncode(paroisseSelected.value.toJson()),
     );
   }
+
+  saveFavorite(ContentPlace paroisse, bool state) {
+    log('saveFavorite 1 => ${paroisse.isFavorite}');
+    paroisseRepository.addFavorite(paroisse);
+    //showMessageFavorite(state);
+  }
+
+  removeFavorite(ContentPlace paroisse, bool state) {
+    log('removeFavorite 1 => ${paroisse.isFavorite}');
+    paroisseRepository.deleteFavorite(paroisse);
+    //showMessageFavorite(state);
+  }
 }

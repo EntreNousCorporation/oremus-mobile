@@ -48,13 +48,14 @@ class ParoisseItem extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Get.toNamed(
+                    logic.goToParoisseDetail(paroisse, index);
+                    /*Get.toNamed(
                       Routes.PAROISSE_MENU,
                       arguments: [
                         index,
                         jsonEncode(paroisse.toJson()),
                       ],
-                    );
+                    );*/
                   },
                   child: Stack(
                     alignment: Alignment.center,
@@ -178,9 +179,10 @@ class ParoisseItem extends StatelessWidget {
                                   size: 25,
                                 )
                               : LikeButton(
-                                  //isLiked: fromFavoriteUI,
+                                  isLiked: paroisse.isFavorite,
                                   onTap: (isLiked) async {
                                     log('isLiked => $isLiked');
+                                    paroisse.isFavorite = !isLiked;
                                     if (isLiked) {
                                       logic.removeFavorite(paroisse, isLiked);
                                     } else {

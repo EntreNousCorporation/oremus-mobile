@@ -18,7 +18,7 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: colorGreen,
-      child: GetBuilder<ParoisseActivityMovementController>(
+      child: GetX<ParoisseActivityMovementController>(
           initState: (state) {},
           builder: (_) {
             return KeyboardDismisser(
@@ -41,6 +41,13 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
                         icon: const Icon(Icons.arrow_back_ios_rounded),
                       ),
                       actions: [
+                        _.paroisseSelected.value.isFavorite == true
+                            ? const Icon(
+                          Icons.favorite,
+                          color: Color(0xFFED213A),
+                          size: 25,
+                        )
+                            : Container(),
                         IconButton(
                           onPressed: () {
                             _.goToMap();

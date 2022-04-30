@@ -44,9 +44,9 @@ class ParoisseMenuController extends GetxController {
   getArguments() {
     if (Get.arguments != null) {
       indexSelected.value = Get.arguments[0];
-      paroisseSelected.value =
-          ContentPlace.fromJson(jsonDecode(Get.arguments[1]));
+      paroisseSelected.value = ContentPlace.fromJson(jsonDecode(Get.arguments[1]));
       log('==> ${paroisseSelected.value.identifier}');
+      log('==> ${paroisseSelected.value.isFavorite}');
     }
   }
 
@@ -58,9 +58,9 @@ class ParoisseMenuController extends GetxController {
         icon: 'assets/images/messe.svg',
         isPngImage: false,
         activeTint: colorBlack,
-        goToPage: () {
+        goToPage: () async {
           liturgicalCelebrations.value = masses.value;
-          Get.toNamed(
+          await Get.toNamed(
             Routes.PAROISSE_MESSE,
             arguments: [
               'HM',
@@ -68,6 +68,10 @@ class ParoisseMenuController extends GetxController {
               jsonEncode(liturgicalCelebrations.value).toString(),
             ],
           );
+          log("retour");
+          //on met à jour la liste au cas où favoris mis à jour
+          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+          paroisseSelected.refresh();
         },
       ),
       TypeMenu(
@@ -76,9 +80,9 @@ class ParoisseMenuController extends GetxController {
         icon: 'assets/images/confession_icon.svg',
         isPngImage: false,
         activeTint: colorBlack,
-        goToPage: () {
+        goToPage: () async {
           liturgicalCelebrations.value = confessions.value;
-          Get.toNamed(
+          await Get.toNamed(
             Routes.PAROISSE_CONFESSION,
             arguments: [
               'HC',
@@ -86,6 +90,10 @@ class ParoisseMenuController extends GetxController {
               jsonEncode(liturgicalCelebrations.value).toString(),
             ],
           );
+          log("retour");
+          //on met à jour la liste au cas où favoris mis à jour
+          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+          paroisseSelected.refresh();
         },
       ),
       TypeMenu(
@@ -94,14 +102,18 @@ class ParoisseMenuController extends GetxController {
         icon: 'assets/images/calendar.svg',
         isPngImage: false,
         activeTint: colorBlack,
-        goToPage: () {
-          /*Get.toNamed(
+        goToPage: () async {
+          /*await Get.toNamed(
             Routes.PAROISSE_CONFESSION,
             arguments: [
               'HB',
               jsonEncode(paroisseSelected.value.toJson()),
             ],
           );*/
+          log("retour");
+          //on met à jour la liste au cas où favoris mis à jour
+          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+          paroisseSelected.refresh();
         },
       ),
       TypeMenu(
@@ -110,14 +122,18 @@ class ParoisseMenuController extends GetxController {
         icon: 'assets/images/group.svg',
         isPngImage: false,
         activeTint: colorBlack,
-        goToPage: () {
-          Get.toNamed(
+        goToPage: () async {
+          await Get.toNamed(
             Routes.PAROISSE_ACTIVITY_MOVEMENT,
             arguments: [
               'AM',
               jsonEncode(paroisseSelected.value.toJson()),
             ],
           );
+          log("retour");
+          //on met à jour la liste au cas où favoris mis à jour
+          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+          paroisseSelected.refresh();
         },
       ),
       TypeMenu(
@@ -126,17 +142,33 @@ class ParoisseMenuController extends GetxController {
         icon: 'assets/images/priest_icon.svg',
         isPngImage: false,
         activeTint: colorBlack,
-        goToPage: () {
-          Get.toNamed(
+        goToPage: () async {
+          await Get.toNamed(
             Routes.PAROISSE_PRESBY_TEAM,
             arguments: [
               'EP',
               jsonEncode(paroisseSelected.value.toJson()),
             ],
           );
+          log("retour");
+          //on met à jour la liste au cas où favoris mis à jour
+          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+          paroisseSelected.refresh();
         },
       ),
     ];
+  }
+
+  bool isWorshipPlaceFavorite(ContentPlace paroisse) {
+    var isFavorite = false;
+    var favorites = paroisseRepository.getAllFavorites();
+    var hasParoisse = favorites.indexWhere((element) => element.identifier == paroisse.identifier);
+    if (hasParoisse != -1) {
+      isFavorite = true;
+    } else {
+      isFavorite = false;
+    }
+    return isFavorite;
   }
 
   goToMap() {
@@ -170,6 +202,18 @@ class ParoisseMenuController extends GetxController {
       }
       debugPrint("error => ${error.toString()}");
     });
+  }
+
+  saveFavorite(ContentPlace paroisse, bool state) {
+    log('saveFavorite 1 => ${paroisse.isFavorite}');
+    paroisseRepository.addFavorite(paroisse);
+    //showMessageFavorite(state);
+  }
+
+  removeFavorite(ContentPlace paroisse, bool state) {
+    log('removeFavorite 1 => ${paroisse.isFavorite}');
+    paroisseRepository.deleteFavorite(paroisse);
+    //showMessageFavorite(state);
   }
 
   doLogout() {

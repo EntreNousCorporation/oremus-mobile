@@ -138,6 +138,7 @@ class ContentPlace {
   TypeContent? type;
   String? leader;
   bool? isArchDiocese;
+  bool? isFavorite;
   Address? address;
   Diocese? diocese;
   Localisation? localisation;
@@ -155,6 +156,11 @@ class ContentPlace {
     this.type,
     this.leader,
     this.isArchDiocese,
+    this.isFavorite,
+    this.address,
+    this.diocese,
+    this.localisation,
+    this.coverImage,
   });
 
   ContentPlace.fromJson(Map<String, dynamic> json) {
@@ -168,6 +174,7 @@ class ContentPlace {
     description = json['description'];
     leader = json['leader'];
     isArchDiocese = json['isArchDiocese'];
+    isFavorite = json['isFavorite'] ?? false;
     type = json['type'] != null
         ? TypeContent.fromJson(json['type'])
         : null;
@@ -197,6 +204,7 @@ class ContentPlace {
     data['description'] = description;
     data['leader'] = leader;
     data['isArchDiocese'] = isArchDiocese;
+    data['isFavorite'] = isFavorite;
     data['type'] = type?.toJson();
     data['address'] = address?.toJson();
     data['diocese'] = diocese?.toJson();
