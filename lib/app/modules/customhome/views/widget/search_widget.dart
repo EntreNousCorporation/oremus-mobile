@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
@@ -24,6 +26,10 @@ class SearchWidget extends StatelessWidget {
           maxLines: 1,
           cursorColor: colorBlue,
           keyboardType: TextInputType.text,
+          textInputAction: TextInputAction.search,
+          onFieldSubmitted: (value) {
+            logic.doLaunchSimpleSearch();
+          },
           decoration: InputDecoration(
             contentPadding:
                 const EdgeInsets.only(top: 16, left: 16, right: 0, bottom: 0),
