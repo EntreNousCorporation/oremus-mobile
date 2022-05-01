@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/modules/profile/controller/profile_controller.dart';
 import 'package:oremusapp/app/modules/profile/data/repository/profile_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
@@ -11,6 +12,7 @@ class ProfileBinding implements Bindings {
         ProfileController(
           profileRepository: ProfileRepository(ApiClientImpl()),
           signinRepository: SigninRepository(ApiClientImpl()),
+          paroisseRepository: ParoisseRepository(ApiClientImpl()),
         ),
         permanent: true);
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
 import 'package:hidden_drawer_menu/hidden_drawer_menu.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
@@ -77,15 +78,22 @@ class CustomHomeScreen extends StatelessWidget {
                       backgroundColor: colorGreen,
                       centerTitle: true,
                       leading: IconButton(
-                        icon: const Icon(Icons.menu, color: colorWhite,),
+                        icon: const Icon(
+                          Icons.menu,
+                          color: colorWhite,
+                        ),
                         onPressed: () {
                           controller.toggle();
                         },
                       ),
                       actions: [
                         Visibility(
-                          visible: (logic.menus[logic.selectedIndex.value].code == AppConstants.PROFILE) && (logic.userCanUpdateProfile()),
-                          child: GetBuilder<ProfileController>(builder: (logic) {
+                          visible:
+                              (logic.menus[logic.selectedIndex.value].code ==
+                                      AppConstants.PROFILE) &&
+                                  (logic.userCanUpdateProfile()),
+                          child:
+                              GetBuilder<ProfileController>(builder: (logic) {
                             return IconButton(
                               onPressed: () {
                                 logic.goToEditProfile();
@@ -94,15 +102,37 @@ class CustomHomeScreen extends StatelessWidget {
                             );
                           }),
                         ),
+                        Visibility(
+                          visible:
+                              (logic.menus[logic.selectedIndex.value].code ==
+                                  AppConstants.PAROISSE),
+                          child:
+                              GetBuilder<ProfileController>(builder: (logic) {
+                            return Bounce(
+                              key: logic.basicIconAnimation,
+                              preferences: AnimationPreferences(
+                                offset: const Duration(seconds: 3),
+                                autoPlay: logic.applyAnimation(),
+                                magnitude: 0.3,
+                              ),
+                              child: IconButton(
+                                onPressed: () {
+                                  logic.goToFavorites();
+                                },
+                                icon: const Icon(
+                                  Icons.favorite_border_outlined,
+                                  color: colorWhite,
+                                  size: 25,
+                                ),
+                              ),
+                            );
+                          }),
+                        ),
                       ],
                       title: Text(
                         logic.title.value,
-                        style: TextStyles
-                            .montserratBold(
-                            textSize:
-                            TextSizes.twenty,
-                            textColor:
-                            colorWhite),
+                        style: TextStyles.montserratBold(
+                            textSize: TextSizes.twenty, textColor: colorWhite),
                       ),
                     ),
                     body: screenCurrent,

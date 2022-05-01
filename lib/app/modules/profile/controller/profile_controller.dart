@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/modules/profile/data/model/profile.dart';
 import 'package:oremusapp/app/modules/profile/data/repository/profile_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
@@ -16,11 +18,16 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class ProfileController extends GetxController {
   final ProfileRepository profileRepository;
   final SigninRepository signinRepository;
+  final ParoisseRepository paroisseRepository;
 
   ProfileController({
     required this.profileRepository,
     required this.signinRepository,
+    required this.paroisseRepository,
   });
+
+  var applyAnim = true.obs;
+  final GlobalKey<AnimatorWidgetState> basicIconAnimation = GlobalKey<AnimatorWidgetState>();
 
   var isDataProcessing = false.obs;
   var hasData = false.obs;
@@ -108,7 +115,6 @@ class ProfileController extends GetxController {
     Get.offAllNamed(Routes.SIGNIN);
   }
 
-  //EDIT PROFIL SECTION
   goToEditProfile() async {
     await Get.toNamed(Routes.EDIT_PROFILE, arguments: jsonEncode(userInfo.value));
     if (profileRepository.getUserProfile() != null) {
@@ -119,5 +125,13 @@ class ProfileController extends GetxController {
 
   goToFavorites() {
     Get.toNamed(Routes.FAVORITES);
+  }
+
+  applyAnimation() {
+    if (paroisseRepository.getAllFavorites().isNotEmpty) {
+      basicIconAnimation.currentState?.animator?.loop();
+      return AnimationPlayStates.Loop;
+    }
+    return AnimationPlayStates.None;
   }
 }
