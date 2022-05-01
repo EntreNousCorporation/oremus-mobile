@@ -24,6 +24,7 @@ class MyTextField extends StatefulWidget {
     this.prefixIconColor,
     this.suffixIcon,
     this.enabled = true,
+    this.readOnly = false,
     this.errorText = '',
     this.height = 45,
     this.textCapitalization = TextCapitalization.words,
@@ -56,6 +57,7 @@ class MyTextField extends StatefulWidget {
   final String? suffixIcon;
   final String? errorText;
   final bool enabled;
+  final bool readOnly;
   final TextCapitalization textCapitalization;
   final double? height;
   final FormFieldSetter<String>? onSaved;
@@ -89,6 +91,7 @@ class _MyTextFieldState extends State<MyTextField> {
   get prefixIconColor => widget.prefixIconColor;
   get suffixIcon => widget.suffixIcon;
   get enabled => widget.enabled;
+  get readOnly => widget.readOnly;
   get errorText => widget.errorText;
   get height => widget.height;
   get textCapitalization => widget.textCapitalization;
@@ -149,6 +152,7 @@ class _MyTextFieldState extends State<MyTextField> {
         keyboardType: keyboardType ?? TextInputType.text,
         textCapitalization: textCapitalization,
         focusNode: focusNode,
+        readOnly: readOnly,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8),
           filled: filled,
@@ -212,6 +216,7 @@ class _MyTextFieldState extends State<MyTextField> {
         onChanged: onChanged,
         keyboardType: TextInputType.phone,
         focusNode: focusNode,
+        readOnly: readOnly,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8),
           filled: true,
@@ -292,6 +297,7 @@ class _MyTextFieldState extends State<MyTextField> {
           maxLines: maxLines,
           cursorColor: colorGreen3,
           focusNode: focusNode,
+          readOnly: readOnly,
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 8),
             filled: true,

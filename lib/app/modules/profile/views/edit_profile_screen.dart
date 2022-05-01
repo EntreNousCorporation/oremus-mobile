@@ -26,6 +26,7 @@ class EditProfileScreen extends StatelessWidget {
             builder: (_) {
               return KeyboardDismisser(
                 child: Scaffold(
+                  backgroundColor: colorGrey4,
                   resizeToAvoidBottomInset: true,
                   appBar: AppBar(
                     elevation: 10,
@@ -206,6 +207,7 @@ class EditProfileScreen extends StatelessWidget {
                                             child: MyTextField(
                                               focusNode: _.emailFocusNode,
                                               controller: _.emailController,
+                                              readOnly: true,
                                               hintText: '',
                                               labelText: 'E-mail',
                                               prefixIcon: "assets/images/icon_enveloppe.svg",
