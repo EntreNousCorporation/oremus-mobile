@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
@@ -18,6 +20,8 @@ class SplashscreenController extends GetxController {
   var userInfo;
 
   var applyAnim = true.obs;
+  final GlobalKey<AnimatorWidgetState> basicIconAnimation = GlobalKey<AnimatorWidgetState>();
+  final GlobalKey<AnimatorWidgetState> basicTextAnimation = GlobalKey<AnimatorWidgetState>();
 
   @override
   void onReady() {
@@ -25,8 +29,16 @@ class SplashscreenController extends GetxController {
     super.onReady();
   }
 
+  applyAnimation() {
+    if (applyAnim.isTrue) {
+      //basicIconAnimation.currentState?.animator?.loop();
+      return AnimationPlayStates.Loop;
+    }
+    return AnimationPlayStates.None;
+  }
+
   getInitialView() {
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 3), () {
       if (signinRepository.getUserSigninInfo() != null) {
         Get.offNamed(Routes.CUSTOM_HOME);
       } else {

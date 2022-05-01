@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
@@ -24,13 +25,31 @@ class SplashscreenScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SvgPicture.asset('assets/images/logo.svg', height: 60,),
+                    FadeIn(
+                      key: logic.basicIconAnimation,
+                      preferences: AnimationPreferences(
+                        offset: const Duration(seconds: 0),
+                        autoPlay: logic.applyAnimation(),
+                        magnitude: 0.5,
+                        duration: const Duration(seconds: 3),
+                      ),
+                      child: SvgPicture.asset('assets/images/logo.svg', height: 60,),
+                    ),
                     Separators.minimunVertical(),
-                    Text('Oremus',
-                      textAlign: TextAlign.center,
-                      style: TextStyles.montserratBold(
-                        textSize: TextSizes.twenty_four,
-                        textColor: colorGreen,
+                    SlideInLeft(
+                      key: logic.basicTextAnimation,
+                      preferences: AnimationPreferences(
+                        offset: const Duration(seconds: 0),
+                        autoPlay: logic.applyAnimation(),
+                        magnitude: 0.5,
+                        duration: const Duration(seconds: 3),
+                      ),
+                      child: Text('Oremus',
+                        textAlign: TextAlign.center,
+                        style: TextStyles.montserratBold(
+                          textSize: TextSizes.twenty_four,
+                          textColor: colorGreen,
+                        ),
                       ),
                     ),
                   ],

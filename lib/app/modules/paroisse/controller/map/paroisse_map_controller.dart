@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -235,28 +236,25 @@ class ParoisseMapController extends GetxController {
                       color: colorWhite,
                       shadowColor: colorGrey2.withOpacity(0.8),
                       child: ClipRRect(
-                        borderRadius: const BorderRadius.all(
-                            Radius.circular(10.0)),
-                        child: paroisseSelected
-                            .value.coverImage?.link !=
-                            null
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10.0)),
+                        child: paroisseSelected.value.coverImage?.link != null
                             ? CachedNetworkImage(
-                          width: Get.width / 5,
-                          height: Get.width / 5,
-                          imageUrl: paroisseSelected
-                              .value.coverImage?.link ??
-                              '',
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) =>
-                              LottieLoadingView(
-                                  size: Get.width / 6),
-                          errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
-                        )
+                                width: Get.width / 5,
+                                height: Get.width / 5,
+                                imageUrl:
+                                    paroisseSelected.value.coverImage?.link ??
+                                        '',
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) =>
+                                    LottieLoadingView(size: Get.width / 6),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
+                              )
                             : Image.asset(
-                          'assets/images/bg_login.jpg',
-                          fit: BoxFit.cover,
-                        ),
+                                'assets/images/bg_login.jpg',
+                                fit: BoxFit.cover,
+                              ),
                       ),
                     ),
                     Separators.normalHorizontal(),
@@ -297,8 +295,8 @@ class ParoisseMapController extends GetxController {
               ),
               Separators.normalVertical(),
               TextButton.icon(
-                style: TextButton.styleFrom(
-                    backgroundColor: colorGreenSemiLight),
+                style:
+                    TextButton.styleFrom(backgroundColor: colorGreenSemiLight),
                 icon: const Icon(
                   Icons.pin_drop_rounded,
                   color: colorWhite,
@@ -308,8 +306,7 @@ class ParoisseMapController extends GetxController {
                   child: Text(
                     'Voir itinéraire',
                     style: TextStyles.montserratMedium(
-                        textSize: TextSizes.sixteen,
-                        textColor: colorWhite),
+                        textSize: TextSizes.sixteen, textColor: colorWhite),
                   ),
                 ),
                 onPressed: () {
