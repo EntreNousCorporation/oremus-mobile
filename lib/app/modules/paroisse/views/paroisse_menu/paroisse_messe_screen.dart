@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:accordion/accordion.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
@@ -12,8 +13,8 @@ import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_menu_detail_controller.dart';
-import 'package:oremusapp/app/modules/paroisse/views/widget/day1_item.dart';
+import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_masse_controller.dart';
+import 'package:oremusapp/app/modules/paroisse/views/widget/day_masse_item.dart';
 
 class ParoisseMesseScreen extends StatelessWidget {
   const ParoisseMesseScreen({Key? key}) : super(key: key);
@@ -22,7 +23,7 @@ class ParoisseMesseScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: colorGreen,
-      child: GetX<ParoisseMenuDetailController>(
+      child: GetX<ParoisseMasseController>(
           initState: (state) {},
           builder: (_) {
             return KeyboardDismisser(
@@ -51,7 +52,8 @@ class ParoisseMesseScreen extends StatelessWidget {
                             log('isLiked => $isLiked');
                             _.paroisseSelected.value.isFavorite = !isLiked;
                             if (isLiked) {
-                              _.removeFavorite(_.paroisseSelected.value, isLiked);
+                              _.removeFavorite(
+                                  _.paroisseSelected.value, isLiked);
                             } else {
                               _.saveFavorite(_.paroisseSelected.value, isLiked);
                             }
@@ -59,17 +61,14 @@ class ParoisseMesseScreen extends StatelessWidget {
                           },
                           size: 25,
                           circleColor: const CircleColor(
-                              start: Color(0xff93291E),
-                              end: Color(0xFFED213A)),
+                              start: Color(0xff93291E), end: Color(0xFFED213A)),
                           bubblesColor: const BubblesColor(
                             dotPrimaryColor: Color(0xFFED213A),
                             dotSecondaryColor: Color(0xff93291E),
                           ),
                           likeBuilder: (bool isLiked) {
                             return Icon(
-                              isLiked
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
+                              isLiked ? Icons.favorite : Icons.favorite_border,
                               color: isLiked
                                   ? const Color(0xFFED213A)
                                   : colorWhite,
@@ -106,7 +105,8 @@ class ParoisseMesseScreen extends StatelessWidget {
                               ? Stack(
                                   children: [
                                     Hero(
-                                      tag: 'tag${_.indexDaySelected.value}',
+                                      tag:
+                                          'tag${_.paroisseSelected.value.identifier}',
                                       child: CachedNetworkImage(
                                         width: Get.width,
                                         height: Get.width,
@@ -133,7 +133,8 @@ class ParoisseMesseScreen extends StatelessWidget {
                               : Stack(
                                   children: [
                                     Hero(
-                                      tag: 'tag${_.indexDaySelected.value}',
+                                      tag:
+                                          'tag${_.paroisseSelected.value.identifier}',
                                       child: Image.asset(
                                         'assets/images/bg_login.jpg',
                                         width: Get.width,
@@ -158,7 +159,7 @@ class ParoisseMesseScreen extends StatelessWidget {
                           Hero(
                             tag: _.code.value,
                             child: Text(
-                              _.getTypeTitle(_.code.value),
+                              'Horaires des messes',
                               textAlign: TextAlign.center,
                               style: TextStyles.montserratBold(
                                 textSize: TextSizes.eighteen,
@@ -166,80 +167,66 @@ class ParoisseMesseScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          _.massesRecurrent.value.isNotEmpty ? Expanded(
-                            child: Accordion(
-                              disableScrolling: false,
-                              maxOpenSections: 1,
-                              leftIcon: SvgPicture.asset('assets/images/messe.svg', height: 25, color: colorWhite,),
-                              headerBackgroundColor: colorGreenSemiLight,
-                              contentBorderColor: colorGreenSemiLight,
-                              children:
-                              _.massesRecurrent.value.map((value) {
-                                return AccordionSection(
-                                  isOpen: true,
-                                  header: Text(
-                                    '${value.name}',
-                                    style: TextStyles.montserratSemiBold(
-                                        textSize: TextSizes.sixteen,
-                                        textColor: colorWhite),
+                          _.isDataProcessing.isTrue
+                              ? Expanded(
+                                  child: Center(
+                                    child: LottieLoadingView(
+                                      size: Get.width / 4,
+                                    ),
                                   ),
-                                  content: ListView.builder(
-                                      padding: const EdgeInsets.all(0),
-                                      physics: const NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemCount: value.openingTime?.length,
-                                      itemBuilder: (context, i) {
-                                        var openingTime = value.openingTime?[i];
-                                        return Day1Item(openingTime: openingTime);
-                                      }),
-                                );
-                              }).toList(),
-                            ),) : Expanded(child: NotFoundScreen(message: 'Horaires non disponible pour l\'instant')),
-
-                          /*GroupedListView<LiturgicalCelebrationResponse?, String>(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            elements: _.massess.value,
-                            useStickyGroupSeparators: true,
-                            groupBy: (liturgicalCelebration) => '${liturgicalCelebration?.isRecurrent}',
-                            groupHeaderBuilder: (transHeader) =>
-                                Text(transHeader?.isRecurrent == false ? "Messes spéciales" : "Autres messes",
-                                    style: TextStyle(
-                                      fontFamily: 'avenir_demi_bold',
-                                      fontSize: 15,
-                                    )),
-                            //order: GroupedListOrder.DESC,
-                            itemBuilder: (context, transaction) {
-                              return Expanded(
-                                child: Accordion(
-                                  disableScrolling: false,
-                                  maxOpenSections: 1,
-                                  leftIcon: SvgPicture.asset('assets/images/messe.svg', height: 25, color: colorWhite,),
-                                  headerBackgroundColor: colorGreenSemiLight,
-                                  contentBorderColor: colorGreenSemiLight,
-                                  children:
-                                  _.massess.value.map((value) {
-                                    return AccordionSection(
-                                      isOpen: true,
-                                      header: Text(
-                                        '${value.name}',
-                                        style: TextStyles.montserratSemiBold(
-                                            textSize: TextSizes.sixteen,
-                                            textColor: colorWhite),
+                                )
+                              : _.hasData.isTrue
+                                  ? Expanded(
+                                      child: FadeIn(
+                                        duration:
+                                            const Duration(milliseconds: 500),
+                                        child: Accordion(
+                                          disableScrolling: false,
+                                          maxOpenSections: 1,
+                                          leftIcon: SvgPicture.asset(
+                                            'assets/images/messe.svg',
+                                            height: 25,
+                                            color: colorWhite,
+                                          ),
+                                          headerBackgroundColor:
+                                              colorGreenSemiLight,
+                                          contentBorderColor:
+                                              colorGreenSemiLight,
+                                          children: _.masses.value.map((value) {
+                                            return AccordionSection(
+                                              isOpen: true,
+                                              header: Text(
+                                                '${value.name}',
+                                                style: TextStyles
+                                                    .montserratSemiBold(
+                                                        textSize:
+                                                            TextSizes.sixteen,
+                                                        textColor: colorWhite),
+                                              ),
+                                              content: ListView.builder(
+                                                  padding:
+                                                      const EdgeInsets.all(0),
+                                                  physics:
+                                                      const NeverScrollableScrollPhysics(),
+                                                  shrinkWrap: true,
+                                                  itemCount:
+                                                      value.openingTime?.length,
+                                                  itemBuilder: (context, i) {
+                                                    var openingTime =
+                                                        value.openingTime?[i];
+                                                    return DayMassetem(
+                                                        openingTime:
+                                                            openingTime);
+                                                  }),
+                                            );
+                                          }).toList(),
+                                        ),
                                       ),
-                                      content: ListView.builder(
-                                          physics: const NeverScrollableScrollPhysics(),
-                                          shrinkWrap: true,
-                                          itemCount: value.openingTime?.length,
-                                          itemBuilder: (context, i) {
-                                            var openingTime = value.openingTime?[i];
-                                            return Day1Item(openingTime: openingTime);
-                                          }),
-                                    );
-                                  }).toList(),
-                                ),);
-                            },
-                          ),*/
+                                    )
+                                  : Expanded(
+                                      child: NotFoundScreen(
+                                          message:
+                                              'Horaires non disponible pour l\'instant')),
                         ],
                       ),
                     )

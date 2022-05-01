@@ -26,19 +26,12 @@ class ParoisseMenuController extends GetxController {
   RxList<TypeMenu> menus = RxList<TypeMenu>([]);
   RxList<LiturgicalCelebrationResponse> masses = RxList<LiturgicalCelebrationResponse>([]);
   RxList<LiturgicalCelebrationResponse> confessions = RxList<LiturgicalCelebrationResponse>([]);
-  RxList<LiturgicalCelebrationResponse> liturgicalCelebrations = RxList<LiturgicalCelebrationResponse>([]);
 
   @override
   void onInit() {
     getArguments();
     initMenus();
     super.onInit();
-  }
-
-  @override
-  void onReady() {
-    getLiturgicalCelebrations();
-    super.onReady();
   }
 
   getArguments() {
@@ -59,13 +52,11 @@ class ParoisseMenuController extends GetxController {
         isPngImage: false,
         activeTint: colorBlack,
         goToPage: () async {
-          liturgicalCelebrations.value = masses.value;
           await Get.toNamed(
             Routes.PAROISSE_MESSE,
             arguments: [
               'HM',
               jsonEncode(paroisseSelected.value.toJson()),
-              jsonEncode(liturgicalCelebrations.value).toString(),
             ],
           );
           log("retour");
@@ -81,7 +72,6 @@ class ParoisseMenuController extends GetxController {
         isPngImage: false,
         activeTint: colorBlack,
         goToPage: () async {
-          liturgicalCelebrations.value = confessions.value;
           await Get.toNamed(
             Routes.PAROISSE_CONFESSION,
             arguments: [
@@ -175,30 +165,6 @@ class ParoisseMenuController extends GetxController {
       Routes.PAROISSE_MAP,
       arguments: jsonEncode(paroisseSelected.value.toJson()),
     );
-  }
-
-  getLiturgicalCelebrations() {
-    log('request getLiturgicalCelebrations');
-
-    var idParoisse = paroisseSelected.value.identifier;
-    paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
-      if (value.isEmpty == false) {
-        masses.value = value.where((element) => (element.type?.code != 'CONFESSION')).toList();
-        confessions.value = value.where((element) => element.type?.code == 'CONFESSION').toList();
-        log('masses => ${masses.length}');
-        log('confessions => ${confessions.length}');
-      }
-    }, onError: (error) {
-      if (error.toString().contains('401')) {
-        showCustomDialog(
-          Get.context!,
-          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-        ).then((value) {
-          doLogout();
-        });
-      }
-      debugPrint("error => ${error.toString()}");
-    });
   }
 
   saveFavorite(ContentPlace paroisse, bool state) {
