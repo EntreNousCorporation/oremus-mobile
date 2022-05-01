@@ -184,6 +184,7 @@ class ParoisseMesseScreen extends StatelessWidget {
                                         textColor: colorWhite),
                                   ),
                                   content: ListView.builder(
+                                      padding: const EdgeInsets.all(0),
                                       physics: const NeverScrollableScrollPhysics(),
                                       shrinkWrap: true,
                                       itemCount: value.openingTime?.length,

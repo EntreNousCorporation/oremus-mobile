@@ -60,7 +60,7 @@ class DayOfficeItem extends StatelessWidget {
               ],
             ),
           ),
-          Positioned(
+          Positioned( //timeline bar
             left: 17.5,
             child: Container(
               height: Get.height * 0.7,
@@ -68,7 +68,7 @@ class DayOfficeItem extends StatelessWidget {
               color: colorBlack.withOpacity(0.5),
             ),
           ),
-          Positioned(
+          Positioned( //timeline circle
             bottom: 10,
             child: Padding(
               padding: const EdgeInsets.only(left: 10, bottom: 20, top: 20, right: 0),

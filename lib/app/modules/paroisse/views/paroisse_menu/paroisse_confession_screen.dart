@@ -184,6 +184,7 @@ class ParoisseConfessionScreen extends StatelessWidget {
                                         textColor: colorWhite),
                                   ),
                                   content: ListView.builder(
+                                      padding: const EdgeInsets.all(0),
                                     physics: const NeverScrollableScrollPhysics(),
                                       shrinkWrap: true,
                                       itemCount: value.openingTime?.length,
@@ -194,9 +195,6 @@ class ParoisseConfessionScreen extends StatelessWidget {
                                 );
                               }).toList(),
                             ),
-                            /*child: NotFoundScreen(
-                              message: '${_.getTypeMessage(_.code.value)}',
-                            ),*/
                                 )
                               : Expanded(
                                   child: NotFoundScreen(

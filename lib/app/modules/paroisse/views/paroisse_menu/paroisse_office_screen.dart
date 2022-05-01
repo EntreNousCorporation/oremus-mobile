@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:accordion/accordion.dart';
+import 'package:accordion/controllers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
@@ -171,16 +172,17 @@ class ParoisseOfficeScreen extends StatelessWidget {
                           ),
                           _.isDataProcessing.isTrue
                               ? Expanded(
-                                child: Center(
+                                  child: Center(
                                     child: LottieLoadingView(
                                       size: Get.width / 4,
                                     ),
                                   ),
-                              )
+                                )
                               : _.hasData.isTrue
                                   ? Expanded(
                                       child: FadeIn(
-                                        duration: const Duration(milliseconds: 500),
+                                        duration:
+                                            const Duration(milliseconds: 500),
                                         child: Accordion(
                                           disableScrolling: false,
                                           maxOpenSections: 1,
@@ -191,19 +193,26 @@ class ParoisseOfficeScreen extends StatelessWidget {
                                           ),
                                           headerBackgroundColor:
                                               colorGreenSemiLight,
-                                          contentBorderColor: colorGreenSemiLight,
-                                          children: _.offices.value.map((value) {
+                                          contentBorderColor:
+                                              colorGreenSemiLight,
+                                          children:
+                                              _.offices.value.map((value) {
                                             return AccordionSection(
+                                              sectionOpeningHapticFeedback:
+                                                  SectionHapticFeedback.medium,
+                                              sectionClosingHapticFeedback:
+                                                  SectionHapticFeedback.medium,
                                               isOpen: true,
                                               header: Text(
                                                 '${value.name}',
-                                                style:
-                                                    TextStyles.montserratSemiBold(
+                                                style: TextStyles
+                                                    .montserratSemiBold(
                                                         textSize:
                                                             TextSizes.sixteen,
                                                         textColor: colorWhite),
                                               ),
                                               content: ListView.builder(
+                                                  padding: const EdgeInsets.all(0),
                                                   physics:
                                                       const NeverScrollableScrollPhysics(),
                                                   shrinkWrap: true,
@@ -213,7 +222,8 @@ class ParoisseOfficeScreen extends StatelessWidget {
                                                     var openingTime =
                                                         value.openingTime?[i];
                                                     return DayOfficeItem(
-                                                        openingTime: openingTime);
+                                                        openingTime:
+                                                            openingTime);
                                                   }),
                                             );
                                           }).toList(),
