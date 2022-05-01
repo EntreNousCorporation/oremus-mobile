@@ -27,14 +27,15 @@ class MapViewGoogle extends StatelessWidget {
         markers: _.worshipPlaceMarkers.value,
         mapType: _.typeMapValue.value == 'Plan' ? MapType.normal : MapType.satellite,
         onTap: (LatLng position) {
-          _.mapController.value.hideInfoWindow!();
+          _.mapController.hideInfoWindow!();
         },
         onCameraMove: (CameraPosition position) {
-          _.mapController.value.onCameraMove!();
+          _.mapController.onCameraMove!();
         },
         onMapCreated: (GoogleMapController controller) {
-          _.mapController.value.googleMapController = controller;
-          //_.showInfoWindow();
+          //_.controller.complete(controller);
+          _.mapController.googleMapController = controller;
+          //_.initControllers();
         },
       );
     });

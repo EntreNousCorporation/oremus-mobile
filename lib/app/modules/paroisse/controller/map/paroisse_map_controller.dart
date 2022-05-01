@@ -20,7 +20,8 @@ class ParoisseMapController extends GetxController {
   var paroisseSelected = ContentPlace().obs;
 
   //Google Map
-  var mapController = CustomInfoWindowController().obs;
+  //Completer<GoogleMapController> controller = Completer();
+  var mapController = CustomInfoWindowController();
   var worshipPlaceMarkers = Rx<Set<Marker>>({});
   List<String> typeMaps = [
     "Plan",
@@ -45,7 +46,7 @@ class ParoisseMapController extends GetxController {
 
   @override
   void dispose() {
-    mapController.value.dispose();
+    mapController.dispose();
     super.dispose();
   }
 
@@ -201,6 +202,7 @@ class ParoisseMapController extends GetxController {
     });*/
 
     log("============= showInfoWindow 1 =============");
+    worshipPlaceMarkers.value.clear();
     worshipPlaceMarkers.value.add(
       Marker(
           markerId: MarkerId('${paroisseSelected.value.identifier}'),
@@ -213,7 +215,7 @@ class ParoisseMapController extends GetxController {
 
   showInfoWindow() {
     log("============= showInfoWindow =============");
-    mapController.value.addInfoWindow!(
+    mapController.addInfoWindow!(
       SizedBox(
         width: Get.width / 1.2,
         child: Material(
@@ -310,7 +312,7 @@ class ParoisseMapController extends GetxController {
                   ),
                 ),
                 onPressed: () {
-                  mapController.value.hideInfoWindow!();
+                  mapController.hideInfoWindow!();
                   launchMapRoutes();
                 },
               ),
@@ -327,8 +329,7 @@ class ParoisseMapController extends GetxController {
   launchMapRoutes() async {
     //String url = "https://www.google.com/maps/dir/?api=1&destination=${paroisseSelected.value.localisation?.latitude ?? 0.0},${paroisseSelected.value.localisation?.longitude ?? 0.0}&travelmode=driving&dir_action=navigate";
 
-    String url =
-        "https://www.google.com/maps/dir/?api=1&origin=${paroisseSelected.value.localisation?.latitude ?? 0.0},${paroisseSelected.value.localisation?.longitude ?? 0.0}&destination=${paroisseSelected.value.localisation?.latitude ?? 0.0},${paroisseSelected.value.localisation?.longitude ?? 0.0}&travelmode=driving&dir_action=navigate";
+    String url = "https://www.google.com/maps/dir/?api=1&origin=${paroisseSelected.value.localisation?.latitude ?? 0.0},${paroisseSelected.value.localisation?.longitude ?? 0.0}&destination=${paroisseSelected.value.localisation?.latitude ?? 0.0},${paroisseSelected.value.localisation?.longitude ?? 0.0}&travelmode=driving&dir_action=navigate";
     if (await canLaunch(url)) {
       await launch(url);
     } else {
