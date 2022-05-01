@@ -18,6 +18,7 @@ abstract class Routes {
   static const PAROISSE_MENU = '/paroisse-menu';
   static const PAROISSE_MESSE = '/paroisse-messe';
   static const PAROISSE_CONFESSION = '/paroisse-confession';
+  static const PAROISSE_OFFICE = '/paroisse-office';
   static const PAROISSE_MAP = '/paroisse-map';
   static const PAROISSE_ACTIVITY_MOVEMENT = '/paroisse-activity-movement';
   static const PAROISSE_PRESBY_TEAM = '/paroisse-presby-team';

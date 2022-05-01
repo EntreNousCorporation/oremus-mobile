@@ -148,6 +148,25 @@ class ParoisseRepository implements IParoisseRepository {
   }
 
   @override
+  Future<List<LiturgicalCelebrationResponse>> getOfficeTimes(int idParoisse) async {
+    Response response = await _apiClient.doRequest(
+      endpoint: "/places-of-worship/$idParoisse/services",
+      method: HttpMethod.get,
+      useBearer: true,
+    );
+    final String resp = json.encode(response.bodyString.toString());
+    log('resp => ${response.statusCode}');
+
+    if (response.statusCode != 200) {
+      throw Exception(resp);
+    } else {
+      return (jsonDecode(response.bodyString.toString()) as List)
+          .map((i) => LiturgicalCelebrationResponse.fromJson(i))
+          .toList();
+    }
+  }
+
+  @override
   void addFavorite(ContentPlace paroisse) {
     log('saveFavorite 2');
     var favorites = getAllFavorites();

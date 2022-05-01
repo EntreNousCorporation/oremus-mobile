@@ -103,13 +103,13 @@ class ParoisseMenuController extends GetxController {
         isPngImage: false,
         activeTint: colorBlack,
         goToPage: () async {
-          /*await Get.toNamed(
-            Routes.PAROISSE_CONFESSION,
+          await Get.toNamed(
+            Routes.PAROISSE_OFFICE,
             arguments: [
               'HB',
               jsonEncode(paroisseSelected.value.toJson()),
             ],
-          );*/
+          );
           log("retour");
           //on met à jour la liste au cas où favoris mis à jour
           paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);

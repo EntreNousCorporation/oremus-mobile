@@ -16,6 +16,7 @@ import 'package:oremusapp/app/modules/paroisse/binding/paroisse_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_map_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_detail_binding.dart';
+import 'package:oremusapp/app/modules/paroisse/binding/paroisse_office_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_presby_team_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/views/filter/filter_paroisse_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_map_screen.dart';
@@ -23,6 +24,7 @@ import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_acti
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_confession_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_menu_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_messe_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_office_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_presby_team_screen.dart';
 import 'package:oremusapp/app/modules/profile/binding/edit_profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/binding/profile_binding.dart';
@@ -122,6 +124,12 @@ class AppPages {
       name: Routes.PAROISSE_MESSE,
       page: () => const ParoisseMesseScreen(),
       binding: ParoisseMenuDetailBinding(),
+      transition: Transition.circularReveal,
+    ),
+    GetPage(
+      name: Routes.PAROISSE_OFFICE,
+      page: () => const ParoisseOfficeScreen(),
+      binding: ParoisseOfficeBinding(),
       transition: Transition.circularReveal,
     ),
     GetPage(
