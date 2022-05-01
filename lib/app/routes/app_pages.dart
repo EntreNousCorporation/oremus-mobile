@@ -13,6 +13,7 @@ import 'package:oremusapp/app/modules/home/views/home_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/filter_paroisse_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_activity_movement_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_binding.dart';
+import 'package:oremusapp/app/modules/paroisse/binding/paroisse_confession_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_map_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_detail_binding.dart';
@@ -117,7 +118,7 @@ class AppPages {
     GetPage(
       name: Routes.PAROISSE_CONFESSION,
       page: () => const ParoisseConfessionScreen(),
-      binding: ParoisseMenuDetailBinding(),
+      binding: ParoisseConfessionBinding(),
       transition: Transition.circularReveal,
     ),
     GetPage(

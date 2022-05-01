@@ -87,7 +87,6 @@ class ParoisseMenuController extends GetxController {
             arguments: [
               'HC',
               jsonEncode(paroisseSelected.value.toJson()),
-              jsonEncode(liturgicalCelebrations.value).toString(),
             ],
           );
           log("retour");
@@ -185,9 +184,7 @@ class ParoisseMenuController extends GetxController {
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       if (value.isEmpty == false) {
         masses.value = value.where((element) => (element.type?.code != 'CONFESSION')).toList();
-        confessions.value = value
-            .where((element) => element.type?.code == 'CONFESSION')
-            .toList();
+        confessions.value = value.where((element) => element.type?.code == 'CONFESSION').toList();
         log('masses => ${masses.length}');
         log('confessions => ${confessions.length}');
       }
