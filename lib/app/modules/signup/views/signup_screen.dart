@@ -125,21 +125,42 @@ class SignupScreen extends StatelessWidget {
                                                     _.firstnameController,
                                                 hintText: '',
                                                 labelText: 'Prénom(s)',
-                                                prefixIcon:
-                                                    "assets/images/icon_user.svg",
+                                                prefixIcon: "assets/images/icon_user.svg",
                                                 //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
                                                 prefixIconColor: colorGrey1,
-                                                keyboardType:
-                                                    TextInputType.name,
+                                                keyboardType: TextInputType.name,
                                                 maskInputs: [
-                                                  FilteringTextInputFormatter
-                                                      .allow(RegExp(AppConstants
-                                                          .INPUT_NAME_REGEX)),
+                                                  FilteringTextInputFormatter.allow(RegExp(AppConstants.INPUT_NAME_REGEX)),
                                                 ],
                                                 onChanged: (value) {
                                                   _.checkForm();
                                                 },
                                                 errorText: _.firstnameErrorMessage.value,
+                                              ),
+                                              Separators.normalVertical(),
+                                              MyTextField(
+                                                focusNode: _.phoneFocusNode,
+                                                controller: _.phoneController,
+                                                hintText: '',
+                                                labelText: 'Téléphone',
+                                                prefixIcon:
+                                                "assets/images/icon_phone.svg",
+                                                //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
+                                                prefixIconColor: colorGrey1,
+                                                keyboardType:
+                                                TextInputType.phone,
+                                                maxLength: 14,
+                                                maskInputs: [
+                                                  ObjectSeparatorInputFormatter(
+                                                      groupBy: 2),
+                                                  FilteringTextInputFormatter
+                                                      .allow(RegExp(AppConstants
+                                                      .INPUT_NUM_REGEX)),
+                                                ],
+                                                onChanged: (value) {
+                                                  _.checkForm();
+                                                },
+                                                errorText: _.phoneErrorMessage.value,
                                               ),
                                               Separators.normalVertical(),
                                               MyTextField(
@@ -156,31 +177,6 @@ class SignupScreen extends StatelessWidget {
                                                   _.checkForm();
                                                 },
                                                 errorText: _.emailErrorMessage.value,
-                                              ),
-                                              Separators.normalVertical(),
-                                              MyTextField(
-                                                focusNode: _.phoneFocusNode,
-                                                controller: _.phoneController,
-                                                hintText: '',
-                                                labelText: 'Téléphone',
-                                                prefixIcon:
-                                                    "assets/images/icon_phone.svg",
-                                                //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
-                                                prefixIconColor: colorGrey1,
-                                                keyboardType:
-                                                    TextInputType.phone,
-                                                maxLength: 14,
-                                                maskInputs: [
-                                                  ObjectSeparatorInputFormatter(
-                                                      groupBy: 2),
-                                                  FilteringTextInputFormatter
-                                                      .allow(RegExp(AppConstants
-                                                          .INPUT_NUM_REGEX)),
-                                                ],
-                                                onChanged: (value) {
-                                                  _.checkForm();
-                                                },
-                                                errorText: _.phoneErrorMessage.value,
                                               ),
                                               Separators.normalVertical(),
                                               MyTextField(
