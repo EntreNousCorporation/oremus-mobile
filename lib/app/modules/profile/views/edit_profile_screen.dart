@@ -54,8 +54,7 @@ class EditProfileScreen extends StatelessWidget {
                       child: FadeIn(
                         duration: const Duration(milliseconds: 500),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 32.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 32.0),
                           child: Column(
                             children: [
                               Separators.maximumVertical(),
@@ -69,16 +68,14 @@ class EditProfileScreen extends StatelessWidget {
                                       tag: 'avatar',
                                       child: Material(
                                         borderRadius:
-                                            BorderRadius.circular(
-                                                110.0),
+                                            BorderRadius.circular(110.0),
                                         elevation: 6,
                                         color: colorWhite,
                                         shadowColor:
                                             colorGrey2.withOpacity(0.5),
                                         child: ClipRRect(
                                           borderRadius:
-                                              BorderRadius.circular(
-                                                  110),
+                                              BorderRadius.circular(110),
                                           child: Container(
                                             color: colorGreenlight2,
                                             child: SizedBox(
@@ -121,13 +118,11 @@ class EditProfileScreen extends StatelessWidget {
                               Material(
                                 elevation: 6,
                                 color: colorGrey2,
-                                shadowColor:
-                                    colorGrey2.withOpacity(0.5),
+                                shadowColor: colorGrey2.withOpacity(0.5),
                                 borderRadius: BorderRadius.circular(12),
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(12),
                                     color: colorWhite,
                                   ),
                                   child: Form(
@@ -140,104 +135,93 @@ class EditProfileScreen extends StatelessWidget {
                                       child: Column(
                                         children: [
                                           MyTextField(
-                                            focusNode:
-                                                _.lastnameFocusNode,
-                                            controller:
-                                                _.lastnameController,
+                                            focusNode: _.lastnameFocusNode,
+                                            controller: _.lastnameController,
                                             hintText: '',
                                             labelText: 'Nom',
                                             prefixIcon:
                                                 "assets/images/icon_user.svg",
                                             prefixIconColor: colorGrey1,
-                                            keyboardType:
-                                                TextInputType.name,
+                                            keyboardType: TextInputType.name,
                                             maskInputs: [
-                                              FilteringTextInputFormatter
-                                                  .allow(RegExp(AppConstants
+                                              FilteringTextInputFormatter.allow(
+                                                  RegExp(AppConstants
                                                       .INPUT_NAME_REGEX)),
                                             ],
                                             onChanged: (value) {
                                               _.checkForm();
                                             },
-                                            errorText: _
-                                                .lastnameErrorMessage
-                                                .value,
+                                            errorText:
+                                                _.lastnameErrorMessage.value,
                                           ),
                                           Separators.normalVertical(),
                                           MyTextField(
-                                            focusNode:
-                                                _.firstnameFocusNode,
-                                            controller:
-                                                _.firstnameController,
+                                            focusNode: _.firstnameFocusNode,
+                                            controller: _.firstnameController,
                                             hintText: '',
                                             labelText: 'Prénom(s)',
                                             prefixIcon:
                                                 "assets/images/icon_user.svg",
                                             //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
                                             prefixIconColor: colorGrey1,
-                                            keyboardType:
-                                                TextInputType.name,
+                                            keyboardType: TextInputType.name,
                                             maskInputs: [
-                                              FilteringTextInputFormatter
-                                                  .allow(RegExp(AppConstants
+                                              FilteringTextInputFormatter.allow(
+                                                  RegExp(AppConstants
                                                       .INPUT_NAME_REGEX)),
                                             ],
                                             onChanged: (value) {
                                               _.checkForm();
                                             },
-                                            errorText: _
-                                                .firstnameErrorMessage
-                                                .value,
-                                          ),
-                                          Separators.normalVertical(),
-                                          MyTextField(
-                                            focusNode: _.emailFocusNode,
-                                            controller:
-                                                _.emailController,
-                                            hintText: '',
-                                            labelText: 'E-mail',
-                                            prefixIcon:
-                                                "assets/images/icon_enveloppe.svg",
-                                            //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
-                                            prefixIconColor: colorGrey1,
-                                            keyboardType: TextInputType
-                                                .emailAddress,
-                                            textCapitalization:
-                                                TextCapitalization.none,
-                                            onChanged: (value) {
-                                              _.checkForm();
-                                            },
-                                            errorText: _
-                                                .emailErrorMessage
-                                                .value,
+                                            errorText:
+                                                _.firstnameErrorMessage.value,
                                           ),
                                           Separators.normalVertical(),
                                           MyTextField(
                                             focusNode: _.phoneFocusNode,
-                                            controller:
-                                                _.phoneController,
+                                            controller: _.phoneController,
                                             hintText: '',
                                             labelText: 'Téléphone',
                                             prefixIcon:
                                                 "assets/images/icon_phone.svg",
                                             //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
                                             prefixIconColor: colorGrey1,
-                                            keyboardType:
-                                                TextInputType.phone,
+                                            keyboardType: TextInputType.phone,
                                             maxLength: 14,
                                             maskInputs: [
-                                              ObjectSeparatorInputFormatter(
-                                                  groupBy: 2),
-                                              FilteringTextInputFormatter
-                                                  .allow(RegExp(AppConstants
-                                                      .INPUT_NUM_REGEX)),
+                                              ObjectSeparatorInputFormatter(groupBy: 2),
+                                              FilteringTextInputFormatter.allow(RegExp(AppConstants.INPUT_NUM_REGEX)),
                                             ],
                                             onChanged: (value) {
                                               _.checkForm();
                                             },
-                                            errorText: _
-                                                .phoneErrorMessage
-                                                .value,
+                                            errorText: _.phoneErrorMessage.value,
+                                          ),
+                                          Visibility(
+                                            visible: false,
+                                            child: Separators.normalVertical(),
+                                          ),
+                                          Visibility(
+                                            visible: false,
+                                            child: MyTextField(
+                                              focusNode: _.emailFocusNode,
+                                              controller: _.emailController,
+                                              hintText: '',
+                                              labelText: 'E-mail',
+                                              prefixIcon: "assets/images/icon_enveloppe.svg",
+                                              //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
+                                              prefixIconColor: colorGrey1,
+                                              keyboardType:
+                                                  TextInputType.emailAddress,
+                                              textCapitalization:
+                                                  TextCapitalization.none,
+                                              enabled: false,
+                                              onChanged: (value) {
+                                                _.checkForm();
+                                              },
+                                              errorText:
+                                                  _.emailErrorMessage.value,
+                                            ),
                                           ),
                                           Separators.maximumVertical(),
                                           Separators.maximumVertical(),
@@ -249,20 +233,15 @@ class EditProfileScreen extends StatelessWidget {
                                               icon:
                                                   'assets/images/icon_arrow_right.svg',
                                               text: 'Mettre à jour',
-                                              bgcolor: _.isValidForm
-                                                      .isTrue
+                                              bgcolor: _.isValidForm.isTrue
                                                   ? colorGreen
-                                                  : colorGrey1
-                                                      .withOpacity(0.5),
-                                              borderColor: _.isValidForm
-                                                      .isTrue
+                                                  : colorGrey1.withOpacity(0.5),
+                                              borderColor: _.isValidForm.isTrue
                                                   ? colorGreen
-                                                  : colorGreen
-                                                      .withOpacity(0),
-                                              actionColor: colorGreen
-                                                  .withOpacity(0.5),
-                                              enabled:
-                                                  _.isValidForm.value,
+                                                  : colorGreen.withOpacity(0),
+                                              actionColor:
+                                                  colorGreen.withOpacity(0.5),
+                                              enabled: _.isValidForm.value,
                                               action: () {
                                                 _.updateProfile();
                                               },

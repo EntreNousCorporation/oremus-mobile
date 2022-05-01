@@ -164,7 +164,7 @@ class _MyTextFieldState extends State<MyTextField> {
             borderRadius: BorderRadius.circular(10),
           ),
           errorBorder: InputBorder.none,
-          disabledBorder: const UnderlineInputBorder(),
+          disabledBorder: InputBorder.none,
           hintText: hintText,
           labelText: labelText,
           enabled: enabled,
