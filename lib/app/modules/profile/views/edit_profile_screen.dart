@@ -31,14 +31,11 @@ class EditProfileScreen extends StatelessWidget {
                   appBar: AppBar(
                     elevation: 10,
                     shadowColor: colorGrey2.withOpacity(0.8),
-                    leading: GestureDetector(
-                      onTap: () {
+                    leading: IconButton(
+                      onPressed: () {
                         Get.back();
                       },
-                      child: const Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Icon(Icons.arrow_back_ios_rounded),
-                      ),
+                      icon: const Icon(Icons.arrow_back_ios_rounded),
                     ),
                     title: Text(
                       'Modifier votre profil',
@@ -190,13 +187,17 @@ class EditProfileScreen extends StatelessWidget {
                                             keyboardType: TextInputType.phone,
                                             maxLength: 14,
                                             maskInputs: [
-                                              ObjectSeparatorInputFormatter(groupBy: 2),
-                                              FilteringTextInputFormatter.allow(RegExp(AppConstants.INPUT_NUM_REGEX)),
+                                              ObjectSeparatorInputFormatter(
+                                                  groupBy: 2),
+                                              FilteringTextInputFormatter.allow(
+                                                  RegExp(AppConstants
+                                                      .INPUT_NUM_REGEX)),
                                             ],
                                             onChanged: (value) {
                                               _.checkForm();
                                             },
-                                            errorText: _.phoneErrorMessage.value,
+                                            errorText:
+                                                _.phoneErrorMessage.value,
                                           ),
                                           Visibility(
                                             visible: false,
@@ -210,7 +211,8 @@ class EditProfileScreen extends StatelessWidget {
                                               readOnly: true,
                                               hintText: '',
                                               labelText: 'E-mail',
-                                              prefixIcon: "assets/images/icon_enveloppe.svg",
+                                              prefixIcon:
+                                                  "assets/images/icon_enveloppe.svg",
                                               //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
                                               prefixIconColor: colorGrey1,
                                               keyboardType:

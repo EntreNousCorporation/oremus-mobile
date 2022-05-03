@@ -30,8 +30,6 @@ void main() async {
       appUrl = settings.apiBaseUrl;
 
       await DB.initDatabase();
-      //await Hive.initFlutter().then((value) => log('==== HIVE INIT SUCCESS===='));
-      //await configureEncryptedHive();
 
       Jiffy.locale('fr');
       configOrientation();

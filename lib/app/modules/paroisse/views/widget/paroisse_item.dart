@@ -185,12 +185,11 @@ class ParoisseItem extends StatelessWidget {
                               : LikeButton(
                             isLiked: paroisse.isFavorite,
                             onTap: (isLiked) async {
-                              log('isLiked => $isLiked');
                               paroisse.isFavorite = !isLiked;
                               if (isLiked) {
-                                logic.removeFavorite(paroisse, isLiked);
+                                logic.removeFavorite(paroisse);
                               } else {
-                                logic.saveFavorite(paroisse, isLiked);
+                                logic.saveFavorite(paroisse);
                               }
                               return !isLiked;
                             },

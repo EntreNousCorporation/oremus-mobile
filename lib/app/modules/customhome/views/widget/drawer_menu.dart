@@ -87,11 +87,12 @@ class _MenuState extends State<DrawerMenu> with TickerProviderStateMixin {
                   //Expanded(child: Container()),
                   SizedBox(height: Get.width/10,),
                   GetBuilder<CustomHomeController>(builder: (logic) {
-                    return GestureDetector(
-                      onTap: () {
+                    return TextButton(
+                      onPressed: () {
                         logic.doLogout();
                       },
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SvgPicture.asset(
                             'assets/images/icon_settings.svg',

@@ -19,13 +19,14 @@ class DrawerMenuItem extends StatelessWidget {
     return GetBuilder<CustomHomeController>(
       initState: (_) {},
       builder: (logic) {
-        return InkWell(
-          onTap: () {
+        return TextButton(
+          onPressed: () {
             logic.doRedirection(index, logic.drawerController);
           },
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 18.0),
+            padding: const EdgeInsets.symmetric(vertical: 12.0),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Visibility(
                   visible: menu.isSelected ?? false,

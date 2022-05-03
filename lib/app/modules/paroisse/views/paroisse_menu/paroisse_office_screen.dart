@@ -14,9 +14,7 @@ import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_masse_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_office_controller.dart';
-import 'package:oremusapp/app/modules/paroisse/views/widget/day_masse_item.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/day_office_item.dart';
 
 class ParoisseOfficeScreen extends StatelessWidget {

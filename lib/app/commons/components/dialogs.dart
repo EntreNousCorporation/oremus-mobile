@@ -219,7 +219,14 @@ showNormalDialog(BuildContext context,
       });
 }
 
-showNotification({required String message, Color? bgColor = colorRed}) {
+showNotification({
+  required String message,
+  Color? bgColor = colorRed,
+  Widget? leading,
+  Widget? trailing,
+  Duration? duration = const Duration(seconds: 3),
+  NotificationPosition position = NotificationPosition.top,
+}) {
   return showSimpleNotification(
     Center(
       child: Text(
@@ -228,6 +235,11 @@ showNotification({required String message, Color? bgColor = colorRed}) {
             textSize: TextSizes.fourteen, textColor: colorWhite),
       ),
     ),
+    elevation: 0,
+    duration: duration,
+    leading: leading,
+    trailing: trailing,
     background: bgColor,
+    position: position
   );
 }

@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
+import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
@@ -12,6 +14,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoisseController extends GetxController {
@@ -190,26 +193,67 @@ class ParoisseController extends GetxController {
     return isFavorite;
   }
 
-  saveFavorite(ContentPlace paroisse, bool state) {
-    log('saveFavorite 1 => ${paroisse.isFavorite}');
+  saveFavorite(ContentPlace paroisse) {
     paroisseRepository.addFavorite(paroisse);
-    //showMessageFavorite(state);
+    showMessageFavorite(paroisse);
   }
 
-  removeFavorite(ContentPlace paroisse, bool state) {
-    log('removeFavorite 1 => ${paroisse.isFavorite}');
+  removeFavorite(ContentPlace paroisse) {
     paroisseRepository.deleteFavorite(paroisse);
-    //showMessageFavorite(state);
+    showMessageFavorite(paroisse);
   }
 
-  showMessageFavorite(bool state) {
-    if (state) {
+  showMessageFavorite(ContentPlace paroisse) {
+    if (paroisse.isFavorite == true) {
       showNotification(
-          message: 'Ce lieu de culte a été rajouté dans vos favoris',
-          bgColor: colorGreenSemiLight);
+        trailing: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: ClipRRect(
+            borderRadius:
+            const BorderRadius.all(Radius.circular(5.0)),
+            child: (paroisse.coverImage?.link?.isNotEmpty == true)
+                ? CachedNetworkImage(
+                  imageUrl: paroisse.coverImage?.link ?? '',
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) =>
+                      SizedBox(
+                          width: Get.width / 4,
+                          height: Get.width / 4,
+                          child: LottieLoadingView(
+                              size: Get.width / 6)),
+                  errorWidget: (context, url, error) =>
+                  const Icon(Icons.error),
+                )
+                : null,
+          ),
+        ),
+        message: '«${paroisse.name}» a été rajouté dans vos favoris',
+        bgColor: colorGreenSemiLight,
+      );
     } else {
       showNotification(
-        message: 'Ce lieu de culte a été retiré des favoris',
+        trailing: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: ClipRRect(
+            borderRadius:
+            const BorderRadius.all(Radius.circular(5.0)),
+            child: (paroisse.coverImage?.link?.isNotEmpty == true)
+                ? CachedNetworkImage(
+              imageUrl: paroisse.coverImage?.link ?? '',
+              fit: BoxFit.cover,
+              placeholder: (context, url) =>
+                  SizedBox(
+                      width: Get.width / 4,
+                      height: Get.width / 4,
+                      child: LottieLoadingView(
+                          size: Get.width / 6)),
+              errorWidget: (context, url, error) =>
+              const Icon(Icons.error),
+            )
+                : null,
+          ),
+        ),
+        message: '«${paroisse.name}» a été retiré des favoris',
       );
     }
   }
