@@ -5,6 +5,7 @@ import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_activity_movement_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/movement_item.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MovementScreen extends StatelessWidget {
   const MovementScreen({Key? key}) : super(key: key);
@@ -24,12 +25,16 @@ class MovementScreen extends StatelessWidget {
         if (logic.hasMovementData.isTrue) {
           return FadeIn(
             duration: const Duration(milliseconds: 500),
-            child: ListView.builder(
-                itemCount: logic.movements.length,
-                itemBuilder: (context, index) {
-                  var activity = logic.movements[index];
-                  return MovementItem(movement: activity);
-                }),
+            child: SmartRefresher(
+              controller: logic.refreshMovementsController,
+              onRefresh: logic.onRefreshMouvements,
+              child: ListView.builder(
+                  itemCount: logic.movements.length,
+                  itemBuilder: (context, index) {
+                    var activity = logic.movements[index];
+                    return MovementItem(movement: activity);
+                  }),
+            ),
           );
         } else {
           return NotFoundScreen(

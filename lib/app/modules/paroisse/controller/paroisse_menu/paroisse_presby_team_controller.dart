@@ -11,6 +11,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/place_user.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoissePresbyTeamController extends GetxController {
   final ParoisseRepository paroisseRepository;
@@ -27,6 +28,8 @@ class ParoissePresbyTeamController extends GetxController {
 
   RxList<PlaceUser> presbyTeams = RxList<PlaceUser>([]);
 
+  var refreshController = RefreshController();
+
   @override
   void onInit() {
     getArguments();
@@ -37,6 +40,12 @@ class ParoissePresbyTeamController extends GetxController {
   void onReady() {
     getPresbyTeams();
     super.onReady();
+  }
+
+  @override
+  void dispose() {
+    refreshController.dispose();
+    super.dispose();
   }
 
   getArguments() {
@@ -106,6 +115,35 @@ class ParoissePresbyTeamController extends GetxController {
       } else {
         showCustomDialog(
           Get.context!, message: err.message);
+      }
+      debugPrint("error => ${err.toString()}");
+    });
+  }
+
+  onRefresh() {
+    log('request onRefresh');
+
+    var idParoisse = paroisseSelected.value.identifier;
+    paroisseRepository.getPlaceOfWorshipUsers(idParoisse ?? -1).then((value) {
+      refreshController.refreshCompleted();
+      if (value.isEmpty == false) {
+        presbyTeams.value = value.where((element) => (element.type != null) && (element.type?.toLowerCase() == "vicar" || element.type?.toLowerCase() == "clergyman")).toList();
+        presbyTeams.value.sort((a, b) => a.type!.compareTo(b.type!));
+        log('${presbyTeams.length}');
+      }
+    }, onError: (error) {
+      refreshController.refreshCompleted();
+      var err = error as CustomException;
+      debugPrint('${err.code}');
+      if (err.code == 401) {
+        showCustomDialog(
+          Get.context!, message: "Vous n’êtes pas autorisé à accéder à cette ressource",
+        ).then((value) {
+          //doLogout();
+        });
+      } else {
+        showCustomDialog(
+            Get.context!, message: err.message);
       }
       debugPrint("error => ${err.toString()}");
     });

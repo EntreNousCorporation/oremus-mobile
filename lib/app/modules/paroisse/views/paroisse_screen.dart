@@ -202,12 +202,10 @@ class ParoisseScreen extends StatelessWidget {
                                                 );
                                               },
                                             ),
-                                            physics:
-                                                const BouncingScrollPhysics(),
+                                            physics: const BouncingScrollPhysics(),
                                             controller: _.refreshController,
                                             child: ListView.builder(
-                                                physics:
-                                                    const NeverScrollableScrollPhysics(),
+                                                physics: const NeverScrollableScrollPhysics(),
                                                 shrinkWrap: false,
                                                 itemCount: _.paroisses.length,
                                                 itemBuilder: (builder, index) {

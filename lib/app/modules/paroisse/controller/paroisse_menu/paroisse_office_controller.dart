@@ -11,6 +11,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoisseOfficeController extends GetxController {
   final ParoisseRepository paroisseRepository;
@@ -30,6 +31,8 @@ class ParoisseOfficeController extends GetxController {
   RxList<LiturgicalCelebrationResponse> offices =
       RxList<LiturgicalCelebrationResponse>([]);
 
+  var refreshController = RefreshController();
+
   @override
   void onInit() {
     getArguments();
@@ -40,6 +43,12 @@ class ParoisseOfficeController extends GetxController {
   void onReady() {
     getOfficeTimes();
     super.onReady();
+  }
+
+  @override
+  void dispose() {
+    refreshController.dispose();
+    super.dispose();
   }
 
   getArguments() {
@@ -74,6 +83,29 @@ class ParoisseOfficeController extends GetxController {
     }, onError: (error) {
       isDataProcessing(false);
       hasData(false);
+      if (error.toString().contains('401')) {
+        showCustomDialog(
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      }
+      debugPrint("error => ${error.toString()}");
+    });
+  }
+
+  onRefresh() {
+    log('request onRefresh');
+
+    var idParoisse = paroisseSelected.value.identifier ?? -1;
+    paroisseRepository.getOfficeTimes(idParoisse).then((value) {
+      refreshController.refreshCompleted();
+      if (value.isNotEmpty == true) {
+        offices.value = value.where((element) => element.type?.code == 'OFFICE').toList();
+      }
+    }, onError: (error) {
+      refreshController.refreshCompleted();
       if (error.toString().contains('401')) {
         showCustomDialog(
           Get.context!,

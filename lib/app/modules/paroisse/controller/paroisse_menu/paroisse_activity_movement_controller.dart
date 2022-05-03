@@ -12,6 +12,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/movement_response.dart
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoisseActivityMovementController extends GetxController {
   final ParoisseRepository paroisseRepository;
@@ -36,6 +37,9 @@ class ParoisseActivityMovementController extends GetxController {
   RxList<ActivityResponse> activities = RxList<ActivityResponse>([]);
   RxList<MovementResponse> movements = RxList<MovementResponse>([]);
 
+  var refreshActivitiesController = RefreshController();
+  var refreshMovementsController = RefreshController();
+
   @override
   void onInit() {
     getArguments();
@@ -48,6 +52,13 @@ class ParoisseActivityMovementController extends GetxController {
     getMovements();
     getActivities();
     super.onReady();
+  }
+
+  @override
+  void dispose() {
+    refreshActivitiesController.dispose();
+    refreshMovementsController.dispose();
+    super.dispose();
   }
 
   getArguments() {
@@ -63,21 +74,6 @@ class ParoisseActivityMovementController extends GetxController {
       'Activités',
       'Mouvements'
     ];
-  }
-
-  getTypeTitle(String code) {
-    switch (code) {
-      case 'HM':
-        return 'Horaires des messes';
-      case 'HC':
-        return 'Horaires des confessions';
-      case 'HB':
-        return 'Horaires des bureaux';
-      case 'AM':
-        return 'Activités & mouvements';
-      case 'EP':
-        return 'Equipe presbytérale';
-    }
   }
 
   getMovements() {
@@ -129,6 +125,52 @@ class ParoisseActivityMovementController extends GetxController {
     }, onError: (error) {
       isActivityDataProcessing(false);
       hasActivityData(false);
+      if (error.toString().contains('401')) {
+        showCustomDialog(
+          Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      }
+      debugPrint("error => ${error.toString()}");
+    });
+  }
+
+  onRefreshActivities() {
+    log('request onRefreshActivities');
+
+    var idParoisse = paroisseSelected.value.identifier;
+    paroisseRepository.getActivities(idParoisse ?? -1).then((value) {
+      refreshActivitiesController.refreshCompleted();
+      if (value.isEmpty == false) {
+        activities.value = value;
+        log('${activities.length}');
+      }
+    }, onError: (error) {
+      refreshActivitiesController.refreshCompleted();
+      if (error.toString().contains('401')) {
+        showCustomDialog(
+          Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      }
+      debugPrint("error => ${error.toString()}");
+    });
+  }
+
+  onRefreshMouvements() {
+    log('request onRefreshMouvements');
+
+    var idParoisse = paroisseSelected.value.identifier;
+    paroisseRepository.getMouvements(idParoisse ?? -1).then((value) {
+      refreshMovementsController.refreshCompleted();
+      if (value.isEmpty == false) {
+        movements.value = value;
+        log('${movements.length}');
+      }
+    }, onError: (error) {
+      refreshMovementsController.refreshCompleted();
       if (error.toString().contains('401')) {
         showCustomDialog(
           Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',

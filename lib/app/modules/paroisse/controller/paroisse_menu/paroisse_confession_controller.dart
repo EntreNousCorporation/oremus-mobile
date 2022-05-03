@@ -10,6 +10,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoisseConfessionController extends GetxController {
   final ParoisseRepository paroisseRepository;
@@ -28,6 +29,8 @@ class ParoisseConfessionController extends GetxController {
 
   RxList<LiturgicalCelebrationResponse> confessions = RxList<LiturgicalCelebrationResponse>([]);
 
+  var refreshController = RefreshController();
+
   @override
   void onInit() {
     getArguments();
@@ -38,6 +41,12 @@ class ParoisseConfessionController extends GetxController {
   void onReady() {
     getConfessionTimes();
     super.onReady();
+  }
+
+  @override
+  void dispose() {
+    refreshController.dispose();
+    super.dispose();
   }
 
   getArguments() {
@@ -73,6 +82,32 @@ class ParoisseConfessionController extends GetxController {
     }, onError: (error) {
       isDataProcessing(false);
       hasData(false);
+      if (error.toString().contains('401')) {
+        showCustomDialog(
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      }
+      debugPrint("error => ${error.toString()}");
+    });
+  }
+
+  onRefresh() {
+    log('request onRefresh');
+
+    var idParoisse = paroisseSelected.value.identifier;
+    paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
+      refreshController.refreshCompleted();
+      if (value.isEmpty == false) {
+        confessions.value = value
+            .where((element) => element.type?.code == 'CONFESSION')
+            .toList();
+        log('confessions => ${confessions.length}');
+      }
+    }, onError: (error) {
+      refreshController.refreshCompleted();
       if (error.toString().contains('401')) {
         showCustomDialog(
           Get.context!,

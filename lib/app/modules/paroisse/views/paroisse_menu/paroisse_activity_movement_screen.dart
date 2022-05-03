@@ -121,7 +121,7 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
                                 )),
                     ),
                     const SliverPadding(
-                        padding: EdgeInsets.symmetric(vertical: 0)),
+                        padding: EdgeInsets.symmetric(vertical: 8)),
                     SliverFillRemaining(
                       child: DefaultTabController(
                         length: 2,

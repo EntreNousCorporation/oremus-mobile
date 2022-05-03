@@ -16,6 +16,7 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_office_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/day_office_item.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoisseOfficeScreen extends StatelessWidget {
   const ParoisseOfficeScreen({Key? key}) : super(key: key);
@@ -181,50 +182,54 @@ class ParoisseOfficeScreen extends StatelessWidget {
                                       child: FadeIn(
                                         duration:
                                             const Duration(milliseconds: 500),
-                                        child: Accordion(
-                                          disableScrolling: false,
-                                          maxOpenSections: 1,
-                                          leftIcon: SvgPicture.asset(
-                                            'assets/images/calendar.svg',
-                                            height: 25,
-                                            color: colorWhite,
+                                        child: SmartRefresher(
+                                          controller: _.refreshController,
+                                          onRefresh: _.onRefresh,
+                                          child: Accordion(
+                                            disableScrolling: true,
+                                            maxOpenSections: 1,
+                                            leftIcon: SvgPicture.asset(
+                                              'assets/images/calendar.svg',
+                                              height: 25,
+                                              color: colorWhite,
+                                            ),
+                                            headerBackgroundColor:
+                                                colorGreenSemiLight,
+                                            contentBorderColor:
+                                                colorGreenSemiLight,
+                                            children:
+                                                _.offices.value.map((value) {
+                                              return AccordionSection(
+                                                sectionOpeningHapticFeedback:
+                                                    SectionHapticFeedback.medium,
+                                                sectionClosingHapticFeedback:
+                                                    SectionHapticFeedback.medium,
+                                                isOpen: true,
+                                                header: Text(
+                                                  '${value.name}',
+                                                  style: TextStyles
+                                                      .montserratSemiBold(
+                                                          textSize:
+                                                              TextSizes.sixteen,
+                                                          textColor: colorWhite),
+                                                ),
+                                                content: ListView.builder(
+                                                    padding: const EdgeInsets.all(0),
+                                                    physics:
+                                                        const NeverScrollableScrollPhysics(),
+                                                    shrinkWrap: true,
+                                                    itemCount:
+                                                        value.openingTime?.length,
+                                                    itemBuilder: (context, i) {
+                                                      var openingTime =
+                                                          value.openingTime?[i];
+                                                      return DayOfficeItem(
+                                                          openingTime:
+                                                              openingTime);
+                                                    }),
+                                              );
+                                            }).toList(),
                                           ),
-                                          headerBackgroundColor:
-                                              colorGreenSemiLight,
-                                          contentBorderColor:
-                                              colorGreenSemiLight,
-                                          children:
-                                              _.offices.value.map((value) {
-                                            return AccordionSection(
-                                              sectionOpeningHapticFeedback:
-                                                  SectionHapticFeedback.medium,
-                                              sectionClosingHapticFeedback:
-                                                  SectionHapticFeedback.medium,
-                                              isOpen: true,
-                                              header: Text(
-                                                '${value.name}',
-                                                style: TextStyles
-                                                    .montserratSemiBold(
-                                                        textSize:
-                                                            TextSizes.sixteen,
-                                                        textColor: colorWhite),
-                                              ),
-                                              content: ListView.builder(
-                                                  padding: const EdgeInsets.all(0),
-                                                  physics:
-                                                      const NeverScrollableScrollPhysics(),
-                                                  shrinkWrap: true,
-                                                  itemCount:
-                                                      value.openingTime?.length,
-                                                  itemBuilder: (context, i) {
-                                                    var openingTime =
-                                                        value.openingTime?[i];
-                                                    return DayOfficeItem(
-                                                        openingTime:
-                                                            openingTime);
-                                                  }),
-                                            );
-                                          }).toList(),
                                         ),
                                       ),
                                     )

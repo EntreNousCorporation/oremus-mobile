@@ -14,6 +14,7 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_presby_team_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/presby_team_item.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoisseBresbyTeamScreen extends StatelessWidget {
   const ParoisseBresbyTeamScreen({Key? key}) : super(key: key);
@@ -160,7 +161,7 @@ class ParoisseBresbyTeamScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-
+                          Separators.normalVertical(),
                           _.isDataProcessing.isTrue ? Expanded(
                             child: Center(
                               child: LottieLoadingView(
@@ -170,12 +171,16 @@ class ParoisseBresbyTeamScreen extends StatelessWidget {
                           ) : _.hasData.isTrue ? Expanded(
                             child: FadeIn(
                               duration: const Duration(milliseconds: 500),
-                              child: ListView.builder(
-                                  itemCount: _.presbyTeams.length,
-                                  itemBuilder: (context, index) {
-                                    var user = _.presbyTeams[index];
-                                    return PresbyTeamItem(user: user);
-                                  }),
+                              child: SmartRefresher(
+                                controller: _.refreshController,
+                                onRefresh: _.onRefresh,
+                                child: ListView.builder(
+                                    itemCount: _.presbyTeams.length,
+                                    itemBuilder: (context, index) {
+                                      var user = _.presbyTeams[index];
+                                      return PresbyTeamItem(user: user);
+                                    }),
+                              ),
                             ),
                           ) : Expanded(child: NotFoundScreen(message: _.getTypeMessage(_.code.value))),
                         ],
