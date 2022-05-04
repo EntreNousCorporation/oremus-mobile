@@ -174,7 +174,7 @@ class ParoisseItem extends StatelessWidget {
                                 alignment: AlignmentDirectional.center,
                                 onPressed: () {
                                 //todo:- trouver le moyen de mettre à jour la liste des paroisses lorsque celle-ci n'est plus dans la liste des favoris
-                                  //logic.removeToFavoriteList(paroisse, index);
+                                  logic.removeToFavoriteList(paroisse, index);
                                 },
                                 icon: const Icon(
                                   Icons.favorite,
