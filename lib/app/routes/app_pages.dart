@@ -27,6 +27,7 @@ import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_menu
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_messe_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_office_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_presby_team_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_type_masse_screen.dart';
 import 'package:oremusapp/app/modules/profile/binding/edit_profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/binding/profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/views/edit_profile_screen.dart';
@@ -108,7 +109,7 @@ class AppPages {
       page: () => const ParoisseMenuScreen(),
       binding: ParoisseMenuBinding(),
       transition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 700),
+      transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: Routes.FILTER_PAROISSE,
@@ -121,21 +122,21 @@ class AppPages {
       page: () => const ParoisseConfessionScreen(),
       binding: ParoisseConfessionBinding(),
       transition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 700),
+      transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: Routes.PAROISSE_MESSE,
-      page: () => const ParoisseMesseScreen(),
+      page: () => const ParoisseTypeMasseScreen(),
       binding: ParoisseMasseBinding(),
       transition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 700),
+      transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: Routes.PAROISSE_OFFICE,
       page: () => const ParoisseOfficeScreen(),
       binding: ParoisseOfficeBinding(),
       transition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 700),
+      transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: Routes.PAROISSE_MAP,

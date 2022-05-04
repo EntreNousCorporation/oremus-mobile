@@ -10,6 +10,8 @@ import 'package:oremusapp/app/modules/home/data/model/type_menu.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/not_recurrent_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/recurrent_screen.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -23,30 +25,45 @@ class ParoisseMasseController extends GetxController {
   var isDataProcessing = false.obs;
   var hasData = false.obs;
 
+  var isMasseNotRecurrentDataProcessing = false.obs;
+  var hasMasseNotRecurrentData = false.obs;
+
   var code = ''.obs;
   var paroisseSelected = ContentPlace().obs;
 
   RxList<TypeMenu> menus = RxList<TypeMenu>([]);
-  RxList<LiturgicalCelebrationResponse> masses = RxList<LiturgicalCelebrationResponse>([]);
+  RxList<LiturgicalCelebrationResponse> regularMasses = RxList<LiturgicalCelebrationResponse>([]);
+  RxList<LiturgicalCelebrationResponse> specialMasses = RxList<LiturgicalCelebrationResponse>([]);
 
   var refreshController = RefreshController();
+  var refreshNotRecurrentController = RefreshController();
+  var menusRecurentTab = <String, Widget>{}.obs;
+  var menusNotRecurentTab = <String, Widget>{}.obs;
 
   @override
   void onInit() {
     getArguments();
+    initMenus();
     super.onInit();
   }
 
   @override
   void onReady() {
-    getMasseTimes();
+    getMasseRecurrentTimes();
+    getMasseNotRecurrentTimes();
     super.onReady();
   }
 
   @override
   void dispose() {
     refreshController.dispose();
+    refreshNotRecurrentController.dispose();
     super.dispose();
+  }
+
+  initMenus() {
+    menusRecurentTab['Messes ordinaires'] = const RecurrentScreen();
+    menusRecurentTab['Messes spéciales'] = const NotRecurrentScreen();
   }
 
   getArguments() {
@@ -63,18 +80,18 @@ class ParoisseMasseController extends GetxController {
     return '${hour}h$minutes';
   }
 
-  getMasseTimes() {
-    log('request getMasseTimes');
+  getMasseRecurrentTimes() {
+    log('request getMasseRecurrentTimes');
 
     var idParoisse = paroisseSelected.value.identifier;
     isDataProcessing(true);
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       isDataProcessing(false);
-      masses.value = value
-          .where((element) => element.type?.code != 'CONFESSION')
+      regularMasses.value = value
+          .where((element) => (element.type?.code != 'CONFESSION') && (element.isRecurrent == true))
           .toList();
-      log('masses => ${masses.length}');
-      if (masses.isNotEmpty == true) {
+      log('massesRecurrent => ${regularMasses.length}');
+      if (regularMasses.isNotEmpty == true) {
         hasData(true);
       } else {
         hasData(false);
@@ -94,6 +111,37 @@ class ParoisseMasseController extends GetxController {
     });
   }
 
+  getMasseNotRecurrentTimes() {
+    log('request getMasseTimes');
+
+    var idParoisse = paroisseSelected.value.identifier;
+    isMasseNotRecurrentDataProcessing(true);
+    paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
+      isMasseNotRecurrentDataProcessing(false);
+      specialMasses.value = value
+          .where((element) => (element.type?.code != 'CONFESSION') && (element.isRecurrent == false))
+          .toList();
+      log('massesNotRecurrent => ${specialMasses.length}');
+      if (specialMasses.isNotEmpty == true) {
+        hasMasseNotRecurrentData(true);
+      } else {
+        hasMasseNotRecurrentData(false);
+      }
+    }, onError: (error) {
+      isMasseNotRecurrentDataProcessing(false);
+      hasMasseNotRecurrentData(false);
+      if (error.toString().contains('401')) {
+        showCustomDialog(
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      }
+      debugPrint("error => ${error.toString()}");
+    });
+  }
+
   onRefresh() {
     log('request onRefresh');
 
@@ -101,13 +149,39 @@ class ParoisseMasseController extends GetxController {
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       refreshController.refreshCompleted();
       if (value.isEmpty == false) {
-        masses.value = value
+        regularMasses.value = value
             .where((element) => element.type?.code != 'CONFESSION')
             .toList();
-        log('masses => ${masses.length}');
+        log('massesRecurrent => ${regularMasses.length}');
       }
     }, onError: (error) {
       refreshController.refreshCompleted();
+      if (error.toString().contains('401')) {
+        showCustomDialog(
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      }
+      debugPrint("error => ${error.toString()}");
+    });
+  }
+
+  onNotCurrentRefresh() {
+    log('request onNotCurrentRefresh');
+
+    var idParoisse = paroisseSelected.value.identifier;
+    paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
+      refreshNotRecurrentController.refreshCompleted();
+      if (value.isNotEmpty == true) {
+        specialMasses.value = value
+            .where((element) => (element.type?.code != 'CONFESSION') && (element.isRecurrent == false))
+            .toList();
+        log('massesNotRecurrent => ${specialMasses.length}');
+      }
+    }, onError: (error) {
+      refreshNotRecurrentController.refreshCompleted();
       if (error.toString().contains('401')) {
         showCustomDialog(
           Get.context!,

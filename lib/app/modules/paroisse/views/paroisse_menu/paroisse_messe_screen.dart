@@ -196,7 +196,7 @@ class ParoisseMesseScreen extends StatelessWidget {
                                                 colorGreenSemiLight,
                                             contentBorderColor:
                                                 colorGreenSemiLight,
-                                            children: _.masses.value.map((value) {
+                                            children: _.regularMasses.value.map((value) {
                                               return AccordionSection(
                                                 isOpen: true,
                                                 header: Text(

@@ -6,7 +6,6 @@ import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/home/data/model/type_menu.dart';
-import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
@@ -22,8 +21,6 @@ class ParoisseMenuController extends GetxController {
   var indexSelected = 0.obs;
 
   RxList<TypeMenu> menus = RxList<TypeMenu>([]);
-  RxList<LiturgicalCelebrationResponse> masses = RxList<LiturgicalCelebrationResponse>([]);
-  RxList<LiturgicalCelebrationResponse> confessions = RxList<LiturgicalCelebrationResponse>([]);
 
   @override
   void onInit() {
