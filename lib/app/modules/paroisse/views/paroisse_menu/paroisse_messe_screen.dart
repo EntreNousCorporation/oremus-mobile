@@ -168,7 +168,7 @@ class ParoisseMesseScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          _.isDataProcessing.isTrue
+                          _.isRegularMassDataProcessing.isTrue
                               ? Expanded(
                                   child: Center(
                                     child: LottieLoadingView(
@@ -176,14 +176,14 @@ class ParoisseMesseScreen extends StatelessWidget {
                                     ),
                                   ),
                                 )
-                              : _.hasData.isTrue
+                              : _.hasRegularMassData.isTrue
                                   ? Expanded(
                                       child: FadeIn(
                                         duration:
                                             const Duration(milliseconds: 500),
                                         child: SmartRefresher(
                                           controller: _.refreshController,
-                                          onRefresh: _.onRefresh,
+                                          onRefresh: _.onRegularMassesRefresh,
                                           child: Accordion(
                                             disableScrolling: true,
                                             maxOpenSections: 1,

@@ -12,24 +12,24 @@ import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse
 import 'package:oremusapp/app/modules/paroisse/views/widget/day_masse_item.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class NotRecurrentScreen extends StatelessWidget {
-  const NotRecurrentScreen({Key? key}) : super(key: key);
+class RegularMassScreen extends StatelessWidget {
+  const RegularMassScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GetX<ParoisseMasseController>(builder: (logic) {
-      if (logic.isMasseNotRecurrentDataProcessing.isTrue) {
+      if (logic.isRegularMassDataProcessing.isTrue) {
         return LottieLoadingView(
           size: Get.width / 4,
         );
       } else {
-        if (logic.hasMasseNotRecurrentData.isTrue) {
+        if (logic.hasRegularMassData.isTrue) {
           return FadeIn(
             duration:
             const Duration(milliseconds: 500),
             child: SmartRefresher(
-              controller: logic.refreshNotRecurrentController,
-              onRefresh: logic.onNotCurrentRefresh,
+              controller: logic.refreshController,
+              onRefresh: logic.onRegularMassesRefresh,
               child: Accordion(
                 disableScrolling: true,
                 maxOpenSections: 1,
@@ -42,7 +42,7 @@ class NotRecurrentScreen extends StatelessWidget {
                 colorGreenSemiLight,
                 contentBorderColor:
                 colorGreenSemiLight,
-                children: logic.specialMasses.value.map((value) {
+                children: logic.regularMasses.value.map((value) {
                   return AccordionSection(
                     isOpen: true,
                     header: Text(
@@ -64,7 +64,9 @@ class NotRecurrentScreen extends StatelessWidget {
                         itemBuilder: (context, i) {
                           var openingTime =
                           value.openingTime?[i];
-                          return DayMassetem(openingTime: openingTime);
+                          return DayMassetem(
+                              openingTime:
+                              openingTime);
                         }),
                   );
                 }).toList(),

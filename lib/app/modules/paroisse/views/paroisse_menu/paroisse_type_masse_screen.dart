@@ -12,8 +12,8 @@ import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_masse_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/activity_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/movement_screen.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/not_recurrent_screen.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/recurrent_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/special_mass_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/regular_mass_screen.dart';
 
 class ParoisseTypeMasseScreen extends StatelessWidget {
   const ParoisseTypeMasseScreen({Key? key}) : super(key: key);
@@ -165,13 +165,13 @@ class ParoisseTypeMasseScreen extends StatelessWidget {
                                 textColor: colorWhite,
                               ),
                               borderColor: colorGreenSemiLight,
-                              tabs: _.menusRecurentTab.value.keys.map((e) {
+                              tabs: _.menusMasseTab.value.keys.map((e) {
                                 return Tab(text: e);
                               }).toList(),
                             ),
                             Expanded(
                               child: TabBarView(
-                                children: _.menusRecurentTab.entries.map((e) {
+                                children: _.menusMasseTab.entries.map((e) {
                                   return Center(
                                     child: e.value,
                                   );
