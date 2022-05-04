@@ -70,11 +70,11 @@ class ParoisseMasseController extends GetxController {
     isDataProcessing(true);
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       isDataProcessing(false);
-      if (value.isEmpty == false) {
-        masses.value = value
-            .where((element) => element.type?.code != 'CONFESSION')
-            .toList();
-        log('masses => ${masses.length}');
+      masses.value = value
+          .where((element) => element.type?.code != 'CONFESSION')
+          .toList();
+      log('masses => ${masses.length}');
+      if (masses.isNotEmpty == true) {
         hasData(true);
       } else {
         hasData(false);

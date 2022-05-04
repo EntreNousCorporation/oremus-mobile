@@ -93,9 +93,9 @@ class ParoissePresbyTeamController extends GetxController {
     hasData(false);
     paroisseRepository.getPlaceOfWorshipUsers(idParoisse ?? -1).then((value) {
       isDataProcessing(false);
-      if (value.isEmpty == false) {
+      presbyTeams.value = value.where((element) => (element.type != null) && (element.type?.toLowerCase() == "vicar" || element.type?.toLowerCase() == "clergyman")).toList();
+      if (presbyTeams.isNotEmpty == true) {
         hasData(true);
-        presbyTeams.value = value.where((element) => (element.type != null) && (element.type?.toLowerCase() == "vicar" || element.type?.toLowerCase() == "clergyman")).toList();
         presbyTeams.value.sort((a, b) => a.type!.compareTo(b.type!));
         log('${presbyTeams.length}');
       } else {

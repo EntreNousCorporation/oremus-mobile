@@ -64,17 +64,17 @@ class ParoisseConfessionController extends GetxController {
   }
 
   getConfessionTimes() {
-    log('request getLiturgicalCelebrations');
+    log('request getConfessionTimes');
 
     var idParoisse = paroisseSelected.value.identifier;
     isDataProcessing(true);
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       isDataProcessing(false);
-      if (value.isEmpty == false) {
-        confessions.value = value
-            .where((element) => element.type?.code == 'CONFESSION')
-            .toList();
-        log('confessions => ${confessions.length}');
+      confessions.value = value
+          .where((element) => element.type?.code == 'CONFESSION')
+          .toList();
+      log('confessions => ${confessions.length}');
+      if (confessions.isNotEmpty == true) {
         hasData(true);
       } else {
         hasData(false);
