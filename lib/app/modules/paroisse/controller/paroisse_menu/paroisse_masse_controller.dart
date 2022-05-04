@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
@@ -118,7 +119,7 @@ class ParoisseMasseController extends GetxController {
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       isSpecialMassDataProcessing(false);
       specialMasses.value = value
-          .where((element) => (element.type?.code != 'CONFESSION') && (element.isRecurrent == false))
+          .where((element) => (element.type?.code != 'CONFESSION') && (element.isRecurrent == false) && (Jiffy(element.startDate).isAfter(Jiffy())))
           .toList();
       log('specialMasses => ${specialMasses.length}');
       if (specialMasses.isNotEmpty == true) {
@@ -142,7 +143,7 @@ class ParoisseMasseController extends GetxController {
   }
 
   onRegularMassesRefresh() {
-    log('request onRefresh');
+    log('request onRegularMassesRefresh');
 
     var idParoisse = paroisseSelected.value.identifier;
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
@@ -175,9 +176,10 @@ class ParoisseMasseController extends GetxController {
       refreshNotRecurrentController.refreshCompleted();
       if (value.isNotEmpty == true) {
         specialMasses.value = value
-            .where((element) => (element.type?.code != 'CONFESSION') && (element.isRecurrent == false))
+            .where((element) => (element.type?.code != 'CONFESSION') && (element.isRecurrent == false) && (Jiffy(element.startDate).isAfter(Jiffy())))
             .toList();
         log('specialMasses => ${specialMasses.length}');
+        //log('specialMasses hour => ${Jiffy(specialMasses.value.first.startDate, "yyyy-MM-dd'T'HH:mm:ss").jm}');
       }
     }, onError: (error) {
       refreshNotRecurrentController.refreshCompleted();
@@ -191,6 +193,14 @@ class ParoisseMasseController extends GetxController {
       }
       debugPrint("error specialMasses => ${error.toString()}");
     });
+  }
+
+  String getDate(String date) {
+    return Jiffy(date, "yyyy-MM-dd'T'HH:mm:ss").yMd;
+  }
+
+  String getHour(String date) {
+    return Jiffy(date, "yyyy-MM-dd'T'HH:mm:ss").jm;
   }
 
   doLogout() {

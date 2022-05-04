@@ -1,8 +1,6 @@
-import 'package:accordion/accordion.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
@@ -37,8 +35,7 @@ class SpecialMassScreen extends StatelessWidget {
                   shrinkWrap: true,
                   elements: logic.specialMasses.value,
                   useStickyGroupSeparators: false,
-                  groupBy: (liturgicalCelebration) =>
-                      liturgicalCelebration?.name ?? '',
+                  groupBy: (liturgicalCelebration) => liturgicalCelebration?.name ?? '',
                   groupHeaderBuilder: (liturgicalCelebration) => Container(
                     padding:
                         const EdgeInsets.all(8.0),
@@ -46,9 +43,9 @@ class SpecialMassScreen extends StatelessWidget {
                       color: colorGreenSemiLight.withOpacity(0.4),
                     ),
                     child: Center(
-                      child: Text(liturgicalCelebration?.name ?? '',
+                      child: Text('${liturgicalCelebration?.name} - ${logic.getDate(liturgicalCelebration?.startDate ?? '')}',
                         style: TextStyles.montserratBold(
-                          textSize: TextSizes.eighteen,
+                          textSize: TextSizes.seventeen,
                         ),),
                     ),
                   ),
@@ -59,9 +56,9 @@ class SpecialMassScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(10.0),
                           child: Text(
-                            '${liturgicalCelebration?.startDate}',
+                            logic.getHour(liturgicalCelebration?.startDate ?? ''),
                             style: TextStyles.montserratMedium(
                               textColor: colorBlack,
                               textSize: TextSizes.thirteen,
