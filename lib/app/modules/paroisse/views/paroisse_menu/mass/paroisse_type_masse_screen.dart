@@ -2,23 +2,27 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
+import 'package:like_button/like_button.dart';
 import 'package:oremusapp/app/commons/buttons_tabbar.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_activity_movement_controller.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/activity_screen.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/movement_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_masse_controller.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/activity_movement/activity_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/activity_movement/movement_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/mass/special_mass_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/mass/regular_mass_screen.dart';
 
-class ParoisseActivityMovementScreen extends StatelessWidget {
-  const ParoisseActivityMovementScreen({Key? key}) : super(key: key);
+class ParoisseTypeMasseScreen extends StatelessWidget {
+  const ParoisseTypeMasseScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: colorGreen,
-      child: GetX<ParoisseActivityMovementController>(
+      child: GetX<ParoisseMasseController>(
           initState: (state) {},
           builder: (_) {
             return KeyboardDismisser(
@@ -41,13 +45,38 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
                         icon: const Icon(Icons.arrow_back_ios_rounded),
                       ),
                       actions: [
-                        _.paroisseSelected.value.isFavorite == true
-                            ? const Icon(
-                          Icons.favorite,
-                          color: Color(0xFFED213A),
+                        LikeButton(
+                          isLiked: _.paroisseSelected.value.isFavorite,
+                          onTap: (isLiked) async {
+                            _.paroisseSelected.value.isFavorite = !isLiked;
+                            if (isLiked) {
+                              _.removeFavorite(_.paroisseSelected.value, isLiked);
+                            } else {
+                              _.saveFavorite(_.paroisseSelected.value, isLiked);
+                            }
+                            return !isLiked;
+                          },
                           size: 25,
-                        )
-                            : Container(),
+                          circleColor: const CircleColor(
+                              start: Color(0xff93291E),
+                              end: Color(0xFFED213A)),
+                          bubblesColor: const BubblesColor(
+                            dotPrimaryColor: Color(0xFFED213A),
+                            dotSecondaryColor: Color(0xff93291E),
+                          ),
+                          likeBuilder: (bool isLiked) {
+                            return Icon(
+                              isLiked
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: isLiked
+                                  ? const Color(0xFFED213A)
+                                  : colorWhite,
+                              size: 25,
+                            );
+                          },
+                        ),
+                        Separators.minimunHorizontal(),
                         IconButton(
                           onPressed: () {
                             _.goToMap();
@@ -75,21 +104,18 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
                                   true)
                               ? Stack(
                                   children: [
-                                    Hero(
-                                      tag: 'tag${_.indexDaySelected.value}',
-                                      child: CachedNetworkImage(
-                                        width: Get.width,
-                                        height: Get.width,
-                                        imageUrl: _.paroisseSelected.value
-                                                .coverImage?.link ??
-                                            '',
-                                        fit: BoxFit.cover,
-                                        placeholder: (context, url) =>
-                                            LottieLoadingView(
-                                                size: Get.width / 6),
-                                        errorWidget: (context, url, error) =>
-                                            const Icon(Icons.error),
-                                      ),
+                                    CachedNetworkImage(
+                                      width: Get.width,
+                                      height: Get.width,
+                                      imageUrl: _.paroisseSelected.value
+                                              .coverImage?.link ??
+                                          '',
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) =>
+                                          LottieLoadingView(
+                                              size: Get.width / 6),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
                                     ),
                                     Container(
                                       height: Get.width,
@@ -102,13 +128,10 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
                                 )
                               : Stack(
                                   children: [
-                                    Hero(
-                                      tag: 'tag${_.indexDaySelected.value}',
-                                      child: Image.asset(
-                                        'assets/images/bg_login.jpg',
-                                        width: Get.width,
-                                        fit: BoxFit.cover,
-                                      ),
+                                    Image.asset(
+                                      'assets/images/bg_login.jpg',
+                                      width: Get.width,
+                                      fit: BoxFit.cover,
                                     ),
                                     Container(
                                       height: Get.width,
@@ -142,20 +165,17 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
                                 textColor: colorWhite,
                               ),
                               borderColor: colorGreenSemiLight,
-                              tabs: _.menusTab.value.map((e) {
+                              tabs: _.menusMasseTab.value.keys.map((e) {
                                 return Tab(text: e);
                               }).toList(),
                             ),
-                            const Expanded(
+                            Expanded(
                               child: TabBarView(
-                                children: <Widget>[
-                                  Center(
-                                    child: ActivityScreen(),
-                                  ),
-                                  Center(
-                                    child: MovementScreen(),
-                                  ),
-                                ],
+                                children: _.menusMasseTab.entries.map((e) {
+                                  return Center(
+                                    child: e.value,
+                                  );
+                                }).toList(),
                               ),
                             ),
                           ],
