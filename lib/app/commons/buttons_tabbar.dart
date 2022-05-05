@@ -373,10 +373,13 @@ class _ButtonsTabBarState extends State<ButtonsTabBar>
                       : widget.labelSpacing,
                 ),
                 tab.text != null
-                    ? Text(
-                        tab.text!,
-                        style: textStyle,
-                      )
+                    ? Expanded(
+                      child: Text(
+                          tab.text!,
+                          textAlign: TextAlign.center,
+                          style: textStyle,
+                        ),
+                    )
                     : (tab.child ?? Container())
               ],
             ),

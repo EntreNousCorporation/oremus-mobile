@@ -18,7 +18,8 @@ class DayConfessionItem extends StatelessWidget {
       return Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 10, bottom: 20, top: 20, right: 10),
+            padding:
+                const EdgeInsets.only(left: 10, bottom: 20, top: 20, right: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -30,27 +31,33 @@ class DayConfessionItem extends StatelessWidget {
                       children: [
                         Text(
                           getDay(openingTime?.dayOfWeek),
-                          textAlign:
-                          TextAlign.start,
-                          style: TextStyles
-                              .montserratSemiBold(
-                              textSize:
-                              TextSizes
-                                  .sixteen,
-                              textColor: getCurrentDay() == getDay(openingTime?.dayOfWeek) ? colorGreenSemiLight : colorBlack),
+                          textAlign: TextAlign.start,
+                          style: TextStyles.montserratSemiBold(
+                              textSize: TextSizes.sixteen,
+                              textColor: getCurrentDay() ==
+                                      getDay(openingTime?.dayOfWeek)
+                                  ? colorGreenSemiLight
+                                  : colorBlack),
                         ),
                         Wrap(
                           spacing: 8,
                           runSpacing: 8,
                           children: openingTime?.slots?.map((timeSlot) {
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: Text(
-                                '${logic.getTime(timeSlot.startTime ?? '')}',
-                                style: TextStyles.montserratSemiBold(textSize: TextSizes.fourteen, textColor: getCurrentDay() == getDay(openingTime?.dayOfWeek) ? colorGreenSemiLight.withOpacity(0.5) : colorGrey1),
-                              ),
-                            );
-                          }).toList() ?? [],
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Text(
+                                    '${logic.getTime(timeSlot.startTime ?? '')}',
+                                    style: TextStyles.montserratSemiBold(
+                                        textSize: TextSizes.fourteen,
+                                        textColor: getCurrentDay() ==
+                                                getDay(openingTime?.dayOfWeek)
+                                            ? colorGreenSemiLight
+                                                .withOpacity(0.5)
+                                            : colorGrey1),
+                                  ),
+                                );
+                              }).toList() ??
+                              [],
                         ),
                       ],
                     ),
@@ -59,7 +66,8 @@ class DayConfessionItem extends StatelessWidget {
               ],
             ),
           ),
-          Positioned( //timeline bar
+          Positioned(
+            //timeline bar
             left: 17.5,
             child: Container(
               height: Get.height * 0.7,
@@ -67,18 +75,28 @@ class DayConfessionItem extends StatelessWidget {
               color: colorBlack.withOpacity(0.5),
             ),
           ),
-          Positioned( //timeline circle
+          Positioned(
+            //timeline circle
             bottom: 10,
             child: Padding(
-              padding: const EdgeInsets.only(left: 10, bottom: 20, top: 20, right: 0),
+              padding: const EdgeInsets.only(
+                  left: 10, bottom: 20, top: 20, right: 0),
               child: Container(
                 height: 20.0,
                 width: 20.0,
                 decoration: BoxDecoration(
-                  color: getCurrentDay() == getDay(openingTime?.dayOfWeek) ? colorGreenSemiLight : colorBlack,
+                  color: getCurrentDay() == getDay(openingTime?.dayOfWeek)
+                      ? colorGreenSemiLight
+                      : colorBlack,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: getCurrentDay() == getDay(openingTime?.dayOfWeek) ? const Icon(Icons.check, size: 15, color: colorWhite,) : Container(),
+                child: getCurrentDay() == getDay(openingTime?.dayOfWeek)
+                    ? const Icon(
+                        Icons.check,
+                        size: 15,
+                        color: colorWhite,
+                      )
+                    : Container(),
               ),
             ),
           ),

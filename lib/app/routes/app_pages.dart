@@ -22,9 +22,8 @@ import 'package:oremusapp/app/modules/paroisse/binding/paroisse_presby_team_bind
 import 'package:oremusapp/app/modules/paroisse/views/filter/filter_paroisse_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_map_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/activity_movement/paroisse_activity_movement_screen.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/confession/paroisse_confession_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/confession/paroisse_type_confession_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_menu_screen.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/mass/paroisse_messe_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_office_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_presby_team_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/mass/paroisse_type_masse_screen.dart';
@@ -119,7 +118,7 @@ class AppPages {
     ),
     GetPage(
       name: Routes.PAROISSE_CONFESSION,
-      page: () => const ParoisseConfessionScreen(),
+      page: () => const ParoisseTypeConfessionScreen(),
       binding: ParoisseConfessionBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
