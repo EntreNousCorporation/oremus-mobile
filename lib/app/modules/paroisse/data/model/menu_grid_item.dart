@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/home/data/model/type_menu.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/type_menu.dart';
 
 class MenuGridItem extends StatefulWidget {
   const MenuGridItem({Key? key, required this.item}) : super(key: key);

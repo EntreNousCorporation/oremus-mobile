@@ -28,12 +28,6 @@ abstract class AppConstants {
   //PAGGING
   static const PAGING_SIZE = 10;
 
-  //BOTTOM MENU INDEX
-  static const PAROISSE = 0;
-  static const DIOCESE = 1;
-  static const SERVICE = 2;
-  static const FORMATION = 3;
-
   //DRAWER MENU INDEX
   static const HOME = 0;
   static const PROFILE = 1;
@@ -42,4 +36,5 @@ abstract class AppConstants {
   static const FAQ = 4;
   static const CONTACTS = 5;
   static const ABOUT = 6;
+
 }

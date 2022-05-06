@@ -8,8 +8,8 @@ import 'package:jwt_decode/jwt_decode.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/email_validator.dart';
-import 'package:oremusapp/app/commons/storage_request.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
@@ -80,7 +80,7 @@ class SigninController extends GetxController {
       });
       log('value => ${value.accessToken}');
       lockScreen(false);
-      StorageRequest.saveData(AppConstants.KEY_TOKEN, value.accessToken);
+      DB.saveData(AppConstants.KEY_TOKEN, value.accessToken);
       Map<String, dynamic> payload = Jwt.parseJwt(value.accessToken ?? '');
       var userConnection = Signin(
         username: payload['username'],

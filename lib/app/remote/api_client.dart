@@ -4,8 +4,8 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
-import 'package:oremusapp/app/commons/storage_request.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/main.dart';
 
@@ -30,7 +30,7 @@ class ApiClientImpl extends GetConnect implements ApiClient {
     headers[HttpHeaders.contentTypeHeader] = 'application/json; charset=utf-8';
     headers[HttpHeaders.acceptHeader] = 'application/json';
     if (useBearer) {
-      headers[HttpHeaders.authorizationHeader] = 'Bearer ${StorageRequest.getData(AppConstants.KEY_TOKEN)}';
+      headers[HttpHeaders.authorizationHeader] = 'Bearer ${DB.getData(AppConstants.KEY_TOKEN)}';
     }
     timeout = const Duration(seconds: AppConstants.REQUEST_TIMEOUT);
 

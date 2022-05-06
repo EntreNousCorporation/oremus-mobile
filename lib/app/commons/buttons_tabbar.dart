@@ -157,13 +157,13 @@ class _ButtonsTabBarState extends State<ButtonsTabBar>
     with TickerProviderStateMixin {
   TabController? _controller;
 
-  ScrollController _scrollController = new ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   late AnimationController _animationController;
 
   late List<GlobalKey> _tabKeys;
-  GlobalKey _tabsContainerKey = GlobalKey();
-  GlobalKey _tabsParentKey = GlobalKey();
+  final GlobalKey _tabsContainerKey = GlobalKey();
+  final GlobalKey _tabsParentKey = GlobalKey();
 
   int _currentIndex = 0;
   int _prevIndex = -1;
@@ -286,12 +286,13 @@ class _ButtonsTabBarState extends State<ButtonsTabBar>
     Tab tab,
   ) {
     final double animationValue;
-    if (index == _currentIndex)
+    if (index == _currentIndex) {
       animationValue = _animationController.value;
-    else if (index == _prevIndex)
+    } else if (index == _prevIndex) {
       animationValue = 1 - _animationController.value;
-    else
+    } else {
       animationValue = 0;
+    }
 
     final TextStyle? textStyle = TextStyle.lerp(
         widget.unselectedLabelStyle ?? const TextStyle(color: Colors.black),
@@ -513,14 +514,15 @@ class _ButtonsTabBarState extends State<ButtonsTabBar>
       if (position + size < screenWidth) screenWidth = position + size;
 
       // if the offset pulls the last button away from the right side limit, we reduce that movement so the last button is stuck to the right side limit
-      if (!widget.center && position + size - offset < screenWidth)
+      if (!widget.center && position + size - offset < screenWidth) {
         offset = position + size - screenWidth;
+      }
     }
     offset *= (_textLTR ? 1 : -1);
 
     // scroll the calculated ammount
     _scrollController.animateTo(offset + _scrollController.offset,
-        duration: new Duration(milliseconds: widget.duration),
+        duration: Duration(milliseconds: widget.duration),
         curve: Curves.easeInOut);
   }
 }

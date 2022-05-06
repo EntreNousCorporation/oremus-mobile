@@ -8,8 +8,6 @@ import 'package:oremusapp/app/modules/editpassword/binding/edit_password_binding
 import 'package:oremusapp/app/modules/editpassword/views/edit_password_screen.dart';
 import 'package:oremusapp/app/modules/favorite/binding/favorite_binding.dart';
 import 'package:oremusapp/app/modules/favorite/views/favorites_screen.dart';
-import 'package:oremusapp/app/modules/home/binding/home_binding.dart';
-import 'package:oremusapp/app/modules/home/views/home_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/filter_paroisse_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_activity_movement_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_binding.dart';
@@ -62,11 +60,6 @@ class AppPages {
         ProfileBinding(),
       ],
       transition: Transition.circularReveal,
-    ),
-    GetPage(
-      name: Routes.HOME,
-      page: () => HomeScreen(),
-      binding: HomeBinding(),
     ),
     GetPage(
       name: Routes.DIOCESE,

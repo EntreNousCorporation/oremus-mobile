@@ -105,7 +105,7 @@ class CustomHomeScreen extends StatelessWidget {
                         Visibility(
                           visible:
                               (logic.menus[logic.selectedIndex.value].code ==
-                                  AppConstants.PAROISSE),
+                                  AppConstants.HOME),
                           child:
                               GetBuilder<ProfileController>(builder: (logic) {
                             return Bounce(

@@ -9,7 +9,7 @@ import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/home/views/widget/menu_grid_item.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/menu_grid_item.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_menu_controller.dart';
 
 class ParoisseMenuScreen extends StatelessWidget {
