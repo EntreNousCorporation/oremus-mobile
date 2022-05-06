@@ -36,7 +36,7 @@ class SplashscreenScreen extends StatelessWidget {
                       child: SvgPicture.asset('assets/images/logo.svg', height: 60,),
                     ),
                     Separators.minimunVertical(),
-                    SlideInLeft(
+                    FadeIn(
                       key: logic.basicTextAnimation,
                       preferences: AnimationPreferences(
                         offset: const Duration(seconds: 0),

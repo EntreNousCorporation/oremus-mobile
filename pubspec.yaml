@@ -52,6 +52,7 @@ dependencies:
   package_info_plus: ^1.4.2
   flutter_animator: ^3.2.1
   #timelines: ^0.1.0
+  flutter_timeline: ^0.3.0
 
 dev_dependencies:
   flutter_test:
