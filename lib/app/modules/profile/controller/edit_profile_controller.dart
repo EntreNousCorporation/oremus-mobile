@@ -88,8 +88,8 @@ class EditProfileController extends GetxController {
       unlockBackButton.value = false;
     });
 
-    String firstname = firstnameController.text.trim().toString().replaceAll(' ', '');
-    String lastname = lastnameController.text.trim().toString().replaceAll(' ', '');
+    String firstname = firstnameController.text.trim();
+    String lastname = lastnameController.text.trim();
     String email = emailController.text.trim().toString().replaceAll(' ', '');
     String phone = phoneController.text.trim().toString().replaceAll(' ', '');
 
