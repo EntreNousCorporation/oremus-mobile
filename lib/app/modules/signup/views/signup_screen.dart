@@ -53,24 +53,26 @@ class SignupScreen extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     //Separators.maximumVertical(),
-                                    GestureDetector(
-                                      onTap: () => Get.back(),
-                                      child: Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.arrow_back,
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {
+                                            Get.back();
+                                          },
+                                          icon: const Icon(
+                                            Icons.arrow_back_rounded,
                                             color: colorWhite,
                                             size: 35,
                                           ),
-                                          Separators.normalHorizontal(),
-                                          Text(
-                                            "S'inscrire",
-                                            style: TextStyles.montserratBold(
-                                                textSize: TextSizes.twenty_four,
-                                                textColor: colorWhite),
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                        Separators.normalHorizontal(),
+                                        Text(
+                                          "S'inscrire",
+                                          style: TextStyles.montserratBold(
+                                              textSize: TextSizes.twenty_four,
+                                              textColor: colorWhite),
+                                        ),
+                                      ],
                                     ),
                                     Separators.normalVertical(),
                                     Container(
@@ -116,7 +118,8 @@ class SignupScreen extends StatelessWidget {
                                                 onChanged: (value) {
                                                   _.checkForm();
                                                 },
-                                                errorText: _.lastnameErrorMessage.value,
+                                                errorText: _
+                                                    .lastnameErrorMessage.value,
                                               ),
                                               Separators.normalVertical(),
                                               MyTextField(
@@ -125,17 +128,23 @@ class SignupScreen extends StatelessWidget {
                                                     _.firstnameController,
                                                 hintText: '',
                                                 labelText: 'Prénom(s)',
-                                                prefixIcon: "assets/images/icon_user.svg",
+                                                prefixIcon:
+                                                    "assets/images/icon_user.svg",
                                                 //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
                                                 prefixIconColor: colorGrey1,
-                                                keyboardType: TextInputType.name,
+                                                keyboardType:
+                                                    TextInputType.name,
                                                 maskInputs: [
-                                                  FilteringTextInputFormatter.allow(RegExp(AppConstants.INPUT_NAME_REGEX)),
+                                                  FilteringTextInputFormatter
+                                                      .allow(RegExp(AppConstants
+                                                          .INPUT_NAME_REGEX)),
                                                 ],
                                                 onChanged: (value) {
                                                   _.checkForm();
                                                 },
-                                                errorText: _.firstnameErrorMessage.value,
+                                                errorText: _
+                                                    .firstnameErrorMessage
+                                                    .value,
                                               ),
                                               Separators.normalVertical(),
                                               MyTextField(
@@ -144,23 +153,24 @@ class SignupScreen extends StatelessWidget {
                                                 hintText: '',
                                                 labelText: 'Téléphone',
                                                 prefixIcon:
-                                                "assets/images/icon_phone.svg",
+                                                    "assets/images/icon_phone.svg",
                                                 //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
                                                 prefixIconColor: colorGrey1,
                                                 keyboardType:
-                                                TextInputType.phone,
+                                                    TextInputType.phone,
                                                 maxLength: 14,
                                                 maskInputs: [
                                                   ObjectSeparatorInputFormatter(
                                                       groupBy: 2),
                                                   FilteringTextInputFormatter
                                                       .allow(RegExp(AppConstants
-                                                      .INPUT_NUM_REGEX)),
+                                                          .INPUT_NUM_REGEX)),
                                                 ],
                                                 onChanged: (value) {
                                                   _.checkForm();
                                                 },
-                                                errorText: _.phoneErrorMessage.value,
+                                                errorText:
+                                                    _.phoneErrorMessage.value,
                                               ),
                                               Separators.normalVertical(),
                                               MyTextField(
@@ -168,15 +178,19 @@ class SignupScreen extends StatelessWidget {
                                                 controller: _.emailController,
                                                 hintText: '',
                                                 labelText: 'E-mail',
-                                                prefixIcon: "assets/images/icon_enveloppe.svg",
+                                                prefixIcon:
+                                                    "assets/images/icon_enveloppe.svg",
                                                 //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
                                                 prefixIconColor: colorGrey1,
-                                                keyboardType: TextInputType.emailAddress,
-                                                textCapitalization: TextCapitalization.none,
+                                                keyboardType:
+                                                    TextInputType.emailAddress,
+                                                textCapitalization:
+                                                    TextCapitalization.none,
                                                 onChanged: (value) {
                                                   _.checkForm();
                                                 },
-                                                errorText: _.emailErrorMessage.value,
+                                                errorText:
+                                                    _.emailErrorMessage.value,
                                               ),
                                               Separators.normalVertical(),
                                               MyTextField(
@@ -192,11 +206,13 @@ class SignupScreen extends StatelessWidget {
                                                 onChanged: (value) {
                                                   _.checkForm();
                                                 },
-                                                errorText: _.passwordErrorMessage.value,
+                                                errorText: _
+                                                    .passwordErrorMessage.value,
                                               ),
                                               Separators.normalVertical(),
                                               MyTextField(
-                                                focusNode: _.confPasswordFocusNode,
+                                                focusNode:
+                                                    _.confPasswordFocusNode,
                                                 controller:
                                                     _.confPasswordController,
                                                 hintText: '',
@@ -209,7 +225,9 @@ class SignupScreen extends StatelessWidget {
                                                 onChanged: (value) {
                                                   _.checkForm();
                                                 },
-                                                errorText: _.confPasswordErrorMessage.value,
+                                                errorText: _
+                                                    .confPasswordErrorMessage
+                                                    .value,
                                               ),
                                               Separators.normalVertical(),
                                               SizedBox(
@@ -221,7 +239,8 @@ class SignupScreen extends StatelessWidget {
                                                       'assets/images/icon_arrow_right.svg',
                                                   bgcolor: _.isValidForm.isTrue
                                                       ? colorGreen
-                                                      : colorGrey1.withOpacity(0.5),
+                                                      : colorGrey1
+                                                          .withOpacity(0.5),
                                                   borderColor:
                                                       _.isValidForm.isTrue
                                                           ? colorGreen
