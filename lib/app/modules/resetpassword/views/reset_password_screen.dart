@@ -16,13 +16,12 @@ class ResetPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/bg_login.jpg'),
-            fit: BoxFit.cover,
-          )),
+        image: AssetImage('assets/images/bg_login.jpg'),
+        fit: BoxFit.cover,
+      )),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
         child: FadeIn(
@@ -34,21 +33,23 @@ class ResetPasswordScreen extends StatelessWidget {
                 body: SafeArea(
                   child: Column(
                     children: [
-                      GestureDetector(
-                        onTap: () => Get.back(),
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 16.0, left: 24),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Separators.maximumVertical(),
-                              const Icon(
-                                Icons.arrow_back_ios_rounded,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0, left: 0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Separators.maximumVertical(),
+                            IconButton(
+                              onPressed: () {
+                                Get.back();
+                              },
+                              icon: const Icon(
+                                Icons.arrow_back_rounded,
                                 color: colorWhite,
                                 size: 30,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                       Expanded(
@@ -59,46 +60,59 @@ class ResetPasswordScreen extends StatelessWidget {
                               child: GetX<ResetPasswordController>(
                                 builder: (_) {
                                   return WillPopScope(
-                                    onWillPop: () async => _.unlockBackButton.value,
+                                    onWillPop: () async =>
+                                        _.unlockBackButton.value,
                                     child: AbsorbPointer(
                                       absorbing: _.lockScreen.value,
                                       child: Container(
                                         padding: const EdgeInsets.only(
                                             bottom: 20, left: 32, right: 32),
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           //mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Text(
                                               "Réinitialiser votre mot de passe",
                                               style: TextStyles.montserratBold(
-                                                  textSize: TextSizes.twenty_four,
+                                                  textSize:
+                                                      TextSizes.twenty_four,
                                                   textColor: colorWhite),
                                             ),
                                             Separators.normalVertical(),
                                             Container(
                                               decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(12),
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
                                                 color: colorWhite,
                                               ),
                                               child: Form(
                                                 key: _.formSigninKey,
                                                 child: Padding(
-                                                  padding: const EdgeInsets.only(left: 32, right: 32, top: 32, bottom: 32),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 32,
+                                                          right: 32,
+                                                          top: 32,
+                                                          bottom: 32),
                                                   child: Column(
                                                     children: [
                                                       MyTextField(
-                                                        focusNode: _.newPasswordFocusNode,
-                                                        controller:
-                                                        _.newPasswordController,
+                                                        focusNode: _
+                                                            .newPasswordFocusNode,
+                                                        controller: _
+                                                            .newPasswordController,
                                                         hintText: '',
-                                                        labelText: 'Nouveau mot de passe',
+                                                        labelText:
+                                                            'Nouveau mot de passe',
                                                         isPassword: true,
                                                         prefixIcon:
-                                                        'assets/images/icon_password_profil.svg',
-                                                        prefixIconColor: colorGrey1,
+                                                            'assets/images/icon_password_profil.svg',
+                                                        prefixIconColor:
+                                                            colorGrey1,
                                                         textCapitalization:
-                                                        TextCapitalization.none,
+                                                            TextCapitalization
+                                                                .none,
                                                         onChanged: (value) {
                                                           _.checkForm();
                                                         },
@@ -106,21 +120,24 @@ class ResetPasswordScreen extends StatelessWidget {
                                                             .newPasswordErrorMessage
                                                             .value,
                                                       ),
-                                                      Separators.maximumVertical(),
+                                                      Separators
+                                                          .maximumVertical(),
                                                       MyTextField(
-                                                        focusNode:
-                                                        _.confPasswordFocusNode,
-                                                        controller:
-                                                        _.confPasswordController,
+                                                        focusNode: _
+                                                            .confPasswordFocusNode,
+                                                        controller: _
+                                                            .confPasswordController,
                                                         hintText: '',
                                                         labelText:
-                                                        'Confirmer le mot de passe',
+                                                            'Confirmer le mot de passe',
                                                         isPassword: true,
                                                         prefixIcon:
-                                                        'assets/images/icon_password_profil.svg',
-                                                        prefixIconColor: colorGrey1,
+                                                            'assets/images/icon_password_profil.svg',
+                                                        prefixIconColor:
+                                                            colorGrey1,
                                                         textCapitalization:
-                                                        TextCapitalization.none,
+                                                            TextCapitalization
+                                                                .none,
                                                         onChanged: (value) {
                                                           _.checkForm();
                                                         },
@@ -128,21 +145,34 @@ class ResetPasswordScreen extends StatelessWidget {
                                                             .confPasswordErrorMessage
                                                             .value,
                                                       ),
-                                                      Separators.maximumVertical(),
+                                                      Separators
+                                                          .maximumVertical(),
                                                       SizedBox(
                                                         width: Get.width / 3.5,
                                                         height: 40,
                                                         child: CustomButton(
                                                           paddingVertical: 5,
-                                                          icon: 'assets/images/icon_arrow_right.svg',
-                                                          bgcolor: _.isValidForm.isTrue
+                                                          icon:
+                                                              'assets/images/icon_arrow_right.svg',
+                                                          bgcolor: _.isValidForm
+                                                                  .isTrue
                                                               ? colorGreen
-                                                              : colorGrey1.withOpacity(0.5),
-                                                          borderColor: _.isValidForm.isTrue
+                                                              : colorGrey1
+                                                                  .withOpacity(
+                                                                      0.5),
+                                                          borderColor: _
+                                                                  .isValidForm
+                                                                  .isTrue
                                                               ? colorGreen
-                                                              : colorGreen.withOpacity(0),
-                                                          actionColor: colorGreen.withOpacity(0.5),
-                                                          enabled: _.isValidForm.value,
+                                                              : colorGreen
+                                                                  .withOpacity(
+                                                                      0),
+                                                          actionColor:
+                                                              colorGreen
+                                                                  .withOpacity(
+                                                                      0.5),
+                                                          enabled: _.isValidForm
+                                                              .value,
                                                           action: () {
                                                             _.doResetPassword();
                                                           },
