@@ -52,7 +52,7 @@ class RegularConfessionScreen extends StatelessWidget {
                     content: TimelineTheme(
                       data: TimelineThemeData(lineColor: colorGrey1),
                       child: Timeline(
-                        indicatorSize: 18,
+                        indicatorSize: 24,
                         events: value.openingTime!.map((openingTime) {
                           return TimelineEventDisplay(
                             child: DayConfessionItem(openingTime: openingTime),
