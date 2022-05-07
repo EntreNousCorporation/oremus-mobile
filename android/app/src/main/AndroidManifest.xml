@@ -27,7 +27,7 @@
     </queries>
 
    <application
-       android:label="oremusapp"
+       android:label="Oremus"
        android:name="${applicationName}"
        android:icon="@mipmap/ic_launcher"
        android:allowBackup="false"
