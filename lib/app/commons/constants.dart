@@ -37,4 +37,18 @@ abstract class AppConstants {
   static const CONTACTS = 5;
   static const ABOUT = 6;
 
+  //LITURGICAL CELEBRATION
+  static const EASTER_MASS = 'EASTER_MASS'; //Messe de Pâques
+  static const EASTER_VIGIL = 'EASTER_VIGIL'; //Veillée Pascale
+  static const MASS = 'MASS'; //Messe
+  static const HOLY_THURSDAY = 'HOLY_THURSDAY'; //Jeudi Saint
+  static const SACRAMENT = 'SACRAMENT'; //Sacrement
+  static const CONFESSION = 'CONFESSION'; //Confession
+
+  static const SPECIALS_MASSES = [
+    EASTER_MASS,
+    EASTER_VIGIL,
+    HOLY_THURSDAY,
+    SACRAMENT,
+  ];
 }

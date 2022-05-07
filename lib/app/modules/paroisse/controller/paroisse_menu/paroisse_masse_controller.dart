@@ -88,7 +88,7 @@ class ParoisseMasseController extends GetxController {
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       isRegularMassDataProcessing(false);
       regularMasses.value = value
-          .where((element) => (element.type?.code != 'CONFESSION') && (element.isRecurrent == true))
+          .where((element) => (element.type?.code == AppConstants.MASS) && (element.isRecurrent == true))
           .toList();
       log('regularMasses => ${regularMasses.length}');
       if (regularMasses.isNotEmpty == true) {
@@ -119,7 +119,7 @@ class ParoisseMasseController extends GetxController {
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       isSpecialMassDataProcessing(false);
       specialMasses.value = value
-          .where((element) => (element.type?.code != 'CONFESSION') && (element.isRecurrent == false) && (Jiffy(element.startDate).isAfter(Jiffy())))
+          .where((element) => (AppConstants.SPECIALS_MASSES.contains(element.type?.code)) && (element.isRecurrent == false) && (Jiffy(element.startDate).isAfter(Jiffy())))
           .toList();
       log('specialMasses => ${specialMasses.length}');
       if (specialMasses.isNotEmpty == true) {
@@ -150,7 +150,7 @@ class ParoisseMasseController extends GetxController {
       refreshController.refreshCompleted();
       if (value.isEmpty == false) {
         regularMasses.value = value
-            .where((element) => (element.type?.code != 'CONFESSION') && (element.isRecurrent == true))
+            .where((element) => (element.type?.code == AppConstants.MASS) && (element.isRecurrent == true))
             .toList();
         log('regularMasses => ${regularMasses.length}');
       }
@@ -176,10 +176,9 @@ class ParoisseMasseController extends GetxController {
       refreshNotRecurrentController.refreshCompleted();
       if (value.isNotEmpty == true) {
         specialMasses.value = value
-            .where((element) => (element.type?.code != 'CONFESSION') && (element.isRecurrent == false) && (Jiffy(element.startDate).isAfter(Jiffy())))
+            .where((element) => (AppConstants.SPECIALS_MASSES.contains(element.type?.code)) && (element.isRecurrent == false) && (Jiffy(element.startDate).isAfter(Jiffy())))
             .toList();
         log('specialMasses => ${specialMasses.length}');
-        //log('specialMasses hour => ${Jiffy(specialMasses.value.first.startDate, "yyyy-MM-dd'T'HH:mm:ss").jm}');
       }
     }, onError: (error) {
       refreshNotRecurrentController.refreshCompleted();
