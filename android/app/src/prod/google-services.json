@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "393738947675",
+    "project_id": "oremus-test",
+    "storage_bucket": "oremus-test.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:393738947675:android:ed19139268557e427e837e",
+        "android_client_info": {
+          "package_name": "ci.oremus.app.oremusapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "393738947675-6lca586t1maiagvq5j4i98fm0rdfo7fo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRByah1eRtgpS1kZbrt28t5_rDuT2x7sc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "393738947675-6lca586t1maiagvq5j4i98fm0rdfo7fo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "393738947675-7ptgqjgq5e2bvimv1499rlraqn3gslp2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ci.oremus.app.oremusapp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:393738947675:android:815d4c0b258126857e837e",
+        "android_client_info": {
+          "package_name": "ci.oremus.app.oremusapp.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "393738947675-6lca586t1maiagvq5j4i98fm0rdfo7fo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRByah1eRtgpS1kZbrt28t5_rDuT2x7sc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "393738947675-6lca586t1maiagvq5j4i98fm0rdfo7fo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "393738947675-7ptgqjgq5e2bvimv1499rlraqn3gslp2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ci.oremus.app.oremusapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
