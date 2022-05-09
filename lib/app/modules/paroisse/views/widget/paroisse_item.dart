@@ -54,8 +54,7 @@ class ParoisseItem extends StatelessWidget {
                     alignment: Alignment.center,
                     children: [
                       ClipRRect(
-                        borderRadius:
-                        const BorderRadius.all(Radius.circular(10.0)),
+                        borderRadius: const BorderRadius.all(Radius.circular(10.0)),
                         child: SizedBox(
                           height: Get.width / 2.8,
                           width: double.infinity,
