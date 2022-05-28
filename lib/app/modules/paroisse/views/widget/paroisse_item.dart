@@ -53,42 +53,42 @@ class ParoisseItem extends StatelessWidget {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                        child: SizedBox(
-                          height: Get.width / 2.8,
-                          width: double.infinity,
-                          child: (paroisse.coverImage?.link?.isNotEmpty == true)
-                              ? Hero(
-                            transitionOnUserGestures: true,
-                            tag: 'tag$index',
-                            child: Flow(
-                              delegate: ParallaxFlowDelegate(
-                                scrollable: Scrollable.of(context)!,
-                                listItemContext: context,
-                                backgroundImageKey: _backgroundImageKey,
-                              ),
-                              children: [
-                                CachedNetworkImage(
-                                  key: _backgroundImageKey,
-                                  imageUrl:
-                                  paroisse.coverImage?.link ?? '',
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) =>
-                                      SizedBox(
-                                          width: Get.width / 4,
-                                          height: Get.width / 4,
-                                          child: LottieLoadingView(
-                                              size: Get.width / 6)),
-                                  errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                                ),
-                              ],
+                      Hero(
+                        transitionOnUserGestures: true,
+                        tag: 'tag$index',
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                          child: SizedBox(
+                            height: Get.width / 2.8,
+                            width: double.infinity,
+                            child: (paroisse.coverImage?.link?.isNotEmpty == true)
+                                ? Flow(
+                                  delegate: ParallaxFlowDelegate(
+                                    scrollable: Scrollable.of(context)!,
+                                    listItemContext: context,
+                                    backgroundImageKey: _backgroundImageKey,
+                                  ),
+                                  children: [
+                                    CachedNetworkImage(
+                                      key: _backgroundImageKey,
+                                      imageUrl:
+                                      paroisse.coverImage?.link ?? '',
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) =>
+                                          SizedBox(
+                                              width: Get.width / 4,
+                                              height: Get.width / 4,
+                                              child: LottieLoadingView(
+                                                  size: Get.width / 6)),
+                                      errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
+                                    ),
+                                  ],
+                                )
+                                : Image.asset(
+                              'assets/images/bg_login.jpg',
+                              fit: BoxFit.cover,
                             ),
-                          )
-                              : Image.asset(
-                            'assets/images/bg_login.jpg',
-                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
