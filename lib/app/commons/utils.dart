@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 
@@ -77,4 +78,8 @@ String getCurrentDay() {
 hideKeyboard() {
   //FocusManager.instance.primaryFocus?.unfocus();
   WidgetsBinding.instance?.focusManager.primaryFocus?.unfocus();
+}
+
+double applyElevation() {
+  return GetPlatform.isAndroid ? 10 : 0;
 }

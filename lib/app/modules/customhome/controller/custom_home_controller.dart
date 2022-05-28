@@ -26,10 +26,6 @@ class CustomHomeController extends GetxController {
     super.onInit();
   }
 
-  double applyElevation() {
-    return GetPlatform.isAndroid ? 10 : 0;
-  }
-
   initMenus() {
     menus.value = [
       MenuItem(

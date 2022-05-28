@@ -6,6 +6,7 @@ import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
+import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/favorite/controller/favorite_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/paroisse_item.dart';
 
@@ -26,7 +27,7 @@ class FavoritesScreen extends StatelessWidget {
                   child: Scaffold(
                     resizeToAvoidBottomInset: true,
                     appBar: AppBar(
-                      elevation: 10,
+                      elevation: applyElevation(),
                       shadowColor: colorGrey2.withOpacity(0.8),
                       leading: IconButton(
                         onPressed: () {

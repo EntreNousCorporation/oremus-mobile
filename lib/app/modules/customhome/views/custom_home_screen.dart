@@ -7,6 +7,7 @@ import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
+import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/about/views/about_screen.dart';
 import 'package:oremusapp/app/modules/contact/views/contact_screen.dart';
 import 'package:oremusapp/app/modules/customhome/controller/custom_home_controller.dart';
@@ -73,7 +74,7 @@ class CustomHomeScreen extends StatelessWidget {
                   child: Scaffold(
                     resizeToAvoidBottomInset: false,
                     appBar: AppBar(
-                      elevation: logic.applyElevation(),
+                      elevation: applyElevation(),
                       shadowColor: colorGrey2.withOpacity(0.8),
                       backgroundColor: colorGreen,
                       centerTitle: true,
