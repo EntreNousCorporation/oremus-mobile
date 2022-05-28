@@ -38,7 +38,6 @@ class ParoisseMapController extends GetxController {
 
   @override
   void onReady() {
-    //initControllers();
     showInfoWindow();
     super.onReady();
   }
@@ -254,6 +253,8 @@ class ParoisseMapController extends GetxController {
                               )
                             : Image.asset(
                                 'assets/images/bg_login.jpg',
+                                width: Get.width / 5,
+                                height: Get.width / 5,
                                 fit: BoxFit.cover,
                               ),
                       ),
@@ -326,9 +327,9 @@ class ParoisseMapController extends GetxController {
   }
 
   launchMapRoutes() async {
-    //String url = "https://www.google.com/maps/dir/?api=1&destination=${paroisseSelected.value.localisation?.latitude ?? 0.0},${paroisseSelected.value.localisation?.longitude ?? 0.0}&travelmode=driving&dir_action=navigate";
+    //String url = "https://www.google.com/maps/dir/?api=1&origin=${paroisseSelected.value.localisation?.latitude ?? 0.0},${paroisseSelected.value.localisation?.longitude ?? 0.0}&destination=${paroisseSelected.value.localisation?.latitude ?? 0.0},${paroisseSelected.value.localisation?.longitude ?? 0.0}&travelmode=driving&dir_action=navigate";
 
-    String url = "https://www.google.com/maps/dir/?api=1&origin=${paroisseSelected.value.localisation?.latitude ?? 0.0},${paroisseSelected.value.localisation?.longitude ?? 0.0}&destination=${paroisseSelected.value.localisation?.latitude ?? 0.0},${paroisseSelected.value.localisation?.longitude ?? 0.0}&travelmode=driving&dir_action=navigate";
+    String url = "https://www.google.com/maps/dir/?api=1&destination=${paroisseSelected.value.localisation?.latitude ?? 0.0},${paroisseSelected.value.localisation?.longitude ?? 0.0}&travelmode=driving&dir_action=navigate";
     if (await canLaunch(url)) {
       await launch(url);
     } else {

@@ -28,7 +28,7 @@ class ParoisseMapScreen extends StatelessWidget {
             );
           }),
           Padding(
-            padding: const EdgeInsets.only(top: 58.0, left: 16),
+            padding: const EdgeInsets.only(top: kToolbarHeight, left: 16),
             child: Row(
               children: [
                 GestureDetector(

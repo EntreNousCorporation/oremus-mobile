@@ -33,9 +33,7 @@ class MapViewGoogle extends StatelessWidget {
           _.mapController.onCameraMove!();
         },
         onMapCreated: (GoogleMapController controller) {
-          //_.controller.complete(controller);
           _.mapController.googleMapController = controller;
-          //_.initControllers();
         },
       );
     });
