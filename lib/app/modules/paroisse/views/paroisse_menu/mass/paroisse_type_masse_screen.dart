@@ -8,12 +8,7 @@ import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_activity_movement_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_masse_controller.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/activity_movement/activity_screen.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/activity_movement/movement_screen.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/mass/special_mass_screen.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/mass/regular_mass_screen.dart';
 
 class ParoisseTypeMasseScreen extends StatelessWidget {
   const ParoisseTypeMasseScreen({Key? key}) : super(key: key);
@@ -131,6 +126,7 @@ class ParoisseTypeMasseScreen extends StatelessWidget {
                                     Image.asset(
                                       'assets/images/bg_login.jpg',
                                       width: Get.width,
+                                      height: Get.width,
                                       fit: BoxFit.cover,
                                     ),
                                     Container(

@@ -21,10 +21,10 @@ import 'package:oremusapp/app/modules/paroisse/views/filter/filter_paroisse_scre
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_map_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/activity_movement/paroisse_activity_movement_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/confession/paroisse_type_confession_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/mass/paroisse_type_masse_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_menu_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_office_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_presby_team_screen.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/mass/paroisse_type_masse_screen.dart';
 import 'package:oremusapp/app/modules/profile/binding/edit_profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/binding/profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/views/edit_profile_screen.dart';

@@ -142,6 +142,7 @@ class ParoisseOfficeScreen extends StatelessWidget {
                                       child: Image.asset(
                                         'assets/images/bg_login.jpg',
                                         width: Get.width,
+                                        height: Get.width,
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -215,7 +216,7 @@ class ParoisseOfficeScreen extends StatelessWidget {
                                                               TextSizes.sixteen,
                                                           textColor: colorWhite),
                                                 ),
-                                                content: TimelineTheme(
+                                                content: value.openingTime?.isNotEmpty == true ? TimelineTheme(
                                                   data: TimelineThemeData(lineColor: colorGrey1),
                                                   child: Timeline(
                                                     indicatorSize: 24,
@@ -248,6 +249,13 @@ class ParoisseOfficeScreen extends StatelessWidget {
                                                       );
                                                     }).toList(),
                                                   ),
+                                                ) : Text(
+                                                  'Horaires non disponible pour l\'instant',
+                                                  style: TextStyles
+                                                      .montserratSemiBold(
+                                                      textSize:
+                                                      TextSizes.fourteen,
+                                                      textColor: colorBlack),
                                                 ),
                                               );
                                             }).toList(),

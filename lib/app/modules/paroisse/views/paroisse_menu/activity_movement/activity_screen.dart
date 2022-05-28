@@ -39,7 +39,8 @@ class ActivityScreen extends StatelessWidget {
           );
         } else {
           return NotFoundScreen(
-              message: 'Activités non disponible pour l\'instant');
+            message: 'Activités non disponible pour l\'instant',
+          );
         }
       }
     });

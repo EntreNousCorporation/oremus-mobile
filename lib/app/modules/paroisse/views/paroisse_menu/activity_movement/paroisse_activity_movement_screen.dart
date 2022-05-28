@@ -107,6 +107,7 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
                                       child: Image.asset(
                                         'assets/images/bg_login.jpg',
                                         width: Get.width,
+                                        height: Get.width,
                                         fit: BoxFit.cover,
                                       ),
                                     ),

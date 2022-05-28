@@ -49,7 +49,7 @@ class RegularMassScreen extends StatelessWidget {
                       style: TextStyles.montserratSemiBold(
                           textSize: TextSizes.sixteen, textColor: colorWhite),
                     ),
-                    content: TimelineTheme(
+                    content: value.openingTime?.isNotEmpty == true ? TimelineTheme(
                       data: TimelineThemeData(lineColor: colorGrey1),
                       child: Timeline(
                         indicatorSize: 24,
@@ -83,6 +83,13 @@ class RegularMassScreen extends StatelessWidget {
                           );
                         }).toList(),
                       ),
+                    ) : Text(
+                      'Horaires non disponible pour l\'instant',
+                      style: TextStyles
+                          .montserratSemiBold(
+                          textSize:
+                          TextSizes.fourteen,
+                          textColor: colorBlack),
                     ),
                   );
                 }).toList(),

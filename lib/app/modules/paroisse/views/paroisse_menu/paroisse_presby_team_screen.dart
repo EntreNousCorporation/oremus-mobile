@@ -133,6 +133,7 @@ class ParoisseBresbyTeamScreen extends StatelessWidget {
                               Image.asset(
                                 'assets/images/bg_login.jpg',
                                 width: Get.width,
+                                height: Get.width,
                                 fit: BoxFit.cover,
                               ),
                               Container(

@@ -7,12 +7,12 @@ import 'package:jiffy/jiffy.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
-import 'package:oremusapp/app/modules/paroisse/data/model/type_menu.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/type_menu.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/mass/special_mass_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/mass/regular_mass_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/mass/special_mass_screen.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 

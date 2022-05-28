@@ -74,7 +74,7 @@ class ParoisseOfficeController extends GetxController {
     isDataProcessing(true);
     paroisseRepository.getOfficeTimes(idParoisse).then((value) {
       isDataProcessing(false);
-      offices.value = value.where((element) => element.type?.code == 'OFFICE').toList();
+      offices.value = value; //.where((element) => element.type?.code == 'OFFICE').toList();
       if (offices.isNotEmpty == true) {
         hasData(true);
       } else {
@@ -102,7 +102,7 @@ class ParoisseOfficeController extends GetxController {
     paroisseRepository.getOfficeTimes(idParoisse).then((value) {
       refreshController.refreshCompleted();
       if (value.isNotEmpty == true) {
-        offices.value = value.where((element) => element.type?.code == 'OFFICE').toList();
+        offices.value = value; //.where((element) => element.type?.code == 'OFFICE').toList();
       }
     }, onError: (error) {
       refreshController.refreshCompleted();
