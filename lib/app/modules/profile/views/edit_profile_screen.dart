@@ -141,11 +141,10 @@ class EditProfileScreen extends StatelessWidget {
                                             prefixIcon:
                                                 "assets/images/icon_user.svg",
                                             prefixIconColor: colorGrey1,
-                                            keyboardType: TextInputType.name,
+                                            keyboardType: TextInputType.text,
                                             maskInputs: [
                                               FilteringTextInputFormatter.allow(
-                                                  RegExp(AppConstants
-                                                      .INPUT_NAME_REGEX)),
+                                                  RegExp(AppConstants.INPUT_NAME_REGEX)),
                                             ],
                                             onChanged: (value) {
                                               _.checkForm();
@@ -163,11 +162,10 @@ class EditProfileScreen extends StatelessWidget {
                                                 "assets/images/icon_user.svg",
                                             //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
                                             prefixIconColor: colorGrey1,
-                                            keyboardType: TextInputType.name,
+                                            keyboardType: TextInputType.text,
                                             maskInputs: [
                                               FilteringTextInputFormatter.allow(
-                                                  RegExp(AppConstants
-                                                      .INPUT_NAME_REGEX)),
+                                                  RegExp(AppConstants.INPUT_NAME_REGEX)),
                                             ],
                                             onChanged: (value) {
                                               _.checkForm();

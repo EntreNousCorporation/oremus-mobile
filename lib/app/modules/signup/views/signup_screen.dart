@@ -109,7 +109,7 @@ class SignupScreen extends StatelessWidget {
                                                     "assets/images/icon_user.svg",
                                                 prefixIconColor: colorGrey1,
                                                 keyboardType:
-                                                    TextInputType.name,
+                                                    TextInputType.text,
                                                 maskInputs: [
                                                   FilteringTextInputFormatter
                                                       .allow(RegExp(AppConstants
@@ -133,7 +133,7 @@ class SignupScreen extends StatelessWidget {
                                                 //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
                                                 prefixIconColor: colorGrey1,
                                                 keyboardType:
-                                                    TextInputType.name,
+                                                    TextInputType.text,
                                                 maskInputs: [
                                                   FilteringTextInputFormatter
                                                       .allow(RegExp(AppConstants
