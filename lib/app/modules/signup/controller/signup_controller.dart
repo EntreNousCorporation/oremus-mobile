@@ -11,6 +11,7 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signup/data/repository/signup_repository.dart';
+import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
 
 class SignupController extends GetxController {
@@ -73,11 +74,14 @@ class SignupController extends GetxController {
       unlockBackButton.value = false;
     });
 
-    String firstname = firstnameController.text.trim().toString().replaceAll(' ', '');
-    String lastname = lastnameController.text.trim().toString().replaceAll(' ', '');
+    String firstname =
+        firstnameController.text.trim().toString().replaceAll(' ', '');
+    String lastname =
+        lastnameController.text.trim().toString().replaceAll(' ', '');
     String email = emailController.text.trim().toString().replaceAll(' ', '');
     String phone = phoneController.text.trim().toString().replaceAll(' ', '');
-    String password = passwordController.text.trim().toString().replaceAll(' ', '');
+    String password =
+        passwordController.text.trim().toString().replaceAll(' ', '');
 
     loading(true);
     lockScreen(true);
@@ -98,8 +102,8 @@ class SignupController extends GetxController {
       log('value => ${value.accessToken}');
       lockScreen(false);
       showNotification(
-          message: "Inscription effectué avec succès",
-          bgColor: colorGreen
+        message: "Inscription effectué avec succès",
+        bgColor: colorGreen,
       );
       Get.back();
     }, onError: (error) {
@@ -108,16 +112,32 @@ class SignupController extends GetxController {
       });
       lockScreen(false);
       debugPrint("error => ${error.toString()}");
-      if (error.toString().isNotEmpty && error is Map) {
-        var errorResponse = ErrorResponse.fromJson(json.decode(error.toString()));
+
+      var err = error as CustomException;
+      debugPrint("error => ${err.toString()}");
+      if (err.code == 409) {
         showNotification(
-            message: errorResponse.debugMessage.toString(),
+          message: "Ce compte existe déjà. Si vous avez oublié votre mot de passe, vous pouvez le réinitialiser",
         );
       } else {
         showNotification(
-            message: "Une erreur est survenue",
+          message: "Une erreur est survenue",
         );
       }
+
+      /*if (error.toString().isNotEmpty && error is Map) {
+        var errorResponse =
+            ErrorResponse.fromJson(json.decode(error.toString()));
+        showNotification(
+          message: errorResponse.debugMessage.toString(),
+        );
+      } else {
+
+        showNotification(
+          message: "Une erreur est survenue",
+        );
+      }*/
+
     });
   }
 
@@ -176,7 +196,8 @@ class SignupController extends GetxController {
 
     if (confPasswordFocusNode.hasFocus) {
       if (confPassword.isEmpty) {
-        confPasswordErrorMessage.value = 'La confirmation du mot de passe est obligatoire';
+        confPasswordErrorMessage.value =
+            'La confirmation du mot de passe est obligatoire';
       } else {
         confPasswordErrorMessage.value = '';
       }
@@ -189,7 +210,14 @@ class SignupController extends GetxController {
     } else {
       confPasswordErrorMessage.value = '';
     }
-    isValidForm.value = lastname.isNotEmpty && firstname.isNotEmpty && email.isNotEmpty && isValidEmail && phone.isNotEmpty && password.isNotEmpty && confPassword.isNotEmpty && isSamePassword;
+    isValidForm.value = lastname.isNotEmpty &&
+        firstname.isNotEmpty &&
+        email.isNotEmpty &&
+        isValidEmail &&
+        phone.isNotEmpty &&
+        password.isNotEmpty &&
+        confPassword.isNotEmpty &&
+        isSamePassword;
   }
 
   @override

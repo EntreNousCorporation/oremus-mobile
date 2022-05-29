@@ -163,6 +163,7 @@ class EditProfileScreen extends StatelessWidget {
                                             //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
                                             prefixIconColor: colorGrey1,
                                             keyboardType: TextInputType.text,
+                                            textCapitalization: TextCapitalization.words,
                                             maskInputs: [
                                               FilteringTextInputFormatter.allow(
                                                   RegExp(AppConstants.INPUT_NAME_REGEX)),

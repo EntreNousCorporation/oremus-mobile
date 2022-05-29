@@ -42,8 +42,7 @@ Future showCustomDialog(BuildContext context,
                   child: Text(
                     type == 'info' ? title : 'ALERTE',
                     style: TextStyles.montserratSemiBold(
-                        textSize: TextSizes.sixteen,
-                        textColor: colorBlack),
+                        textSize: TextSizes.sixteen, textColor: colorBlack),
                   ),
                 )
               ],
@@ -51,8 +50,7 @@ Future showCustomDialog(BuildContext context,
             content: Text(
               message,
               style: TextStyles.montserratSemiBold(
-                textSize: TextSizes.fourteen,
-                textColor: colorBlack),
+                  textSize: TextSizes.fourteen, textColor: colorBlack),
             ),
             actions: <Widget>[
               Visibility(
@@ -65,8 +63,7 @@ Future showCustomDialog(BuildContext context,
                     child: Text(
                       negativeLabel,
                       style: TextStyles.montserratSemiBold(
-                          textSize: TextSizes.fourteen,
-                          textColor: colorBlack),
+                          textSize: TextSizes.fourteen, textColor: colorBlack),
                     )),
               ),
               TextButton(
@@ -80,8 +77,7 @@ Future showCustomDialog(BuildContext context,
                   child: Text(
                     positiveLabel,
                     style: TextStyles.montserratSemiBold(
-                        textSize: TextSizes.fourteen,
-                        textColor: colorWhite),
+                        textSize: TextSizes.fourteen, textColor: colorWhite),
                   )),
             ],
           ),
@@ -116,8 +112,7 @@ Future showLoadingDialog(BuildContext context,
                   Text(
                     message,
                     style: TextStyles.montserratSemiBold(
-                        textSize: TextSizes.fourteen,
-                        textColor: colorBlack),
+                        textSize: TextSizes.fourteen, textColor: colorBlack),
                   ),
                 ],
               )
@@ -129,7 +124,8 @@ Future showLoadingDialog(BuildContext context,
 
 showExitDialog(BuildContext context,
     {String title = 'INFORMATION',
-    required String message, String positiveText = 'OUI',
+    required String message,
+    String positiveText = 'OUI',
     bool? result}) async {
   return showDialog(
       context: context,
@@ -145,14 +141,12 @@ showExitDialog(BuildContext context,
             title: Text(
               title,
               style: TextStyles.montserratSemiBold(
-                  textSize: TextSizes.fourteen,
-                  textColor: colorBlack),
+                  textSize: TextSizes.fourteen, textColor: colorBlack),
             ),
             content: Text(
               message,
               style: TextStyles.montserratRegular(
-                  textSize: TextSizes.eighteen,
-                  textColor: colorBlack),
+                  textSize: TextSizes.eighteen, textColor: colorBlack),
             ),
             actions: <Widget>[
               TextButton(
@@ -160,8 +154,7 @@ showExitDialog(BuildContext context,
                 child: Text(
                   positiveText,
                   style: TextStyles.montserratSemiBold(
-                      textSize: TextSizes.sixteen,
-                      textColor: colorGreen),
+                      textSize: TextSizes.sixteen, textColor: colorGreen),
                 ),
               ),
               TextButton(
@@ -169,8 +162,7 @@ showExitDialog(BuildContext context,
                 child: Text(
                   'NON',
                   style: TextStyles.montserratBold(
-                      textSize: TextSizes.sixteen,
-                      textColor: colorBlack),
+                      textSize: TextSizes.sixteen, textColor: colorBlack),
                 ),
               ),
             ],
@@ -195,14 +187,12 @@ showNormalDialog(BuildContext context,
           title: Text(
             title,
             style: TextStyles.montserratSemiBold(
-                textSize: TextSizes.fourteen,
-                textColor: colorGreen),
+                textSize: TextSizes.fourteen, textColor: colorGreen),
           ),
           content: Text(
             message,
             style: TextStyles.montserratRegular(
-                textSize: TextSizes.eighteen,
-                textColor: colorGreen),
+                textSize: TextSizes.eighteen, textColor: colorGreen),
           ),
           actions: <Widget>[
             TextButton(
@@ -210,8 +200,7 @@ showNormalDialog(BuildContext context,
               child: Text(
                 'OK',
                 style: TextStyles.montserratBold(
-                    textSize: TextSizes.sixteen,
-                    textColor: colorBlack),
+                    textSize: TextSizes.sixteen, textColor: colorBlack),
               ),
             ),
           ],
@@ -228,18 +217,20 @@ showNotification({
   NotificationPosition position = NotificationPosition.top,
 }) {
   return showSimpleNotification(
-    Center(
-      child: Text(
-        message,
-        style: TextStyles.montserratSemiBold(
-            textSize: TextSizes.fourteen, textColor: colorWhite),
+      Center(
+        child: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: TextStyles.montserratSemiBold(
+            textSize: TextSizes.fourteen,
+            textColor: colorWhite,
+          ),
+        ),
       ),
-    ),
-    elevation: 0,
-    duration: duration,
-    leading: leading,
-    trailing: trailing,
-    background: bgColor,
-    position: position
-  );
+      elevation: 0,
+      duration: duration,
+      leading: leading,
+      trailing: trailing,
+      background: bgColor,
+      position: position);
 }

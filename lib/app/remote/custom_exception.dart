@@ -23,6 +23,10 @@ class UnauthorisedException extends CustomException {
   UnauthorisedException(code, message) : super(code, "Unauthorised: $message");
 }
 
+class ConflictedException extends CustomException {
+  ConflictedException(code, message) : super(code, "Unauthorised: $message");
+}
+
 class InvalidInputException extends CustomException {
   InvalidInputException(code, message) : super(code, "Invalid Input: $message");
 }

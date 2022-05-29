@@ -87,6 +87,8 @@ class ApiClientImpl extends GetConnect implements ApiClient {
         throw UnauthorisedException(401, 'Requête non authorisée');
       case 403:
         throw UnauthorisedException(403, 'Requête non authorisée');
+      case 409:
+        throw ConflictedException(409, 'Conflit survenu');
       case 500:
       default:
         throw FetchDataException(100, 'Error occured while Communication with Server with StatusCode: ${response.statusCode}');
