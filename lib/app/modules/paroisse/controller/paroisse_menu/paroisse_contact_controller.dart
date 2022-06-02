@@ -13,6 +13,7 @@ import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_reposito
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ParoisseContactController extends GetxController {
   final ParoisseRepository paroisseRepository;
@@ -58,6 +59,25 @@ class ParoisseContactController extends GetxController {
     }
   }
 
+  launchEmail(String email) async {
+    if (await canLaunch(Uri.encodeFull(
+            "mailto:$email?subject=Besoin d'information&body=")) ==
+        true) {
+      launch(
+          Uri.encodeFull("mailto:$email?subject=Besoin d'information&body="));
+    } else {
+      log("Can't launch url");
+    }
+  }
+
+  launchPhone(String phone) async {
+    if (await canLaunch("tel:$phone") == true) {
+      launch("tel:$phone");
+    } else {
+      log("Can't launch phone number");
+    }
+  }
+
   getTypeTitle(String code) {
     switch (code) {
       case 'HM':
@@ -89,13 +109,13 @@ class ParoisseContactController extends GetxController {
   }
 
   getContacts() {
-
     log('request getContacts');
 
     var idParoisse = paroisseSelected.value.identifier;
     isDataProcessing(true);
     hasData(false);
-    paroisseRepository.getPlaceOfWorshipContacts(idParoisse ?? -1).then((value) {
+    paroisseRepository.getPlaceOfWorshipContacts(idParoisse ?? -1).then(
+        (value) {
       isDataProcessing(false);
       contacts.value = value;
       if (contacts.isNotEmpty == true) {
@@ -110,13 +130,13 @@ class ParoisseContactController extends GetxController {
       debugPrint('${err.code}');
       if (err.code == 401) {
         showCustomDialog(
-          Get.context!, message: "Vous n’êtes pas autorisé à accéder à cette ressource",
+          Get.context!,
+          message: "Vous n’êtes pas autorisé à accéder à cette ressource",
         ).then((value) {
           //doLogout();
         });
       } else {
-        showCustomDialog(
-          Get.context!, message: err.message);
+        showCustomDialog(Get.context!, message: err.message);
       }
       debugPrint("error => ${err.toString()}");
     });
@@ -126,7 +146,8 @@ class ParoisseContactController extends GetxController {
     log('request onRefresh');
 
     var idParoisse = paroisseSelected.value.identifier;
-    paroisseRepository.getPlaceOfWorshipContacts(idParoisse ?? -1).then((value) {
+    paroisseRepository.getPlaceOfWorshipContacts(idParoisse ?? -1).then(
+        (value) {
       refreshController.refreshCompleted();
       if (value.isEmpty == false) {
         contacts.value = value;
@@ -137,20 +158,20 @@ class ParoisseContactController extends GetxController {
       debugPrint('${err.code}');
       if (err.code == 401) {
         showCustomDialog(
-          Get.context!, message: "Vous n’êtes pas autorisé à accéder à cette ressource",
+          Get.context!,
+          message: "Vous n’êtes pas autorisé à accéder à cette ressource",
         ).then((value) {
           //doLogout();
         });
       } else {
-        showCustomDialog(
-            Get.context!, message: err.message);
+        showCustomDialog(Get.context!, message: err.message);
       }
       debugPrint("error => ${err.toString()}");
     });
   }
 
   getPresbyType(String code) {
-    switch(code) {
+    switch (code) {
       case 'vicar':
       case 'VICAR':
         return 'Vicaire';

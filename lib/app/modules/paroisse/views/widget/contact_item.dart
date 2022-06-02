@@ -1,14 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/contact/views/contact_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_contact_controller.dart';
-import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_presby_team_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/movement_response.dart';
-import 'package:oremusapp/app/modules/paroisse/data/model/place_user.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ContactItem extends StatelessWidget {
   ContactItem({Key? key, required this.contact}) : super(key: key);
@@ -50,22 +50,30 @@ class ContactItem extends StatelessWidget {
                       //Telephone
                       Column(
                         children: contact.numbers?.map((e) {
-                              return Row(
-                                children: [
-                                  Icon(
-                                    Icons.phone_android_rounded,
-                                    color: colorBlack.withOpacity(0.5),
-                                    size: 15,
+                              return InkWell(
+                                onTap: () {
+                                  logic.launchPhone(e);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.phone_android_rounded,
+                                        color: colorBlack.withOpacity(0.5),
+                                        size: 15,
+                                      ),
+                                      Separators.minimunHorizontal(),
+                                      Text(
+                                        contact.numbers?.first ?? '',
+                                        style: TextStyles.montserratRegular(
+                                          textSize: TextSizes.fourteen,
+                                          textColor: colorBlack.withOpacity(0.5),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  Separators.minimunHorizontal(),
-                                  Text(
-                                    contact.numbers?.first ?? '',
-                                    style: TextStyles.montserratRegular(
-                                      textSize: TextSizes.fourteen,
-                                      textColor: colorBlack.withOpacity(0.5),
-                                    ),
-                                  ),
-                                ],
+                                ),
                               );
                             }).toList() ??
                             [],
@@ -77,22 +85,27 @@ class ContactItem extends StatelessWidget {
                       //Emails
                       Column(
                         children: contact.emails?.map((e) {
-                              return Row(
-                                children: [
-                                  Icon(
-                                    Icons.email_rounded,
-                                    color: colorBlack.withOpacity(0.5),
-                                    size: 15,
-                                  ),
-                                  Separators.minimunHorizontal(),
-                                  Text(
-                                    contact.emails?.first ?? '',
-                                    style: TextStyles.montserratRegular(
-                                      textSize: TextSizes.fourteen,
-                                      textColor: colorBlack.withOpacity(0.5),
+                              return InkWell(
+                                onTap: () {
+                                  logic.launchEmail(e);
+                                },
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.email_rounded,
+                                      color: colorBlack.withOpacity(0.5),
+                                      size: 15,
                                     ),
-                                  ),
-                                ],
+                                    Separators.minimunHorizontal(),
+                                    Text(
+                                      contact.emails?.first ?? '',
+                                      style: TextStyles.montserratRegular(
+                                        textSize: TextSizes.fourteen,
+                                        textColor: colorBlack.withOpacity(0.5),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               );
                             }).toList() ??
                             [],
