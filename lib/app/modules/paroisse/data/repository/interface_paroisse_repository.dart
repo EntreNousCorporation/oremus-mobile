@@ -18,6 +18,7 @@ abstract class IParoisseRepository {
   Future<List<PlaceUser>> getPlaceOfWorshipUsers(int idParoisse);
   Future<List<PlaceType>> getPlaceOfWorshipTypes({int? page = 0});
   Future<List<LiturgicalCelebrationResponse>> getOfficeTimes(int idParoisse);
+  Future<List<Contact>> getPlaceOfWorshipContacts(int idParoisse);
 
   //For DB
   List<ContentPlace> getAllFavorites();

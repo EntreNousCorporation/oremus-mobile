@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
@@ -39,7 +40,6 @@ class ParoisseRepository implements IParoisseRepository {
     if (response.statusCode != 200) {
       throw Exception(resp);
     } else {
-      //log('resp => $resp');
       return PlaceResponse.fromJson(
           json.decode(response.bodyString.toString()));
     }
@@ -59,7 +59,6 @@ class ParoisseRepository implements IParoisseRepository {
     if (response.statusCode != 200) {
       throw Exception(resp);
     } else {
-      //log('resp => $resp');
       return (jsonDecode(response.bodyString.toString()) as List)
           .map((i) => LiturgicalCelebrationResponse.fromJson(i))
           .toList();
@@ -111,7 +110,6 @@ class ParoisseRepository implements IParoisseRepository {
       method: HttpMethod.get,
       useBearer: true,
     );
-    final String resp = json.encode(response.bodyString.toString());
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
@@ -126,6 +124,27 @@ class ParoisseRepository implements IParoisseRepository {
   }
 
   @override
+  Future<List<Contact>> getPlaceOfWorshipContacts(int idParoisse) async {
+    Response response = await _apiClient.doRequest(
+      endpoint: "/places-of-worship/$idParoisse/contacts",
+      method: HttpMethod.get,
+      useBearer: true,
+    );
+    log('resp => ${response.statusCode}');
+
+    if (response.statusCode != 200) {
+      var e =
+          ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      throw CustomException(e.debugMessage, e.status);
+    } else {
+      debugPrint("===== getPlaceOfWorshipContacts =====");
+      return (jsonDecode(response.bodyString.toString()) as List)
+          .map((i) => Contact.fromJson(i))
+          .toList();
+    }
+  }
+
+  @override
   Future<List<PlaceType>> getPlaceOfWorshipTypes({int? page = 0}) async {
     Response response = await _apiClient.doRequest(
       endpoint:
@@ -133,7 +152,6 @@ class ParoisseRepository implements IParoisseRepository {
       method: HttpMethod.get,
       useBearer: true,
     );
-    final String resp = json.encode(response.bodyString.toString());
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {

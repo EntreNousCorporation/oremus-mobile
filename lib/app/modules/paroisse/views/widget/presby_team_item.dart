@@ -20,7 +20,6 @@ class PresbyTeamItem extends StatelessWidget {
         child: Material(
           borderRadius: BorderRadius.circular(10.0),
           elevation: 10,
-          //color: _isPressed ? colorGreen.withOpacity(0.5) : colorWhite,
           shadowColor: colorGrey2.withOpacity(0.5),
           child: Padding(
             padding: const EdgeInsets.all(10.0),

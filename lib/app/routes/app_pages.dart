@@ -12,6 +12,7 @@ import 'package:oremusapp/app/modules/paroisse/binding/filter_paroisse_binding.d
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_activity_movement_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_confession_binding.dart';
+import 'package:oremusapp/app/modules/paroisse/binding/paroisse_contact_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_map_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_masse_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_binding.dart';
@@ -22,6 +23,8 @@ import 'package:oremusapp/app/modules/paroisse/views/paroisse_map_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/activity_movement/paroisse_activity_movement_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/confession/paroisse_type_confession_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/mass/paroisse_type_masse_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_contact_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_contact_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_menu_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_office_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_presby_team_screen.dart';
@@ -147,6 +150,13 @@ class AppPages {
       name: Routes.PAROISSE_PRESBY_TEAM,
       page: () => const ParoisseBresbyTeamScreen(),
       binding: ParoissePresbyTeamBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 700),
+    ),
+    GetPage(
+      name: Routes.PAROISSE_CONTACT,
+      page: () => const ParoisseContactScreen(),
+      binding: ParoisseContactBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 700),
     ),

@@ -140,6 +140,26 @@ class ParoisseMenuController extends GetxController {
           paroisseSelected.refresh();
         },
       ),
+      TypeMenu(
+        code: 'CO',
+        title: 'Contacts',
+        icon: 'assets/images/contacts.svg',
+        isPngImage: false,
+        activeTint: colorBlack,
+        goToPage: () async {
+          await Get.toNamed(
+            Routes.PAROISSE_CONTACT,
+            arguments: [
+              'CO',
+              jsonEncode(paroisseSelected.value.toJson()),
+            ],
+          );
+          log("retour");
+          //on met à jour la liste au cas où favoris mis à jour
+          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+          paroisseSelected.refresh();
+        },
+      ),
     ];
   }
 

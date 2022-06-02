@@ -22,6 +22,7 @@ abstract class Routes {
   static const PAROISSE_MAP = '/paroisse-map';
   static const PAROISSE_ACTIVITY_MOVEMENT = '/paroisse-activity-movement';
   static const PAROISSE_PRESBY_TEAM = '/paroisse-presby-team';
+  static const PAROISSE_CONTACT = '/paroisse-contact';
   static const FILTER_PAROISSE = '/filter-paroisse';
 
   //PROFILE

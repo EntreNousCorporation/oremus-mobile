@@ -40,12 +40,14 @@ class MovementResponse {
     description = json['description'];
     meetingPlace = json['meetingPlace'];
     leader = json['leader'];
-    contact = json['contact'] != null ? Contact.fromJson(json['contact']) : null;
-    chaplain = json['chaplain'] != null ? Chaplain.fromJson(json['chaplain']) : null;
+    contact =
+        json['contact'] != null ? Contact.fromJson(json['contact']) : null;
+    chaplain =
+        json['chaplain'] != null ? Chaplain.fromJson(json['chaplain']) : null;
     openingTime = json['openingTime'] != null
         ? (json['openingTime'] as List)
-        .map((i) => OpeningTime.fromJson(i))
-        .toList()
+            .map((i) => OpeningTime.fromJson(i))
+            .toList()
         : null;
   }
 
@@ -100,8 +102,8 @@ class Contact {
     modifiedBy = json['modifiedBy'];
     name = json['name'];
     fax = json['fax'];
-    //emails = json['emails'] as List<String>;
-    //numbers = json['numbers'] as List<String>;
+    emails = json['emails'].cast<String>();
+    numbers = json['numbers'].cast<String>();
   }
 
   Map<String, dynamic> toJson() {
@@ -113,12 +115,8 @@ class Contact {
     data['modifiedBy'] = modifiedBy;
     data['name'] = name;
     data['fax'] = fax;
-    if (emails != null) {
-      data['emails'] = emails?.map((v) => v).toList();
-    }
-    if (numbers != null) {
-      data['numbers'] = numbers?.map((v) => v).toList();
-    }
+    data['emails'] = emails;
+    data['numbers'] = numbers;
     return data;
   }
 }
