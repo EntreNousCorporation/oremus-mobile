@@ -18,7 +18,7 @@ abstract class ApiClient extends GetConnect {
   });
 }
 
-class ApiClientImpl extends GetConnect implements ApiClient {
+class ApiClientImpl extends ApiClient {
   @override
   Future doRequest({
     required String endpoint,

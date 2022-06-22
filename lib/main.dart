@@ -59,8 +59,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return OverlaySupport.global(
       child: GetMaterialApp(
-        debugShowCheckedModeBanner:
-            (flavor == AppConstants.ENV_DEV) ? true : false,
+        debugShowCheckedModeBanner: (flavor == AppConstants.ENV_DEV) ? true : false,
         locale: TranslationService.locale,
         fallbackLocale: TranslationService.fallbackLocale,
         translations: TranslationService(),

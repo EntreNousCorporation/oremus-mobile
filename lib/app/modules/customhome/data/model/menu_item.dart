@@ -1,11 +1,11 @@
-class MenuItem {
+class MenusItem {
   int? code;
   String? libelle;
   String? icon;
   bool? isSelected = false;
   bool isVisible;
 
-  MenuItem({
+  MenusItem({
     this.code,
     this.libelle,
     this.icon,

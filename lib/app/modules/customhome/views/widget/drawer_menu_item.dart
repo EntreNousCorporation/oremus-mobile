@@ -11,7 +11,7 @@ class DrawerMenuItem extends StatelessWidget {
   DrawerMenuItem({required this.menu, required this.index, Key? key})
       : super(key: key);
 
-  MenuItem menu;
+  MenusItem menu;
   int index;
 
   @override

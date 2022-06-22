@@ -15,7 +15,7 @@ class CustomHomeController extends GetxController {
     required this.signinRepository,
   });
 
-  RxList<MenuItem> menus = RxList<MenuItem>([]);
+  RxList<MenusItem> menus = RxList<MenusItem>([]);
   late SimpleHiddenDrawerController drawerController;
   var selectedIndex = AppConstants.HOME.obs; //home
   var title = ''.obs;
@@ -28,40 +28,40 @@ class CustomHomeController extends GetxController {
 
   initMenus() {
     menus.value = [
-      MenuItem(
+      MenusItem(
         code: AppConstants.HOME,
         libelle: 'Accueil',
         icon: 'assets/images/icon_nav_home.svg',
       ),
-      MenuItem(
+      MenusItem(
         code: AppConstants.PROFILE,
         libelle: 'Mon profil',
         icon: 'assets/images/icon_user.svg',
       ),
-      MenuItem(
+      MenusItem(
         code: AppConstants.SHARE_APP,
         libelle: "Partager l'application",
         icon: 'assets/images/share_icon.svg',
         isVisible: false,
       ),
-      MenuItem(
+      MenusItem(
         code: AppConstants.PROMO,
         libelle: 'Codes promo',
         icon: 'assets/images/icon_settings.svg',
         isVisible: false,
       ),
-      MenuItem(
+      MenusItem(
         code: AppConstants.FAQ,
         libelle: 'F.A.Q',
         icon: 'assets/images/faq_icon.svg',
       ),
-      MenuItem(
+      MenusItem(
         code: AppConstants.CONTACTS,
         libelle: 'Contacts',
         icon: 'assets/images/icon_phone.svg',
         isVisible: false,
       ),
-      MenuItem(
+      MenusItem(
         code: AppConstants.ABOUT,
         libelle: 'A propos',
         icon: 'assets/images/icon_settings.svg',
