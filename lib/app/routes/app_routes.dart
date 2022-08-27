@@ -31,4 +31,6 @@ abstract class Routes {
 
   //FAVORIS
   static const FAVORITES = '/favorites';
+
+  static const PRAY = '/pray';
 }

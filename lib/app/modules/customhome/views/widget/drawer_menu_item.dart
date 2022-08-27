@@ -39,8 +39,9 @@ class DrawerMenuItem extends StatelessWidget {
                 Separators.minimunHorizontal(),
                 SvgPicture.asset(
                   menu.icon ?? '',
-                  height: 20,
+                  width: 20,
                   color: colorWhite,
+                  fit: BoxFit.fill,
                 ),
                 Separators.normalHorizontal(),
                 Text(

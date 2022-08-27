@@ -8,7 +8,6 @@ import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/movement_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
-import 'package:oremusapp/app/modules/paroisse/data/model/place_user.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';

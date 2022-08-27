@@ -39,6 +39,11 @@ class CustomHomeController extends GetxController {
         icon: 'assets/images/icon_user.svg',
       ),
       MenusItem(
+        code: AppConstants.PRAY,
+        libelle: "Prières",
+        icon: 'assets/images/icon_pray.svg',
+      ),
+      MenusItem(
         code: AppConstants.SHARE_APP,
         libelle: "Partager l'application",
         icon: 'assets/images/share_icon.svg',
