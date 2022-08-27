@@ -162,7 +162,7 @@ class ParoisseMenuController extends GetxController {
       TypeMenu(
         code: 'CO',
         title: 'Infos paroissiales',
-        icon: 'assets/images/contacts.svg',
+        icon: 'assets/images/icon_infos_paroissiales.svg',
         isPngImage: false,
         activeTint: colorBlack,
         goToPage: () async {
@@ -181,7 +181,7 @@ class ParoisseMenuController extends GetxController {
       TypeMenu(
         code: 'CO',
         title: 'Demandes de messe',
-        icon: 'assets/images/contacts.svg',
+        icon: 'assets/images/icon_demande_de_messe.svg',
         isPngImage: false,
         activeTint: colorBlack,
         goToPage: () async {

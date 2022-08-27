@@ -7,6 +7,7 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/customhome/controller/custom_home_controller.dart';
 import 'package:oremusapp/app/modules/customhome/views/widget/drawer_menu_item.dart';
+import 'package:oremusapp/main.dart';
 
 class DrawerMenu extends StatefulWidget {
   @override
@@ -68,7 +69,9 @@ class _MenuState extends State<DrawerMenu> with TickerProviderStateMixin {
                         textColor: colorWhite),
                   ),
                   //Expanded(child: Container()),
-                  SizedBox(height: Get.width/10,),
+                  SizedBox(
+                    height: Get.width / 10,
+                  ),
                   GetBuilder<CustomHomeController>(builder: (logic) {
                     return Expanded(
                       child: ListView.builder(
@@ -76,7 +79,8 @@ class _MenuState extends State<DrawerMenu> with TickerProviderStateMixin {
                           itemCount: logic.menus.length,
                           itemBuilder: (context, index) {
                             var menu = logic.menus[index];
-                            menu.isSelected = (index == logic.selectedIndex.value);
+                            menu.isSelected =
+                                (index == logic.selectedIndex.value);
                             return DrawerMenuItem(
                               menu: menu,
                               index: index,
@@ -85,7 +89,9 @@ class _MenuState extends State<DrawerMenu> with TickerProviderStateMixin {
                     );
                   }),
                   //Expanded(child: Container()),
-                  SizedBox(height: Get.width/10,),
+                  SizedBox(
+                    height: Get.width / 10,
+                  ),
                   GetBuilder<CustomHomeController>(builder: (logic) {
                     return TextButton(
                       onPressed: () {
@@ -109,6 +115,16 @@ class _MenuState extends State<DrawerMenu> with TickerProviderStateMixin {
                       ),
                     );
                   }),
+                  Padding(
+                    padding: EdgeInsets.only(left: 8.0, top: Get.width / 5,),
+                    child: Text(
+                      'Version: $versionName($versionCode)',
+                      style: TextStyles.montserratRegular(
+                        textSize: TextSizes.eight,
+                        textColor: colorWhite,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

@@ -24,10 +24,11 @@ import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/activity_move
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/confession/paroisse_type_confession_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/mass/paroisse_type_masse_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_contact_screen.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_contact_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_menu_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_office_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_presby_team_screen.dart';
+import 'package:oremusapp/app/modules/pray/binding/pray_binding.dart';
+import 'package:oremusapp/app/modules/pray/views/pray_screen.dart';
 import 'package:oremusapp/app/modules/profile/binding/edit_profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/binding/profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/views/edit_profile_screen.dart';
@@ -61,6 +62,7 @@ class AppPages {
         CustomHomeBinding(),
         ParoisseBinding(),
         ProfileBinding(),
+        PrayBinding(),
       ],
       transition: Transition.circularReveal,
     ),
@@ -176,6 +178,12 @@ class AppPages {
       name: Routes.FAVORITES,
       page: () => const FavoritesScreen(),
       binding: FavoriteBinding(),
+      transition: Transition.circularReveal,
+    ),
+    GetPage(
+      name: Routes.PRAY,
+      page: () => const PrayScreen(),
+      binding: PrayBinding(),
       transition: Transition.circularReveal,
     ),
   ];

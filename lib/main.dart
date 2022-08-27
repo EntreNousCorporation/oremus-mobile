@@ -18,9 +18,12 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/configs/flavor_settings.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 var appUrl;
 var flavor;
+var versionName;
+var versionCode;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +33,7 @@ void main() async {
       appUrl = settings.apiBaseUrl;
 
       await DB.initDatabase();
+      getAppVersion();
 
       Jiffy.locale('fr');
       configOrientation();
@@ -76,6 +80,14 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+}
+
+getAppVersion() {
+  log('====== getAppVersion ======');
+  PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+    versionName = packageInfo.version;
+    versionCode = packageInfo.buildNumber;
+  });
 }
 
 Future<FlavorSettings> _getFlavorSettings() async {
