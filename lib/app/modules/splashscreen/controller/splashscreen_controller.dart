@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
+import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
 import 'package:oremusapp/app/modules/splashscreen/data/repository/splashscreen_repository.dart';
@@ -23,11 +26,25 @@ class SplashscreenController extends GetxController {
   final GlobalKey<AnimatorWidgetState> basicIconAnimation = GlobalKey<AnimatorWidgetState>();
   final GlobalKey<AnimatorWidgetState> basicTextAnimation = GlobalKey<AnimatorWidgetState>();
 
+  var currentLanguage = ''.obs;
+
   @override
   void onReady() {
+    currentLanguage.value = (DB.getCurrentLanguage().isNotEmpty == true ? DB.getCurrentLanguage() : Get.deviceLocale?.languageCode) ?? 'fr';
+    updateLocale(currentLanguage.value);
+    log('getCurrentLanguage => ${DB.getCurrentLanguage().runtimeType}');
+
     getInitialView();
     super.onReady();
   }
+
+  updateLocale(String code) {
+    log('selected language => $code');
+    Get.updateLocale(Locale(code, code.toUpperCase()));
+    DB.setCurrentLanguage(code);
+    update();
+  }
+
 
   applyAnimation() {
     if (applyAnim.isTrue) {

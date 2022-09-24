@@ -34,4 +34,13 @@ class DB {
   static void saveData(String key, String? value) {
     _save(key, value);
   }
+
+  static String getCurrentLanguage() {
+    return getData(AppConstants.KEY_LANGUAGE) ?? '';
+  }
+
+  static setCurrentLanguage(String code) {
+    saveData(AppConstants.KEY_LANGUAGE, code);
+  }
+
 }

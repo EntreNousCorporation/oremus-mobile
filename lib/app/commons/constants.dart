@@ -17,6 +17,7 @@ abstract class AppConstants {
   //HIVE
   static const BOX_NAME = "oremusBox";
   static const STORAGE_KEY = "oremusKey";
+  static const KEY_LANGUAGE = "KEY_LANGUAGE";
 
   //VALIDATOR
   static const INPUT_NUM_REGEX = "[0-9\\s]";
