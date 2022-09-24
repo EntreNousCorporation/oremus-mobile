@@ -4,10 +4,12 @@ import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/components/not_found_page.dart';
+import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/customhome/views/widget/search_widget.dart';
 import 'package:oremusapp/app/modules/pray/controller/pray_controller.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class PrayScreen extends StatelessWidget {
   const PrayScreen({Key? key}) : super(key: key);
@@ -17,59 +19,179 @@ class PrayScreen extends StatelessWidget {
     return Container(
       color: colorGreen,
       child: SafeArea(
-        child: GetX<PrayController>(
-            builder: (_) {
-              return WillPopScope(
-                onWillPop: () async => _.unlockBackButton.value,
-                child: KeyboardDismisser(
-                  child: Scaffold(
-                    resizeToAvoidBottomInset: true,
-                    body: Container(
-                      color: colorGrey4,
-                      width: double.infinity,
-                      child: Column(
-                        children: [
-                          _.isDataProcessing.isTrue
+        child: GetX<PrayController>(builder: (_) {
+          return WillPopScope(
+            onWillPop: () async => _.unlockBackButton.value,
+            child: KeyboardDismisser(
+              child: Scaffold(
+                resizeToAvoidBottomInset: true,
+                body: Container(
+                  color: colorGrey4,
+                  width: double.infinity,
+                  child: Column(
+                    children: [
+                      _.isDataProcessing.isTrue
+                          ? Expanded(
+                              child: Center(
+                                child: LottieLoadingView(
+                                  size: Get.width / 4,
+                                ),
+                              ),
+                            )
+                          : _.hasData.isTrue
                               ? Expanded(
-                                  child: Center(
-                                    child: LottieLoadingView(
-                                      size: 25,
+                                  child: FadeIn(
+                                    duration: const Duration(milliseconds: 500),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: 0,
+                                        bottom: 0,
+                                        left: 16,
+                                        right: 16,
+                                      ),
+                                      child: SmartRefresher(
+                                        //enablePullDown: true,
+                                        //enablePullUp: true,
+                                        //onRefresh: _.onRefresh,
+                                        //onLoading: _.onLoading,
+                                        footer: CustomFooter(
+                                          builder: (BuildContext context,
+                                              LoadStatus? mode) {
+                                            Widget body;
+                                            if (mode == LoadStatus.idle) {
+                                              body = Container();
+                                            } else if (mode ==
+                                                LoadStatus.loading) {
+                                              body = LottieLoadingView();
+                                            } else if (mode ==
+                                                LoadStatus.failed) {
+                                              body = Text(
+                                                "Une erreur est survenue lors du chargement",
+                                                style:
+                                                    TextStyles.montserratBold(
+                                                        textSize:
+                                                            TextSizes.thirteen,
+                                                        textColor: colorBlack),
+                                              );
+                                            } else if (mode ==
+                                                LoadStatus.canLoading) {
+                                              body = Text(
+                                                "Charger plus de paroisses",
+                                                style:
+                                                    TextStyles.montserratBold(
+                                                        textSize:
+                                                            TextSizes.thirteen,
+                                                        textColor: colorBlack),
+                                              );
+                                            } else {
+                                              body = Column(
+                                                children: [
+                                                  SizedBox(
+                                                    width: Get.width / 1.7,
+                                                    height: 4,
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        gradient:
+                                                            const LinearGradient(
+                                                          begin: Alignment
+                                                              .topRight,
+                                                          end: Alignment
+                                                              .bottomLeft,
+                                                          colors: [
+                                                            colorGreen,
+                                                            colorGreenSemiLight,
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Separators.minimunVertical(),
+                                                  Text(
+                                                    "Aucune donnée à charger",
+                                                    style: TextStyles
+                                                        .montserratBold(
+                                                            textSize: TextSizes
+                                                                .thirteen,
+                                                            textColor:
+                                                                colorBlack),
+                                                  ),
+                                                ],
+                                              );
+                                            }
+                                            return SizedBox(
+                                              height: 55.0,
+                                              child: Center(child: body),
+                                            );
+                                          },
+                                        ),
+                                        physics: const BouncingScrollPhysics(),
+                                        controller: _.refreshController,
+                                        child: ListView.separated(
+                                          padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
+                                          shrinkWrap: true,
+                                          itemCount: _.prayers.length,
+                                          itemBuilder: (context, index) {
+                                            var pray = _.prayers[index];
+                                            return Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 16.0,
+                                                vertical: 8,
+                                              ),
+                                              decoration: const BoxDecoration(
+                                                color: colorGreenlight2,
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '${DB.getCurrentLanguage() == 'fr' ? pray.title?.fr : pray.title?.en}',
+                                                    style: TextStyles
+                                                        .montserratBold(
+                                                      textSize:
+                                                          TextSizes.sixteen,
+                                                    ),
+                                                  ),
+                                                  Separators.minimunVertical(),
+                                                  Text(
+                                                    '${DB.getCurrentLanguage() == 'fr' ? pray.content?.fr : pray.content?.en}',
+                                                    style: TextStyles
+                                                        .montserratRegular(
+                                                      textSize:
+                                                          TextSizes.fourteen,
+                                                      textColor: colorBlack,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                          separatorBuilder:
+                                              (BuildContext context,
+                                                  int index) {
+                                            return Separators.normalVertical();
+                                          },
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 )
-                              : _.hasData.isTrue
-                                  ? Expanded(
-                                      child: FadeIn(
-                                        duration:
-                                            const Duration(milliseconds: 500),
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 0,
-                                            bottom: 0,
-                                            left: 16,
-                                            right: 16,
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  : Expanded(
-                                      child: NotFoundScreen(
-                                      message: "Aucune prière trouvée !",
-                                    )),
-                        ],
-                      ),
-                    ),
+                              : Expanded(
+                                  child: NotFoundScreen(
+                                    message: "Aucune prière trouvée !",
+                                  ),
+                                ),
+                    ],
                   ),
                 ),
-              );
-            }),
+              ),
+            ),
+          );
+        }),
       ),
     );
   }

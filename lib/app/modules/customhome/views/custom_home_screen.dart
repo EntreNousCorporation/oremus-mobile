@@ -46,8 +46,8 @@ class CustomHomeScreen extends StatelessWidget {
             case AppConstants.PRAY:
               logic.title.value =
                   logic.menus[position].libelle ?? 'Prières';
-              screenCurrent = const ShareScreen();
-              //screenCurrent = const PrayScreen();
+              //screenCurrent = const ShareScreen();
+              screenCurrent = const PrayScreen();
               break;
             case AppConstants.SHARE_APP:
               logic.title.value =
