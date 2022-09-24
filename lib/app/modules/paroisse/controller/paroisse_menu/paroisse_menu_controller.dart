@@ -160,7 +160,7 @@ class ParoisseMenuController extends GetxController {
         },
       ),
       TypeMenu(
-        code: 'CO',
+        code: 'IP',
         title: 'Infos paroissiales',
         icon: 'assets/images/icon_infos_paroissiales.svg',
         isPngImage: false,
@@ -169,7 +169,7 @@ class ParoisseMenuController extends GetxController {
           await Get.toNamed(
             Routes.PAROISSE_CONTACT,
             arguments: [
-              'CO',
+              'IP',
               jsonEncode(paroisseSelected.value.toJson()),
             ],
           );
@@ -179,7 +179,7 @@ class ParoisseMenuController extends GetxController {
         },
       ),
       TypeMenu(
-        code: 'CO',
+        code: 'DM',
         title: 'Demandes de messe',
         icon: 'assets/images/icon_demande_de_messe.svg',
         isPngImage: false,
@@ -188,7 +188,7 @@ class ParoisseMenuController extends GetxController {
           await Get.toNamed(
             Routes.PAROISSE_CONTACT,
             arguments: [
-              'CO',
+              'DM',
               jsonEncode(paroisseSelected.value.toJson()),
             ],
           );

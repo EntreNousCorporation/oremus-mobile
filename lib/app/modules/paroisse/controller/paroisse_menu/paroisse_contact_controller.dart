@@ -91,6 +91,10 @@ class ParoisseContactController extends GetxController {
         return 'Equipe presbytérale';
       case 'CO':
         return 'Contacts';
+      case 'IP':
+        return 'Infos paroissiales';
+      case 'DM':
+        return 'Demandes de messe';
     }
   }
 
@@ -103,6 +107,8 @@ class ParoisseContactController extends GetxController {
       case 'AM':
       case 'EP':
       case 'CO':
+      case 'IP':
+      case 'DM':
         return 'Aucune information trouvée';
     }
   }
