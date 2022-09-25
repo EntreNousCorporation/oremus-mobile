@@ -17,7 +17,6 @@ class DrawerMenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<CustomHomeController>(
-      initState: (_) {},
       builder: (logic) {
         return TextButton(
           onPressed: () {

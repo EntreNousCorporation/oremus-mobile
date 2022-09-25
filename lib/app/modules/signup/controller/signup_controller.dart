@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -12,7 +11,6 @@ import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signup/data/repository/signup_repository.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
-import 'package:oremusapp/app/remote/error_response.dart';
 
 class SignupController extends GetxController {
   final SignupRepository signupRepository;
@@ -74,14 +72,11 @@ class SignupController extends GetxController {
       unlockBackButton.value = false;
     });
 
-    String firstname =
-        firstnameController.text.trim().toString().replaceAll(' ', '');
-    String lastname =
-        lastnameController.text.trim().toString().replaceAll(' ', '');
+    String firstname = firstnameController.text.trim();
+    String lastname = lastnameController.text.trim();
     String email = emailController.text.trim().toString().replaceAll(' ', '');
     String phone = phoneController.text.trim().toString().replaceAll(' ', '');
-    String password =
-        passwordController.text.trim().toString().replaceAll(' ', '');
+    String password = passwordController.text.trim().toString().replaceAll(' ', '');
 
     loading(true);
     lockScreen(true);
@@ -102,7 +97,7 @@ class SignupController extends GetxController {
       log('value => ${value.accessToken}');
       lockScreen(false);
       showNotification(
-        message: "Inscription effectué avec succès",
+        message: "Inscription effectuée avec succès",
         bgColor: colorGreen,
       );
       Get.back();

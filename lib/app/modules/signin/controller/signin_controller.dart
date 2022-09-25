@@ -88,7 +88,7 @@ class SigninController extends GetxController {
         isBoUser: value.isBoUser,
       );
       signinRepository.saveUserSigninInfo(userConnection);
-      Get.toNamed(Routes.CUSTOM_HOME);
+      Get.offAllNamed(Routes.CUSTOM_HOME);
     }, onError: (error) {
       EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;
