@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
@@ -9,6 +11,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/type_menu.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ParoisseMenuController extends GetxController {
   final ParoisseRepository paroisseRepository;
@@ -32,7 +35,8 @@ class ParoisseMenuController extends GetxController {
   getArguments() {
     if (Get.arguments != null) {
       indexSelected.value = Get.arguments[0];
-      paroisseSelected.value = ContentPlace.fromJson(jsonDecode(Get.arguments[1]));
+      paroisseSelected.value =
+          ContentPlace.fromJson(jsonDecode(Get.arguments[1]));
       log('==> ${paroisseSelected.value.identifier}');
       log('==> ${paroisseSelected.value.isFavorite}');
     }
@@ -56,7 +60,8 @@ class ParoisseMenuController extends GetxController {
           );
           log("retour");
           //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+          paroisseSelected.value.isFavorite =
+              isWorshipPlaceFavorite(paroisseSelected.value);
           paroisseSelected.refresh();
         },
       ),
@@ -76,7 +81,8 @@ class ParoisseMenuController extends GetxController {
           );
           log("retour");
           //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+          paroisseSelected.value.isFavorite =
+              isWorshipPlaceFavorite(paroisseSelected.value);
           paroisseSelected.refresh();
         },
       ),
@@ -95,7 +101,8 @@ class ParoisseMenuController extends GetxController {
             ],
           );
           //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+          paroisseSelected.value.isFavorite =
+              isWorshipPlaceFavorite(paroisseSelected.value);
           paroisseSelected.refresh();
         },
       ),
@@ -115,7 +122,8 @@ class ParoisseMenuController extends GetxController {
           );
           log("retour");
           //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+          paroisseSelected.value.isFavorite =
+              isWorshipPlaceFavorite(paroisseSelected.value);
           paroisseSelected.refresh();
         },
       ),
@@ -135,7 +143,8 @@ class ParoisseMenuController extends GetxController {
           );
           log("retour");
           //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+          paroisseSelected.value.isFavorite =
+              isWorshipPlaceFavorite(paroisseSelected.value);
           paroisseSelected.refresh();
         },
       ),
@@ -155,7 +164,8 @@ class ParoisseMenuController extends GetxController {
           );
           log("retour");
           //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+          paroisseSelected.value.isFavorite =
+              isWorshipPlaceFavorite(paroisseSelected.value);
           paroisseSelected.refresh();
         },
       ),
@@ -165,16 +175,11 @@ class ParoisseMenuController extends GetxController {
         icon: 'assets/images/icon_infos_paroissiales.svg',
         isPngImage: false,
         activeTint: colorBlack,
-        goToPage: () async {
-          await Get.toNamed(
-            Routes.PAROISSE_CONTACT,
-            arguments: [
-              'IP',
-              jsonEncode(paroisseSelected.value.toJson()),
-            ],
-          );
+        goToPage: () {
+          goToShowInfos(paroisseSelected.value.massInfo ?? '');
           //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+          paroisseSelected.value.isFavorite =
+              isWorshipPlaceFavorite(paroisseSelected.value);
           paroisseSelected.refresh();
         },
       ),
@@ -199,6 +204,17 @@ class ParoisseMenuController extends GetxController {
         },
       ),
     ];
+  }
+
+  goToShowInfos(String link) async {
+    if (await canLaunch(link) == true) {
+      launch(link);
+    } else {
+      log("Can't launch url");
+      showNotification(
+        message: 'Une erreur est survenue',
+      );
+    }
   }
 
   bool isWorshipPlaceFavorite(ContentPlace paroisse) {

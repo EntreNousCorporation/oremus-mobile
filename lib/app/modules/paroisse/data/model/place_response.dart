@@ -133,6 +133,7 @@ class ContentPlace {
   String? createdBy;
   String? modifiedBy;
   String? name;
+  String? massInfo;
   String? code;
   String? description;
   TypeContent? type;
@@ -151,6 +152,7 @@ class ContentPlace {
     this.createdBy,
     this.modifiedBy,
     this.name,
+    this.massInfo,
     this.code,
     this.description,
     this.type,
@@ -170,6 +172,7 @@ class ContentPlace {
     createdBy = json['createdBy'];
     modifiedBy = json['modifiedBy'];
     name = json['name'];
+    massInfo = json['massInfo'];
     code = json['code'];
     description = json['description'];
     leader = json['leader'];
@@ -200,6 +203,7 @@ class ContentPlace {
     data['createdBy'] = createdBy;
     data['modifiedBy'] = modifiedBy;
     data['name'] = name;
+    data['massInfo'] = massInfo;
     data['code'] = code;
     data['description'] = description;
     data['leader'] = leader;
