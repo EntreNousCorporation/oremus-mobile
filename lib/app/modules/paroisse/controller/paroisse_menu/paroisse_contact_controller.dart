@@ -91,8 +91,6 @@ class ParoisseContactController extends GetxController {
         return 'Equipe presbytérale';
       case 'CO':
         return 'Contacts';
-      case 'IP':
-        return 'Infos paroissiales';
       case 'DM':
         return 'Demandes de messe';
     }
@@ -107,10 +105,16 @@ class ParoisseContactController extends GetxController {
       case 'AM':
       case 'EP':
       case 'CO':
-      case 'IP':
       case 'DM':
         return 'Aucune information trouvée';
     }
+  }
+
+  String getContactName(String value) {
+    if (code.value == 'DM') {
+      return 'Contactez la paroisse sur le numéro suivant';
+    }
+    return value;
   }
 
   getContacts() {
@@ -122,7 +126,11 @@ class ParoisseContactController extends GetxController {
     paroisseRepository.getPlaceOfWorshipContacts(idParoisse ?? -1).then(
         (value) {
       isDataProcessing(false);
-      contacts.value = value;
+      if (code.value == 'DM') {
+        contacts.value = value.where((element) => element.name == 'demande_de_messe').toList();
+      } else {
+        contacts.value = value;
+      }
       if (contacts.isNotEmpty == true) {
         hasData(true);
       } else {

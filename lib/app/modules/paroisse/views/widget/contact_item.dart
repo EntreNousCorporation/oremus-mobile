@@ -40,7 +40,7 @@ class ContactItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        contact.name ?? '',
+                        logic.getContactName(contact.name ?? ''),
                         style: TextStyles.montserratSemiBold(
                           textSize: TextSizes.sixteen,
                           textColor: colorGreenSemiLight,
