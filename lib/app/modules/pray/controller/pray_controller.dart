@@ -68,7 +68,7 @@ class PrayController extends GetxController {
     refreshController = RefreshController(initialRefresh: false);
   }
 
-  ///Chargement initial des paroisses
+  ///Chargement initial des prières
   getPrayers() {
     hideKeyboard();
     isDataProcessing(true);

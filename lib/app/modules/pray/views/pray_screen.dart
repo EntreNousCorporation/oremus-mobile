@@ -52,8 +52,8 @@ class PrayScreen extends StatelessWidget {
                                       child: SmartRefresher(
                                         //enablePullDown: true,
                                         //enablePullUp: true,
-                                        //onRefresh: _.onRefresh,
                                         //onLoading: _.onLoading,
+                                        onRefresh: _.onRefresh,
                                         footer: CustomFooter(
                                           builder: (BuildContext context,
                                               LoadStatus? mode) {
@@ -76,7 +76,7 @@ class PrayScreen extends StatelessWidget {
                                             } else if (mode ==
                                                 LoadStatus.canLoading) {
                                               body = Text(
-                                                "Charger plus de paroisses",
+                                                "Charger plus de prières",
                                                 style:
                                                     TextStyles.montserratBold(
                                                         textSize:

@@ -112,7 +112,7 @@ class ParoisseContactController extends GetxController {
 
   String getContactName(String value) {
     if (code.value == 'DM') {
-      return 'Contactez la paroisse sur le numéro suivant';
+      return 'Contactez la paroisse';
     }
     return value;
   }
