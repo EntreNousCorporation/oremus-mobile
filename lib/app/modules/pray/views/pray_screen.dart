@@ -149,7 +149,8 @@ class PrayScreen extends StatelessWidget {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    '${DB.getCurrentLanguage() == 'fr' ? pray.title?.fr : pray.title?.en}',
+                                                    //'${DB.getCurrentLanguage() == 'fr' ? pray.title?.fr : pray.title?.en}',
+                                                    '${pray.title?.fr}',
                                                     style: TextStyles
                                                         .montserratBold(
                                                       textSize:
@@ -158,7 +159,8 @@ class PrayScreen extends StatelessWidget {
                                                   ),
                                                   Separators.minimunVertical(),
                                                   Text(
-                                                    '${DB.getCurrentLanguage() == 'fr' ? pray.content?.fr : pray.content?.en}',
+                                                    //'${DB.getCurrentLanguage() == 'fr' ? pray.content?.fr : pray.content?.en}',
+                                                    '${pray.content?.fr}',
                                                     style: TextStyles
                                                         .montserratRegular(
                                                       textSize:
