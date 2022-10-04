@@ -175,8 +175,16 @@ class ParoisseMenuController extends GetxController {
         icon: 'assets/images/icon_infos_paroissiales.svg',
         isPngImage: false,
         activeTint: colorBlack,
-        goToPage: () {
-          goToShowInfos(paroisseSelected.value.massInfo ?? '');
+        goToPage: () async {
+          await Get.toNamed(
+            Routes.PAROISSE_CONTACT,
+            arguments: [
+              'IP',
+              jsonEncode(paroisseSelected.value.toJson()),
+              paroisseSelected.value.massInfo ?? '',
+            ],
+          );
+
           //on met à jour la liste au cas où favoris mis à jour
           paroisseSelected.value.isFavorite =
               isWorshipPlaceFavorite(paroisseSelected.value);
@@ -206,16 +214,7 @@ class ParoisseMenuController extends GetxController {
     ];
   }
 
-  goToShowInfos(String link) async {
-    if (await canLaunch(link) == true) {
-      launch(link);
-    } else {
-      log("Can't launch url");
-      showNotification(
-        message: 'Une erreur est survenue',
-      );
-    }
-  }
+
 
   bool isWorshipPlaceFavorite(ContentPlace paroisse) {
     var isFavorite = false;

@@ -22,6 +22,7 @@ class ParoisseContactController extends GetxController {
   });
 
   var code = ''.obs;
+  var massInfoUrl = ''.obs;
   var paroisseSelected = ContentPlace().obs;
 
   var isDataProcessing = false.obs;
@@ -52,9 +53,10 @@ class ParoisseContactController extends GetxController {
   getArguments() {
     if (Get.arguments != null) {
       code.value = Get.arguments[0];
-      paroisseSelected.value =
-          ContentPlace.fromJson(jsonDecode(Get.arguments[1]));
-      log('==> ${paroisseSelected.value.identifier}');
+      paroisseSelected.value = ContentPlace.fromJson(jsonDecode(Get.arguments[1]));
+      if (code.value == 'IP') {
+        massInfoUrl.value = Get.arguments[2];
+      }
     }
   }
 
@@ -77,6 +79,17 @@ class ParoisseContactController extends GetxController {
     }
   }
 
+  launchUrl(String link) async {
+    if (await canLaunch(link) == true) {
+      launch(link);
+    } else {
+      log("Can't launch url");
+      showNotification(
+        message: 'Une erreur est survenue',
+      );
+    }
+  }
+
   getTypeTitle(String code) {
     switch (code) {
       case 'HM':
@@ -89,6 +102,8 @@ class ParoisseContactController extends GetxController {
         return 'Activités & mouvements';
       case 'EP':
         return 'Equipe presbytérale';
+      case 'IP':
+        return 'Infos paroissiales';
       case 'CO':
         return 'Contacts';
       case 'DM':
@@ -105,6 +120,7 @@ class ParoisseContactController extends GetxController {
       case 'AM':
       case 'EP':
       case 'CO':
+      case 'IP':
       case 'DM':
         return 'Aucune information trouvée';
     }
@@ -118,8 +134,18 @@ class ParoisseContactController extends GetxController {
   }
 
   getContacts() {
-    log('request getContacts');
 
+    if (code.value == 'IP') {
+      contacts.clear();
+      contacts.add(Contact(
+        name: 'Cliquez pour plus d\'informations',
+        url: massInfoUrl.value,
+      ));
+      hasData(true);
+      return;
+    }
+
+    log('request getContacts');
     var idParoisse = paroisseSelected.value.identifier;
     isDataProcessing(true);
     hasData(false);
@@ -156,8 +182,19 @@ class ParoisseContactController extends GetxController {
   }
 
   onRefresh() {
-    log('request onRefresh');
 
+    if (code.value == 'IP') {
+      contacts.clear();
+      contacts.add(Contact(
+        name: 'Cliquez pour plus d\'informations',
+        url: massInfoUrl.value,
+      ));
+      hasData(true);
+      refreshController.refreshCompleted();
+      return;
+    }
+
+    log('request onRefresh');
     var idParoisse = paroisseSelected.value.identifier;
     paroisseRepository.getPlaceOfWorshipContacts(idParoisse ?? -1).then(
         (value) {

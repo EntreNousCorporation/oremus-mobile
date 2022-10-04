@@ -79,6 +79,7 @@ class Contact {
   String? modifiedBy;
   String? name;
   String? fax;
+  String? url;
   List<String>? emails;
   List<String>? numbers;
 
@@ -90,6 +91,7 @@ class Contact {
     this.modifiedBy,
     this.name,
     this.fax,
+    this.url,
     this.emails,
     this.numbers,
   });
