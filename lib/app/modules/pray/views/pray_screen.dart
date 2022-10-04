@@ -10,6 +10,7 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/pray/controller/pray_controller.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:readmore/readmore.dart';
 
 class PrayScreen extends StatelessWidget {
   const PrayScreen({Key? key}) : super(key: key);
@@ -130,7 +131,8 @@ class PrayScreen extends StatelessWidget {
                                         physics: const BouncingScrollPhysics(),
                                         controller: _.refreshController,
                                         child: ListView.separated(
-                                          padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
+                                          padding: const EdgeInsets.only(
+                                              top: 16.0, bottom: 16.0),
                                           shrinkWrap: true,
                                           itemCount: _.prayers.length,
                                           itemBuilder: (context, index) {
@@ -139,7 +141,7 @@ class PrayScreen extends StatelessWidget {
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                 horizontal: 16.0,
-                                                vertical: 8,
+                                                vertical: 16.0,
                                               ),
                                               decoration: const BoxDecoration(
                                                 color: colorGreenlight2,
@@ -158,11 +160,23 @@ class PrayScreen extends StatelessWidget {
                                                     ),
                                                   ),
                                                   Separators.minimunVertical(),
-                                                  Text(
-                                                    //'${DB.getCurrentLanguage() == 'fr' ? pray.content?.fr : pray.content?.en}',
+                                                  ReadMoreText(
                                                     '${pray.content?.fr}',
-                                                    style: TextStyles
-                                                        .montserratRegular(
+                                                    colorClickableText: colorGreen,
+                                                    trimLines: 5,
+                                                    trimMode: TrimMode.Line,
+                                                    trimCollapsedText:
+                                                        'Tout afficher',
+                                                    trimExpandedText:
+                                                        '\nRéduire',
+                                                    moreStyle: TextStyles
+                                                        .montserratSemiBold(
+                                                      textSize:
+                                                          TextSizes.fourteen,
+                                                      textColor: colorBlack,
+                                                    ),
+                                                    lessStyle: TextStyles
+                                                        .montserratSemiBold(
                                                       textSize:
                                                           TextSizes.fourteen,
                                                       textColor: colorBlack,
