@@ -7,6 +7,7 @@ class TextSizes{
   static const double twelve=12;
   static const double thirteen=13;
   static const double fourteen=14;
+  static const double fifteen=15;
   static const double sixteen=16;
   static const double seventeen=17;
   static const double eighteen=18;

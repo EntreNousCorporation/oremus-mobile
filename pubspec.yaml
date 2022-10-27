@@ -43,7 +43,7 @@ dependencies:
   accordion: ^2.2.3
   like_button: ^2.0.4
   pin_code_fields: ^7.3.0
-  google_maps_flutter: ^2.1.4
+  google_maps_flutter: ^2.2.1
   custom_info_window: ^1.0.1
   marker_icon: ^0.7.1
   badges: ^2.0.2

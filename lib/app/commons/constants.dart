@@ -29,6 +29,7 @@ abstract class AppConstants {
 
   //PAGGING
   static const PAGING_SIZE = 10;
+  static const PRAY_PAGING_SIZE = 15;
 
   //DRAWER MENU INDEX
   static const HOME = 0;

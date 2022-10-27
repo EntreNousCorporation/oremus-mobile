@@ -35,7 +35,9 @@ class ParoisseMapController extends GetxController {
     initControllers();
     super.onInit();
   }
-
+  //https://goo.gl/maps/EcqfGFCj7HUjaByD6
+  //https://www.google.com/maps/dir/?api=1&destination=5.3615683,-3.9614188,19z&travelmode=driving&dir_action=navigate
+  //https://www.google.com/maps/dir/?api=1&destination=5.361981170134402,-3.960254155399859&travelmode=driving&dir_action=navigate
   @override
   void onReady() {
     showInfoWindow();
@@ -212,7 +214,7 @@ class ParoisseMapController extends GetxController {
   }
 
   showInfoWindow() {
-    log("============= showInfoWindow =============");
+    log("============= showInfoWindow ============= ${paroisseSelected.value.localisation?.longitude.toString()}");
     mapController.addInfoWindow!(
       SizedBox(
         width: Get.width / 1.2,

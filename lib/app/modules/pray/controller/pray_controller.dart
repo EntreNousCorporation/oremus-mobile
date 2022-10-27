@@ -83,11 +83,11 @@ class PrayController extends GetxController {
       } else {
         hasData(false);
       }
-      /*if (value.last == false) {
+      if (value.isNotEmpty) {
             page.value += 1;
           } else {
             refreshController.loadNoData();
-          }*/
+          }
     }, onError: (error) {
       isDataProcessing(false);
       hasData(false);
@@ -111,11 +111,11 @@ class PrayController extends GetxController {
     prayRepository.getPrayers().then((value) {
       refreshController.refreshCompleted();
       prayers.value = value;
-      /*if (value.last == false) {
+      if (value.isNotEmpty) {
             page.value += 1;
           } else {
             refreshController.loadNoData();
-          }*/
+          }
     }, onError: (error) {
       refreshController.refreshCompleted();
       if (error.toString().contains('401')) {
@@ -141,11 +141,11 @@ class PrayController extends GetxController {
       prayers.refresh();
       refreshController.loadComplete();
       log('${prayers.length}');
-      /*if (value.last == false) {
+      if (value.isNotEmpty) {
         page.value += 1;
       } else {
         refreshController.loadNoData();
-      }*/
+      }
     }, onError: (error) {
       refreshController.loadFailed();
       if (error.toString().contains('401')) {

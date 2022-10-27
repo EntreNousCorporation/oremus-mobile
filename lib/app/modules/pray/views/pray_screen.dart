@@ -4,13 +4,12 @@ import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/components/not_found_page.dart';
-import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/pray/controller/pray_controller.dart';
+import 'package:oremusapp/app/modules/pray/views/pray_item.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:readmore/readmore.dart';
 
 class PrayScreen extends StatelessWidget {
   const PrayScreen({Key? key}) : super(key: key);
@@ -51,9 +50,9 @@ class PrayScreen extends StatelessWidget {
                                         right: 16,
                                       ),
                                       child: SmartRefresher(
-                                        //enablePullDown: true,
-                                        //enablePullUp: true,
-                                        //onLoading: _.onLoading,
+                                        enablePullDown: true,
+                                        enablePullUp: true,
+                                        onLoading: _.onLoading,
                                         onRefresh: _.onRefresh,
                                         footer: CustomFooter(
                                           builder: (BuildContext context,
@@ -114,10 +113,10 @@ class PrayScreen extends StatelessWidget {
                                                     "Aucune donnée à charger",
                                                     style: TextStyles
                                                         .montserratBold(
-                                                            textSize: TextSizes
-                                                                .thirteen,
-                                                            textColor:
-                                                                colorBlack),
+                                                      textSize:
+                                                          TextSizes.thirteen,
+                                                      textColor: colorBlack,
+                                                    ),
                                                   ),
                                                 ],
                                               );
@@ -132,59 +131,14 @@ class PrayScreen extends StatelessWidget {
                                         controller: _.refreshController,
                                         child: ListView.separated(
                                           padding: const EdgeInsets.only(
-                                              top: 16.0, bottom: 16.0),
+                                            top: 16.0,
+                                            bottom: 16.0,
+                                          ),
                                           shrinkWrap: true,
                                           itemCount: _.prayers.length,
                                           itemBuilder: (context, index) {
                                             var pray = _.prayers[index];
-                                            return Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 16.0,
-                                                vertical: 16.0,
-                                              ),
-                                              decoration: const BoxDecoration(
-                                                color: colorGreenlight2,
-                                              ),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    //'${DB.getCurrentLanguage() == 'fr' ? pray.title?.fr : pray.title?.en}',
-                                                    '${pray.title?.fr}',
-                                                    style: TextStyles
-                                                        .montserratBold(
-                                                      textSize:
-                                                          TextSizes.sixteen,
-                                                    ),
-                                                  ),
-                                                  Separators.minimunVertical(),
-                                                  ReadMoreText(
-                                                    '${pray.content?.fr}',
-                                                    colorClickableText: colorGreen,
-                                                    trimLines: 5,
-                                                    trimMode: TrimMode.Line,
-                                                    trimCollapsedText:
-                                                        'Tout afficher',
-                                                    trimExpandedText:
-                                                        '\nRéduire',
-                                                    moreStyle: TextStyles
-                                                        .montserratSemiBold(
-                                                      textSize:
-                                                          TextSizes.fourteen,
-                                                      textColor: colorBlack,
-                                                    ),
-                                                    lessStyle: TextStyles
-                                                        .montserratSemiBold(
-                                                      textSize:
-                                                          TextSizes.fourteen,
-                                                      textColor: colorBlack,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
+                                            return PrayItem(pray: pray);
                                           },
                                           separatorBuilder:
                                               (BuildContext context,

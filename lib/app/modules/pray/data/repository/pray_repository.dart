@@ -17,8 +17,8 @@ class PrayRepository implements IPrayRepository {
   @override
   Future<List<Prayer>> getPrayers({int? page = 0}) async {
     Response response = await _apiClient.doRequest(
-      //endpoint: "/specific-prayers?page=$page&size=${AppConstants.PAGING_SIZE}&sort=ASC",
-      endpoint: "/specific-prayers?page=$page&size=50&sort=ASC",
+      //endpoint: "/specific-prayers?page=$page&size=${AppConstants.PRAY_PAGING_SIZE}&sort=ASC",
+      endpoint: "/specific-prayers?page=$page&size=${AppConstants.PRAY_PAGING_SIZE}&sort=ASC",
       method: HttpMethod.get,
       useBearer: true,
     );
