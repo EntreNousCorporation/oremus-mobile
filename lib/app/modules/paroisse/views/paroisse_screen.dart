@@ -120,101 +120,107 @@ class ParoisseScreen extends StatelessWidget {
                                               bottom: 0,
                                               left: 16,
                                               right: 16),
-                                          child: SmartRefresher(
-                                            //header: BezierCircleHeader(),
-                                            enablePullDown: true,
-                                            enablePullUp: true,
-                                            onRefresh: _.onRefresh,
-                                            onLoading: _.onLoading,
-                                            footer: CustomFooter(
-                                              builder: (BuildContext context,
-                                                  LoadStatus? mode) {
-                                                Widget body;
-                                                if (mode == LoadStatus.idle) {
-                                                  body = Container();
-                                                } else if (mode ==
-                                                    LoadStatus.loading) {
-                                                  body = LottieLoadingView();
-                                                } else if (mode ==
-                                                    LoadStatus.failed) {
-                                                  body = Text(
-                                                    "Une erreur est survenue lors du chargement",
-                                                    style: TextStyles
-                                                        .montserratBold(
-                                                            textSize: TextSizes
-                                                                .thirteen,
-                                                            textColor:
-                                                                colorBlack),
-                                                  );
-                                                } else if (mode ==
-                                                    LoadStatus.canLoading) {
-                                                  body = Text(
-                                                    "Charger plus de paroisses",
-                                                    style: TextStyles
-                                                        .montserratBold(
-                                                            textSize: TextSizes
-                                                                .thirteen,
-                                                            textColor:
-                                                                colorBlack),
-                                                  );
-                                                } else {
-                                                  body = Column(
-                                                    children: [
-                                                      SizedBox(
-                                                        width: Get.width / 1.7,
-                                                        height: 4,
-                                                        child: Container(
-                                                          decoration:
-                                                          BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(10),
-                                                            gradient:
-                                                                const LinearGradient(
-                                                              begin: Alignment
-                                                                  .topRight,
-                                                              end: Alignment
-                                                                  .bottomLeft,
-                                                              colors: [
-                                                                colorGreen,
-                                                                colorGreenSemiLight,
-                                                              ],
+                                          child: NotificationListener<OverscrollIndicatorNotification>(
+                                            onNotification: (notification) {
+                                              notification.disallowIndicator();
+                                              return false;
+                                            },
+                                            child: SmartRefresher(
+                                              //header: BezierCircleHeader(),
+                                              enablePullDown: true,
+                                              enablePullUp: true,
+                                              onRefresh: _.onRefresh,
+                                              onLoading: _.onLoading,
+                                              footer: CustomFooter(
+                                                builder: (BuildContext context,
+                                                    LoadStatus? mode) {
+                                                  Widget body;
+                                                  if (mode == LoadStatus.idle) {
+                                                    body = Container();
+                                                  } else if (mode ==
+                                                      LoadStatus.loading) {
+                                                    body = LottieLoadingView();
+                                                  } else if (mode ==
+                                                      LoadStatus.failed) {
+                                                    body = Text(
+                                                      "Une erreur est survenue lors du chargement",
+                                                      style: TextStyles
+                                                          .montserratBold(
+                                                              textSize: TextSizes
+                                                                  .thirteen,
+                                                              textColor:
+                                                                  colorBlack),
+                                                    );
+                                                  } else if (mode ==
+                                                      LoadStatus.canLoading) {
+                                                    body = Text(
+                                                      "Relacher pour charger plus de paroisses",
+                                                      style: TextStyles
+                                                          .montserratBold(
+                                                              textSize: TextSizes
+                                                                  .thirteen,
+                                                              textColor:
+                                                                  colorBlack),
+                                                    );
+                                                  } else {
+                                                    body = Column(
+                                                      children: [
+                                                        SizedBox(
+                                                          width: Get.width / 1.7,
+                                                          height: 4,
+                                                          child: Container(
+                                                            decoration:
+                                                            BoxDecoration(
+                                                                  borderRadius: BorderRadius.circular(10),
+                                                              gradient:
+                                                                  const LinearGradient(
+                                                                begin: Alignment
+                                                                    .topRight,
+                                                                end: Alignment
+                                                                    .bottomLeft,
+                                                                colors: [
+                                                                  colorGreen,
+                                                                  colorGreenSemiLight,
+                                                                ],
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                      Separators
-                                                          .minimunVertical(),
-                                                      Text(
-                                                        "Aucune donnée à charger",
-                                                        style: TextStyles
-                                                            .montserratBold(
-                                                                textSize:
-                                                                    TextSizes
-                                                                        .thirteen,
-                                                                textColor:
-                                                                    colorBlack),
-                                                      ),
-                                                    ],
+                                                        Separators
+                                                            .minimunVertical(),
+                                                        Text(
+                                                          "Aucune donnée à charger",
+                                                          style: TextStyles
+                                                              .montserratBold(
+                                                                  textSize:
+                                                                      TextSizes
+                                                                          .thirteen,
+                                                                  textColor:
+                                                                      colorBlack),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  }
+                                                  return SizedBox(
+                                                    height: 55.0,
+                                                    child: Center(child: body),
                                                   );
-                                                }
-                                                return SizedBox(
-                                                  height: 55.0,
-                                                  child: Center(child: body),
-                                                );
-                                              },
+                                                },
+                                              ),
+                                              physics: const BouncingScrollPhysics(),
+                                              controller: _.refreshController,
+                                              child: ListView.builder(
+                                                  physics: const NeverScrollableScrollPhysics(),
+                                                  shrinkWrap: false,
+                                                  itemCount: _.paroisses.length,
+                                                  itemBuilder: (builder, index) {
+                                                    var paroisse = _.paroisses[index];
+                                                    return ParoisseItem(
+                                                      paroisse: paroisse,
+                                                      index: index,
+                                                    );
+                                                  }),
                                             ),
-                                            physics: const BouncingScrollPhysics(),
-                                            controller: _.refreshController,
-                                            child: ListView.builder(
-                                                physics: const NeverScrollableScrollPhysics(),
-                                                shrinkWrap: false,
-                                                itemCount: _.paroisses.length,
-                                                itemBuilder: (builder, index) {
-                                                  var paroisse = _.paroisses[index];
-                                                  return ParoisseItem(
-                                                    paroisse: paroisse,
-                                                    index: index,
-                                                  );
-                                                }),
                                           ),
                                         ),
                                       ),

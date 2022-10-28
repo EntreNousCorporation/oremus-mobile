@@ -76,7 +76,7 @@ class PrayScreen extends StatelessWidget {
                                             } else if (mode ==
                                                 LoadStatus.canLoading) {
                                               body = Text(
-                                                "Charger plus de prières",
+                                                "Relacher pour charger plus de prières",
                                                 style:
                                                     TextStyles.montserratBold(
                                                         textSize:
@@ -134,6 +134,7 @@ class PrayScreen extends StatelessWidget {
                                             top: 16.0,
                                             bottom: 16.0,
                                           ),
+                                          physics: const NeverScrollableScrollPhysics(),
                                           shrinkWrap: true,
                                           itemCount: _.prayers.length,
                                           itemBuilder: (context, index) {

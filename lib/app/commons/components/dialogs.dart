@@ -21,7 +21,7 @@ Future showCustomDialog(BuildContext context,
       barrierDismissible: dismissible,
       builder: (BuildContext context) {
         return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 0.5, sigmaY: 0.5),
+          filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
           child: AlertDialog(
             backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
@@ -32,7 +32,7 @@ Future showCustomDialog(BuildContext context,
               children: [
                 Icon(
                   Icons.info,
-                  color: type == 'info' ? Colors.green : Colors.red,
+                  color: type == 'info' ? colorGreenSemiLight : colorRed1,
                   size: 35.0,
                 ),
                 const SizedBox(
@@ -50,35 +50,41 @@ Future showCustomDialog(BuildContext context,
             content: Text(
               message,
               style: TextStyles.montserratSemiBold(
-                  textSize: TextSizes.fourteen, textColor: colorBlack),
+                textSize: TextSizes.fourteen,
+                textColor: colorBlack,
+              ),
             ),
             actions: <Widget>[
               Visibility(
                 visible: negativeLabel != '',
                 child: TextButton(
-                    onPressed: () {
-                      Navigator.pop(context, false);
-                      if (negativeCallBack != null) negativeCallBack();
-                    },
-                    child: Text(
-                      negativeLabel,
-                      style: TextStyles.montserratSemiBold(
-                          textSize: TextSizes.fourteen, textColor: colorBlack),
-                    )),
+                  onPressed: () {
+                    Navigator.pop(context, false);
+                    if (negativeCallBack != null) negativeCallBack();
+                  },
+                  child: Text(
+                    negativeLabel,
+                    style: TextStyles.montserratSemiBold(
+                      textSize: TextSizes.fourteen,
+                      textColor: colorBlack,
+                    ),
+                  ),
+                ),
               ),
               TextButton(
-                  onPressed: () {
-                    Navigator.pop(context, true);
-                    if (positiveCallBack != null) positiveCallBack();
-                  },
-                  style: TextButton.styleFrom(
-                    backgroundColor: colorGreenSemiLight,
-                  ),
-                  child: Text(
-                    positiveLabel,
-                    style: TextStyles.montserratSemiBold(
-                        textSize: TextSizes.fourteen, textColor: colorWhite),
-                  )),
+                onPressed: () {
+                  Navigator.pop(context, true);
+                  if (positiveCallBack != null) positiveCallBack();
+                },
+                style: TextButton.styleFrom(
+                  backgroundColor: colorGreenSemiLight,
+                ),
+                child: Text(
+                  positiveLabel,
+                  style: TextStyles.montserratSemiBold(
+                      textSize: TextSizes.fourteen, textColor: colorWhite),
+                ),
+              ),
             ],
           ),
         );

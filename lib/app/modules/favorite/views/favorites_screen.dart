@@ -36,7 +36,9 @@ class FavoritesScreen extends StatelessWidget {
                         icon: const Icon(Icons.arrow_back_ios_rounded),
                       ),
                       title: Text(
-                        _.favorites.isNotEmpty ? 'Mes favoris (${_.favorites.length})' : 'Mes favoris',
+                        _.favorites.isNotEmpty
+                            ? 'Mes favoris (${_.favorites.length})'
+                            : 'Mes favoris',
                         style: TextStyles.montserratBold(
                             textSize: TextSizes.sixteen, textColor: colorWhite),
                       ),
@@ -59,28 +61,30 @@ class FavoritesScreen extends StatelessWidget {
                                           left: 16,
                                           right: 16),
                                       child: AnimatedList(
-                                        key: _.key,
-                                        initialItemCount: _.favorites.length,
+                                          key: _.key,
+                                          physics: const BouncingScrollPhysics(),
+                                          initialItemCount: _.favorites.length,
                                           itemBuilder:
-                                          (context, index, animation) {
+                                              (context, index, animation) {
                                             var paroisse = _.favorites[index];
-                                        return SizeTransition(
-                                          key: UniqueKey(),
-                                          sizeFactor: animation,
-                                          child: ParoisseItem(
-                                            paroisse: paroisse,
-                                            index: index,
-                                            fromFavoriteUI: true,
-                                          ),
-                                        );
-                                      }),
+                                            return SizeTransition(
+                                              key: UniqueKey(),
+                                              sizeFactor: animation,
+                                              child: ParoisseItem(
+                                                paroisse: paroisse,
+                                                index: index,
+                                                fromFavoriteUI: true,
+                                              ),
+                                            );
+                                          }),
                                     ),
                                   ),
                                 )
                               : Expanded(
                                   child: NotFoundScreen(
-                                  message: "Aucun favoris pour le moment",
-                                )),
+                                    message: "Aucun favoris pour le moment",
+                                  ),
+                                ),
                         ],
                       ),
                     ),

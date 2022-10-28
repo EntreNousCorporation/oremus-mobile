@@ -12,60 +12,63 @@ class PrayItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding:
-      const EdgeInsets.symmetric(
-        horizontal: 16.0,
-        vertical: 16.0,
-      ),
-      decoration: BoxDecoration(
-        color: colorGreenlight2,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment:
-        CrossAxisAlignment.start,
-        children: [
-          Text(
-            //'${DB.getCurrentLanguage() == 'fr' ? pray.title?.fr : pray.title?.en}',
-            '${pray.title?.fr}',
-            style: TextStyles
-                .montserratBold(
-              textSize:
-              TextSizes.sixteen,
-              textColor: colorRed1,
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 250),
+      child: Container(
+        padding:
+        const EdgeInsets.symmetric(
+          horizontal: 16.0,
+          vertical: 16.0,
+        ),
+        decoration: BoxDecoration(
+          color: colorGreenlight2,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          crossAxisAlignment:
+          CrossAxisAlignment.start,
+          children: [
+            Text(
+              //'${DB.getCurrentLanguage() == 'fr' ? pray.title?.fr : pray.title?.en}',
+              '${pray.title?.fr}',
+              style: TextStyles
+                  .montserratBold(
+                textSize:
+                TextSizes.sixteen,
+                textColor: colorRed1,
+              ),
             ),
-          ),
-          Separators.minimunVertical(),
-          ReadMoreText(
-            '${pray.content?.fr}',
-            colorClickableText: colorGreen,
-            style: TextStyles
-                .montserratRegular(
-              textSize:
-              TextSizes.fifteen,
-              textColor: colorBlack,
+            Separators.minimunVertical(),
+            ReadMoreText(
+              '${pray.content?.fr}',
+              colorClickableText: colorGreen,
+              style: TextStyles
+                  .montserratRegular(
+                textSize:
+                TextSizes.fifteen,
+                textColor: colorBlack,
+              ),
+              trimLines: 5,
+              trimMode: TrimMode.Line,
+              trimCollapsedText:
+              'Tout afficher',
+              trimExpandedText:
+              '\nRéduire',
+              moreStyle: TextStyles
+                  .montserratSemiBoldItalic(
+                textSize:
+                TextSizes.fourteen,
+                textColor: colorBlack,
+              ),
+              lessStyle: TextStyles
+                  .montserratSemiBoldItalic(
+                textSize:
+                TextSizes.fourteen,
+                textColor: colorBlack,
+              ),
             ),
-            trimLines: 5,
-            trimMode: TrimMode.Line,
-            trimCollapsedText:
-            'Tout afficher',
-            trimExpandedText:
-            '\nRéduire',
-            moreStyle: TextStyles
-                .montserratSemiBoldItalic(
-              textSize:
-              TextSizes.fourteen,
-              textColor: colorBlack,
-            ),
-            lessStyle: TextStyles
-                .montserratSemiBoldItalic(
-              textSize:
-              TextSizes.fourteen,
-              textColor: colorBlack,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

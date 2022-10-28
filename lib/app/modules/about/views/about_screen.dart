@@ -27,7 +27,7 @@ class AboutScreen extends StatelessWidget {
             Row(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(60),
+                  borderRadius: BorderRadius.circular(200),
                   child: SvgPicture.asset(
                     'assets/images/logo.svg',
                     height: 60,
