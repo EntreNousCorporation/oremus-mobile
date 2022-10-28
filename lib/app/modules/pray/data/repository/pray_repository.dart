@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/enums.dart';
-import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/pray/data/model/prayer.dart';
 import 'package:oremusapp/app/modules/pray/data/repository/interface_pray_repository.dart';
 import 'package:oremusapp/app/remote/api_client.dart';

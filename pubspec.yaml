@@ -53,7 +53,9 @@ dependencies:
   flutter_animator: ^3.2.1
   #timelines: ^0.1.0
   flutter_timeline: ^0.3.0
-  readmore: ^2.1.0
+  #readmore: ^2.1.0
+  flutter_html: ^2.2.1
+  #html: ^0.15.1
 
 dev_dependencies:
   flutter_test:

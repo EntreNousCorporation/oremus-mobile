@@ -19,6 +19,8 @@ class PrayController extends GetxController {
   var isDataProcessing = false.obs;
   var hasData = false.obs;
 
+  var readMore = false.obs;
+
   var refreshController = RefreshController();
 
   var page = 0.obs;

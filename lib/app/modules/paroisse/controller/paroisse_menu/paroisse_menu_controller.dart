@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
@@ -11,7 +9,6 @@ import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/type_menu.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ParoisseMenuController extends GetxController {
   final ParoisseRepository paroisseRepository;

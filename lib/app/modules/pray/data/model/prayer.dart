@@ -6,11 +6,14 @@ class Prayer {
   TranslateContent? title;
   TranslateContent? content;
 
+  bool? isExpand = false;
+
   Prayer({
     this.identifier,
     this.code,
     this.title,
     this.content,
+    this.isExpand,
   });
 
   Prayer.fromJson(Map<String, dynamic> json) {

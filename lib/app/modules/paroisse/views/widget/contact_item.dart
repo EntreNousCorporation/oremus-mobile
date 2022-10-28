@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -8,7 +6,6 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_contact_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/movement_response.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ContactItem extends StatelessWidget {
   ContactItem({Key? key, required this.contact}) : super(key: key);
