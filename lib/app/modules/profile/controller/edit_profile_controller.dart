@@ -15,6 +15,7 @@ import 'package:oremusapp/app/modules/profile/data/model/profile.dart';
 import 'package:oremusapp/app/modules/profile/data/repository/profile_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
+import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -81,7 +82,7 @@ class EditProfileController extends GetxController {
   updateProfile() {
     hideKeyboard();
     EasyLoading.show(
-      status: 'Mise à jour en cours',
+      status: 'Mise à jour en cours...',
       maskType: EasyLoadingMaskType.black,
       indicator: LottieLoadingView(),
     ).then((v) {
@@ -121,16 +122,16 @@ class EditProfileController extends GetxController {
       });
       lockScreen(false);
       debugPrint("error => ${error.toString()}");
+      var err = error as CustomException;
       if (error.toString().isNotEmpty && error is Map) {
         var errorResponse = ErrorResponse.fromJson(json.decode(error.toString()));
         showNotification(
             message: errorResponse.debugMessage.toString(),
         );
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
       } else {
-        showNotification(
-            message: "Une erreur est survenue",
-            bgColor: colorGreen4
-        );
+        showNotification(message: "Une erreur est survenue");
       }
     });
   }

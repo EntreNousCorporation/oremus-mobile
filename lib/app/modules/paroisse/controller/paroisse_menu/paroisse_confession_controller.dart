@@ -13,6 +13,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/type_menu.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/confession/regular_confession_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/confession/special_confession_screen.dart';
+import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -99,13 +100,16 @@ class ParoisseConfessionController extends GetxController {
     }, onError: (error) {
       isRegularMassDataProcessing(false);
       hasRegularMassData(false);
-      if (error.toString().contains('401')) {
+      var err = error as CustomException;
+      if (err.code == 401) {
         showCustomDialog(
           Get.context!,
           message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
       }
       debugPrint("error regularMasses => ${error.toString()}");
     });
@@ -130,13 +134,16 @@ class ParoisseConfessionController extends GetxController {
     }, onError: (error) {
       isSpecialMassDataProcessing(false);
       hasSpecialMassData(false);
-      if (error.toString().contains('401')) {
+      var err = error as CustomException;
+      if (err.code == 401) {
         showCustomDialog(
           Get.context!,
           message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
       }
       debugPrint("error specialMasses => ${error.toString()}");
     });
@@ -156,13 +163,16 @@ class ParoisseConfessionController extends GetxController {
       }
     }, onError: (error) {
       refreshController.refreshCompleted();
-      if (error.toString().contains('401')) {
+      var err = error as CustomException;
+      if (err.code == 401) {
         showCustomDialog(
           Get.context!,
           message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
       }
       debugPrint("error regularConfessions => ${error.toString()}");
     });
@@ -183,13 +193,16 @@ class ParoisseConfessionController extends GetxController {
       }
     }, onError: (error) {
       refreshNotRecurrentController.refreshCompleted();
-      if (error.toString().contains('401')) {
+      var err = error as CustomException;
+      if (err.code == 401) {
         showCustomDialog(
           Get.context!,
           message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
       }
       debugPrint("error specialConfessions => ${error.toString()}");
     });

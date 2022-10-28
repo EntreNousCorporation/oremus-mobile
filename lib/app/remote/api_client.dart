@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
+import 'package:oremusapp/app/commons/internet_checker/internet_connection_checker.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/main.dart';
 
@@ -38,6 +39,8 @@ class ApiClientImpl extends ApiClient {
     log("headers => " + headers.toString());
     log("method => " + method.name);
     //log("body => " + body != null ? body: '');
+
+    await checkConectivity();
 
     Response response;
     var resp;
@@ -90,8 +93,21 @@ class ApiClientImpl extends ApiClient {
       case 409:
         throw ConflictedException(409, 'Conflit survenu');
       case 500:
+        throw InternalServerErrorException(500, 'Une erreur interne du serveur est survenue');
+      case 900:
+          throw FetchDataException(900, 'Pas de connexion à Internet');
       default:
-        throw FetchDataException(100, 'Error occured while Communication with Server with StatusCode: ${response.statusCode}');
+        throw FetchDataException(901, 'Une erreur inconnue est survenue');
+    }
+  }
+
+  ///Vérification de la connectivité avant la d'effectuer la requête
+  checkConectivity() async {
+    bool result = await InternetConnectionChecker().hasConnection;
+    if (result == false) {
+      throw FetchDataException(900, 'Vous êtes actuellement hors connexion! \nVeuillez vérifier votre connexion à Internet!');
+    } else {
+      log('is ok for Internet');
     }
   }
 }

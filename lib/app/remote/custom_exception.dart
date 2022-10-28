@@ -12,7 +12,7 @@ class CustomException implements Exception {
 
 class FetchDataException extends CustomException {
   FetchDataException(code, message)
-      : super(message, "Error During Communication: ");
+      : super(code, message);
 }
 
 class BadRequestException extends CustomException {
@@ -29,4 +29,8 @@ class ConflictedException extends CustomException {
 
 class InvalidInputException extends CustomException {
   InvalidInputException(code, message) : super(code, "Invalid Input: $message");
+}
+
+class InternalServerErrorException extends CustomException {
+  InternalServerErrorException(code, message) : super('Invalid Input: $code', message);
 }

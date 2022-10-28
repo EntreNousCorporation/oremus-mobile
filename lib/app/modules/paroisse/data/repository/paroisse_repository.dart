@@ -38,7 +38,8 @@ class ParoisseRepository implements IParoisseRepository {
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      throw Exception(resp);
+      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      throw CustomException(e.debugMessage, e.status);
     } else {
       return PlaceResponse.fromJson(
           json.decode(response.bodyString.toString()));
@@ -57,7 +58,8 @@ class ParoisseRepository implements IParoisseRepository {
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      throw Exception(resp);
+      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      throw CustomException(e.debugMessage, e.status);
     } else {
       return (jsonDecode(response.bodyString.toString()) as List)
           .map((i) => LiturgicalCelebrationResponse.fromJson(i))
@@ -76,7 +78,8 @@ class ParoisseRepository implements IParoisseRepository {
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      throw Exception(resp);
+      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      throw CustomException(e.debugMessage, e.status);
     } else {
       return (jsonDecode(response.bodyString.toString()) as List)
           .map((i) => ActivityResponse.fromJson(i))
@@ -95,7 +98,7 @@ class ParoisseRepository implements IParoisseRepository {
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      throw Exception(resp);
+      throw CustomException(response.statusCode, response.statusText);
     } else {
       return (jsonDecode(response.bodyString.toString()) as List)
           .map((i) => MovementResponse.fromJson(i))
@@ -113,8 +116,7 @@ class ParoisseRepository implements IParoisseRepository {
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      var e =
-          ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
       throw CustomException(e.debugMessage, e.status);
     } else {
       return (jsonDecode(response.bodyString.toString()) as List)
@@ -133,8 +135,7 @@ class ParoisseRepository implements IParoisseRepository {
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      var e =
-          ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
       throw CustomException(e.debugMessage, e.status);
     } else {
       debugPrint("===== getPlaceOfWorshipContacts =====");
@@ -176,7 +177,7 @@ class ParoisseRepository implements IParoisseRepository {
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      throw Exception(resp);
+      throw CustomException(response.statusCode, response.statusText);
     } else {
       return (jsonDecode(response.bodyString.toString()) as List)
           .map((i) => LiturgicalCelebrationResponse.fromJson(i))

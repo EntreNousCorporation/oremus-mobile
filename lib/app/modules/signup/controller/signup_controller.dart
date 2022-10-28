@@ -114,25 +114,13 @@ class SignupController extends GetxController {
         showNotification(
           message: "Ce compte existe déjà. Si vous avez oublié votre mot de passe, vous pouvez le réinitialiser",
         );
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
       } else {
         showNotification(
           message: "Une erreur est survenue",
         );
       }
-
-      /*if (error.toString().isNotEmpty && error is Map) {
-        var errorResponse =
-            ErrorResponse.fromJson(json.decode(error.toString()));
-        showNotification(
-          message: errorResponse.debugMessage.toString(),
-        );
-      } else {
-
-        showNotification(
-          message: "Une erreur est survenue",
-        );
-      }*/
-
     });
   }
 

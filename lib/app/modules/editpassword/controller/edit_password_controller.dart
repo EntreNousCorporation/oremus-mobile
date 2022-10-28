@@ -13,6 +13,7 @@ import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/profile/data/repository/profile_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
+import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
@@ -98,16 +99,21 @@ class EditPasswordController extends GetxController {
       });
       lockScreen(false);
       debugPrint("error => ${error.toString()}");
-      if (error.toString().contains('401')) {
+      var err = error as CustomException;
+      if (err.code == 401) {
         showNotification(
             message: "Le mot de passe est incorrect",
         );
         return;
       }
-      if (error.toString().contains('400')) {
+      if (err.code == 400) {
         showNotification(
             message: "L'ancien et le nouveau mot de passe ne doivent pas être identiques",
         );
+        return;
+      }
+      if (err.code == 900) {
+        showNotification(message: err.message.toString());
         return;
       }
       if (error.toString().isNotEmpty && error is Map) {
@@ -116,9 +122,6 @@ class EditPasswordController extends GetxController {
         showNotification(
             message: errorResponse.debugMessage.toString(),
         );
-      } else {
-        //messge générique
-
       }
     });
   }

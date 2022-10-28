@@ -153,9 +153,9 @@ class ParoisseContactController extends GetxController {
         (value) {
       isDataProcessing(false);
       if (code.value == 'DM') {
-        contacts.value = value.where((element) => element.name == 'demande_de_messe').toList();
+        contacts.value = value.where((element) => element.name == AppConstants.DEMANDE_MESSE).toList();
       } else {
-        contacts.value = value;
+        contacts.value = value.where((element) => element.name != AppConstants.DEMANDE_MESSE).toList();;
       }
       if (contacts.isNotEmpty == true) {
         hasData(true);
@@ -170,12 +170,12 @@ class ParoisseContactController extends GetxController {
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
-          message: "Vous n’êtes pas autorisé à accéder à cette ressource",
+          message: "Vous n'êtes pas autorisé à accéder à cette ressource",
         ).then((value) {
           //doLogout();
         });
       } else {
-        showCustomDialog(Get.context!, message: err.message);
+        showNotification(message: err.message);
       }
       debugPrint("error => ${err.toString()}");
     });
@@ -209,7 +209,7 @@ class ParoisseContactController extends GetxController {
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
-          message: "Vous n’êtes pas autorisé à accéder à cette ressource",
+          message: "Vous n'êtes pas autorisé à accéder à cette ressource",
         ).then((value) {
           //doLogout();
         });

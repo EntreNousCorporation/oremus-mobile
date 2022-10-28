@@ -112,9 +112,10 @@ class ParoissePresbyTeamController extends GetxController {
         ).then((value) {
           //doLogout();
         });
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
       } else {
-        showCustomDialog(
-          Get.context!, message: err.message);
+        showNotification(message: err.message);
       }
       debugPrint("error => ${err.toString()}");
     });
@@ -128,7 +129,7 @@ class ParoissePresbyTeamController extends GetxController {
       refreshController.refreshCompleted();
       if (value.isEmpty == false) {
         presbyTeams.value = value.where((element) => (element.type != null) && (element.type?.toLowerCase() == "vicar" || element.type?.toLowerCase() == "clergyman")).toList();
-        presbyTeams.value.sort((a, b) => a.type!.compareTo(b.type!));
+        presbyTeams.sort((a, b) => a.type!.compareTo(b.type!));
         log('${presbyTeams.length}');
       }
     }, onError: (error) {
@@ -141,6 +142,8 @@ class ParoissePresbyTeamController extends GetxController {
         ).then((value) {
           //doLogout();
         });
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
       } else {
         showCustomDialog(
             Get.context!, message: err.message);

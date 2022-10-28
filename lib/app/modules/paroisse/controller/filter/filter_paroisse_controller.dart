@@ -12,6 +12,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_type.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
+import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
 class FilterParoisseController extends GetxController {
@@ -84,12 +85,15 @@ class FilterParoisseController extends GetxController {
     }, onError: (error) {
       isWorshipPlaceDataProcessing(false);
       hasWorshipPlaceData(false);
-      if (error.toString().contains('401')) {
+      var err = error as CustomException;
+      if (err.code == 401) {
         showCustomDialog(
             Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
       }
       debugPrint("error => ${error.toString()}");
     });
@@ -113,12 +117,15 @@ class FilterParoisseController extends GetxController {
     }, onError: (error) {
       isDioceseDataProcessing(false);
       hasDioceseData(false);
-      if (error.toString().contains('401')) {
+      var err = error as CustomException;
+      if (err.code == 401) {
         showCustomDialog(
             Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
       }
       debugPrint("error => ${error.toString()}");
     });

@@ -7,6 +7,7 @@ import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/resetpassword/data/repository/reset_password_repository.dart';
+import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
@@ -77,12 +78,15 @@ class OtpController extends GetxController {
       });
       lockScreen(false);
       debugPrint("error => ${error.toString()}");
+      var err = error as CustomException;
       if (error.toString().isNotEmpty && error is Map) {
         var errorResponse =
             ErrorResponse.fromJson(json.decode(error.toString()));
         showNotification(
             message: errorResponse.debugMessage.toString(),
         );
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
       } else {
         showNotification(
           message: "Une erreur interne est survenue",

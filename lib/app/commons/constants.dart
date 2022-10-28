@@ -49,6 +49,8 @@ abstract class AppConstants {
   static const SACRAMENT = 'SACRAMENT'; //Sacrement
   static const CONFESSION = 'CONFESSION'; //Confession
 
+  static const DEMANDE_MESSE = 'demande_de_messe'; //DEMANDE_MESSE
+
   static const SPECIALS_MASSES = [
     EASTER_MASS,
     EASTER_VIGIL,

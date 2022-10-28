@@ -7,6 +7,7 @@ import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/pray/data/model/prayer.dart';
 import 'package:oremusapp/app/modules/pray/data/repository/pray_repository.dart';
+import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -65,13 +66,16 @@ class PrayController extends GetxController {
     }, onError: (error) {
       isDataProcessing(false);
       hasData(false);
-      if (error.toString().contains('401')) {
+      var err = error as CustomException;
+      if (err.code == 401) {
         showCustomDialog(
           Get.context!,
           message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
       }
       log("error => ${error.toString()}");
     });
@@ -92,13 +96,16 @@ class PrayController extends GetxController {
           }
     }, onError: (error) {
       refreshController.refreshCompleted();
-      if (error.toString().contains('401')) {
+      var err = error as CustomException;
+      if (err.code == 401) {
         showCustomDialog(
           Get.context!,
           message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
       }
       log("error => ${error.toString()}");
     });
@@ -122,13 +129,16 @@ class PrayController extends GetxController {
       }
     }, onError: (error) {
       refreshController.loadFailed();
-      if (error.toString().contains('401')) {
+      var err = error as CustomException;
+      if (err.code == 401) {
         showCustomDialog(
           Get.context!,
           message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
       }
       log("error => ${error.toString()}");
     });

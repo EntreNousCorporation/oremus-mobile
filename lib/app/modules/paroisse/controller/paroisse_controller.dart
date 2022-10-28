@@ -13,6 +13,7 @@ import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
+import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -99,13 +100,21 @@ class ParoisseController extends GetxController {
     }, onError: (error) {
       isDataProcessing(false);
       hasData(false);
-      if (error.toString().contains('401')) {
+
+      var err = error as CustomException;
+
+      if (err.code.toString().contains('401')) {
         showCustomDialog(
           Get.context!,
           message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
+      } else if (err.code.toString().contains('900')) {
+        showCustomDialog(
+          Get.context!,
+          message: err.message.toString(),
+        );
       }
       debugPrint("error => ${error.toString()}");
     });
@@ -130,6 +139,8 @@ class ParoisseController extends GetxController {
       }
     }, onError: (error) {
       refreshController.refreshCompleted();
+      var err = error as CustomException;
+
       if (error.toString().contains('401')) {
         showCustomDialog(
           Get.context!,
@@ -137,6 +148,11 @@ class ParoisseController extends GetxController {
         ).then((value) {
           doLogout();
         });
+      } else if (err.code.toString().contains('900')) {
+        showCustomDialog(
+          Get.context!,
+          message: err.message.toString(),
+        );
       }
       debugPrint("error => ${error.toString()}");
     });
@@ -166,13 +182,16 @@ class ParoisseController extends GetxController {
       }
     }, onError: (error) {
       refreshController.loadFailed();
-      if (error.toString().contains('401')) {
+      var err = error as CustomException;
+      if (err.code == 401) {
         showCustomDialog(
           Get.context!,
           message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
       }
       debugPrint("error => ${error.toString()}");
     });
