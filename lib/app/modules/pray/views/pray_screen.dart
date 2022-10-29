@@ -18,7 +18,7 @@ class PrayScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: colorGreen,
+      color: colorWhite,
       child: SafeArea(
         child: GetX<PrayController>(builder: (_) {
           return WillPopScope(

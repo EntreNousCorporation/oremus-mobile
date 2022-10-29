@@ -29,7 +29,6 @@ class ParoisseOfficeScreen extends StatelessWidget {
     return Container(
       color: colorGreen,
       child: GetX<ParoisseOfficeController>(
-          initState: (state) {},
           builder: (_) {
             return KeyboardDismisser(
               child: Scaffold(

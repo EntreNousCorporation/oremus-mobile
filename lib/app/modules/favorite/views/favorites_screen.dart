@@ -16,10 +16,9 @@ class FavoritesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: colorGreen,
+      color: colorWhite,
       child: SafeArea(
         child: GetX<FavoriteController>(
-            initState: (state) {},
             builder: (_) {
               return WillPopScope(
                 onWillPop: () async => false,

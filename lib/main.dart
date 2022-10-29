@@ -38,9 +38,6 @@ void main() async {
       Jiffy.locale('fr');
       configOrientation();
       configLoading();
-      if (GetPlatform.isAndroid) {
-        AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
-      }
 
       //runApp(const MyApp());
       runZonedGuarded<Future<void>>(() async {

@@ -22,12 +22,16 @@ dependencies:
   flutter_fadein: ^2.0.0
   keyboard_dismisser: ^2.0.0
   jiffy: ^4.1.0
-  firebase_core: ^1.14.1
-  firebase_crashlytics: ^2.3.0
-  fcm_config: ^3.1.8
+  #firebase_core: ^1.14.1
+  #firebase_crashlytics: ^2.3.0
+  #fcm_config: ^3.1.8
+  firebase_core: ^1.24.0
+  firebase_crashlytics: ^2.9.0
+  fcm_config: ^3.4.0
   lottie: ^1.2.1
-  flutter_secure_storage: ^5.0.2
-  hive: ^2.0.4
+  #flutter_secure_storage: ^5.0.2
+  shared_preferences: ^2.0.15
+  hive: ^2.2.3
   hive_flutter: ^1.1.0
   overlay_support: ^1.2.1
   flutter_easyloading: ^3.0.3
@@ -39,16 +43,16 @@ dependencies:
   cached_network_image: ^3.2.0
   #flutter_map: ^0.14.0
   #flutter_map_marker_popup: ^2.1.2
-  url_launcher: ^6.0.20
-  accordion: ^2.2.3
-  like_button: ^2.0.4
-  pin_code_fields: ^7.3.0
+  url_launcher: ^6.1.6
+  accordion: ^2.3.0
+  like_button: ^2.0.5
+  pin_code_fields: ^7.4.0
   google_maps_flutter: ^2.2.1
   custom_info_window: ^1.0.1
-  marker_icon: ^0.7.1
-  badges: ^2.0.2
-  grouped_list: ^4.1.0
-  map_launcher: ^2.2.1+2
+  #marker_icon: ^0.7.1
+  badges: ^2.0.3
+  grouped_list: ^5.1.2
+  map_launcher: ^2.4.0
   package_info_plus: ^1.4.2
   flutter_animator: ^3.2.1
   #timelines: ^0.1.0
