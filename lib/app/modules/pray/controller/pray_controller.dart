@@ -39,6 +39,12 @@ class PrayController extends GetxController {
     super.onReady();
   }
 
+  @override
+  void dispose() {
+   refreshController.dispose();
+   super.dispose();
+  }
+
   initPullToRefresh() {
     refreshController = RefreshController(initialRefresh: false);
   }

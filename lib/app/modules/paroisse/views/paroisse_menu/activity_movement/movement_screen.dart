@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
+import 'package:oremusapp/app/commons/components/custom_header.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_activity_movement_controller.dart';
@@ -28,6 +29,7 @@ class MovementScreen extends StatelessWidget {
             child: SmartRefresher(
               controller: logic.refreshMovementsController,
               onRefresh: logic.onRefreshMouvements,
+              header: const CustomClassicHeader(),
               child: ListView.builder(
                   itemCount: logic.movements.length,
                   itemBuilder: (context, index) {

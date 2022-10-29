@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
+import 'package:oremusapp/app/commons/components/custom_header.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
@@ -126,11 +127,11 @@ class ParoisseScreen extends StatelessWidget {
                                               return false;
                                             },
                                             child: SmartRefresher(
-                                              //header: BezierCircleHeader(),
                                               enablePullDown: true,
                                               enablePullUp: true,
                                               onRefresh: _.onRefresh,
                                               onLoading: _.onLoading,
+                                              header: const CustomClassicHeader(),
                                               footer: CustomFooter(
                                                 builder: (BuildContext context,
                                                     LoadStatus? mode) {

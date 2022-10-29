@@ -7,6 +7,7 @@ import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:like_button/like_button.dart';
+import 'package:oremusapp/app/commons/components/custom_header.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
@@ -180,6 +181,7 @@ class ParoisseContactScreen extends StatelessWidget {
                                 child: SmartRefresher(
                                   controller: _.refreshController,
                                   onRefresh: _.onRefresh,
+                                  header: const CustomClassicHeader(),
                                   child: ListView.builder(
                                       itemCount: _.contacts.length,
                                       itemBuilder: (context, index) {

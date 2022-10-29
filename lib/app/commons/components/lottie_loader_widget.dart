@@ -8,15 +8,17 @@ class LottieLoadingView extends StatelessWidget {
     Key? key,
     this.color = colorGreen3,
     this.size,
+    this.file,
   }) : super(key: key);
 
   final Color? color;
   double? size;
+  String? file;
 
   @override
   Widget build(BuildContext context) {
     return LottieBuilder.asset(
-      'assets/images/lottie_church.json',
+      file ?? 'assets/images/lottie_church.json',
       repeat: true,
       width: size ?? Get.width / 4,
     );

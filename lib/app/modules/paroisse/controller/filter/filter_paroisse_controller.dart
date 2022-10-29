@@ -46,7 +46,7 @@ class FilterParoisseController extends GetxController {
 
   @override
   void onInit() {
-    initController();
+    initControllers();
     super.onInit();
   }
 
@@ -59,14 +59,22 @@ class FilterParoisseController extends GetxController {
 
   @override
   void dispose() {
+    disposeControllers();
     super.dispose();
   }
 
-  initController() {
+  initControllers() {
     dioceseController = TextEditingController(text: '');
     cityController = TextEditingController(text: '');
     municipalityController = TextEditingController(text: '');
     neighborhoodController = TextEditingController(text: '');
+  }
+
+  disposeControllers() {
+    dioceseController.dispose();
+    cityController.dispose();
+    municipalityController.dispose();
+    neighborhoodController.dispose();
   }
 
   getParoisseType() {

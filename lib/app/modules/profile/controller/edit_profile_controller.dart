@@ -64,6 +64,16 @@ class EditProfileController extends GetxController {
     super.onInit();
   }
 
+  @override
+  void dispose() {
+    refreshController.dispose();
+    firstnameController.dispose();
+    lastnameController.dispose();
+    phoneController.dispose();
+    emailController.dispose();
+    super.dispose();
+  }
+
   getArguments() {
     if (Get.arguments != null) {
       userInfo.value = Profile.fromJson(jsonDecode(Get.arguments));
