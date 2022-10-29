@@ -78,6 +78,8 @@ class Assets {
   static const String imagesIconUser = 'assets/images/icon_user.svg';
   static const String imagesLiconDefaultPin = 'assets/images/licon_default_pin.svg';
   static const String imagesLogo = 'assets/images/logo.svg';
+  static const String imagesLottieSuccess = 'assets/images/lottie-success.zip';
+  static const String imagesLottieSuccess1 = 'assets/images/lottie-success-1.zip';
   static const String imagesLottieChurch = 'assets/images/lottie_church.json';
   static const String imagesLottieEmptySearch = 'assets/images/lottie_empty_search.json';
   static const String imagesMesse = 'assets/images/messe.svg';

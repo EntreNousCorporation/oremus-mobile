@@ -3,6 +3,7 @@ import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
+import 'package:oremusapp/app/commons/components/custom_header.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
@@ -18,7 +19,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: colorGreen,
+      color: colorWhite,
       child: SafeArea(
         child: GetX<ProfileController>(
             initState: (state) {},
@@ -27,6 +28,7 @@ class ProfileScreen extends StatelessWidget {
                 child: SmartRefresher(
                   controller: _.refreshController,
                   onRefresh: _.getProfile,
+                  header: const CustomClassicHeader(),
                   child: Scaffold(
                     resizeToAvoidBottomInset: true,
                     body: Container(
@@ -45,6 +47,7 @@ class ProfileScreen extends StatelessWidget {
                               : _.hasData.isTrue
                                   ? Expanded(
                                       child: SingleChildScrollView(
+                                        physics: const BouncingScrollPhysics(),
                                         child: FadeIn(
                                           duration:
                                               const Duration(milliseconds: 500),
@@ -268,9 +271,11 @@ class ProfileScreen extends StatelessWidget {
                                                     child: Material(
                                                       elevation: 6,
                                                       color: colorGrey2,
-                                                      shadowColor: colorGrey2.withOpacity(0.5),
+                                                      shadowColor: colorGrey2
+                                                          .withOpacity(0.5),
                                                       borderRadius:
-                                                          BorderRadius.circular(50),
+                                                          BorderRadius.circular(
+                                                              50),
                                                       child: SizedBox(
                                                         height: 50,
                                                         child: Row(
@@ -280,20 +285,24 @@ class ProfileScreen extends StatelessWidget {
                                                                 children: [
                                                                   Separators
                                                                       .normalHorizontal(),
-                                                                  const Icon(Icons.fingerprint_rounded),
+                                                                  const Icon(Icons
+                                                                      .fingerprint_rounded),
                                                                   Separators
                                                                       .minimunHorizontal(),
                                                                   Expanded(
                                                                     child: Text(
                                                                       'Connexion biométrique',
                                                                       textAlign:
-                                                                          TextAlign.start,
-                                                                      maxLines: 2,
-                                                                      overflow: TextOverflow.ellipsis,
+                                                                          TextAlign
+                                                                              .start,
+                                                                      maxLines:
+                                                                          2,
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
                                                                       style: TextStyles.montserratRegular(
-                                                                          textSize:
-                                                                              TextSizes
-                                                                                  .fourteen,
+                                                                          textSize: TextSizes
+                                                                              .fourteen,
                                                                           textColor:
                                                                               colorBlack),
                                                                     ),
@@ -302,13 +311,19 @@ class ProfileScreen extends StatelessWidget {
                                                               ),
                                                             ),
                                                             Switch(
-                                                               activeColor: colorGreenSemiLight,
-                                                                value: _.isActive.value,
-                                                                onChanged: (value) {
-                                                                 _.updateBiometriqueUI();
-                                                                 _.showMessageBiometrique(value);
+                                                                activeColor:
+                                                                    colorGreenSemiLight,
+                                                                value: _
+                                                                    .isActive
+                                                                    .value,
+                                                                onChanged:
+                                                                    (value) {
+                                                                  _.updateBiometriqueUI();
+                                                                  _.showMessageBiometrique(
+                                                                      value);
                                                                 }),
-                                                            Separators.normalHorizontal(),
+                                                            Separators
+                                                                .normalHorizontal(),
                                                           ],
                                                         ),
                                                       ),
@@ -323,8 +338,9 @@ class ProfileScreen extends StatelessWidget {
                                     )
                                   : Expanded(
                                       child: NotFoundScreen(
-                                      message: "Aucune information trouvée !",
-                                    )),
+                                        message: "Aucune information trouvée !",
+                                      ),
+                                    ),
                         ],
                       ),
                     ),

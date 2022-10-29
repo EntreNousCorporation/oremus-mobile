@@ -58,6 +58,7 @@ class ParoisseController extends GetxController {
   @override
   void dispose() {
     refreshController.dispose();
+    searchController.dispose();
     super.dispose();
   }
 

@@ -55,10 +55,22 @@ class EditPasswordController extends GetxController {
     super.onInit();
   }
 
+  @override
+  void dispose() {
+    disposeControllers();
+    super.dispose();
+  }
+
   initControllers() {
     passwordController = TextEditingController(text: '');
     newPasswordController = TextEditingController(text: '');
     confPasswordController = TextEditingController(text: '');
+  }
+
+  disposeControllers() {
+    passwordController.dispose();
+    newPasswordController.dispose();
+    confPasswordController.dispose();
   }
 
   updatePassword() {

@@ -40,7 +40,7 @@ class CustomHomeController extends GetxController {
       ),
       MenusItem(
         code: AppConstants.PRAY,
-        libelle: "Prières",
+        libelle: "Mini Missel",
         icon: 'assets/images/icon_pray.svg',
       ),
       MenusItem(

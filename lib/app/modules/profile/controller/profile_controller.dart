@@ -48,6 +48,16 @@ class ProfileController extends GetxController {
     super.onReady();
   }
 
+  @override
+  void dispose() {
+    refreshController.dispose();
+    firstnameController.dispose();
+    lastnameController.dispose();
+    phoneController.dispose();
+    emailController.dispose();
+    super.dispose();
+  }
+
   updateUI(Profile? userInfo) {
     firstnameController = TextEditingController(text: userInfo?.firstname ?? 'N/A');
     lastnameController = TextEditingController(text: userInfo?.lastname ?? 'N/A');
