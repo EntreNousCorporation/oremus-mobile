@@ -3,16 +3,20 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animator/flutter_animator.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
+import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/modules/profile/data/model/profile.dart';
 import 'package:oremusapp/app/modules/profile/data/repository/profile_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
+import 'package:oremusapp/app/remote/error_response.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -29,6 +33,9 @@ class ProfileController extends GetxController {
 
   var applyAnim = true.obs;
   final GlobalKey<AnimatorWidgetState> basicIconAnimation = GlobalKey<AnimatorWidgetState>();
+
+  var lockScreen = false.obs;
+  var unlockBackButton = true.obs;
 
   var isDataProcessing = false.obs;
   var hasData = false.obs;
@@ -66,7 +73,9 @@ class ProfileController extends GetxController {
   }
 
   getProfile() {
-    isDataProcessing(true);
+    if (refreshController.isRefresh == false) {
+      isDataProcessing(true);
+    }
 
     log('request getProfile');
 
@@ -147,5 +156,63 @@ class ProfileController extends GetxController {
       return AnimationPlayStates.Loop;
     }
     return AnimationPlayStates.None;
+  }
+
+  showDeleteAccountDialog() {
+    showCustomDialog(
+      Get.context!,
+      type: '',
+      message: 'Vous êtes sur le point de supprimer définitivement votre compte.\n\nNotez que cette action est irréversible.\n\nÊtes-vous sûr de vouloir continuer ?',
+      negativeLabel: 'Annuler',
+      positiveLabel: 'Oui, je consens',
+      positiveBgColor: colorRed1,
+      positiveCallBack: () {
+        doDeleteAccount();
+      }
+    );
+  }
+
+  doDeleteAccount() {
+
+    hideKeyboard();
+    EasyLoading.show(
+      status: 'Suppression du compte...',
+      maskType: EasyLoadingMaskType.black,
+      indicator: LottieLoadingView(),
+    ).then((v) {
+      unlockBackButton.value = false;
+    });
+
+    log('request doDeleteAccount');
+
+    lockScreen(true);
+
+    var userId = signinRepository.getUserSigninInfo()?.id ?? '';
+    profileRepository.deleteAccount(userId).then((value) {
+      EasyLoading.dismiss(animation: true).then((v) {
+        unlockBackButton.value = true;
+      });
+      //redirection sur login
+      showNotification(message: 'Le compte a été supprimé', duration: const Duration(seconds: 5));
+      doLogout();
+
+    }, onError: (error) {
+      lockScreen(false);
+      EasyLoading.dismiss(animation: true).then((v) {
+        unlockBackButton.value = true;
+      });
+      var err = error as CustomException;
+      if (err.code == 401) {
+        showCustomDialog(
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      } else {
+        showNotification(message: err.message.toString());
+      }
+      debugPrint("error => ${error.toString()}");
+    });
   }
 }

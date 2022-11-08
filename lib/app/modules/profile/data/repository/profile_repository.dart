@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ffi';
 
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:oremusapp/app/commons/constants.dart';
@@ -9,6 +10,8 @@ import 'package:oremusapp/app/modules/profile/data/model/profile.dart';
 import 'package:oremusapp/app/modules/profile/data/repository/interface_profile_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/remote/api_client.dart';
+import 'package:oremusapp/app/remote/custom_exception.dart';
+import 'package:oremusapp/app/remote/error_response.dart';
 
 class ProfileRepository implements IProfileRepository {
 
@@ -23,13 +26,13 @@ class ProfileRepository implements IProfileRepository {
       method: HttpMethod.get,
       useBearer: true,
     );
-    final String resp = json.encode(response.bodyString.toString());
+
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      throw Exception(resp);
+      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      throw CustomException(e.status, e.debugMessage);
     } else {
-      //log('resp => $resp');
       return Profile.fromJson(json.decode(response.bodyString.toString()));
     }
   }
@@ -42,11 +45,12 @@ class ProfileRepository implements IProfileRepository {
       body: jsonEncode(request.toJson()),
       useBearer: true,
     );
-    final String resp = json.encode(response.bodyString.toString());
+
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      throw Exception(resp);
+      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      throw CustomException(e.status, e.debugMessage);
     } else {
       return Profile.fromJson(json.decode(response.bodyString.toString()));
     }
@@ -60,13 +64,32 @@ class ProfileRepository implements IProfileRepository {
       body: jsonEncode(request.toJson()),
       useBearer: true,
     );
-    final String resp = json.encode(response.bodyString.toString());
+
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      throw Exception(resp);
+      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      throw CustomException(e.status, e.debugMessage);
     } else {
       return Profile.fromJson(json.decode(response.bodyString.toString()));
+    }
+  }
+
+  @override
+  Future<Profile> deleteAccount(String userId) async {
+    Response response = await _apiClient.doRequest(
+      endpoint: "/users/$userId",
+      method: HttpMethod.delete,
+      useBearer: true,
+    );
+
+    log('resp => ${response.statusCode}');
+
+    if (response.statusCode != 204) {
+      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      throw CustomException(e.status, e.debugMessage);
+    } else {
+      return Profile();
     }
   }
 

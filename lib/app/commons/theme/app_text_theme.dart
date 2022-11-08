@@ -11,21 +11,27 @@ class TextStyles {
           {double textSize = TextSizes.sixteen,
           Color textColor = colorGrey1}) =>
       const TextStyle().copyWith(
-          fontFamily: "montserrat_regular", fontSize: textSize, color: textColor);
+          fontFamily: "montserrat_regular",
+          fontSize: textSize,
+          color: textColor);
 
   static TextStyle montserratMedium(
           {double textSize = TextSizes.sixteen,
           Color textColor = colorGrey1}) =>
       const TextStyle().copyWith(
-          fontFamily: "montserrat_medium", fontSize: textSize, color: textColor);
+          fontFamily: "montserrat_medium",
+          fontSize: textSize,
+          color: textColor);
 
-  static TextStyle montserratBold(
-          {double textSize = TextSizes.twenty, Color textColor = colorBlack}) =>
-      const TextStyle().copyWith(
+  static TextStyle montserratBold({
+    double textSize = TextSizes.twenty,
+    Color textColor = colorBlack,
+  }) => const TextStyle().copyWith(
           fontFamily: "montserrat_bold",
           fontSize: textSize,
           color: textColor,
-          fontWeight: FontWeight.bold);
+          fontWeight: FontWeight.bold,
+  );
 
   static TextStyle montserratSemiBold(
           {double textSize = TextSizes.twelve, Color textColor = colorBlack}) =>
@@ -39,13 +45,17 @@ class TextStyles {
           {double textSize = TextSizes.sixteen,
           Color textColor = colorGrey1}) =>
       const TextStyle().copyWith(
-          fontFamily: "montserrat_italic", fontSize: textSize, color: textColor);
+          fontFamily: "montserrat_italic",
+          fontSize: textSize,
+          color: textColor);
 
   static TextStyle montserratMediumItalic(
           {double textSize = TextSizes.sixteen,
           Color textColor = colorGrey1}) =>
       const TextStyle().copyWith(
-          fontFamily: "montserrat_medium_italic", fontSize: textSize, color: textColor);
+          fontFamily: "montserrat_medium_italic",
+          fontSize: textSize,
+          color: textColor);
 
   static TextStyle montserratBoldItalic(
           {double textSize = TextSizes.twenty, Color textColor = colorBlack}) =>
