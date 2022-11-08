@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -8,6 +9,7 @@ import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/commons/internet_checker/internet_connection_checker.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
+import 'package:oremusapp/app/remote/error_response.dart';
 import 'package:oremusapp/main.dart';
 
 abstract class ApiClient extends GetConnect {
@@ -89,7 +91,9 @@ class ApiClientImpl extends ApiClient {
       case 401:
         throw UnauthorisedException(401, 'Requête non authorisée');
       case 403:
-        throw UnauthorisedException(403, 'Requête non authorisée');
+        var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+        throw UnauthorisedException(403, e.debugMessage);
+        //throw UnauthorisedException(403, 'Requête non authorisée');
       case 409:
         throw ConflictedException(409, 'Conflit survenu');
       case 500:

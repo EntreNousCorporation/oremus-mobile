@@ -34,8 +34,10 @@ class ParoisseMasseController extends GetxController {
   var paroisseSelected = ContentPlace().obs;
 
   RxList<TypeMenu> menus = RxList<TypeMenu>([]);
-  RxList<LiturgicalCelebrationResponse> regularMasses = RxList<LiturgicalCelebrationResponse>([]);
-  RxList<LiturgicalCelebrationResponse> specialMasses = RxList<LiturgicalCelebrationResponse>([]);
+  RxList<LiturgicalCelebrationResponse> regularMasses =
+      RxList<LiturgicalCelebrationResponse>([]);
+  RxList<LiturgicalCelebrationResponse> specialMasses =
+      RxList<LiturgicalCelebrationResponse>([]);
 
   var refreshController = RefreshController();
   var refreshNotRecurrentController = RefreshController();
@@ -70,7 +72,8 @@ class ParoisseMasseController extends GetxController {
   getArguments() {
     if (Get.arguments != null) {
       code.value = Get.arguments[0];
-      paroisseSelected.value = ContentPlace.fromJson(jsonDecode(Get.arguments[1]));
+      paroisseSelected.value =
+          ContentPlace.fromJson(jsonDecode(Get.arguments[1]));
       log('paroisseSelected ==> ${paroisseSelected.value.identifier}');
     }
   }
@@ -89,7 +92,9 @@ class ParoisseMasseController extends GetxController {
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       isRegularMassDataProcessing(false);
       regularMasses.value = value
-          .where((element) => (element.type?.code == AppConstants.MASS) && (element.isRecurrent == true))
+          .where((element) =>
+              (element.type?.code == AppConstants.MASS) &&
+              (element.isRecurrent == true))
           .toList();
       log('regularMasses => ${regularMasses.length}');
       if (regularMasses.isNotEmpty == true) {
@@ -122,9 +127,15 @@ class ParoisseMasseController extends GetxController {
     isSpecialMassDataProcessing(true);
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       isSpecialMassDataProcessing(false);
-      specialMasses.value = value
-          .where((element) => (AppConstants.SPECIALS_MASSES.contains(element.type?.code)) && (element.isRecurrent == false) && (Jiffy(element.startDate).isAfter(Jiffy())))
-          .toList();
+      specialMasses.value = value.where((element) {
+        log('startDate => ${Jiffy(element.startDate).yMMMMEEEEd}');
+        log('Jiffy() => ${Jiffy().yMMMMEEEEd}');
+        log('startDate isBefore now => ${Jiffy(element.startDate).isSameOrBefore(Jiffy())}');
+        return (element.isRecurrent == false) &&
+            (Jiffy(element.startDate).isSameOrBefore(Jiffy()))
+        /*&&
+            (AppConstants.SPECIALS_MASSES.contains(element.type?.code))*/;
+      }).toList();
       log('specialMasses => ${specialMasses.length}');
       if (specialMasses.isNotEmpty == true) {
         hasSpecialMassData(true);
@@ -157,7 +168,9 @@ class ParoisseMasseController extends GetxController {
       refreshController.refreshCompleted();
       if (value.isEmpty == false) {
         regularMasses.value = value
-            .where((element) => (element.type?.code == AppConstants.MASS) && (element.isRecurrent == true))
+            .where((element) =>
+                (element.type?.code == AppConstants.MASS) &&
+                (element.isRecurrent == true))
             .toList();
         log('regularMasses => ${regularMasses.length}');
       }
@@ -186,7 +199,10 @@ class ParoisseMasseController extends GetxController {
       refreshNotRecurrentController.refreshCompleted();
       if (value.isNotEmpty == true) {
         specialMasses.value = value
-            .where((element) => (AppConstants.SPECIALS_MASSES.contains(element.type?.code)) && (element.isRecurrent == false) && (Jiffy(element.startDate).isAfter(Jiffy())))
+            .where((element) =>
+                (AppConstants.SPECIALS_MASSES.contains(element.type?.code)) &&
+                (element.isRecurrent == false) &&
+                (Jiffy(element.startDate).isAfter(Jiffy())))
             .toList();
         log('specialMasses => ${specialMasses.length}');
       }

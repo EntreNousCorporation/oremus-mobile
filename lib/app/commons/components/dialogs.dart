@@ -12,6 +12,7 @@ Future showCustomDialog(BuildContext context,
     String positiveLabel = 'OK',
     String negativeLabel = '',
     Function? positiveCallBack,
+    Color? positiveBgColor = colorGreenSemiLight,
     Function? negativeCallBack,
     bool dismissible = false,
     bool? result,
@@ -77,7 +78,7 @@ Future showCustomDialog(BuildContext context,
                   if (positiveCallBack != null) positiveCallBack();
                 },
                 style: TextButton.styleFrom(
-                  backgroundColor: colorGreenSemiLight,
+                  backgroundColor: positiveBgColor,
                 ),
                 child: Text(
                   positiveLabel,

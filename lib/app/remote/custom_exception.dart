@@ -16,21 +16,21 @@ class FetchDataException extends CustomException {
 }
 
 class BadRequestException extends CustomException {
-  BadRequestException(code, message) : super(code, "Invalid Request: $message");
+  BadRequestException(code, message) : super(code, message);
 }
 
 class UnauthorisedException extends CustomException {
-  UnauthorisedException(code, message) : super(code, "Unauthorised: $message");
+  UnauthorisedException(code, message) : super(code, message);
 }
 
 class ConflictedException extends CustomException {
-  ConflictedException(code, message) : super(code, "Unauthorised: $message");
+  ConflictedException(code, message) : super(code, message);
 }
 
 class InvalidInputException extends CustomException {
-  InvalidInputException(code, message) : super(code, "Invalid Input: $message");
+  InvalidInputException(code, message) : super(code, message);
 }
 
 class InternalServerErrorException extends CustomException {
-  InternalServerErrorException(code, message) : super('Invalid Input: $code', message);
+  InternalServerErrorException(code, message) : super(code, message);
 }

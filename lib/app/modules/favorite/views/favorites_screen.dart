@@ -16,7 +16,7 @@ class FavoritesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: colorWhite,
+      color: colorGreen,
       child: SafeArea(
         child: GetX<FavoriteController>(
             builder: (_) {
