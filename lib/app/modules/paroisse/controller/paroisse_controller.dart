@@ -305,6 +305,7 @@ class ParoisseController extends GetxController {
   //SEARCH SECTION
   resetSearch() {
     refreshController.loadComplete();
+    searchCriteria.value = SearchCriteria();
     page.value = 0;
     searchController.clear();
     isSearchFieldEmpty.value = true;

@@ -66,6 +66,9 @@ class SearchWidget extends StatelessWidget {
           onChanged: (value) {
             logic.currentSimpleSearchValue.value = value;
             logic.isSearchFieldEmpty.value = value.isEmpty;
+            if (value.isEmpty) {
+              logic.getParoisses();
+            }
           },
         ),
       );
