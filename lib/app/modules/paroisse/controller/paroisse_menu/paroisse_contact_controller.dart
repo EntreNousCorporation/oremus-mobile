@@ -56,6 +56,7 @@ class ParoisseContactController extends GetxController {
       paroisseSelected.value = ContentPlace.fromJson(jsonDecode(Get.arguments[1]));
       if (code.value == 'IP') {
         massInfoUrl.value = Get.arguments[2];
+        log('massInfoUrl => ${massInfoUrl.value}');
       }
     }
   }
@@ -67,7 +68,7 @@ class ParoisseContactController extends GetxController {
       launch(
           Uri.encodeFull("mailto:$email?subject=Besoin d'information&body="));
     } else {
-      log("Can't launch url");
+      log("Can't launch email");
     }
   }
 
@@ -85,7 +86,7 @@ class ParoisseContactController extends GetxController {
     } else {
       log("Can't launch url");
       showNotification(
-        message: 'Une erreur est survenue',
+        message: 'Aucune information trouvée',
       );
     }
   }
@@ -139,7 +140,7 @@ class ParoisseContactController extends GetxController {
       contacts.clear();
       contacts.add(Contact(
         name: 'Cliquez pour plus d\'informations',
-        url: massInfoUrl.value,
+        url: paroisseSelected.value.massInfo,
       ));
       hasData(true);
       return;

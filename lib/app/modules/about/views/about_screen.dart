@@ -128,7 +128,7 @@ class AboutScreen extends StatelessWidget {
                         textSize: TextSizes.fourteen, textColor: colorBlack),
                   ),
                   TextSpan(
-                    text: 'oremus.civ@gmail.com ',
+                    text: 'oremus.civ@gmail.com \n\nte',
                     style: TextStyles.montserratRegular(
                         textSize: TextSizes.fourteen, textColor: colorBlue2),
                       recognizer: TapGestureRecognizer()..onTap = () async {
@@ -139,7 +139,7 @@ class AboutScreen extends StatelessWidget {
                         }
                       }
                   ),
-                  TextSpan(
+                  /*TextSpan(
                     text: 'ou sur whatsapp au ',
                     style: TextStyles.montserratRegular(
                         textSize: TextSizes.fourteen, textColor: colorBlack),
@@ -155,7 +155,7 @@ class AboutScreen extends StatelessWidget {
                         log("Can't launch phone number");
                       }
                     }
-                  ),
+                  ),*/
                   TextSpan(
                     text: 'Nous remercions tous nos bienfaiteurs, contributeurs et mentors pour leur apport sous toutes formes.',
                     style: TextStyles.montserratRegular(

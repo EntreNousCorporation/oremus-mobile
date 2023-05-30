@@ -127,15 +127,23 @@ class ParoisseMasseController extends GetxController {
     isSpecialMassDataProcessing(true);
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       isSpecialMassDataProcessing(false);
-      specialMasses.value = value.where((element) {
+      /*specialMasses.value = value.where((element) {
         log('startDate => ${Jiffy(element.startDate).yMMMMEEEEd}');
         log('Jiffy() => ${Jiffy().yMMMMEEEEd}');
         log('startDate isBefore now => ${Jiffy(element.startDate).isSameOrBefore(Jiffy())}');
         return (element.isRecurrent == false) &&
             (Jiffy(element.startDate).isSameOrBefore(Jiffy()))
-        /*&&
-            (AppConstants.SPECIALS_MASSES.contains(element.type?.code))*/;
+        *//*&&
+            (AppConstants.SPECIALS_MASSES.contains(element.type?.code))*//*;
       }).toList();
+      log('specialMasses => ${specialMasses.length}');*/
+
+      specialMasses.value = value
+          .where((element) =>
+      (AppConstants.SPECIALS_MASSES.contains(element.type?.code)) &&
+          (element.isRecurrent == false) &&
+          (Jiffy(element.startDate).isAfter(Jiffy())))
+          .toList();
       log('specialMasses => ${specialMasses.length}');
       if (specialMasses.isNotEmpty == true) {
         hasSpecialMassData(true);

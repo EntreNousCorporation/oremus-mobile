@@ -32,10 +32,8 @@ class ParoisseMenuController extends GetxController {
   getArguments() {
     if (Get.arguments != null) {
       indexSelected.value = Get.arguments[0];
-      paroisseSelected.value =
-          ContentPlace.fromJson(jsonDecode(Get.arguments[1]));
-      log('==> ${paroisseSelected.value.identifier}');
-      log('==> ${paroisseSelected.value.isFavorite}');
+      paroisseSelected.value = ContentPlace.fromJson(jsonDecode(Get.arguments[1]));
+      log('paroisseSelected ==> ${jsonEncode(paroisseSelected.toJson())}');
     }
   }
 
@@ -173,6 +171,7 @@ class ParoisseMenuController extends GetxController {
         isPngImage: false,
         activeTint: colorBlack,
         goToPage: () async {
+          log('massInfoUrl => ${paroisseSelected.value.massInfo}');
           await Get.toNamed(
             Routes.PAROISSE_CONTACT,
             arguments: [
@@ -210,8 +209,6 @@ class ParoisseMenuController extends GetxController {
       ),
     ];
   }
-
-
 
   bool isWorshipPlaceFavorite(ContentPlace paroisse) {
     var isFavorite = false;

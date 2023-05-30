@@ -35,11 +35,13 @@ class _MenuGridItemState extends State<MenuGridItem> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: item.goToPage != null ? () {
-        _animatedButton(item.goToPage);
-      } : () {
-        _animatedButton(item.goToPage);
-      },
+      onTap: item.goToPage != null
+          ? () {
+              _animatedButton(item.goToPage);
+            }
+          : () {
+              _animatedButton(item.goToPage);
+            },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Material(
@@ -52,11 +54,15 @@ class _MenuGridItemState extends State<MenuGridItem> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               item.isPngImage
-                  ? Image.asset(item.icon, height: Get.width / 8, color: colorGreenSemiLight,)
+                  ? Image.asset(
+                      item.icon,
+                      height: Get.width / 8,
+                      color: colorGreenSemiLight,
+                    )
                   : SvgPicture.asset(
                       item.icon,
                       height: Get.width / 10,
-                color: colorGreenSemiLight,
+                      color: colorGreenSemiLight,
                     ),
               Separators.minimunVertical(),
               Padding(
