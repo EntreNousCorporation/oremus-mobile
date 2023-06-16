@@ -56,12 +56,12 @@ class SplashscreenController extends GetxController {
 
   getInitialView() {
     Future.delayed(const Duration(seconds: 3), () {
-      if (signinRepository.getUserSigninInfo() != null) {
+      //if (signinRepository.getUserSigninInfo() != null) {
         Get.offNamed(Routes.CUSTOM_HOME);
-      } else {
-        Get.offNamed(Routes.SIGNIN);
+      //} else {
+        //Get.offNamed(Routes.SIGNIN);
         //Get.offNamed(Routes.CUSTOM_HOME); //pour test
-      }
+      //}
     });
   }
 }
