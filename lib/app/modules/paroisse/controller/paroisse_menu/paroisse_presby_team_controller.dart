@@ -106,13 +106,6 @@ class ParoissePresbyTeamController extends GetxController {
       var err = error as CustomException;
       isDataProcessing(false);
       hasData(false);
-      if (byPassAuth == true) {
-        if (err.code == 900) {
-          showNotification(message: err.message.toString());
-        }
-        return;
-      }
-
       if (err.code == 401) {
         showCustomDialog(
           Get.context!, message: "Vous n’êtes pas autorisé à accéder à cette ressource",
@@ -142,13 +135,6 @@ class ParoissePresbyTeamController extends GetxController {
     }, onError: (error) {
       refreshController.refreshCompleted();
       var err = error as CustomException;
-      if (byPassAuth == true) {
-        if (err.code == 900) {
-          showNotification(message: err.message.toString());
-        }
-        return;
-      }
-
       if (err.code == 401) {
         showCustomDialog(
           Get.context!, message: "Vous n’êtes pas autorisé à accéder à cette ressource",

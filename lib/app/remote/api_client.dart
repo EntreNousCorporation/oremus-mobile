@@ -32,10 +32,8 @@ class ApiClientImpl extends ApiClient {
     Map<String, String> headers = <String, String>{};
     headers[HttpHeaders.contentTypeHeader] = 'application/json; charset=utf-8';
     headers[HttpHeaders.acceptHeader] = 'application/json';
-    if (byPassAuth == false) {
-      if (useBearer) {
-        headers[HttpHeaders.authorizationHeader] = 'Bearer ${DB.getData(AppConstants.KEY_TOKEN)}';
-      }
+    if (useBearer) {
+      //headers[HttpHeaders.authorizationHeader] = 'Bearer ${DB.getData(AppConstants.KEY_TOKEN)}';
     }
     timeout = const Duration(seconds: AppConstants.REQUEST_TIMEOUT);
 
@@ -69,7 +67,7 @@ class ApiClientImpl extends ApiClient {
       }
 
       log("statusCode ${response.statusCode}");
-      log("bodystring => " + response.bodyString.toString());
+      //log("bodystring => " + response.bodyString.toString());
 
       resp = _response(response);
 

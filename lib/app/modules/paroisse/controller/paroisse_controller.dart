@@ -104,12 +104,6 @@ class ParoisseController extends GetxController {
       hasData(false);
 
       var err = error as CustomException;
-      if (byPassAuth == true) {
-        if (err.code == 900) {
-          showNotification(message: err.message.toString());
-        }
-        return;
-      }
       if (err.code.toString().contains('401')) {
         showCustomDialog(
           Get.context!,
@@ -147,13 +141,6 @@ class ParoisseController extends GetxController {
     }, onError: (error) {
       refreshController.refreshCompleted();
       var err = error as CustomException;
-      if (byPassAuth == true) {
-        if (err.code == 900) {
-          showNotification(message: err.message.toString());
-        }
-        return;
-      }
-
       if (error.toString().contains('401')) {
         showCustomDialog(
           Get.context!,
@@ -181,7 +168,7 @@ class ParoisseController extends GetxController {
     paroisseRepository
         .getParoisses(page: page.value, searchCriteria: searchCriteria.value)
         .then((value) {
-      paroisses.value.addAll(value.content ?? []);
+      paroisses.addAll(value.content ?? []);
       for (var paroisse in paroisses) {
         paroisse.isFavorite = isWorshipPlaceFavorite(paroisse);
       }
@@ -196,12 +183,6 @@ class ParoisseController extends GetxController {
     }, onError: (error) {
       refreshController.loadFailed();
       var err = error as CustomException;
-      if (byPassAuth == true) {
-        if (err.code == 900) {
-          showNotification(message: err.message.toString());
-        }
-        return;
-      }
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,

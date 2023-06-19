@@ -1,5 +1,6 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
+import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/modules/customhome/binding/custom_home_binding.dart';
 import 'package:oremusapp/app/modules/customhome/views/custom_home_screen.dart';
 import 'package:oremusapp/app/modules/diocese/binding/diocese_binding.dart';
@@ -59,11 +60,7 @@ class AppPages {
     GetPage(
       name: Routes.CUSTOM_HOME,
       page: () => const CustomHomeScreen(),
-      bindings: byPassAuth == true ? [
-        CustomHomeBinding(),
-        ParoisseBinding(),
-        PrayBinding(),
-      ] : [
+      bindings: [
         CustomHomeBinding(),
         ParoisseBinding(),
         ProfileBinding(),

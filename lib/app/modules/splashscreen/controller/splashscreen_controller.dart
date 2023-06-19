@@ -35,8 +35,15 @@ class SplashscreenController extends GetxController {
     updateLocale(currentLanguage.value);
     log('getCurrentLanguage => ${DB.getCurrentLanguage().runtimeType}');
 
+    hasUserConnected();
     getInitialView();
     super.onReady();
+  }
+
+  bool hasUserConnected() {
+    log('hasUserConnected id => ${DB.getUserSigninInfo()?.id}');
+    isUserConnected.value = DB.getUserSigninInfo() != null;
+    return isUserConnected.value;
   }
 
   updateLocale(String code) {
@@ -57,15 +64,7 @@ class SplashscreenController extends GetxController {
 
   getInitialView() {
     Future.delayed(const Duration(seconds: 3), () {
-      if (byPassAuth == true) {
-        Get.offNamed(Routes.CUSTOM_HOME);
-        return;
-      }
-      if (signinRepository.getUserSigninInfo() != null) {
-        Get.offNamed(Routes.CUSTOM_HOME);
-      } else {
-        Get.offNamed(Routes.SIGNIN);
-      }
+      Get.offNamed(Routes.CUSTOM_HOME);
     });
   }
 }

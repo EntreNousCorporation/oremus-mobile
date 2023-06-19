@@ -86,13 +86,6 @@ class ParoisseOfficeController extends GetxController {
       isDataProcessing(false);
       hasData(false);
       var err = error as CustomException;
-      if (byPassAuth == true) {
-        if (err.code == 900) {
-          showNotification(message: err.message.toString());
-        }
-        return;
-      }
-
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -119,13 +112,6 @@ class ParoisseOfficeController extends GetxController {
     }, onError: (error) {
       refreshController.refreshCompleted();
       var err = error as CustomException;
-      if (byPassAuth == true) {
-        if (err.code == 900) {
-          showNotification(message: err.message.toString());
-        }
-        return;
-      }
-
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,

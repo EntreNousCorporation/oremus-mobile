@@ -155,13 +155,6 @@ class ParoisseMasseController extends GetxController {
       isSpecialMassDataProcessing(false);
       hasSpecialMassData(false);
       var err = error as CustomException;
-      if (byPassAuth == true) {
-        if (err.code == 900) {
-          showNotification(message: err.message.toString());
-        }
-        return;
-      }
-
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -193,13 +186,6 @@ class ParoisseMasseController extends GetxController {
     }, onError: (error) {
       refreshController.refreshCompleted();
       var err = error as CustomException;
-      if (byPassAuth == true) {
-        if (err.code == 900) {
-          showNotification(message: err.message.toString());
-        }
-        return;
-      }
-
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -232,13 +218,6 @@ class ParoisseMasseController extends GetxController {
     }, onError: (error) {
       refreshNotRecurrentController.refreshCompleted();
       var err = error as CustomException;
-      if (byPassAuth == true) {
-        if (err.code == 900) {
-          showNotification(message: err.message.toString());
-        }
-        return;
-      }
-
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,

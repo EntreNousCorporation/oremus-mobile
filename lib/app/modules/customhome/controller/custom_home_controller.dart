@@ -46,7 +46,7 @@ class CustomHomeController extends GetxController {
         code: AppConstants.PROFILE,
         libelle: 'Mon profil',
         icon: 'assets/images/icon_user.svg',
-        isVisible: byPassAuth == true ? false : true,
+        isVisible: isUserConnected.value == true ? true : false,
       ),
       MenusItem(
         code: AppConstants.PRAY,
@@ -81,6 +81,12 @@ class CustomHomeController extends GetxController {
         libelle: 'A propos',
         icon: 'assets/images/icon_settings.svg',
       ),
+      MenusItem(
+        code: AppConstants.SIGNIN,
+        libelle: 'Connexion',
+        icon: 'assets/images/user_login.svg',
+        isVisible: isUserConnected.value == true ? false : true,
+      ),
     ];
     menus.value = menus.where((element) => element.isVisible).toList();
   }
@@ -99,19 +105,29 @@ class CustomHomeController extends GetxController {
 
 
   bool userCanUpdateProfile() {
-    return signinRepository.getUserSigninInfo()?.isBoUser == false;
+    return DB.getUserSigninInfo()?.isBoUser == false;
   }
 
   doRedirection(int index, SimpleHiddenDrawerController controller) {
     log('index selected => $index');
     selectedIndex.value = index;
-    controller.setSelectedMenuPosition(index);
-    update();
+    var menuCode = menus[index].code;
+    if (menuCode == AppConstants.SIGNIN) {
+      goToSignin();
+    } else {
+      controller.setSelectedMenuPosition(index);
+      update();
+    }
+  }
+
+  goToSignin() {
+    Get.offAllNamed(Routes.SIGNIN);
   }
 
   doLogout() {
     DB.saveData(AppConstants.KEY_USER_LOG_INFOS, null);
     Get.deleteAll(force: true);
+    isUserConnected.value = false;
     Get.offAllNamed(Routes.SIGNIN);
   }
 }

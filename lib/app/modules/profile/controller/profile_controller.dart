@@ -79,7 +79,7 @@ class ProfileController extends GetxController {
 
     log('request getProfile');
 
-    var userId = signinRepository.getUserSigninInfo()?.id ?? '';
+    var userId = DB.getUserSigninInfo()?.id ?? '';
     profileRepository.getProfile(userId).then((value) {
       if (refreshController.isRefresh) {
         refreshController.refreshCompleted();
@@ -187,7 +187,7 @@ class ProfileController extends GetxController {
 
     lockScreen(true);
 
-    var userId = signinRepository.getUserSigninInfo()?.id ?? '';
+    var userId = DB.getUserSigninInfo()?.id ?? '';
     profileRepository.deleteAccount(userId).then((value) {
       EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;

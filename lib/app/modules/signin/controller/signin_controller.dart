@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -51,9 +52,7 @@ class SigninController extends GetxController {
       //emailController = TextEditingController(text: 'amourssou11@gmail.com');
       //passwordController = TextEditingController(text: 'test');
       //checkForm();
-    } else {
-
-    }
+    } else {}
   }
 
   connectUser() {
@@ -88,8 +87,9 @@ class SigninController extends GetxController {
         id: payload['sub'],
         isBoUser: value.isBoUser,
       );
-      signinRepository.saveUserSigninInfo(userConnection);
-      Get.offAllNamed(Routes.CUSTOM_HOME);
+      isUserConnected.value = true;
+      DB.saveUserSigninInfo(userConnection);
+      goToHome();
     }, onError: (error) {
       EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;
@@ -98,18 +98,19 @@ class SigninController extends GetxController {
       debugPrint("error => ${error.toString()}");
       var err = error as CustomException;
       if (error.toString().isNotEmpty && error is Map) {
-        var errorResponse = ErrorResponse.fromJson(json.decode(error.toString()));
-        showNotification(
-          message: errorResponse.debugMessage.toString()
-        );
+        var errorResponse =
+            ErrorResponse.fromJson(json.decode(error.toString()));
+        showNotification(message: errorResponse.debugMessage.toString());
       } else if (err.code == 900) {
         showNotification(message: err.message.toString());
       } else {
-        showNotification(
-            message: "Login et/ou mot de passe incorrect"
-        );
+        showNotification(message: "Login et/ou mot de passe incorrect");
       }
     });
+  }
+
+  goToHome() {
+    Get.offNamed(Routes.CUSTOM_HOME);
   }
 
   goToSignup() {

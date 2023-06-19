@@ -10,7 +10,7 @@ class FlavorSettings {
       : oremusFlavor = OremusFlavor(
           apiBaseUrl: 'https://api-dev.oremus.ci',
           endpoint: '',
-          byPassAuth: true,
+          byPassAuth: false,
           envCredentials: EnvCredentials.dev,
         );
 

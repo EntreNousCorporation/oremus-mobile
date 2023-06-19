@@ -21,7 +21,8 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 var appUrl;
-var byPassAuth;
+//var byPassAuth;
+var isUserConnected = false.obs;
 var flavor;
 var versionName;
 var versionCode;
@@ -32,7 +33,7 @@ void main() async {
     (_) async {
       final settings = await _getFlavorSettings();
       appUrl = settings.oremusFlavor.apiBaseUrl.toString() + settings.oremusFlavor.endpoint.toString();
-      byPassAuth = settings.oremusFlavor.byPassAuth;
+      //byPassAuth = settings.oremusFlavor.byPassAuth;
 
       await DB.initDatabase();
       getAppVersion();

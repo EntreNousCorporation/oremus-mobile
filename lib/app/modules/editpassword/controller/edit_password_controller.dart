@@ -89,9 +89,10 @@ class EditPasswordController extends GetxController {
     loading(true);
     lockScreen(true);
     Signin request = Signin(
-        username: signinRepository.getUserSigninInfo()?.username,
-        oldPassword: oldPassword,
-        newPassword: newPassword);
+      username: DB.getUserSigninInfo()?.username,
+      oldPassword: oldPassword,
+      newPassword: newPassword,
+    );
 
     log('request updatePassword => ${request.toJson().toString()}');
 
@@ -102,9 +103,7 @@ class EditPasswordController extends GetxController {
       lockScreen(false);
       initControllers();
       showNotification(
-          message: "Mot de passe changé avec succès",
-          bgColor: colorGreen4
-      );
+          message: "Mot de passe changé avec succès", bgColor: colorGreen4);
     }, onError: (error) {
       EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;
@@ -114,13 +113,14 @@ class EditPasswordController extends GetxController {
       var err = error as CustomException;
       if (err.code == 401) {
         showNotification(
-            message: "Le mot de passe est incorrect",
+          message: "Le mot de passe est incorrect",
         );
         return;
       }
       if (err.code == 400) {
         showNotification(
-            message: "L'ancien et le nouveau mot de passe ne doivent pas être identiques",
+          message:
+              "L'ancien et le nouveau mot de passe ne doivent pas être identiques",
         );
         return;
       }
@@ -132,7 +132,7 @@ class EditPasswordController extends GetxController {
         var errorResponse =
             ErrorResponse.fromJson(json.decode(error.toString()));
         showNotification(
-            message: errorResponse.debugMessage.toString(),
+          message: errorResponse.debugMessage.toString(),
         );
       }
     });

@@ -40,6 +40,7 @@ abstract class AppConstants {
   static const CONTACTS = 5;
   static const ABOUT = 6;
   static const PRAY = 7;
+  static const SIGNIN = 8;
 
   //LITURGICAL CELEBRATION
   static const EASTER_MASS = 'EASTER_MASS'; //Messe de Pâques

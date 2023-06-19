@@ -92,7 +92,7 @@ class _MenuState extends State<DrawerMenu> with TickerProviderStateMixin {
                   SizedBox(
                     height: Get.width / 10,
                   ),
-                  byPassAuth == true ? Container() : GetBuilder<CustomHomeController>(builder: (logic) {
+                  isUserConnected.value == false ? Container() : GetBuilder<CustomHomeController>(builder: (logic) {
                     return TextButton(
                       onPressed: () {
                         logic.doLogout();

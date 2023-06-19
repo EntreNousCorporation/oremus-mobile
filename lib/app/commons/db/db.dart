@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DB {
@@ -44,4 +45,15 @@ class DB {
     saveData(AppConstants.KEY_LANGUAGE, code);
   }
 
+  static void saveUserSigninInfo(Signin? signin) {
+    DB.saveData(AppConstants.KEY_USER_LOG_INFOS, jsonEncode(signin?.toJson()));
+  }
+
+  static Signin? getUserSigninInfo() {
+    var userInfo = DB.getData(AppConstants.KEY_USER_LOG_INFOS);
+    if (userInfo != null) {
+      return Signin.fromJson(json.decode(userInfo));
+    }
+    return null;
+  }
 }

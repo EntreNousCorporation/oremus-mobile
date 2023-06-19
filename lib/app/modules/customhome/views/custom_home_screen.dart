@@ -93,7 +93,7 @@ class CustomHomeScreen extends StatelessWidget {
                         },
                       ),
                       actions: [
-                        byPassAuth == true ? Container() : Visibility(
+                        isUserConnected.value == false ? Container() : Visibility(
                           visible:
                               (logic.menus[logic.selectedIndex.value].code ==
                                       AppConstants.PROFILE) &&

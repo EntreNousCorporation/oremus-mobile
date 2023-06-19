@@ -14,6 +14,6 @@ class ProfileBinding implements Bindings {
           signinRepository: SigninRepository(ApiClientImpl()),
           paroisseRepository: ParoisseRepository(ApiClientImpl()),
         ),
-        permanent: true);
+        permanent: false);
   }
 }

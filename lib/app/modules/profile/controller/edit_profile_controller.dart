@@ -115,7 +115,7 @@ class EditProfileController extends GetxController {
 
     log('request signupUser => ${request.toJson().toString()}');
 
-    var userId = signinRepository.getUserSigninInfo()?.id ?? '';
+    var userId = DB.getUserSigninInfo()?.id ?? '';
     profileRepository.updateProfile(userId, request).then((value) {
       EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;
