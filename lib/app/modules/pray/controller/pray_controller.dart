@@ -9,6 +9,7 @@ import 'package:oremusapp/app/modules/pray/data/model/prayer.dart';
 import 'package:oremusapp/app/modules/pray/data/repository/pray_repository.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:oremusapp/main.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class PrayController extends GetxController {
@@ -73,6 +74,13 @@ class PrayController extends GetxController {
       isDataProcessing(false);
       hasData(false);
       var err = error as CustomException;
+      if (byPassAuth == true) {
+        if (err.code == 900) {
+          showNotification(message: err.message.toString());
+        }
+        return;
+      }
+
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -103,6 +111,13 @@ class PrayController extends GetxController {
     }, onError: (error) {
       refreshController.refreshCompleted();
       var err = error as CustomException;
+      if (byPassAuth == true) {
+        if (err.code == 900) {
+          showNotification(message: err.message.toString());
+        }
+        return;
+      }
+
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -136,6 +151,13 @@ class PrayController extends GetxController {
     }, onError: (error) {
       refreshController.loadFailed();
       var err = error as CustomException;
+      if (byPassAuth == true) {
+        if (err.code == 900) {
+          showNotification(message: err.message.toString());
+        }
+        return;
+      }
+
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,

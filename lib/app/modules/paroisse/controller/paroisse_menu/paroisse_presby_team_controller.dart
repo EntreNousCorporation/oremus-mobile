@@ -11,6 +11,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/place_user.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:oremusapp/main.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoissePresbyTeamController extends GetxController {
@@ -96,7 +97,7 @@ class ParoissePresbyTeamController extends GetxController {
       presbyTeams.value = value.where((element) => (element.type != null) && (element.type?.toLowerCase() == "vicar" || element.type?.toLowerCase() == "clergyman")).toList();
       if (presbyTeams.isNotEmpty == true) {
         hasData(true);
-        presbyTeams.value.sort((a, b) => a.type!.compareTo(b.type!));
+        presbyTeams.sort((a, b) => a.type!.compareTo(b.type!));
         log('${presbyTeams.length}');
       } else {
         hasData(false);
@@ -105,7 +106,13 @@ class ParoissePresbyTeamController extends GetxController {
       var err = error as CustomException;
       isDataProcessing(false);
       hasData(false);
-      debugPrint('${err.code}');
+      if (byPassAuth == true) {
+        if (err.code == 900) {
+          showNotification(message: err.message.toString());
+        }
+        return;
+      }
+
       if (err.code == 401) {
         showCustomDialog(
           Get.context!, message: "Vous n’êtes pas autorisé à accéder à cette ressource",
@@ -135,7 +142,13 @@ class ParoissePresbyTeamController extends GetxController {
     }, onError: (error) {
       refreshController.refreshCompleted();
       var err = error as CustomException;
-      debugPrint('${err.code}');
+      if (byPassAuth == true) {
+        if (err.code == 900) {
+          showNotification(message: err.message.toString());
+        }
+        return;
+      }
+
       if (err.code == 401) {
         showCustomDialog(
           Get.context!, message: "Vous n’êtes pas autorisé à accéder à cette ressource",

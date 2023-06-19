@@ -32,8 +32,10 @@ class ApiClientImpl extends ApiClient {
     Map<String, String> headers = <String, String>{};
     headers[HttpHeaders.contentTypeHeader] = 'application/json; charset=utf-8';
     headers[HttpHeaders.acceptHeader] = 'application/json';
-    if (useBearer) {
-      //headers[HttpHeaders.authorizationHeader] = 'Bearer ${DB.getData(AppConstants.KEY_TOKEN)}';
+    if (byPassAuth == false) {
+      if (useBearer) {
+        headers[HttpHeaders.authorizationHeader] = 'Bearer ${DB.getData(AppConstants.KEY_TOKEN)}';
+      }
     }
     timeout = const Duration(seconds: AppConstants.REQUEST_TIMEOUT);
 

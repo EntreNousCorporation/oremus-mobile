@@ -12,6 +12,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:oremusapp/main.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoisseOfficeController extends GetxController {
@@ -85,6 +86,13 @@ class ParoisseOfficeController extends GetxController {
       isDataProcessing(false);
       hasData(false);
       var err = error as CustomException;
+      if (byPassAuth == true) {
+        if (err.code == 900) {
+          showNotification(message: err.message.toString());
+        }
+        return;
+      }
+
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -111,6 +119,13 @@ class ParoisseOfficeController extends GetxController {
     }, onError: (error) {
       refreshController.refreshCompleted();
       var err = error as CustomException;
+      if (byPassAuth == true) {
+        if (err.code == 900) {
+          showNotification(message: err.message.toString());
+        }
+        return;
+      }
+
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,

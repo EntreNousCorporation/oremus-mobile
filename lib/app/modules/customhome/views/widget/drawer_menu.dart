@@ -92,7 +92,7 @@ class _MenuState extends State<DrawerMenu> with TickerProviderStateMixin {
                   SizedBox(
                     height: Get.width / 10,
                   ),
-                  GetBuilder<CustomHomeController>(builder: (logic) {
+                  byPassAuth == true ? Container() : GetBuilder<CustomHomeController>(builder: (logic) {
                     return TextButton(
                       onPressed: () {
                         logic.doLogout();
@@ -118,9 +118,9 @@ class _MenuState extends State<DrawerMenu> with TickerProviderStateMixin {
                   Padding(
                     padding: EdgeInsets.only(left: 8.0, top: Get.width / 5,),
                     child: Text(
-                      'Version: $versionName($versionCode)',
+                      'Version: $versionName' '_$versionCode',
                       style: TextStyles.montserratRegular(
-                        textSize: TextSizes.eight,
+                        textSize: TextSizes.ten,
                         textColor: colorWhite,
                       ),
                     ),

@@ -44,6 +44,7 @@ import 'package:oremusapp/app/modules/signup/binding/signup_binding.dart';
 import 'package:oremusapp/app/modules/signup/views/signup_screen.dart';
 import 'package:oremusapp/app/modules/splashscreen/binding/splashscreen_binding.dart';
 import 'package:oremusapp/app/modules/splashscreen/views/splashscreen_screen.dart';
+import 'package:oremusapp/main.dart';
 
 part './app_routes.dart';
 
@@ -58,7 +59,11 @@ class AppPages {
     GetPage(
       name: Routes.CUSTOM_HOME,
       page: () => const CustomHomeScreen(),
-      bindings: [
+      bindings: byPassAuth == true ? [
+        CustomHomeBinding(),
+        ParoisseBinding(),
+        PrayBinding(),
+      ] : [
         CustomHomeBinding(),
         ParoisseBinding(),
         ProfileBinding(),

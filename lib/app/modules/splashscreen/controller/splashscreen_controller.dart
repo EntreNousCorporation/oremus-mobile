@@ -8,6 +8,7 @@ import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
 import 'package:oremusapp/app/modules/splashscreen/data/repository/splashscreen_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:oremusapp/main.dart';
 
 
 class SplashscreenController extends GetxController {
@@ -56,12 +57,15 @@ class SplashscreenController extends GetxController {
 
   getInitialView() {
     Future.delayed(const Duration(seconds: 3), () {
-      //if (signinRepository.getUserSigninInfo() != null) {
+      if (byPassAuth == true) {
         Get.offNamed(Routes.CUSTOM_HOME);
-      //} else {
-        //Get.offNamed(Routes.SIGNIN);
-        //Get.offNamed(Routes.CUSTOM_HOME); //pour test
-      //}
+        return;
+      }
+      if (signinRepository.getUserSigninInfo() != null) {
+        Get.offNamed(Routes.CUSTOM_HOME);
+      } else {
+        Get.offNamed(Routes.SIGNIN);
+      }
     });
   }
 }

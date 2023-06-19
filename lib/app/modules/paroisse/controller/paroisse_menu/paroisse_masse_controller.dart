@@ -15,6 +15,7 @@ import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/mass/regular_
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/mass/special_mass_screen.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:oremusapp/main.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoisseMasseController extends GetxController {
@@ -154,6 +155,13 @@ class ParoisseMasseController extends GetxController {
       isSpecialMassDataProcessing(false);
       hasSpecialMassData(false);
       var err = error as CustomException;
+      if (byPassAuth == true) {
+        if (err.code == 900) {
+          showNotification(message: err.message.toString());
+        }
+        return;
+      }
+
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -185,6 +193,13 @@ class ParoisseMasseController extends GetxController {
     }, onError: (error) {
       refreshController.refreshCompleted();
       var err = error as CustomException;
+      if (byPassAuth == true) {
+        if (err.code == 900) {
+          showNotification(message: err.message.toString());
+        }
+        return;
+      }
+
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -217,6 +232,13 @@ class ParoisseMasseController extends GetxController {
     }, onError: (error) {
       refreshNotRecurrentController.refreshCompleted();
       var err = error as CustomException;
+      if (byPassAuth == true) {
+        if (err.code == 900) {
+          showNotification(message: err.message.toString());
+        }
+        return;
+      }
+
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,

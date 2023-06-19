@@ -19,6 +19,7 @@ import 'package:oremusapp/app/modules/profile/controller/profile_controller.dart
 import 'package:oremusapp/app/modules/profile/views/profile_screen.dart';
 import 'package:oremusapp/app/modules/promos/views/promo_screen.dart';
 import 'package:oremusapp/app/modules/share/views/share_screen.dart';
+import 'package:oremusapp/main.dart';
 
 class CustomHomeScreen extends StatelessWidget {
   const CustomHomeScreen({Key? key}) : super(key: key);
@@ -92,7 +93,7 @@ class CustomHomeScreen extends StatelessWidget {
                         },
                       ),
                       actions: [
-                        Visibility(
+                        byPassAuth == true ? Container() : Visibility(
                           visible:
                               (logic.menus[logic.selectedIndex.value].code ==
                                       AppConstants.PROFILE) &&
@@ -112,7 +113,7 @@ class CustomHomeScreen extends StatelessWidget {
                               (logic.menus[logic.selectedIndex.value].code ==
                                   AppConstants.HOME),
                           child:
-                              GetBuilder<ProfileController>(builder: (logic) {
+                              GetBuilder<CustomHomeController>(builder: (logic) {
                             return Bounce(
                               key: logic.basicIconAnimation,
                               preferences: AnimationPreferences(

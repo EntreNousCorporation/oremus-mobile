@@ -128,7 +128,7 @@ class AboutScreen extends StatelessWidget {
                         textSize: TextSizes.fourteen, textColor: colorBlack),
                   ),
                   TextSpan(
-                    text: 'oremus.civ@gmail.com \n\nte',
+                    text: 'oremus.civ@gmail.com \n\n',
                     style: TextStyles.montserratRegular(
                         textSize: TextSizes.fourteen, textColor: colorBlue2),
                       recognizer: TapGestureRecognizer()..onTap = () async {
