@@ -5,7 +5,6 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/constants.dart';
-import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/commons/internet_checker/internet_connection_checker.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
@@ -67,7 +66,7 @@ class ApiClientImpl extends ApiClient {
       }
 
       log("statusCode ${response.statusCode}");
-      //log("bodystring => " + response.bodyString.toString());
+      log("bodystring => " + response.bodyString.toString());
 
       resp = _response(response);
 

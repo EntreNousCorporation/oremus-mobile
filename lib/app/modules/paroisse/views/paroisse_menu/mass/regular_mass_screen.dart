@@ -43,7 +43,7 @@ class RegularMassScreen extends StatelessWidget {
                 ),
                 headerBackgroundColor: colorGreenSemiLight,
                 contentBorderColor: colorGreenSemiLight,
-                children: logic.regularMasses.value.map((value) {
+                children: logic.regularMasses.map((value) {
                   return AccordionSection(
                     isOpen: true,
                     header: Text(
@@ -56,7 +56,7 @@ class RegularMassScreen extends StatelessWidget {
                       child: Timeline(
                         indicatorSize: 24,
                         isLeftAligned: true,
-                        events: value.openingTime!.map((openingTime) {
+                        events: value.openingTime?.map((openingTime) {
                           return TimelineEventDisplay(
                             child: DayMassetem(openingTime: openingTime),
                             indicator: Container(
@@ -83,7 +83,7 @@ class RegularMassScreen extends StatelessWidget {
                               ),
                             ),
                           );
-                        }).toList(),
+                        }).toList() ?? [],
                       ),
                     ) : Text(
                       'Horaires non disponible pour l\'instant',

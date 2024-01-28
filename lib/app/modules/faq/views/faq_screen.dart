@@ -64,7 +64,7 @@ class FaqScreen extends StatelessWidget {
                       textSize: TextSizes.fourteen, textColor: colorBlack),
                   children: <TextSpan>[
                     TextSpan(
-                        text: 'oremus.civ@gmail.com ',
+                        text: 'oremus.civ@gmail.com.',
                         style: TextStyles.montserratRegular(
                             textSize: TextSizes.fourteen, textColor: colorBlue2),
                         recognizer: TapGestureRecognizer()..onTap = () async {
@@ -75,7 +75,7 @@ class FaqScreen extends StatelessWidget {
                           }
                         }
                     ),
-                    TextSpan(
+                    /*TextSpan(
                       text: 'ou sur whatsapp au ',
                       style: TextStyles.montserratRegular(
                           textSize: TextSizes.fourteen, textColor: colorBlack),
@@ -91,14 +91,14 @@ class FaqScreen extends StatelessWidget {
                             log("Can't launch phone number");
                           }
                         }
-                    ),
+                    ),*/
                     TextSpan(
-                      text: 'Vous pouvez également encourager l’équipe en nous écrivant par ',
+                      text: '\n\nVous pouvez également encourager l’équipe en nous écrivant par mail ',
                       style: TextStyles.montserratRegular(
                           textSize: TextSizes.fourteen, textColor: colorBlack),
                     ),
                     TextSpan(
-                        text: 'oremus.civ@gmail.com ',
+                        text: 'oremus.civ@gmail.com.',
                         style: TextStyles.montserratRegular(
                             textSize: TextSizes.fourteen, textColor: colorBlue2),
                         recognizer: TapGestureRecognizer()..onTap = () async {
@@ -109,7 +109,7 @@ class FaqScreen extends StatelessWidget {
                           }
                         }
                     ),
-                    TextSpan(
+                    /*TextSpan(
                       text: 'ou sur whatsapp au ',
                       style: TextStyles.montserratRegular(
                           textSize: TextSizes.fourteen, textColor: colorBlack),
@@ -125,9 +125,9 @@ class FaqScreen extends StatelessWidget {
                             log("Can't launch phone number");
                           }
                         }
-                    ),
+                    ),*/
                     TextSpan(
-                      text: 'Enfin vous pouvez partager l’application à votre famille, vos amis et connaissances.',
+                      text: '\n\nEnfin vous pouvez partager l’application à votre famille, vos amis et connaissances.',
                       style: TextStyles.montserratRegular(
                           textSize: TextSizes.fourteen, textColor: colorBlack),
                     ),

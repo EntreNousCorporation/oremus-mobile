@@ -34,35 +34,40 @@ class FavoriteController extends GetxController {
 
   removeToFavoriteList(ContentPlace paroisseToRemove, int index) {
     log('${paroisseToRemove.name}');
-    showCustomDialog(Get.context!,
-        message: 'Retirer «${paroisseToRemove.name}» des favoris ?',
-        negativeLabel: 'Oui, Retirer', negativeCallBack: () {
-      paroisseRepository.deleteFavorite(paroisseToRemove);
-      key.currentState!.removeItem(
-        index,
-        (_, animation) {
-          return SizeTransition(
-            sizeFactor: animation,
-            child: Card(
-              margin: const EdgeInsets.all(8),
-              elevation: 0,
-              color: colorWhite,
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(8),
-                title: Text(
-                  "",
-                  style: TextStyles.montserratMedium(
-                    textSize: TextSizes.fourteen,
-                    textColor: colorBlack,
+    showCustomDialog(
+      Get.context!,
+      message: 'Retirer «${paroisseToRemove.name}» des favoris ?',
+      negativeLabel: 'Oui, Retirer',
+      negativeCallBack: () {
+        paroisseRepository.deleteFavorite(paroisseToRemove);
+        key.currentState!.removeItem(
+          index,
+          (_, animation) {
+            return SizeTransition(
+              sizeFactor: animation,
+              child: Card(
+                margin: const EdgeInsets.all(8),
+                elevation: 0,
+                color: colorWhite,
+                child: ListTile(
+                  contentPadding: const EdgeInsets.all(8),
+                  title: Text(
+                    "",
+                    style: TextStyles.montserratMedium(
+                      textSize: TextSizes.fourteen,
+                      textColor: colorBlack,
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
-        duration: const Duration(milliseconds: 300),
-      );
-      getAllFavorites();
-    }, positiveLabel: 'Annuler', positiveCallBack: () {});
+            );
+          },
+          duration: const Duration(milliseconds: 300),
+        );
+        getAllFavorites();
+      },
+      positiveLabel: 'Annuler',
+      positiveCallBack: () {},
+    );
   }
 }

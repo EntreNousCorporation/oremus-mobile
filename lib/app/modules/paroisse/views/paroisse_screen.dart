@@ -227,6 +227,7 @@ class ParoisseScreen extends StatelessWidget {
                                                 return ParoisseItem(
                                                   paroisse: paroisse,
                                                   index: index,
+                                                  key: ValueKey(paroisse.identifier),
                                                 );
                                               }),
                                         ),

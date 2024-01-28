@@ -8,7 +8,8 @@ class FlavorSettings {
   //------------------------------------+
   FlavorSettings.dev()
       : oremusFlavor = OremusFlavor(
-          apiBaseUrl: 'https://api-dev.oremus.ci',
+          //apiBaseUrl: 'https://api-dev.oremus.ci',
+          apiBaseUrl: 'https://api.oremus.ci',
           endpoint: '',
           byPassAuth: false,
           envCredentials: EnvCredentials.dev,
@@ -29,7 +30,8 @@ class FlavorSettings {
 class OremusFlavor {
   final String? apiBaseUrl;
   final String? endpoint;
-  final bool? byPassAuth; // True or False, whether we want to bypass the auth or not
+  final bool?
+      byPassAuth; // True or False, whether we want to bypass the auth or not
   final EnvCredentials? envCredentials;
 
   OremusFlavor({

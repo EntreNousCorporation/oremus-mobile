@@ -15,7 +15,6 @@ import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
-import 'package:oremusapp/main.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoisseController extends GetxController {
@@ -295,7 +294,7 @@ class ParoisseController extends GetxController {
   goToAdvancedSearch() async {
     searchCriteria.value = await Get.toNamed(Routes.FILTER_PAROISSE);
     searchCriteria.refresh();
-    resetSearch();
+    //resetSearch();
     getParoisses();
     log('searchCriteria => ${searchCriteria.value.toJson().toString()}');
     log('searchCriteria isEmpty => ${searchCriteria.value.isCriteriaEmpty}');

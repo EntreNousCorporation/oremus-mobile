@@ -1,6 +1,5 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
-import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/modules/customhome/binding/custom_home_binding.dart';
 import 'package:oremusapp/app/modules/customhome/views/custom_home_screen.dart';
 import 'package:oremusapp/app/modules/diocese/binding/diocese_binding.dart';
@@ -45,7 +44,6 @@ import 'package:oremusapp/app/modules/signup/binding/signup_binding.dart';
 import 'package:oremusapp/app/modules/signup/views/signup_screen.dart';
 import 'package:oremusapp/app/modules/splashscreen/binding/splashscreen_binding.dart';
 import 'package:oremusapp/app/modules/splashscreen/views/splashscreen_screen.dart';
-import 'package:oremusapp/main.dart';
 
 part './app_routes.dart';
 

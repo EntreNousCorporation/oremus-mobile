@@ -15,7 +15,6 @@ import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/mass/regular_
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/mass/special_mass_screen.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
-import 'package:oremusapp/main.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoisseMasseController extends GetxController {
@@ -142,9 +141,9 @@ class ParoisseMasseController extends GetxController {
       specialMasses.value = value
           .where((element) =>
       (AppConstants.SPECIALS_MASSES.contains(element.type?.code)) &&
-          (element.isRecurrent == false) &&
-          (Jiffy(element.startDate).isAfter(Jiffy())))
-          .toList();
+          (element.isRecurrent == false) /*&&
+          (Jiffy(element.startDate).isAfter(Jiffy()))*/
+      ).toList();
       log('specialMasses => ${specialMasses.length}');
       if (specialMasses.isNotEmpty == true) {
         hasSpecialMassData(true);
@@ -210,8 +209,9 @@ class ParoisseMasseController extends GetxController {
         specialMasses.value = value
             .where((element) =>
                 (AppConstants.SPECIALS_MASSES.contains(element.type?.code)) &&
-                (element.isRecurrent == false) &&
-                (Jiffy(element.startDate).isAfter(Jiffy())))
+                (element.isRecurrent == false) /*&&
+                (Jiffy(element.startDate).isAfter(Jiffy()))*/
+        )
             .toList();
         log('specialMasses => ${specialMasses.length}');
       }

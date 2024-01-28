@@ -28,7 +28,7 @@ abstract class AppConstants {
   static const KEY_TOKEN = "KEY_TOKEN";
 
   //PAGGING
-  static const PAGING_SIZE = 10;
+  static const PAGING_SIZE = 1000;
   static const PRAY_PAGING_SIZE = 15;
 
   //DRAWER MENU INDEX
