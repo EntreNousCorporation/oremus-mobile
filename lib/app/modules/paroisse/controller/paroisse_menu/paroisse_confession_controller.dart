@@ -89,7 +89,7 @@ class ParoisseConfessionController extends GetxController {
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       isRegularMassDataProcessing(false);
       regularConfessions.value = value
-          .where((element) => (element.type?.code == 'CONFESSION') && (element.isRecurrent == true))
+          .where((element) => (element.type?.code == AppConstants.CONFESSION) && (element.isRecurrent == true))
           .toList();
       log('regularConfessions => ${regularConfessions.length}');
       if (regularConfessions.isNotEmpty == true) {
@@ -115,6 +115,35 @@ class ParoisseConfessionController extends GetxController {
     });
   }
 
+  onRegularConfessionsRefresh() {
+    log('request onRegularConfessionsRefresh');
+
+    var idParoisse = paroisseSelected.value.identifier;
+    paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
+      refreshController.refreshCompleted();
+      if (value.isEmpty == false) {
+        regularConfessions.value = value
+            .where((element) => (element.type?.code == AppConstants.CONFESSION) && (element.isRecurrent == true))
+            .toList();
+        log('regularConfessions => ${regularConfessions.length}');
+      }
+    }, onError: (error) {
+      refreshController.refreshCompleted();
+      var err = error as CustomException;
+      if (err.code == 401) {
+        showCustomDialog(
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
+      }
+      debugPrint("error onRegularConfessionsRefresh => ${error.toString()}");
+    });
+  }
+
   getConfessionsNotRecurrentTimes() {
     log('request getConfessionsNotRecurrentTimes');
 
@@ -123,9 +152,9 @@ class ParoisseConfessionController extends GetxController {
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       isSpecialMassDataProcessing(false);
       specialConfessions.value = value
-          .where((element) => (element.type?.code == 'CONFESSION') && (element.isRecurrent == false) && (Jiffy(element.startDate).isAfter(Jiffy())))
+          .where((element) => (element.type?.code == AppConstants.CONFESSION) && (element.isRecurrent == false) && (Jiffy.parse(element.startDate ?? '').isAfter(Jiffy.now())))
           .toList();
-      log('specialConfessions => ${specialConfessions.length}');
+      log('specialConfessions => ${specialConfessions.first.startDate}');
       if (specialConfessions.isNotEmpty == true) {
         hasSpecialMassData(true);
       } else {
@@ -145,36 +174,7 @@ class ParoisseConfessionController extends GetxController {
       } else if (err.code == 900) {
         showNotification(message: err.message.toString());
       }
-      debugPrint("error specialMasses => ${error.toString()}");
-    });
-  }
-
-  onRegularConfessionsRefresh() {
-    log('request onRegularConfessionsRefresh');
-
-    var idParoisse = paroisseSelected.value.identifier;
-    paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
-      refreshController.refreshCompleted();
-      if (value.isEmpty == false) {
-        regularConfessions.value = value
-            .where((element) => (element.type?.code == 'CONFESSION') && (element.isRecurrent == true))
-            .toList();
-        log('regularConfessions => ${regularConfessions.length}');
-      }
-    }, onError: (error) {
-      refreshController.refreshCompleted();
-      var err = error as CustomException;
-      if (err.code == 401) {
-        showCustomDialog(
-          Get.context!,
-          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-        ).then((value) {
-          doLogout();
-        });
-      } else if (err.code == 900) {
-        showNotification(message: err.message.toString());
-      }
-      debugPrint("error regularConfessions => ${error.toString()}");
+      debugPrint("error getConfessionsNotRecurrentTimes => ${error.toString()}");
     });
   }
 
@@ -186,8 +186,9 @@ class ParoisseConfessionController extends GetxController {
       refreshNotRecurrentController.refreshCompleted();
       if (value.isNotEmpty == true) {
         specialConfessions.value = value
-            .where((element) => element.type?.code == 'CONFESSION' && (element.isRecurrent == false) && (Jiffy(element.startDate).isAfter(Jiffy())))
+            .where((element) => element.type?.code == AppConstants.CONFESSION && (element.isRecurrent == false) && (Jiffy.parse(element.startDate ?? '').isAfter(Jiffy.now())))
             .toList();
+        //specialConfessions.sort((a, b) => Jiffy(a.startDate).dateTime.compareTo(Jiffy(b.startDate).dateTime));
         log('specialConfessions => ${specialConfessions.length}');
         //log('specialMasses hour => ${Jiffy(specialMasses.value.first.startDate, "yyyy-MM-dd'T'HH:mm:ss").jm}');
       }
@@ -204,16 +205,16 @@ class ParoisseConfessionController extends GetxController {
       } else if (err.code == 900) {
         showNotification(message: err.message.toString());
       }
-      debugPrint("error specialConfessions => ${error.toString()}");
+      debugPrint("error onSpecialConfessionRefresh => ${error.toString()}");
     });
   }
 
   String getDate(String date) {
-    return Jiffy(date, "yyyy-MM-dd'T'HH:mm:ss").yMd;
+    return Jiffy.parse(date, pattern: "yyyy-MM-dd'T'HH:mm:ss").yMd;
   }
 
   String getHour(String date) {
-    return Jiffy(date, "yyyy-MM-dd'T'HH:mm:ss").jm;
+    return Jiffy.parse(date, pattern: "yyyy-MM-dd'T'HH:mm:ss").jm;
   }
 
   doLogout() {

@@ -2,7 +2,6 @@ import 'package:accordion/accordion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_timeline/flutter_timeline.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/custom_header.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
@@ -10,6 +9,7 @@ import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
+import 'package:oremusapp/app/commons/timeline/flutter_timeline.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_masse_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/day_masse_item.dart';
@@ -39,7 +39,7 @@ class RegularMassScreen extends StatelessWidget {
                 leftIcon: SvgPicture.asset(
                   'assets/images/messe.svg',
                   height: 25,
-                  color: colorWhite,
+                  colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),
                 ),
                 headerBackgroundColor: colorGreenSemiLight,
                 contentBorderColor: colorGreenSemiLight,
@@ -51,6 +51,7 @@ class RegularMassScreen extends StatelessWidget {
                       style: TextStyles.montserratSemiBold(
                           textSize: TextSizes.sixteen, textColor: colorWhite),
                     ),
+                    headerPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
                     content: value.openingTime?.isNotEmpty == true ? TimelineTheme(
                       data: TimelineThemeData(lineColor: colorGrey1),
                       child: Timeline(

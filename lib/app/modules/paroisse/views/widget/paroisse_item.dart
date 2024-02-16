@@ -64,7 +64,7 @@ class ParoisseItem extends StatelessWidget {
                             child: (paroisse.coverImage?.link?.isNotEmpty == true)
                                 ? Flow(
                                   delegate: ParallaxFlowDelegate(
-                                    scrollable: Scrollable.of(context)!,
+                                    scrollable: Scrollable.of(context),
                                     listItemContext: context,
                                     backgroundImageKey: _backgroundImageKey,
                                   ),

@@ -1,4 +1,4 @@
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as b;
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
@@ -78,7 +78,7 @@ class ParoisseScreen extends StatelessWidget {
                                   elevation: 10,
                                   color: colorWhite,
                                   shadowColor: colorGrey2.withOpacity(0.5),
-                                  child: Badge(
+                                  child: b.Badge(
                                     showBadge: (_.searchCriteria.value
                                                 .isCriteriaEmpty ==
                                             false)
@@ -167,44 +167,47 @@ class ParoisseScreen extends StatelessWidget {
                                                               colorBlack),
                                                 );
                                               } else {
-                                                body = Column(
-                                                  children: [
-                                                    SizedBox(
-                                                      width: Get.width / 1.7,
-                                                      height: 4,
-                                                      child: Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                          gradient:
-                                                              const LinearGradient(
-                                                            begin: Alignment
-                                                                .topRight,
-                                                            end: Alignment
-                                                                .bottomLeft,
-                                                            colors: [
-                                                              colorGreen,
-                                                              colorGreenSemiLight,
-                                                            ],
+                                                body = Visibility(
+                                                  visible: false,
+                                                  child: Column(
+                                                    children: [
+                                                      SizedBox(
+                                                        width: Get.width / 1.7,
+                                                        height: 4,
+                                                        child: Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(10),
+                                                            gradient:
+                                                                const LinearGradient(
+                                                              begin: Alignment
+                                                                  .topRight,
+                                                              end: Alignment
+                                                                  .bottomLeft,
+                                                              colors: [
+                                                                colorGreen,
+                                                                colorGreenSemiLight,
+                                                              ],
+                                                            ),
                                                           ),
                                                         ),
                                                       ),
-                                                    ),
-                                                    Separators
-                                                        .minimunVertical(),
-                                                    Text(
-                                                      "Aucune donnée à charger",
-                                                      style: TextStyles
-                                                          .montserratBold(
-                                                              textSize:
-                                                                  TextSizes
-                                                                      .thirteen,
-                                                              textColor:
-                                                                  colorBlack),
-                                                    ),
-                                                  ],
+                                                      Separators
+                                                          .minimunVertical(),
+                                                      Text(
+                                                        "Aucune donnée à charger",
+                                                        style: TextStyles
+                                                            .montserratBold(
+                                                                textSize:
+                                                                    TextSizes
+                                                                        .thirteen,
+                                                                textColor:
+                                                                    colorBlack),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 );
                                               }
                                               return SizedBox(
@@ -213,17 +216,14 @@ class ParoisseScreen extends StatelessWidget {
                                               );
                                             },
                                           ),
-                                          physics:
-                                              const BouncingScrollPhysics(),
+                                          physics: const BouncingScrollPhysics(),
                                           controller: _.refreshController,
                                           child: ListView.builder(
-                                              physics:
-                                                  const NeverScrollableScrollPhysics(),
+                                              physics: const NeverScrollableScrollPhysics(),
                                               shrinkWrap: false,
                                               itemCount: _.paroisses.length,
                                               itemBuilder: (builder, index) {
-                                                var paroisse =
-                                                    _.paroisses[index];
+                                                var paroisse = _.paroisses[index];
                                                 return ParoisseItem(
                                                   paroisse: paroisse,
                                                   index: index,

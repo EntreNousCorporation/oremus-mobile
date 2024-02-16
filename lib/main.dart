@@ -37,7 +37,7 @@ void main() async {
       await DB.initDatabase();
       getAppVersion();
 
-      Jiffy.locale('fr');
+      Jiffy.setLocale('fr');
       configOrientation();
       configLoading();
 

@@ -35,9 +35,9 @@ class SpecialConfessionScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
-                  elements: logic.specialConfessions.value,
+                  elements: logic.specialConfessions,
                   useStickyGroupSeparators: false,
-                  groupBy: (liturgicalCelebration) => liturgicalCelebration?.name ?? '',
+                  groupBy: (liturgicalCelebration) => liturgicalCelebration?.startDate ?? '',
                   groupHeaderBuilder: (liturgicalCelebration) => Container(
                     padding:
                         const EdgeInsets.all(8.0),
