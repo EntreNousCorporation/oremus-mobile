@@ -26,7 +26,7 @@ extension StringExtension on String {
     } catch(error) {
       value = "";
     }
-    log("AMOUNT_FORMATED --> ${value}");
+    log("AMOUNT_FORMATED --> $value");
     return value;
   }
 
@@ -43,7 +43,7 @@ extension StringExtension on String {
     if(value.length.isOdd){
       value="${this[0]}$value";
     }
-    log("PHONE_FORMATED --> ${value}");
+    log("PHONE_FORMATED --> $value");
 
     return value;
   }
@@ -72,12 +72,12 @@ String getDay(int code) {
 }
 
 String getCurrentDay() {
-  return getDay(Jiffy(DateTime.now()).day -1);
+  return getDay(Jiffy.now().dateTime.day -1);
 }
 
 hideKeyboard() {
   //FocusManager.instance.primaryFocus?.unfocus();
-  WidgetsBinding.instance?.focusManager.primaryFocus?.unfocus();
+  WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
 }
 
 double applyElevation() {

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:accordion/accordion.dart';
+import 'package:accordion/controllers.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -25,6 +26,11 @@ class FaqScreen extends StatelessWidget {
           contentBorderColor: colorGreenSemiLight,
           children: [
             AccordionSection(
+              sectionOpeningHapticFeedback:
+              SectionHapticFeedback.medium,
+              sectionClosingHapticFeedback:
+              SectionHapticFeedback.medium,
+              headerPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
               isOpen: false,
               header: Text('Pourquoi choisir l’application Oremus ?', style: TextStyles.montserratSemiBold(
                   textSize: TextSizes.sixteen, textColor: colorWhite),),
@@ -32,6 +38,11 @@ class FaqScreen extends StatelessWidget {
                   textSize: TextSizes.fourteen, textColor: colorBlack),),
             ),
             AccordionSection(
+              sectionOpeningHapticFeedback:
+              SectionHapticFeedback.medium,
+              sectionClosingHapticFeedback:
+              SectionHapticFeedback.medium,
+              headerPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
               isOpen: false,
               header: Text('Comment utiliser l’application Oremus ?', style: TextStyles.montserratSemiBold(
                   textSize: TextSizes.sixteen, textColor: colorWhite),),
@@ -39,6 +50,11 @@ class FaqScreen extends StatelessWidget {
                   textSize: TextSizes.fourteen, textColor: colorBlack),),
             ),
             AccordionSection(
+              sectionOpeningHapticFeedback:
+              SectionHapticFeedback.medium,
+              sectionClosingHapticFeedback:
+              SectionHapticFeedback.medium,
+              headerPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
               isOpen: false,
               header: Text('Qui est l’auteur de l’application Orémus ?', style: TextStyles.montserratSemiBold(
                   textSize: TextSizes.sixteen, textColor: colorWhite),),
@@ -46,6 +62,11 @@ class FaqScreen extends StatelessWidget {
                   textSize: TextSizes.fourteen, textColor: colorBlack),),
             ),
             AccordionSection(
+              sectionOpeningHapticFeedback:
+              SectionHapticFeedback.medium,
+              sectionClosingHapticFeedback:
+              SectionHapticFeedback.medium,
+              headerPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
               isOpen: false,
               header: Text('Comment est financée l’application Orémus ?', style: TextStyles.montserratSemiBold(
                   textSize: TextSizes.sixteen, textColor: colorWhite),),
@@ -53,6 +74,11 @@ class FaqScreen extends StatelessWidget {
                   textSize: TextSizes.fourteen, textColor: colorBlack),),
             ),
             AccordionSection(
+              sectionOpeningHapticFeedback:
+              SectionHapticFeedback.medium,
+              sectionClosingHapticFeedback:
+              SectionHapticFeedback.medium,
+              headerPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
               isOpen: false,
               header: Text('Comment soutenir Orémus ?', style: TextStyles.montserratSemiBold(
                   textSize: TextSizes.sixteen, textColor: colorWhite),),

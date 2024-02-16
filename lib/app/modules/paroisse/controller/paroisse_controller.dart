@@ -294,7 +294,6 @@ class ParoisseController extends GetxController {
   goToAdvancedSearch() async {
     searchCriteria.value = await Get.toNamed(Routes.FILTER_PAROISSE);
     searchCriteria.refresh();
-    //resetSearch();
     getParoisses();
     log('searchCriteria => ${searchCriteria.value.toJson().toString()}');
     log('searchCriteria isEmpty => ${searchCriteria.value.isCriteriaEmpty}');

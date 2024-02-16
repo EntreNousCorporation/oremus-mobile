@@ -93,8 +93,7 @@ class ParoisseMasseController extends GetxController {
       isRegularMassDataProcessing(false);
       regularMasses.value = value
           .where((element) =>
-              (element.type?.code == AppConstants.MASS) &&
-              (element.isRecurrent == true))
+              (element.type?.code == AppConstants.MASS))
           .toList();
       log('regularMasses => ${regularMasses.length}');
       if (regularMasses.isNotEmpty == true) {
@@ -127,23 +126,7 @@ class ParoisseMasseController extends GetxController {
     isSpecialMassDataProcessing(true);
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       isSpecialMassDataProcessing(false);
-      /*specialMasses.value = value.where((element) {
-        log('startDate => ${Jiffy(element.startDate).yMMMMEEEEd}');
-        log('Jiffy() => ${Jiffy().yMMMMEEEEd}');
-        log('startDate isBefore now => ${Jiffy(element.startDate).isSameOrBefore(Jiffy())}');
-        return (element.isRecurrent == false) &&
-            (Jiffy(element.startDate).isSameOrBefore(Jiffy()))
-        *//*&&
-            (AppConstants.SPECIALS_MASSES.contains(element.type?.code))*//*;
-      }).toList();
-      log('specialMasses => ${specialMasses.length}');*/
-
-      specialMasses.value = value
-          .where((element) =>
-      (AppConstants.SPECIALS_MASSES.contains(element.type?.code)) &&
-          (element.isRecurrent == false) /*&&
-          (Jiffy(element.startDate).isAfter(Jiffy()))*/
-      ).toList();
+      specialMasses.value = value.where((element) => (element.type?.code != AppConstants.MASS && element.type?.code != AppConstants.CONFESSION && Jiffy.parse(element.startDate ?? '').isAfter(Jiffy.now()))).toList();
       log('specialMasses => ${specialMasses.length}');
       if (specialMasses.isNotEmpty == true) {
         hasSpecialMassData(true);
@@ -233,11 +216,11 @@ class ParoisseMasseController extends GetxController {
   }
 
   String getDate(String date) {
-    return Jiffy(date, "yyyy-MM-dd'T'HH:mm:ss").yMd;
+    return Jiffy.parse(date, pattern: "yyyy-MM-dd'T'HH:mm:ss").yMd;
   }
 
   String getHour(String date) {
-    return Jiffy(date, "yyyy-MM-dd'T'HH:mm:ss").jm;
+    return Jiffy.parse(date, pattern: "yyyy-MM-dd'T'HH:mm:ss").jm;
   }
 
   doLogout() {

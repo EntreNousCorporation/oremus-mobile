@@ -20,7 +20,6 @@ class FilterParoisseScreen extends StatelessWidget {
       color: colorGreen,
       child: SafeArea(
         child: GetX<FilterParoisseController>(
-            initState: (state) {},
             builder: (_) {
               return WillPopScope(
                 onWillPop: () async => false,

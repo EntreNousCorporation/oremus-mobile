@@ -166,7 +166,7 @@ class ParoisseTypeConfessionScreen extends StatelessWidget {
                                   textColor: colorWhite,
                                 ),
                                 borderColor: colorGreenSemiLight,
-                                tabs: _.menusConfessionTab.value.keys.map((e) {
+                                tabs: _.menusConfessionTab.keys.map((e) {
                                   return Tab(text: e);
                                 }).toList(),
                               ),

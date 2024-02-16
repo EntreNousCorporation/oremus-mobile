@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
@@ -36,10 +36,10 @@ class PrayItem extends StatelessWidget {
                   style: {
                     '#': Style(
                       fontFamily: 'montserrat_bold',
-                      fontSize: const FontSize(
+                      fontSize: FontSize(
                         TextSizes.sixteen,
                       ),
-                      margin: EdgeInsets.zero,
+                      margin: Margins.zero,
                     )
                   },
                   //'${DB.getCurrentLanguage() == 'fr' ? pray.title?.fr : pray.title?.en}',
@@ -55,12 +55,12 @@ class PrayItem extends StatelessWidget {
                     style: {
                       '#': Style(
                         fontFamily: 'montserrat_regular',
-                        fontSize: const FontSize(
+                        fontSize: FontSize(
                           TextSizes.fifteen,
                         ),
                         maxLines: pray.isExpand == true ? 1000 : 3,
                         textOverflow: TextOverflow.fade,
-                        margin: EdgeInsets.zero,
+                        margin: Margins.zero,
                       ),
                     },
                   ),

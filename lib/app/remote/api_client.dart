@@ -31,6 +31,7 @@ class ApiClientImpl extends ApiClient {
     Map<String, String> headers = <String, String>{};
     headers[HttpHeaders.contentTypeHeader] = 'application/json; charset=utf-8';
     headers[HttpHeaders.acceptHeader] = 'application/json';
+    headers['dId'] = phoneId;
     if (useBearer) {
       //headers[HttpHeaders.authorizationHeader] = 'Bearer ${DB.getData(AppConstants.KEY_TOKEN)}';
     }
