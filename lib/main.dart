@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -89,16 +88,11 @@ class MyApp extends StatelessWidget {
 Future<void> getDeviceInfos() async {
   log('====== getDeviceInfos ======');
   try {
-    var deviceInfo = DeviceInfoPlugin();
     if (Platform.isIOS) {
-      var iosDeviceInfo = await deviceInfo.iosInfo;
       phoneId = await PlatformDeviceId.getDeviceId; //'${iosDeviceInfo.name}:${iosDeviceInfo.identifierForVendor}'; // unique ID on iOS
-      log('getUniqueDeviceId => ${iosDeviceInfo.data}');
-      print('getUniqueDeviceId => $phoneId');
+      log('getUniqueDeviceId => $phoneId');
     } else if (Platform.isAndroid) {
-      var androidDeviceInfo = await deviceInfo.androidInfo;
       phoneId = await PlatformDeviceId.getDeviceId; //androidDeviceInfo.id;
-      log('getUniqueDeviceId => ${androidDeviceInfo.data}');
       log('getUniqueDeviceId => $phoneId');
     }
   } catch (ex) {

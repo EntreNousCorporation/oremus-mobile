@@ -25,7 +25,9 @@ class FilterParoisseController extends GetxController {
   });
 
   RxList<PlaceType> paroisseTypes = RxList<PlaceType>([]);
+  RxList<PlaceType> paroisseTypesTemp = RxList<PlaceType>([]);
   RxList<ContentPlace> dioceses = RxList<ContentPlace>([]);
+  RxList<ContentPlace> diocesesTemp = RxList<ContentPlace>([]);
   var placeTypeSelected = PlaceType().obs;
   var dioceseSelected = ContentPlace().obs;
   var unlockBackButton = true.obs;
@@ -40,6 +42,11 @@ class FilterParoisseController extends GetxController {
   late TextEditingController cityController;
   late TextEditingController municipalityController;
   late TextEditingController neighborhoodController;
+  late TextEditingController typeLiturgicalSearchController;
+  late TextEditingController dioceseSearchController;
+
+  var isTypeLiturgicalSearchFieldEmpty = true.obs;
+  var isDioceseSearchFieldEmpty = true.obs;
 
   var searchCriteria = SearchCriteria().obs;
   var enabledApplyButton = false.obs;
@@ -68,6 +75,8 @@ class FilterParoisseController extends GetxController {
     cityController = TextEditingController(text: '');
     municipalityController = TextEditingController(text: '');
     neighborhoodController = TextEditingController(text: '');
+    typeLiturgicalSearchController = TextEditingController(text: '');
+    dioceseSearchController = TextEditingController(text: '');
   }
 
   disposeControllers() {
@@ -75,6 +84,8 @@ class FilterParoisseController extends GetxController {
     cityController.dispose();
     municipalityController.dispose();
     neighborhoodController.dispose();
+    typeLiturgicalSearchController.dispose();
+    dioceseSearchController.dispose();
   }
 
   getParoisseType() {
@@ -87,6 +98,7 @@ class FilterParoisseController extends GetxController {
       if (value.isNotEmpty == true) {
         hasWorshipPlaceData(true);
         paroisseTypes.value = value;
+        paroisseTypesTemp.value = value;
       } else {
         hasWorshipPlaceData(false);
       }
@@ -118,6 +130,7 @@ class FilterParoisseController extends GetxController {
       if (value.empty == false) {
         hasDioceseData(true);
         dioceses.value = value.content ?? [];
+        diocesesTemp.value = value.content ?? [];
       } else {
         hasDioceseData(false);
       }
@@ -186,6 +199,7 @@ class FilterParoisseController extends GetxController {
     resetControllers();
     canDoApplyAction();
     hideKeyboard();
+    Get.delete<FilterParoisseController>(force: true);
   }
 
   onPlaceTypeSelected(PlaceType pt) {
@@ -237,6 +251,27 @@ class FilterParoisseController extends GetxController {
   goBackToParoisse() {
     searchCriteria.value.countCriteria = getCriteriaCount();
     Get.back(result: searchCriteria.value);
-    Get.delete<FilterParoisseController>();
+  }
+
+  updateTypeLiturgicalFilter(String value) {
+    log(value);
+    paroisseTypesTemp.value = paroisseTypes.where((p) => p.translate?.fr?.toLowerCase().contains(value.toLowerCase()) == true).toList();
+  }
+
+  updateDioceseFilter(String value) {
+    log(value);
+    diocesesTemp.value = dioceses.where((p) => p.name?.toLowerCase().contains(value.toLowerCase()) == true).toList();
+  }
+
+  //SEARCH SECTION
+  resetTypeLiturgicalSearch() {
+    typeLiturgicalSearchController.clear();
+    paroisseTypesTemp.value = paroisseTypes.value;
+    hideKeyboard();
+  }
+  resetDioceseSearch() {
+    dioceseSearchController.clear();
+    diocesesTemp.value = dioceses.value;
+    hideKeyboard();
   }
 }
