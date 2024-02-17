@@ -18,33 +18,30 @@ class DioceseItem extends StatelessWidget {
         onTap: () {
           logic.onDioceseSelected(diocese ?? ContentPlace());
         },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0,),
-          child: Row(
-            children: [
-              Separators.minimunHorizontal(),
-              Container(
-                decoration: BoxDecoration(
-                  color: logic.dioceseSelected.value == diocese ? colorGreenSemiLight : colorWhite,
-                  border: Border.all(color: colorGreenSemiLight),
-                  borderRadius: BorderRadius.circular(Get.width/10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    '${diocese?.name}',
-                    textAlign: TextAlign.center,
-                    style: TextStyles
-                        .montserratSemiBold(
-                        textSize:
-                        TextSizes
-                            .fourteen,
-                        textColor: logic.dioceseSelected.value == diocese ? colorWhite : colorBlack,),
-                  ),
+        child: Row(
+          children: [
+            Separators.minimunHorizontal(),
+            Container(
+              decoration: BoxDecoration(
+                color: logic.dioceseSelected.value == diocese ? colorGreenSemiLight : colorWhite,
+                border: Border.all(color: colorGreenSemiLight),
+                borderRadius: BorderRadius.circular(Get.width/10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  '${diocese?.name}',
+                  textAlign: TextAlign.center,
+                  style: TextStyles
+                      .montserratSemiBold(
+                      textSize:
+                      TextSizes
+                          .fourteen,
+                      textColor: logic.dioceseSelected.value == diocese ? colorWhite : colorBlack,),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     });

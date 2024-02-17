@@ -237,5 +237,6 @@ class FilterParoisseController extends GetxController {
   goBackToParoisse() {
     searchCriteria.value.countCriteria = getCriteriaCount();
     Get.back(result: searchCriteria.value);
+    Get.delete<FilterParoisseController>();
   }
 }

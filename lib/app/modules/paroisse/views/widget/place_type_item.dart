@@ -21,34 +21,31 @@ class PlaceTypeItem extends StatelessWidget {
           log('${placeType?.code}');
           logic.onPlaceTypeSelected(placeType ?? PlaceType());
         },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0,),
-          child: Row(
-            children: [
-              Separators.minimunHorizontal(),
-              Container(
-                width: Get.width / 3.5,
-                decoration: BoxDecoration(
-                  color: logic.placeTypeSelected.value == placeType ? colorGreenSemiLight : colorWhite,
-                  border: Border.all(color: colorGreenSemiLight),
-                  borderRadius: BorderRadius.circular(Get.width/10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    '${placeType?.translate?.fr}',
-                    textAlign: TextAlign.center,
-                    style: TextStyles
-                        .montserratSemiBold(
-                        textSize:
-                        TextSizes
-                            .fourteen,
-                        textColor: logic.placeTypeSelected.value == placeType ? colorWhite : colorBlack,),
-                  ),
+        child: Row(
+          children: [
+            Separators.minimunHorizontal(),
+            Container(
+              width: Get.width / 3.5,
+              decoration: BoxDecoration(
+                color: logic.placeTypeSelected.value == placeType ? colorGreenSemiLight : colorWhite,
+                border: Border.all(color: colorGreenSemiLight),
+                borderRadius: BorderRadius.circular(Get.width/10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  '${placeType?.translate?.fr}',
+                  textAlign: TextAlign.center,
+                  style: TextStyles
+                      .montserratSemiBold(
+                      textSize:
+                      TextSizes
+                          .fourteen,
+                      textColor: logic.placeTypeSelected.value == placeType ? colorWhite : colorBlack,),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     });

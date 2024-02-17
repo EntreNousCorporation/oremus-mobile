@@ -57,7 +57,6 @@ class RegularMassScreen extends StatelessWidget {
                       style: TextStyles.montserratSemiBold(
                           textSize: TextSizes.sixteen, textColor: colorWhite),
                     ),
-                    headerPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
                     content: value.openingTime?.isNotEmpty == true ? TimelineTheme(
                       data: TimelineThemeData(lineColor: colorGrey1),
                       child: Timeline(
