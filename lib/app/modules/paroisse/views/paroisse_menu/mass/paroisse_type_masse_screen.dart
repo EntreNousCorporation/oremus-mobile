@@ -8,7 +8,7 @@ import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_masse_controller.dart';
+import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_mass_controller.dart';
 
 class ParoisseTypeMasseScreen extends StatelessWidget {
   const ParoisseTypeMasseScreen({Key? key}) : super(key: key);
@@ -17,7 +17,7 @@ class ParoisseTypeMasseScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: colorGreen,
-      child: GetX<ParoisseMasseController>(
+      child: GetX<ParoisseMassController>(
           builder: (_) {
             return KeyboardDismisser(
               child: Scaffold(
@@ -165,7 +165,7 @@ class ParoisseTypeMasseScreen extends StatelessWidget {
                                   textColor: colorWhite,
                                 ),
                                 borderColor: colorGreenSemiLight,
-                                tabs: _.menusMasseTab.value.keys.map((e) {
+                                tabs: _.menusMasseTab.keys.map((e) {
                                   return Tab(text: e);
                                 }).toList(),
                               ),

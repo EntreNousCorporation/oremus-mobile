@@ -17,10 +17,10 @@ import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class ParoisseMasseController extends GetxController {
+class ParoisseMassController extends GetxController {
   final ParoisseRepository paroisseRepository;
 
-  ParoisseMasseController({
+  ParoisseMassController({
     required this.paroisseRepository,
   });
 
@@ -91,10 +91,13 @@ class ParoisseMasseController extends GetxController {
     isRegularMassDataProcessing(true);
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       isRegularMassDataProcessing(false);
-      regularMasses.value = value
-          .where((element) =>
-              (element.type?.code == AppConstants.MASS))
-          .toList();
+      regularMasses.value = value.where((element) {
+        if (element.type?.code?.isNotEmpty == true) {
+          return element.type?.code?.toLowerCase() ==
+              AppConstants.MASS.toLowerCase();
+        }
+        return false;
+      }).toList();
       log('regularMasses => ${regularMasses.length}');
       if (regularMasses.isNotEmpty == true) {
         hasRegularMassData(true);
@@ -126,7 +129,16 @@ class ParoisseMasseController extends GetxController {
     isSpecialMassDataProcessing(true);
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       isSpecialMassDataProcessing(false);
-      specialMasses.value = value.where((element) => (element.type?.code != AppConstants.MASS && element.type?.code != AppConstants.CONFESSION && Jiffy.parse(element.startDate ?? '').isAfter(Jiffy.now()))).toList();
+      specialMasses.value = value.where((element) {
+        if (element.type?.code?.isNotEmpty == true &&
+            element.startDate?.isNotEmpty == true) {
+          return element.type?.code != AppConstants.MASS &&
+              element.type?.code?.toLowerCase() !=
+                  AppConstants.CONFESSION.toLowerCase() &&
+              Jiffy.parse(element.startDate ?? '').isAfter(Jiffy.now());
+        }
+        return false;
+      }).toList();
       log('specialMasses => ${specialMasses.length}');
       if (specialMasses.isNotEmpty == true) {
         hasSpecialMassData(true);
@@ -158,11 +170,13 @@ class ParoisseMasseController extends GetxController {
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       refreshController.refreshCompleted();
       if (value.isEmpty == false) {
-        regularMasses.value = value
-            .where((element) =>
-                (element.type?.code == AppConstants.MASS) &&
-                (element.isRecurrent == true))
-            .toList();
+        regularMasses.value = value.where((element) {
+          if (element.type?.code?.isNotEmpty == true) {
+            return element.type?.code?.toLowerCase() ==
+                AppConstants.MASS.toLowerCase();
+          }
+          return false;
+        }).toList();
         log('regularMasses => ${regularMasses.length}');
       }
     }, onError: (error) {
@@ -189,13 +203,16 @@ class ParoisseMasseController extends GetxController {
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       refreshNotRecurrentController.refreshCompleted();
       if (value.isNotEmpty == true) {
-        specialMasses.value = value
-            .where((element) =>
-                (AppConstants.SPECIALS_MASSES.contains(element.type?.code)) &&
-                (element.isRecurrent == false) /*&&
-                (Jiffy(element.startDate).isAfter(Jiffy()))*/
-        )
-            .toList();
+        specialMasses.value = value.where((element) {
+          if (element.type?.code?.isNotEmpty == true &&
+              element.startDate?.isNotEmpty == true) {
+            return element.type?.code != AppConstants.MASS &&
+                element.type?.code?.toLowerCase() !=
+                    AppConstants.CONFESSION.toLowerCase() &&
+                Jiffy.parse(element.startDate ?? '').isAfter(Jiffy.now());
+          }
+          return false;
+        }).toList();
         log('specialMasses => ${specialMasses.length}');
       }
     }, onError: (error) {
@@ -213,14 +230,6 @@ class ParoisseMasseController extends GetxController {
       }
       debugPrint("error specialMasses => ${error.toString()}");
     });
-  }
-
-  String getDate(String date) {
-    return Jiffy.parse(date, pattern: "yyyy-MM-dd'T'HH:mm:ss").yMd;
-  }
-
-  String getHour(String date) {
-    return Jiffy.parse(date, pattern: "yyyy-MM-dd'T'HH:mm:ss").jm;
   }
 
   doLogout() {

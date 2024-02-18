@@ -12,7 +12,7 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/commons/timeline/flutter_timeline.dart';
 import 'package:oremusapp/app/commons/utils.dart';
-import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_masse_controller.dart';
+import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_mass_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/day_masse_item.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -21,7 +21,7 @@ class RegularMassScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetX<ParoisseMasseController>(builder: (logic) {
+    return GetX<ParoisseMassController>(builder: (logic) {
       if (logic.isRegularMassDataProcessing.isTrue) {
         return LottieLoadingView(
           size: Get.width / 4,
@@ -40,65 +40,70 @@ class RegularMassScreen extends StatelessWidget {
                 leftIcon: SvgPicture.asset(
                   'assets/images/messe.svg',
                   height: 25,
-                  colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),
+                  colorFilter:
+                      const ColorFilter.mode(colorWhite, BlendMode.srcIn),
                 ),
                 headerBackgroundColor: colorGreenSemiLight,
                 contentBorderColor: colorGreenSemiLight,
                 children: logic.regularMasses.map((value) {
                   return AccordionSection(
-                    sectionOpeningHapticFeedback:
-                    SectionHapticFeedback.medium,
-                    sectionClosingHapticFeedback:
-                    SectionHapticFeedback.medium,
-                    headerPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
+                    sectionOpeningHapticFeedback: SectionHapticFeedback.medium,
+                    sectionClosingHapticFeedback: SectionHapticFeedback.medium,
+                    headerPadding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
                     isOpen: true,
                     header: Text(
                       '${value.name}',
                       style: TextStyles.montserratSemiBold(
                           textSize: TextSizes.sixteen, textColor: colorWhite),
                     ),
-                    content: value.openingTime?.isNotEmpty == true ? TimelineTheme(
-                      data: TimelineThemeData(lineColor: colorGrey1),
-                      child: Timeline(
-                        indicatorSize: 24,
-                        isLeftAligned: true,
-                        events: value.openingTime?.map((openingTime) {
-                          return TimelineEventDisplay(
-                            child: DayMassetem(openingTime: openingTime),
-                            indicator: Container(
-                              width: 16,
-                              height: 16,
-                              decoration: BoxDecoration(
-                                color: getCurrentDay() ==
-                                        getDay(openingTime.dayOfWeek)
-                                    ? colorGreenSemiLight
-                                    : colorGrey1,
-                                borderRadius: BorderRadius.circular(18),
-                              ),
-                              child: getCurrentDay() ==
-                                      getDay(openingTime.dayOfWeek)
-                                  ? const Icon(
-                                      Icons.check_circle,
-                                      size: 18,
-                                      color: colorWhite,
-                                    )
-                                  : const Icon(
-                                Icons.circle,
-                                size: 18,
-                                color: colorWhite,
-                              ),
+                    content: value.openingTime?.isNotEmpty == true
+                        ? TimelineTheme(
+                            data: TimelineThemeData(
+                              lineColor: colorGrey1,
                             ),
-                          );
-                        }).toList() ?? [],
-                      ),
-                    ) : Text(
-                      'Horaires non disponible pour l\'instant',
-                      style: TextStyles
-                          .montserratSemiBold(
-                          textSize:
-                          TextSizes.fourteen,
-                          textColor: colorBlack),
-                    ),
+                            child: Timeline(
+                              indicatorSize: 24,
+                              isLeftAligned: true,
+                              events: value.openingTime?.map((openingTime) {
+                                    return TimelineEventDisplay(
+                                      child:
+                                          DayMassItem(openingTime: openingTime),
+                                      indicator: Container(
+                                        width: 16,
+                                        height: 16,
+                                        decoration: BoxDecoration(
+                                          color: getCurrentDay() ==
+                                                  getDay(openingTime.dayOfWeek)
+                                              ? colorGreenSemiLight
+                                              : colorGrey1,
+                                          borderRadius:
+                                              BorderRadius.circular(18),
+                                        ),
+                                        child: getCurrentDay() ==
+                                                getDay(openingTime.dayOfWeek)
+                                            ? const Icon(
+                                                Icons.check_circle_rounded,
+                                                size: 18,
+                                                color: colorWhite,
+                                              )
+                                            : const Icon(
+                                                Icons.circle,
+                                                size: 18,
+                                                color: colorWhite,
+                                              ),
+                                      ),
+                                    );
+                                  }).toList() ??
+                                  [],
+                            ),
+                          )
+                        : Text(
+                            'Horaires non disponibles pour l\'instant',
+                            style: TextStyles.montserratSemiBold(
+                                textSize: TextSizes.fourteen,
+                                textColor: colorBlack),
+                          ),
                   );
                 }).toList(),
               ),
@@ -106,7 +111,7 @@ class RegularMassScreen extends StatelessWidget {
           );
         } else {
           return NotFoundScreen(
-              message: 'Horaires non disponible pour l\'instant');
+              message: 'Horaires non disponibles pour l\'instant');
         }
       }
     });

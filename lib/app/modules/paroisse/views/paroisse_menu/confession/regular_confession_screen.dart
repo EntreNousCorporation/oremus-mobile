@@ -91,7 +91,7 @@ class RegularConfessionScreen extends StatelessWidget {
                         }).toList(),
                       ),
                     ) : Text(
-                      'Horaires non disponible pour l\'instant',
+                      'Horaires non disponibles pour l\'instant',
                       style: TextStyles
                           .montserratSemiBold(
                           textSize:
@@ -105,7 +105,7 @@ class RegularConfessionScreen extends StatelessWidget {
           );
         } else {
           return NotFoundScreen(
-              message: 'Horaires non disponible pour l\'instant');
+              message: 'Horaires non disponibles pour l\'instant');
         }
       }
     });

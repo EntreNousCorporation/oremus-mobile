@@ -71,12 +71,19 @@ String getDay(int code) {
   }
 }
 
+String getDate(String date) {
+  return Jiffy.parse(date, pattern: "yyyy-MM-dd'T'HH:mm:ss").yMd;
+}
+
+String getHour(String date) {
+  return Jiffy.parse(date, pattern: "yyyy-MM-dd'T'HH:mm:ss").jm;
+}
+
 String getCurrentDay() {
-  return getDay(Jiffy.now().dateTime.day -1);
+  return getDay(Jiffy.now().dateTime.weekday -1);
 }
 
 hideKeyboard() {
-  //FocusManager.instance.primaryFocus?.unfocus();
   WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
 }
 

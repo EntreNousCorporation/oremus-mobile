@@ -74,7 +74,7 @@ class SpecialConfessionScreen extends StatelessWidget {
               ));
         } else {
           return NotFoundScreen(
-              message: 'Horaires non disponible pour l\'instant');
+              message: 'Horaires non disponibles pour l\'instant');
         }
       }
     });

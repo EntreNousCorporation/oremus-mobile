@@ -70,12 +70,12 @@ class PrayItem extends StatelessWidget {
                         icon: const Icon(
                           Icons.arrow_upward_rounded,
                           color: colorGreenSemiLight,
-                          size: 20,
+                          size: 18,
                         ),
                         label: Text(
                           'Réduire',
                           style: TextStyles.montserratSemiBoldItalic(
-                            textSize: TextSizes.fourteen,
+                            textSize: TextSizes.twelve,
                             textColor: colorGreenSemiLight,
                           ),
                         ),
@@ -88,12 +88,12 @@ class PrayItem extends StatelessWidget {
                         icon: const Icon(
                           Icons.arrow_downward_rounded,
                           color: colorGreenSemiLight,
-                          size: 20,
+                          size: 18,
                         ),
                         label: Text(
                           'Tout afficher',
                           style: TextStyles.montserratSemiBoldItalic(
-                            textSize: TextSizes.fourteen,
+                            textSize: TextSizes.twelve,
                             textColor: colorGreenSemiLight,
                           ),
                         ),

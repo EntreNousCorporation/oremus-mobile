@@ -77,7 +77,7 @@ class ParoissePresbyTeamController extends GetxController {
       case 'HM':
       case 'HC':
       case 'HB':
-        return 'Horaires non disponible\nRéessayez plus tard svp';
+        return 'Horaires non disponibles\nRéessayez plus tard svp';
       case 'AM':
       case 'EP':
         return 'Aucune information trouvée';

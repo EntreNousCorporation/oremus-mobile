@@ -81,7 +81,7 @@ class PrayScreen extends StatelessWidget {
                                             } else if (mode ==
                                                 LoadStatus.canLoading) {
                                               body = Text(
-                                                "Relacher pour charger plus de prières",
+                                                "Relâcher pour charger plus de prières",
                                                 style:
                                                     TextStyles.montserratBold(
                                                         textSize:
@@ -89,41 +89,44 @@ class PrayScreen extends StatelessWidget {
                                                         textColor: colorBlack),
                                               );
                                             } else {
-                                              body = Column(
-                                                children: [
-                                                  SizedBox(
-                                                    width: Get.width / 1.7,
-                                                    height: 4,
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                        gradient:
-                                                            const LinearGradient(
-                                                          begin: Alignment
-                                                              .topRight,
-                                                          end: Alignment
-                                                              .bottomLeft,
-                                                          colors: [
-                                                            colorGreen,
-                                                            colorGreenSemiLight,
-                                                          ],
+                                              body = Visibility(
+                                                visible: false,
+                                                child: Column(
+                                                  children: [
+                                                    SizedBox(
+                                                      width: Get.width / 1.7,
+                                                      height: 4,
+                                                      child: Container(
+                                                        decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                          gradient:
+                                                              const LinearGradient(
+                                                            begin: Alignment
+                                                                .topRight,
+                                                            end: Alignment
+                                                                .bottomLeft,
+                                                            colors: [
+                                                              colorGreen,
+                                                              colorGreenSemiLight,
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  Separators.minimunVertical(),
-                                                  Text(
-                                                    "Aucune donnée à charger",
-                                                    style: TextStyles
-                                                        .montserratBold(
-                                                      textSize:
-                                                          TextSizes.thirteen,
-                                                      textColor: colorBlack,
+                                                    Separators.minimunVertical(),
+                                                    Text(
+                                                      "Aucune donnée à charger",
+                                                      style: TextStyles
+                                                          .montserratBold(
+                                                        textSize:
+                                                            TextSizes.thirteen,
+                                                        textColor: colorBlack,
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               );
                                             }
                                             return SizedBox(
@@ -137,7 +140,7 @@ class PrayScreen extends StatelessWidget {
                                         child: ListView.separated(
                                           padding: const EdgeInsets.only(
                                             top: 16.0,
-                                            bottom: 16.0,
+                                            bottom: 0.0,
                                           ),
                                           physics:
                                               const NeverScrollableScrollPhysics(),

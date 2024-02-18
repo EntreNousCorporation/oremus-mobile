@@ -14,7 +14,7 @@ import 'package:oremusapp/app/modules/paroisse/binding/paroisse_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_confession_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_contact_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_map_binding.dart';
-import 'package:oremusapp/app/modules/paroisse/binding/paroisse_masse_binding.dart';
+import 'package:oremusapp/app/modules/paroisse/binding/paroisse_mass_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_office_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_presby_team_binding.dart';

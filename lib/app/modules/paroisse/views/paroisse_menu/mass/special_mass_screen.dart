@@ -9,7 +9,8 @@ import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_masse_controller.dart';
+import 'package:oremusapp/app/commons/utils.dart';
+import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_mass_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -18,7 +19,7 @@ class SpecialMassScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetX<ParoisseMasseController>(builder: (logic) {
+    return GetX<ParoisseMassController>(builder: (logic) {
       if (logic.isSpecialMassDataProcessing.isTrue) {
         return LottieLoadingView(
           size: Get.width / 4,
@@ -35,7 +36,7 @@ class SpecialMassScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
-                  elements: logic.specialMasses.value,
+                  elements: logic.specialMasses,
                   useStickyGroupSeparators: false,
                   groupBy: (liturgicalCelebration) => liturgicalCelebration?.name ?? '',
                   groupHeaderBuilder: (liturgicalCelebration) => Container(
@@ -45,7 +46,7 @@ class SpecialMassScreen extends StatelessWidget {
                       color: colorGreenSemiLight.withOpacity(0.4),
                     ),
                     child: Center(
-                      child: Text('${liturgicalCelebration?.name} - ${logic.getDate(liturgicalCelebration?.startDate ?? '')}',
+                      child: Text('${liturgicalCelebration?.name} - ${getDate(liturgicalCelebration?.startDate ?? '')}',
                         style: TextStyles.montserratBold(
                           textSize: TextSizes.seventeen,
                         ),),
@@ -60,7 +61,7 @@ class SpecialMassScreen extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Text(
-                            logic.getHour(liturgicalCelebration?.startDate ?? ''),
+                            getHour(liturgicalCelebration?.startDate ?? ''),
                             style: TextStyles.montserratMedium(
                               textColor: colorBlack,
                               textSize: TextSizes.thirteen,
@@ -74,7 +75,7 @@ class SpecialMassScreen extends StatelessWidget {
               ));
         } else {
           return NotFoundScreen(
-              message: 'Horaires non disponible pour l\'instant');
+              message: 'Horaires non disponibles pour l\'instant');
         }
       }
     });

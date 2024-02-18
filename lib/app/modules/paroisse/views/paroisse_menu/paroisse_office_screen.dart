@@ -257,7 +257,7 @@ class ParoisseOfficeScreen extends StatelessWidget {
                                                       }).toList(),
                                                     ),
                                                   ) : Text(
-                                                    'Horaires non disponible pour l\'instant',
+                                                    'Horaires non disponibles pour l\'instant',
                                                     style: TextStyles
                                                         .montserratSemiBold(
                                                         textSize:
@@ -273,7 +273,7 @@ class ParoisseOfficeScreen extends StatelessWidget {
                                     : Expanded(
                                         child: NotFoundScreen(
                                             message:
-                                                'Horaires non disponible pour l\'instant')),
+                                                'Horaires non disponibles pour l\'instant')),
                           ],
                         ),
                       )
