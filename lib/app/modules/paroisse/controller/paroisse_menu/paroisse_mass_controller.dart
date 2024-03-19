@@ -122,47 +122,6 @@ class ParoisseMassController extends GetxController {
     });
   }
 
-  getMasseNotRecurrentTimes() {
-    log('request getMasseNotRecurrentTimes');
-
-    var idParoisse = paroisseSelected.value.identifier;
-    isSpecialMassDataProcessing(true);
-    paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
-      isSpecialMassDataProcessing(false);
-      specialMasses.value = value.where((element) {
-        if (element.type?.code?.isNotEmpty == true &&
-            element.startDate?.isNotEmpty == true) {
-          return element.type?.code != AppConstants.MASS &&
-              element.type?.code?.toLowerCase() !=
-                  AppConstants.CONFESSION.toLowerCase() &&
-              Jiffy.parse(element.startDate ?? '').isAfter(Jiffy.now());
-        }
-        return false;
-      }).toList();
-      log('specialMasses => ${specialMasses.length}');
-      if (specialMasses.isNotEmpty == true) {
-        hasSpecialMassData(true);
-      } else {
-        hasSpecialMassData(false);
-      }
-    }, onError: (error) {
-      isSpecialMassDataProcessing(false);
-      hasSpecialMassData(false);
-      var err = error as CustomException;
-      if (err.code == 401) {
-        showCustomDialog(
-          Get.context!,
-          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-        ).then((value) {
-          doLogout();
-        });
-      } else if (err.code == 900) {
-        showNotification(message: err.message.toString());
-      }
-      debugPrint("error specialMasses => ${error.toString()}");
-    });
-  }
-
   onRegularMassesRefresh() {
     log('request onRegularMassesRefresh');
 
@@ -196,6 +155,47 @@ class ParoisseMassController extends GetxController {
     });
   }
 
+  getMasseNotRecurrentTimes() {
+    log('request getMasseNotRecurrentTimes');
+
+    var idParoisse = paroisseSelected.value.identifier;
+    isSpecialMassDataProcessing(true);
+    paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
+      isSpecialMassDataProcessing(false);
+      specialMasses.value = value.where((element) {
+        if (element.type?.code?.isNotEmpty == true &&
+            element.startDate?.isNotEmpty == true) {
+          return element.type?.code != AppConstants.MASS &&
+              element.type?.code?.toLowerCase() !=
+                  AppConstants.CONFESSION.toLowerCase() /*&&
+              Jiffy.parse(element.startDate ?? '').isAfter(Jiffy.now())*/;
+        }
+        return false;
+      }).toList();
+      log('specialMasses => ${specialMasses.length}');
+      if (specialMasses.isNotEmpty == true) {
+        hasSpecialMassData(true);
+      } else {
+        hasSpecialMassData(false);
+      }
+    }, onError: (error) {
+      isSpecialMassDataProcessing(false);
+      hasSpecialMassData(false);
+      var err = error as CustomException;
+      if (err.code == 401) {
+        showCustomDialog(
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
+      }
+      debugPrint("error specialMasses => ${error.toString()}");
+    });
+  }
+
   onSpecialMassesRefresh() {
     log('request onSpecialMassesRefresh');
 
@@ -208,8 +208,8 @@ class ParoisseMassController extends GetxController {
               element.startDate?.isNotEmpty == true) {
             return element.type?.code != AppConstants.MASS &&
                 element.type?.code?.toLowerCase() !=
-                    AppConstants.CONFESSION.toLowerCase() &&
-                Jiffy.parse(element.startDate ?? '').isAfter(Jiffy.now());
+                    AppConstants.CONFESSION.toLowerCase() /*&&
+                Jiffy.parse(element.startDate ?? '').isAfter(Jiffy.now())*/;
           }
           return false;
         }).toList();

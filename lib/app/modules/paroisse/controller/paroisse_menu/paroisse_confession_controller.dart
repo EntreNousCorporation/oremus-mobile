@@ -152,9 +152,9 @@ class ParoisseConfessionController extends GetxController {
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       isSpecialMassDataProcessing(false);
       specialConfessions.value = value
-          .where((element) => (element.type?.code == AppConstants.CONFESSION) && (element.isRecurrent == false) && (Jiffy.parse(element.startDate ?? '').isAfter(Jiffy.now())))
+          .where((element) => (element.type?.code == AppConstants.CONFESSION) && (element.isRecurrent == false) /*&& (Jiffy.parse(element.startDate ?? '').isAfter(Jiffy.now()))*/)
           .toList();
-      log('specialConfessions => ${specialConfessions.first.startDate}');
+      //log('specialConfessions => ${specialConfessions.first.startDate}');
       if (specialConfessions.isNotEmpty == true) {
         hasSpecialMassData(true);
       } else {
@@ -186,7 +186,7 @@ class ParoisseConfessionController extends GetxController {
       refreshNotRecurrentController.refreshCompleted();
       if (value.isNotEmpty == true) {
         specialConfessions.value = value
-            .where((element) => element.type?.code == AppConstants.CONFESSION && (element.isRecurrent == false) && (Jiffy.parse(element.startDate ?? '').isAfter(Jiffy.now())))
+            .where((element) => element.type?.code == AppConstants.CONFESSION && (element.isRecurrent == false) /*&& (Jiffy.parse(element.startDate ?? '').isAfter(Jiffy.now()))*/)
             .toList();
         //specialConfessions.sort((a, b) => Jiffy(a.startDate).dateTime.compareTo(Jiffy(b.startDate).dateTime));
         log('specialConfessions => ${specialConfessions.length}');

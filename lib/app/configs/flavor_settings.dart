@@ -8,8 +8,8 @@ class FlavorSettings {
   //------------------------------------+
   FlavorSettings.dev()
       : oremusFlavor = OremusFlavor(
-          //apiBaseUrl: 'https://api-dev.oremus.ci',
-          apiBaseUrl: 'https://api.oremus.ci',
+          apiBaseUrl: 'https://api-dev.oremus.ci',
+          //apiBaseUrl: 'https://api.oremus.ci',
           endpoint: '',
           byPassAuth: false,
           envCredentials: EnvCredentials.dev,
