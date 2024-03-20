@@ -90,7 +90,7 @@ class _CustomButtonState extends State<CustomButton> {
 
   _AnimatedButton(Function action) {
     setState(() => _isPressed = true);
-    _timer = Timer(const Duration(milliseconds: 100), () {
+    _timer = Timer(const Duration(milliseconds: 10), () {
       setState(() {
         action != null ? action.call() : _isPressed = false;
         _isPressed = false;

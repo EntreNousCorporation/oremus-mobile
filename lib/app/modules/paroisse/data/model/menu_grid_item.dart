@@ -24,7 +24,7 @@ class _MenuGridItemState extends State<MenuGridItem> {
   _animatedButton(Function destination) {
     if (!mounted) return;
     setState(() => _isPressed = true);
-    Timer(const Duration(milliseconds: 100), () {
+    Timer(const Duration(milliseconds: 10), () {
       setState(() {
         destination.call();
         _isPressed = false;

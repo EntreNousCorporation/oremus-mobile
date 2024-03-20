@@ -72,10 +72,13 @@ class ParoisseMassController extends GetxController {
   getArguments() {
     if (Get.arguments != null) {
       code.value = Get.arguments[0];
-      paroisseSelected.value =
-          ContentPlace.fromJson(jsonDecode(Get.arguments[1]));
+      paroisseSelected.value = ContentPlace.fromJson(Get.arguments[1]);
       log('paroisseSelected ==> ${paroisseSelected.value.identifier}');
     }
+  }
+
+  bool isMassExpired(LiturgicalCelebrationResponse? liturgicalCelebration) {
+    return Jiffy.parse(liturgicalCelebration?.startDate ?? '').isBefore(Jiffy.now());
   }
 
   getTime(String timeToConverted) {

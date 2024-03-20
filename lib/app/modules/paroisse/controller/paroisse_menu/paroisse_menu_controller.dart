@@ -50,7 +50,7 @@ class ParoisseMenuController extends GetxController {
             Routes.PAROISSE_MESSE,
             arguments: [
               'HM',
-              jsonEncode(paroisseSelected.value.toJson()),
+              paroisseSelected.value.toJson(),
             ],
           );
           log("retour");
