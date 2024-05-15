@@ -49,8 +49,7 @@ class RegularMassScreen extends StatelessWidget {
                   return AccordionSection(
                     sectionOpeningHapticFeedback: SectionHapticFeedback.medium,
                     sectionClosingHapticFeedback: SectionHapticFeedback.medium,
-                    headerPadding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
+                    headerPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
                     isOpen: true,
                     header: Text(
                       '${value.name}',

@@ -22,12 +22,12 @@ class RegularConfessionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetX<ParoisseConfessionController>(builder: (logic) {
-      if (logic.isRegularMassDataProcessing.isTrue) {
+      if (logic.isRegularConfessionDataProcessing.isTrue) {
         return LottieLoadingView(
           size: Get.width / 4,
         );
       } else {
-        if (logic.hasRegularMassData.isTrue) {
+        if (logic.hasRegularConfessionData.isTrue) {
           return FadeIn(
             duration: const Duration(milliseconds: 500),
             child: SmartRefresher(

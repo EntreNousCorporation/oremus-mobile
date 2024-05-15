@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -93,6 +94,10 @@ hideKeyboard() {
 
 double applyElevation() {
   return GetPlatform.isAndroid ? 10 : 0;
+}
+
+bool isEventExpired(LiturgicalCelebrationResponse? liturgicalCelebration) {
+  return Jiffy.parse(liturgicalCelebration?.startDate ?? '').isBefore(Jiffy.now());
 }
 
 shareApp(String message, {bool? includeFile = true, String filePath = ''}) async {

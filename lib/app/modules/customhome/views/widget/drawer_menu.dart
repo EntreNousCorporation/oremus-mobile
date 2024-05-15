@@ -10,6 +10,8 @@ import 'package:oremusapp/app/modules/customhome/views/widget/drawer_menu_item.d
 import 'package:oremusapp/main.dart';
 
 class DrawerMenu extends StatefulWidget {
+  const DrawerMenu({Key? key}) : super(key: key);
+
   @override
   _MenuState createState() => _MenuState();
 }

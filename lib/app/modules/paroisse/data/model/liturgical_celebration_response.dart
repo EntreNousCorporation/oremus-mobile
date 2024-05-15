@@ -12,6 +12,7 @@ class LiturgicalCelebrationResponse {
   LiturgicalType? type;
   bool? isRecurrent;
   List<OpeningTime>? openingTime;
+  List<Slot>? slots;
 
   LiturgicalCelebrationResponse({
     this.identifier,
@@ -25,12 +26,18 @@ class LiturgicalCelebrationResponse {
     this.type,
     this.isRecurrent,
     this.openingTime,
+    this.slots,
   });
 
   LiturgicalCelebrationResponse.fromJson(Map<String, dynamic> json) {
     openingTime = json['openingTime'] != null
         ? (json['openingTime'] as List)
         .map((i) => OpeningTime.fromJson(i))
+        .toList()
+        : null;
+    slots = json['slots'] != null
+        ? (json['slots'] as List)
+        .map((i) => Slot.fromJson(i))
         .toList()
         : null;
     identifier = json['identifier'];
@@ -49,6 +56,9 @@ class LiturgicalCelebrationResponse {
     final Map<String, dynamic> data = <String, dynamic>{};
     if (openingTime != null) {
       data['openingTime'] = openingTime?.map((v) => v.toJson()).toList();
+    }
+    if (slots != null) {
+      data['slots'] = slots?.map((v) => v.toJson()).toList();
     }
     data['identifier'] = identifier;
     data['createdAt'] = createdAt;

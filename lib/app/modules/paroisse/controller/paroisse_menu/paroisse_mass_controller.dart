@@ -77,10 +77,6 @@ class ParoisseMassController extends GetxController {
     }
   }
 
-  bool isMassExpired(LiturgicalCelebrationResponse? liturgicalCelebration) {
-    return Jiffy.parse(liturgicalCelebration?.startDate ?? '').isBefore(Jiffy.now());
-  }
-
   getTime(String timeToConverted) {
     var hour = timeToConverted.split(':').first;
     var minutes = timeToConverted.split(':')[1];
@@ -166,15 +162,13 @@ class ParoisseMassController extends GetxController {
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
       isSpecialMassDataProcessing(false);
       specialMasses.value = value.where((element) {
-        if (element.type?.code?.isNotEmpty == true &&
-            element.startDate?.isNotEmpty == true) {
-          return element.type?.code != AppConstants.MASS &&
-              element.type?.code?.toLowerCase() !=
-                  AppConstants.CONFESSION.toLowerCase() /*&&
-              Jiffy.parse(element.startDate ?? '').isAfter(Jiffy.now())*/;
+        if (element.type?.code?.isNotEmpty == true) {
+          return element.type?.code?.toLowerCase() ==
+              AppConstants.SPECIAL_MASS.toLowerCase();
         }
         return false;
       }).toList();
+      specialMasses.sort((a, b) => Jiffy.parse(b.startDate ?? '').dateTime.compareTo(Jiffy.parse(a.startDate ?? '').dateTime));
       log('specialMasses => ${specialMasses.length}');
       if (specialMasses.isNotEmpty == true) {
         hasSpecialMassData(true);
@@ -207,15 +201,13 @@ class ParoisseMassController extends GetxController {
       refreshNotRecurrentController.refreshCompleted();
       if (value.isNotEmpty == true) {
         specialMasses.value = value.where((element) {
-          if (element.type?.code?.isNotEmpty == true &&
-              element.startDate?.isNotEmpty == true) {
-            return element.type?.code != AppConstants.MASS &&
-                element.type?.code?.toLowerCase() !=
-                    AppConstants.CONFESSION.toLowerCase() /*&&
-                Jiffy.parse(element.startDate ?? '').isAfter(Jiffy.now())*/;
+          if (element.type?.code?.isNotEmpty == true) {
+            return element.type?.code?.toLowerCase() ==
+                AppConstants.SPECIAL_MASS.toLowerCase();
           }
           return false;
         }).toList();
+        specialMasses.sort((a, b) => Jiffy.parse(b.startDate ?? '').dateTime.compareTo(Jiffy.parse(a.startDate ?? '').dateTime));
         log('specialMasses => ${specialMasses.length}');
       }
     }, onError: (error) {

@@ -3,7 +3,6 @@ import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
 import 'package:hidden_drawer_menu/hidden_drawer_menu.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
-import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
@@ -19,7 +18,6 @@ import 'package:oremusapp/app/modules/pray/views/pray_screen.dart';
 import 'package:oremusapp/app/modules/profile/controller/profile_controller.dart';
 import 'package:oremusapp/app/modules/profile/views/profile_screen.dart';
 import 'package:oremusapp/app/modules/promos/views/promo_screen.dart';
-import 'package:oremusapp/app/modules/share/views/share_screen.dart';
 import 'package:oremusapp/main.dart';
 
 class CustomHomeScreen extends StatelessWidget {
@@ -29,7 +27,7 @@ class CustomHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<CustomHomeController>(builder: (logic) {
       return SimpleHiddenDrawer(
-        menu: DrawerMenu(),
+        menu: const DrawerMenu(),
         withShadow: false,
         slidePercent: 70, // en %
         screenSelectedBuilder: (position, controller) {

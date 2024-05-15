@@ -35,7 +35,8 @@ void main() async {
   initializeDateFormatting('fr_FR', null).then(
     (_) async {
       final settings = await _getFlavorSettings();
-      appUrl = settings.oremusFlavor.apiBaseUrl.toString() + settings.oremusFlavor.endpoint.toString();
+      appUrl = settings.oremusFlavor.apiBaseUrl.toString() +
+          settings.oremusFlavor.endpoint.toString();
       shareAppLink = settings.oremusFlavor.shareAppLink;
       //byPassAuth = settings.oremusFlavor.byPassAuth;
 
@@ -68,7 +69,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return OverlaySupport.global(
       child: GetMaterialApp(
-        debugShowCheckedModeBanner: (flavor == AppConstants.ENV_DEV) ? true : false,
+        debugShowCheckedModeBanner:
+            (flavor == AppConstants.ENV_DEV) ? true : false,
         locale: TranslationService.locale,
         fallbackLocale: TranslationService.fallbackLocale,
         translations: TranslationService(),
@@ -91,7 +93,8 @@ Future<void> getDeviceInfos() async {
   log('====== getDeviceInfos ======');
   try {
     if (Platform.isIOS) {
-      phoneId = await PlatformDeviceId.getDeviceId; //'${iosDeviceInfo.name}:${iosDeviceInfo.identifierForVendor}'; // unique ID on iOS
+      phoneId = await PlatformDeviceId
+          .getDeviceId; //'${iosDeviceInfo.name}:${iosDeviceInfo.identifierForVendor}'; // unique ID on iOS
       log('getUniqueDeviceId => $phoneId');
     } else if (Platform.isAndroid) {
       phoneId = await PlatformDeviceId.getDeviceId; //androidDeviceInfo.id;
@@ -111,7 +114,8 @@ getAppVersion() {
 }
 
 Future<FlavorSettings> _getFlavorSettings() async {
-  flavor = await const MethodChannel('flavor').invokeMethod<String>('getFlavor');
+  flavor =
+      await const MethodChannel('flavor').invokeMethod<String>('getFlavor');
 
   log('STARTED WITH FLAVOR $flavor');
 

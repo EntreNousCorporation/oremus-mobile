@@ -24,11 +24,11 @@ class ParoisseConfessionController extends GetxController {
     required this.paroisseRepository,
   });
 
-  var isRegularMassDataProcessing = false.obs;
-  var hasRegularMassData = false.obs;
+  var isRegularConfessionDataProcessing = false.obs;
+  var hasRegularConfessionData = false.obs;
 
-  var isSpecialMassDataProcessing = false.obs;
-  var hasSpecialMassData = false.obs;
+  var isSpecialConfessionDataProcessing = false.obs;
+  var hasSpecialConfessionData = false.obs;
 
   var code = ''.obs;
   var paroisseSelected = ContentPlace().obs;
@@ -85,21 +85,21 @@ class ParoisseConfessionController extends GetxController {
     log('request getConfessionsRecurrentTimes');
 
     var idParoisse = paroisseSelected.value.identifier;
-    isRegularMassDataProcessing(true);
+    isRegularConfessionDataProcessing(true);
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
-      isRegularMassDataProcessing(false);
+      isRegularConfessionDataProcessing(false);
       regularConfessions.value = value
-          .where((element) => (element.type?.code == AppConstants.CONFESSION) && (element.isRecurrent == true))
+          .where((element) => element.type?.code == AppConstants.CONFESSION)
           .toList();
       log('regularConfessions => ${regularConfessions.length}');
       if (regularConfessions.isNotEmpty == true) {
-        hasRegularMassData(true);
+        hasRegularConfessionData(true);
       } else {
-        hasRegularMassData(false);
+        hasRegularConfessionData(false);
       }
     }, onError: (error) {
-      isRegularMassDataProcessing(false);
-      hasRegularMassData(false);
+      isRegularConfessionDataProcessing(false);
+      hasRegularConfessionData(false);
       var err = error as CustomException;
       if (err.code == 401) {
         showCustomDialog(
@@ -123,7 +123,7 @@ class ParoisseConfessionController extends GetxController {
       refreshController.refreshCompleted();
       if (value.isEmpty == false) {
         regularConfessions.value = value
-            .where((element) => (element.type?.code == AppConstants.CONFESSION) && (element.isRecurrent == true))
+            .where((element) => element.type?.code == AppConstants.CONFESSION)
             .toList();
         log('regularConfessions => ${regularConfessions.length}');
       }
@@ -148,21 +148,21 @@ class ParoisseConfessionController extends GetxController {
     log('request getConfessionsNotRecurrentTimes');
 
     var idParoisse = paroisseSelected.value.identifier;
-    isSpecialMassDataProcessing(true);
+    isSpecialConfessionDataProcessing(true);
     paroisseRepository.getLiturgicalCelebration(idParoisse ?? -1).then((value) {
-      isSpecialMassDataProcessing(false);
+      isSpecialConfessionDataProcessing(false);
       specialConfessions.value = value
-          .where((element) => (element.type?.code == AppConstants.CONFESSION) && (element.isRecurrent == false) /*&& (Jiffy.parse(element.startDate ?? '').isAfter(Jiffy.now()))*/)
+          .where((element) => (element.type?.code == AppConstants.SPECIAL_CONFESSION))
           .toList();
-      //log('specialConfessions => ${specialConfessions.first.startDate}');
+      specialConfessions.sort((a, b) => Jiffy.parse(b.startDate ?? '').dateTime.compareTo(Jiffy.parse(a.startDate ?? '').dateTime));
       if (specialConfessions.isNotEmpty == true) {
-        hasSpecialMassData(true);
+        hasSpecialConfessionData(true);
       } else {
-        hasSpecialMassData(false);
+        hasSpecialConfessionData(false);
       }
     }, onError: (error) {
-      isSpecialMassDataProcessing(false);
-      hasSpecialMassData(false);
+      isSpecialConfessionDataProcessing(false);
+      hasSpecialConfessionData(false);
       var err = error as CustomException;
       if (err.code == 401) {
         showCustomDialog(
@@ -186,11 +186,9 @@ class ParoisseConfessionController extends GetxController {
       refreshNotRecurrentController.refreshCompleted();
       if (value.isNotEmpty == true) {
         specialConfessions.value = value
-            .where((element) => element.type?.code == AppConstants.CONFESSION && (element.isRecurrent == false) /*&& (Jiffy.parse(element.startDate ?? '').isAfter(Jiffy.now()))*/)
+            .where((element) => (element.type?.code == AppConstants.SPECIAL_CONFESSION))
             .toList();
-        //specialConfessions.sort((a, b) => Jiffy(a.startDate).dateTime.compareTo(Jiffy(b.startDate).dateTime));
-        log('specialConfessions => ${specialConfessions.length}');
-        //log('specialMasses hour => ${Jiffy(specialMasses.value.first.startDate, "yyyy-MM-dd'T'HH:mm:ss").jm}');
+        specialConfessions.sort((a, b) => Jiffy.parse(b.startDate ?? '').dateTime.compareTo(Jiffy.parse(a.startDate ?? '').dateTime));
       }
     }, onError: (error) {
       refreshNotRecurrentController.refreshCompleted();
