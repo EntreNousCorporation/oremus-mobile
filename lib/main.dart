@@ -28,6 +28,7 @@ var flavor;
 var versionName;
 var versionCode;
 var phoneId;
+var shareAppLink;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +36,7 @@ void main() async {
     (_) async {
       final settings = await _getFlavorSettings();
       appUrl = settings.oremusFlavor.apiBaseUrl.toString() + settings.oremusFlavor.endpoint.toString();
+      shareAppLink = settings.oremusFlavor.shareAppLink;
       //byPassAuth = settings.oremusFlavor.byPassAuth;
 
       await DB.initDatabase();

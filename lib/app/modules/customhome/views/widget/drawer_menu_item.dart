@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
@@ -28,7 +29,7 @@ class DrawerMenuItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Visibility(
-                  visible: menu.isSelected ?? false,
+                  visible: ((menu.isSelected ?? false) && logic.menus[index].code != AppConstants.SHARE_APP),
                   child: const Icon(
                     Icons.circle,
                     size: 8,
@@ -39,7 +40,7 @@ class DrawerMenuItem extends StatelessWidget {
                 SvgPicture.asset(
                   menu.icon ?? '',
                   width: 20,
-                  color: colorWhite,
+                  colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),
                   fit: BoxFit.fill,
                 ),
                 Separators.normalHorizontal(),

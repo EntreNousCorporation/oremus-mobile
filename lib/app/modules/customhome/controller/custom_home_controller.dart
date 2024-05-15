@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
 import 'package:hidden_drawer_menu/controllers/simple_hidden_drawer_controller.dart';
+import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
+import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/customhome/data/model/menu_item.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:oremusapp/generated/assets.dart';
 import 'package:oremusapp/main.dart';
 
 class CustomHomeController extends GetxController {
@@ -54,12 +57,6 @@ class CustomHomeController extends GetxController {
         icon: 'assets/images/icon_pray.svg',
       ),
       MenusItem(
-        code: AppConstants.SHARE_APP,
-        libelle: "Partager l'application",
-        icon: 'assets/images/share_icon.svg',
-        isVisible: false,
-      ),
-      MenusItem(
         code: AppConstants.PROMO,
         libelle: 'Codes promo',
         icon: 'assets/images/icon_settings.svg',
@@ -87,6 +84,12 @@ class CustomHomeController extends GetxController {
         icon: 'assets/images/user_login.svg',
         isVisible: isUserConnected.value == true ? false : true,
       ),
+      MenusItem(
+        code: AppConstants.SHARE_APP,
+        libelle: "Partager l'application",
+        icon: 'assets/images/share_icon.svg',
+        isVisible: true,
+      ),
     ];
     menus.value = menus.where((element) => element.isVisible).toList();
   }
@@ -103,7 +106,6 @@ class CustomHomeController extends GetxController {
     return AnimationPlayStates.None;
   }
 
-
   bool userCanUpdateProfile() {
     return DB.getUserSigninInfo()?.isBoUser == false;
   }
@@ -115,9 +117,21 @@ class CustomHomeController extends GetxController {
     if (menuCode == AppConstants.SIGNIN) {
       goToSignin();
     } else {
-      controller.setSelectedMenuPosition(index);
+      if (menuCode == AppConstants.SHARE_APP) {
+        doShareApp();
+      } else {
+        controller.setSelectedMenuPosition(index);
+      }
       update();
     }
+  }
+
+  doShareApp() {
+    shareApp(
+      AppConstants.APP_SHARE_MSG.replaceAll('{link}', shareAppLink),
+      includeFile: true,
+      filePath: Assets.imagesLogo,
+    );
   }
 
   goToSignin() {

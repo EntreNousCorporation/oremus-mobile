@@ -9,8 +9,8 @@ class FlavorSettings {
   FlavorSettings.dev()
       : oremusFlavor = OremusFlavor(
           apiBaseUrl: 'https://api-dev.oremus.ci',
-          //apiBaseUrl: 'https://api.oremus.ci',
           endpoint: '',
+          shareAppLink: 'https://download-dev.oremus.ci/store-link',
           byPassAuth: false,
           envCredentials: EnvCredentials.dev,
         );
@@ -22,6 +22,7 @@ class FlavorSettings {
       : oremusFlavor = OremusFlavor(
           apiBaseUrl: 'https://api.oremus.ci',
           endpoint: '',
+          shareAppLink: 'https://download.oremus.ci/store-link',
           byPassAuth: true,
           envCredentials: EnvCredentials.prod,
         );
@@ -30,6 +31,7 @@ class FlavorSettings {
 class OremusFlavor {
   final String? apiBaseUrl;
   final String? endpoint;
+  final String? shareAppLink;
   final bool?
       byPassAuth; // True or False, whether we want to bypass the auth or not
   final EnvCredentials? envCredentials;
@@ -37,6 +39,7 @@ class OremusFlavor {
   OremusFlavor({
     this.apiBaseUrl,
     this.endpoint,
+    this.shareAppLink,
     this.byPassAuth = false,
     this.envCredentials = EnvCredentials.dev,
   });

@@ -2,6 +2,7 @@
 class Assets {
   Assets._();
 
+  static const String assetsImagesLogo = 'assets/images/logo.svg';
   static const String fontsMontserratAlternatesBlack = 'assets/fonts/MontserratAlternates_Black.otf';
   static const String fontsMontserratAlternatesBlackItalic = 'assets/fonts/MontserratAlternates_BlackItalic.otf';
   static const String fontsMontserratAlternatesBold = 'assets/fonts/MontserratAlternates_Bold.otf';
@@ -78,7 +79,7 @@ class Assets {
   static const String imagesIconSettings = 'assets/images/icon_settings.svg';
   static const String imagesIconUser = 'assets/images/icon_user.svg';
   static const String imagesLiconDefaultPin = 'assets/images/licon_default_pin.svg';
-  static const String imagesLogo = 'assets/images/logo.svg';
+  static const String imagesLogo = 'assets/images/logo.png';
   static const String imagesLottieChurch = 'assets/images/lottie_church.json';
   static const String imagesLottieEmptySearch = 'assets/images/lottie_empty_search.json';
   static const String imagesLottieSuccess = 'assets/images/lottie-success.zip';

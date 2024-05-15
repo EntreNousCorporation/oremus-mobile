@@ -57,6 +57,8 @@ dependencies:
   flutter_html_v3: ^3.0.6
   #platform_device_id_v3: ^1.0.0
   super_banners: ^0.0.1
+  share_plus: ^7.0.2
+  path_provider: ^2.0.13
   platform_device_id:
     path: /Users/kog/Projets/Flutter/platform_device_id
 

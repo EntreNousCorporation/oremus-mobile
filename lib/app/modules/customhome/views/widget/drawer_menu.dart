@@ -79,8 +79,7 @@ class _MenuState extends State<DrawerMenu> with TickerProviderStateMixin {
                           itemCount: logic.menus.length,
                           itemBuilder: (context, index) {
                             var menu = logic.menus[index];
-                            menu.isSelected =
-                                (index == logic.selectedIndex.value);
+                            menu.isSelected = (index == logic.selectedIndex.value);
                             return DrawerMenuItem(
                               menu: menu,
                               index: index,

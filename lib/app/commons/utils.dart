@@ -1,9 +1,13 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 extension StringExtension on String {
   String toCapitalize() {
@@ -89,4 +93,28 @@ hideKeyboard() {
 
 double applyElevation() {
   return GetPlatform.isAndroid ? 10 : 0;
+}
+
+shareApp(String message, {bool? includeFile = true, String filePath = ''}) async {
+  final box = Get.context?.findRenderObject() as RenderBox?;
+
+  ByteData imagebyte = await rootBundle.load(filePath);
+  final temp = await getTemporaryDirectory();
+  final path = '${temp.path}/logo.png';
+  File(path).writeAsBytesSync(imagebyte.buffer.asUint8List());
+
+  if (includeFile == true) {
+    await Share.shareXFiles(
+      [XFile(path)],
+      text: message,
+      subject: '',
+      sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+    );
+  } else {
+    await Share.share(
+      message,
+      subject: '',
+      sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+    );
+  }
 }

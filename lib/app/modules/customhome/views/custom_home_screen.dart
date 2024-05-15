@@ -3,6 +3,7 @@ import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
 import 'package:hidden_drawer_menu/hidden_drawer_menu.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
+import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
@@ -46,13 +47,12 @@ class CustomHomeScreen extends StatelessWidget {
               break;
             case AppConstants.PRAY:
               logic.title.value = logic.menus[position].libelle ?? 'Mini Missel';
-              //screenCurrent = const ShareScreen();
               screenCurrent = const PrayScreen();
               break;
-            case AppConstants.SHARE_APP:
+            /*case AppConstants.SHARE_APP:
               logic.title.value = logic.menus[position].libelle ?? 'Partager l\'application';
               screenCurrent = const ShareScreen();
-              break;
+              break;*/
             case AppConstants.PROMO:
               logic.title.value = logic.menus[position].libelle ?? 'Codes promo';
               screenCurrent = const PromoScreen();

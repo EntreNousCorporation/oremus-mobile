@@ -43,19 +43,11 @@ abstract class AppConstants {
   static const SIGNIN = 8;
 
   //LITURGICAL CELEBRATION
-  static const EASTER_MASS = 'EASTER_MASS'; //Messe de Pâques
-  static const EASTER_VIGIL = 'EASTER_VIGIL'; //Veillée Pascale
+  static const SPECIAL_MASS = 'SPECIAL_MASS';
   static const MASS = 'MASS'; //Messe
-  static const HOLY_THURSDAY = 'HOLY_THURSDAY'; //Jeudi Saint
-  static const SACRAMENT = 'SACRAMENT'; //Sacrement
   static const CONFESSION = 'CONFESSION'; //Confession
-
+  static const SPECIAL_CONFESSION = 'SPECIAL_CONFESSION'; //Veillée Pascale
   static const DEMANDE_MESSE = 'demande_de_messe'; //DEMANDE_MESSE
 
-  static const SPECIALS_MASSES = [
-    EASTER_MASS,
-    EASTER_VIGIL,
-    HOLY_THURSDAY,
-    SACRAMENT,
-  ];
+  static const APP_SHARE_MSG = "Télécharge gratuitement l'appli #Oremus et accède à tes paroisses du bout du doigt! Lien de téléchargement📲: {link}"; //DEMANDE_MESSE
 }
