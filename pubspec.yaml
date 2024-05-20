@@ -56,7 +56,7 @@ dependencies:
   flutter_animator: ^3.2.1
   flutter_html_v3: ^3.0.6
   #platform_device_id_v3: ^1.0.0
-  super_banners: ^0.0.1
+  #super_banners: ^0.0.1
   share_plus: ^7.0.2
   path_provider: ^2.0.13
   #flutter_intro: ^3.2.3
@@ -71,6 +71,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^1.0.0
   flutter_native_splash: ^2.3.0
+  firebase_core_platform_interface: 4.5.1
 
 flutter_native_splash:
   #Avant de générer le splash il faut faire un 'flutter pub get'

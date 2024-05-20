@@ -218,13 +218,13 @@ packages:
     source: hosted
     version: "1.24.0"
   firebase_core_platform_interface:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: firebase_core_platform_interface
-      sha256: b63e3be6c96ef5c33bdec1aab23c91eb00696f6452f0519401d640938c94cba2
+      sha256: b51257a8b4388565cd66062d727d3e60067b5f5cc3390eb0ecd20b8f97741bdb
       url: "https://pub.dev"
     source: hosted
-    version: "4.8.0"
+    version: "4.5.1"
   firebase_core_web:
     dependency: transitive
     description:
@@ -937,14 +937,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
-  super_banners:
-    dependency: "direct main"
-    description:
-      name: super_banners
-      sha256: fa62db0b34d87ad3f92257c94ee22c2a4a20b56fc246bce4c1c249682e15bb90
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.1"
   synchronized:
     dependency: transitive
     description:

@@ -155,6 +155,10 @@ class ParoisseConfessionController extends GetxController {
           .where((element) => (element.type?.code == AppConstants.SPECIAL_CONFESSION))
           .toList();
       specialConfessions.sort((a, b) => Jiffy.parse(b.startDate ?? '').dateTime.compareTo(Jiffy.parse(a.startDate ?? '').dateTime));
+      for (var element in specialConfessions) {
+        var date = element.startDate?.split('T').first;
+        element.slots?.sort((a, b) => Jiffy.parse("${date}T${a.startTime ?? ''}").dateTime.compareTo(Jiffy.parse("${date}T${b.startTime ?? ''}").dateTime));
+      }
       if (specialConfessions.isNotEmpty == true) {
         hasSpecialConfessionData(true);
       } else {
@@ -189,6 +193,10 @@ class ParoisseConfessionController extends GetxController {
             .where((element) => (element.type?.code == AppConstants.SPECIAL_CONFESSION))
             .toList();
         specialConfessions.sort((a, b) => Jiffy.parse(b.startDate ?? '').dateTime.compareTo(Jiffy.parse(a.startDate ?? '').dateTime));
+        for (var element in specialConfessions) {
+          var date = element.startDate?.split('T').first;
+          element.slots?.sort((a, b) => Jiffy.parse("${date}T${a.startTime ?? ''}").dateTime.compareTo(Jiffy.parse("${date}T${b.startTime ?? ''}").dateTime));
+        }
       }
     }, onError: (error) {
       refreshNotRecurrentController.refreshCompleted();

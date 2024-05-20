@@ -70,8 +70,7 @@ class SpecialConfessionScreen extends StatelessWidget {
                               CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  Jiffy.parse(value.startDate ?? '-')
-                                      .format(pattern: 'dd-MM-yyyy'),
+                                  Jiffy.parse(value.startDate ?? '-').format(pattern: 'dd-MM-yyyy'),
                                   textAlign: TextAlign.start,
                                   style: TextStyles.montserratSemiBold(
                                     textSize: TextSizes.sixteen,

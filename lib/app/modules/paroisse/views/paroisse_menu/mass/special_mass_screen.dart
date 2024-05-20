@@ -79,8 +79,7 @@ class SpecialMassScreen extends StatelessWidget {
                                 Wrap(
                                   spacing: 8,
                                   runSpacing: 8,
-                                  children: value.slots?.isNotEmpty ==
-                                      true
+                                  children: value.slots?.isNotEmpty == true
                                       ? value.slots?.map((timeSlot) {
                                     return Padding(
                                       padding:

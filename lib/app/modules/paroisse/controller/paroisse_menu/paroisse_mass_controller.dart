@@ -169,6 +169,10 @@ class ParoisseMassController extends GetxController {
         return false;
       }).toList();
       specialMasses.sort((a, b) => Jiffy.parse(b.startDate ?? '').dateTime.compareTo(Jiffy.parse(a.startDate ?? '').dateTime));
+      for (var element in specialMasses) {
+        var date = element.startDate?.split('T').first;
+        element.slots?.sort((a, b) => Jiffy.parse("${date}T${a.startTime ?? ''}").dateTime.compareTo(Jiffy.parse("${date}T${b.startTime ?? ''}").dateTime));
+      }
       log('specialMasses => ${specialMasses.length}');
       if (specialMasses.isNotEmpty == true) {
         hasSpecialMassData(true);
@@ -208,6 +212,10 @@ class ParoisseMassController extends GetxController {
           return false;
         }).toList();
         specialMasses.sort((a, b) => Jiffy.parse(b.startDate ?? '').dateTime.compareTo(Jiffy.parse(a.startDate ?? '').dateTime));
+        for (var element in specialMasses) {
+          var date = element.startDate?.split('T').first;
+          element.slots?.sort((a, b) => Jiffy.parse("${date}T${a.startTime ?? ''}").dateTime.compareTo(Jiffy.parse("${date}T${b.startTime ?? ''}").dateTime));
+        }
         log('specialMasses => ${specialMasses.length}');
       }
     }, onError: (error) {

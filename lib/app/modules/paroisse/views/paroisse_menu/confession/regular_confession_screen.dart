@@ -37,6 +37,7 @@ class RegularConfessionScreen extends StatelessWidget {
               child: Accordion(
                 disableScrolling: true,
                 maxOpenSections: 1,
+                scaleWhenAnimating: false,
                 leftIcon: SvgPicture.asset(
                   'assets/images/confession_icon.svg',
                   height: 25,

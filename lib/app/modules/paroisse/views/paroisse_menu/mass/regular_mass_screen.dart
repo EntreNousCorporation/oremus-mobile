@@ -37,6 +37,7 @@ class RegularMassScreen extends StatelessWidget {
               child: Accordion(
                 disableScrolling: true,
                 maxOpenSections: 1,
+                scaleWhenAnimating: false,
                 leftIcon: SvgPicture.asset(
                   'assets/images/messe.svg',
                   height: 25,
