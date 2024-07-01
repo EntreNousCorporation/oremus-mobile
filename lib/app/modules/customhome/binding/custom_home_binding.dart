@@ -14,6 +14,7 @@ class CustomHomeBinding implements Bindings {
           paroisseRepository: ParoisseRepository(ApiClientImpl()),
         );
       },
+      fenix: true,
     );
   }
 }

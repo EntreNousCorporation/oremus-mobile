@@ -34,6 +34,7 @@ class CustomHomeController extends GetxController {
   @override
   void onInit() {
     initMenus();
+    update();
     super.onInit();
   }
 

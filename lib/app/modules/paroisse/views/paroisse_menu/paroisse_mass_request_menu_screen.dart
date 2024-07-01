@@ -12,6 +12,7 @@ import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_mass_request_menu_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_menu_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/menu_grid_item.dart';
+import 'package:oremusapp/generated/assets.dart';
 
 class ParoisseMassRequestMenuScreen extends StatelessWidget {
   const ParoisseMassRequestMenuScreen({Key? key}) : super(key: key);
@@ -21,7 +22,6 @@ class ParoisseMassRequestMenuScreen extends StatelessWidget {
     return Container(
       color: colorWhite,
       child: GetX<ParoisseMassRequestMenuController>(
-          initState: (state) {},
           builder: (_) {
             return KeyboardDismisser(
               child: Scaffold(
@@ -141,7 +141,7 @@ class ParoisseMassRequestMenuScreen extends StatelessWidget {
                                       Hero(
                                         tag: 'tag${_.indexSelected.value}',
                                         child: Image.asset(
-                                          'assets/images/bg_login.jpg',
+                                          Assets.imagesBgLogin,
                                           width: Get.width,
                                           height: Get.width,
                                           fit: BoxFit.cover,

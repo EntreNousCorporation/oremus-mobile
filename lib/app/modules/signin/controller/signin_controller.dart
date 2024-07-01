@@ -11,8 +11,11 @@ import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/email_validator.dart';
 import 'package:oremusapp/app/commons/utils.dart';
+import 'package:oremusapp/app/modules/customhome/controller/custom_home_controller.dart';
+import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
+import 'package:oremusapp/app/remote/api_client.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
@@ -51,8 +54,8 @@ class SigninController extends GetxController {
     passwordController = TextEditingController(text: '');
 
     if (flavor == AppConstants.ENV_DEV) {
-      //emailController = TextEditingController(text: 'amourssou11@gmail.com');
-      //passwordController = TextEditingController(text: 'test');
+      emailController = TextEditingController(text: 'amourssou11@gmail.com');
+      passwordController = TextEditingController(text: 'test');
       //checkForm();
     } else {}
   }
@@ -99,6 +102,8 @@ class SigninController extends GetxController {
       isUserConnected.value = true;
       DB.saveUserSigninInfo(userConnection);
       if (tempLogin.value == true) {
+        Get.find<CustomHomeController>().onInit();
+        //goToHome();
         Get.back(result: true);
         return;
       }

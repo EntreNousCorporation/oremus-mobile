@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
@@ -21,6 +22,7 @@ class ParoisseMenuController extends GetxController {
   var indexSelected = 0.obs;
 
   RxList<TypeMenu> menus = RxList<TypeMenu>([]);
+  var kExpandedHeight = Get.width / 1.7;
 
   @override
   void onInit() {

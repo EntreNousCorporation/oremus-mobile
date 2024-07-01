@@ -11,6 +11,7 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_menu_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/menu_grid_item.dart';
+import 'package:oremusapp/generated/assets.dart';
 
 class ParoisseMenuScreen extends StatelessWidget {
   const ParoisseMenuScreen({Key? key}) : super(key: key);
@@ -20,7 +21,6 @@ class ParoisseMenuScreen extends StatelessWidget {
     return Container(
       color: colorWhite,
       child: GetX<ParoisseMenuController>(
-          initState: (state) {},
           builder: (_) {
             return KeyboardDismisser(
               child: Scaffold(
@@ -34,8 +34,9 @@ class ParoisseMenuScreen extends StatelessWidget {
                     physics: const BouncingScrollPhysics(),
                     slivers: [
                       SliverAppBar(
-                        expandedHeight: Get.width / 1.7,
-                        floating: false,
+                        expandedHeight: _.kExpandedHeight,
+                        floating: true,
+                        snap: true,
                         pinned: true,
                         backgroundColor: colorGreen,
                         elevation: 10,
@@ -137,7 +138,7 @@ class ParoisseMenuScreen extends StatelessWidget {
                                       Hero(
                                         tag: 'tag${_.indexSelected.value}',
                                         child: Image.asset(
-                                          'assets/images/bg_login.jpg',
+                                          Assets.imagesBgLogin,
                                           width: Get.width,
                                           height: Get.width,
                                           fit: BoxFit.cover,

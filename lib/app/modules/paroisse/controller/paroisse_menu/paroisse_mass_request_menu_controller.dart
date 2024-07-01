@@ -164,11 +164,14 @@ class ParoisseMassRequestMenuController extends GetxController {
                 children: [
                   Expanded(
                     child: TextButton(
-                      child: Text(
-                        "Annuler",
-                        style: TextStyles.montserratMedium(
-                          textSize: TextSizes.fourteen,
-                          textColor: colorBlack,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Annuler",
+                          style: TextStyles.montserratMedium(
+                            textSize: TextSizes.fourteen,
+                            textColor: colorBlack,
+                          ),
                         ),
                       ),
                       style: TextButton.styleFrom(
@@ -183,11 +186,14 @@ class ParoisseMassRequestMenuController extends GetxController {
                   Separators.normalHorizontal(),
                   Expanded(
                     child: TextButton(
-                      child: Text(
-                        "Se connecter",
-                        style: TextStyles.montserratBold(
-                          textSize: TextSizes.fourteen,
-                          textColor: colorWhite,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Se connecter",
+                          style: TextStyles.montserratBold(
+                            textSize: TextSizes.fourteen,
+                            textColor: colorWhite,
+                          ),
                         ),
                       ),
                       style: TextButton.styleFrom(
