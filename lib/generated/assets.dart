@@ -44,10 +44,12 @@ class Assets {
   static const String imagesBgLogin = 'assets/images/bg_login.jpg';
   static const String imagesCalendar = 'assets/images/calendar.svg';
   static const String imagesCheck = 'assets/images/check.svg';
+  static const String imagesChecklist = 'assets/images/checklist.svg';
   static const String imagesConfessionIcon = 'assets/images/confession_icon.svg';
   static const String imagesContacts = 'assets/images/contacts.svg';
   static const String imagesDeleteFriend = 'assets/images/delete-friend.png';
   static const String imagesDowntime = 'assets/images/downtime.svg';
+  static const String imagesEvent = 'assets/images/event.svg';
   static const String imagesFacebookLogo = 'assets/images/facebook_logo.svg';
   static const String imagesFaqIcon = 'assets/images/faq_icon.svg';
   static const String imagesGoogleLogo = 'assets/images/google_logo.svg';
@@ -88,6 +90,7 @@ class Assets {
   static const String imagesMovement = 'assets/images/movement.svg';
   static const String imagesPriestIcon = 'assets/images/priest_icon.svg';
   static const String imagesShareIcon = 'assets/images/share_icon.svg';
+  static const String imagesTime = 'assets/images/time.svg';
   static const String imagesUserLogin = 'assets/images/user_login.svg';
 
 }

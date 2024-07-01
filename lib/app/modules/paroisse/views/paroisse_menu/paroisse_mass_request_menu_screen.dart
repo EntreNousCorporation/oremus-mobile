@@ -1,31 +1,26 @@
-
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:like_button/like_button.dart';
-import 'package:oremusapp/app/commons/components/custom_header.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
-import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_contact_controller.dart';
-import 'package:oremusapp/app/modules/paroisse/views/widget/contact_item.dart';
-import 'package:oremusapp/generated/assets.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_mass_request_menu_controller.dart';
+import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_menu_controller.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/menu_grid_item.dart';
 
-class ParoisseContactScreen extends StatelessWidget {
-  const ParoisseContactScreen({Key? key}) : super(key: key);
+class ParoisseMassRequestMenuScreen extends StatelessWidget {
+  const ParoisseMassRequestMenuScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: colorGreen,
-      child: GetX<ParoisseContactController>(
+      color: colorWhite,
+      child: GetX<ParoisseMassRequestMenuController>(
           initState: (state) {},
           builder: (_) {
             return KeyboardDismisser(
@@ -37,7 +32,7 @@ class ParoisseContactScreen extends StatelessWidget {
                     return false;
                   },
                   child: CustomScrollView(
-                    physics: const NeverScrollableScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     slivers: [
                       SliverAppBar(
                         expandedHeight: Get.width / 1.7,
@@ -59,9 +54,11 @@ class ParoisseContactScreen extends StatelessWidget {
                               log('isLiked => $isLiked');
                               _.paroisseSelected.value.isFavorite = !isLiked;
                               if (isLiked) {
-                                _.removeFavorite(_.paroisseSelected.value, isLiked);
+                                _.removeFavorite(
+                                    _.paroisseSelected.value, isLiked);
                               } else {
-                                _.saveFavorite(_.paroisseSelected.value, isLiked);
+                                _.saveFavorite(
+                                    _.paroisseSelected.value, isLiked);
                               }
                               return !isLiked;
                             },
@@ -97,7 +94,7 @@ class ParoisseContactScreen extends StatelessWidget {
                             centerTitle: true,
                             title: Padding(
                               padding:
-                              const EdgeInsets.symmetric(horizontal: 8.0),
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Text(
                                 '${_.paroisseSelected.value.name}',
                                 maxLines: 2,
@@ -108,59 +105,68 @@ class ParoisseContactScreen extends StatelessWidget {
                                     textColor: colorWhite),
                               ),
                             ),
-                            background: (_.paroisseSelected.value.coverImage?.link
-                                ?.isNotEmpty ==
-                                true)
+                            background: (_.paroisseSelected.value.coverImage
+                                        ?.link?.isNotEmpty ==
+                                    true)
                                 ? Stack(
-                              children: [
-                                CachedNetworkImage(
-                                  width: Get.width,
-                                  height: Get.width,
-                                  imageUrl: _.paroisseSelected.value
-                                      .coverImage?.link ??
-                                      '',
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) =>
-                                      LottieLoadingView(
-                                          size: Get.width / 6),
-                                  errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                                ),
-                                Container(
-                                  height: Get.width,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black54.withOpacity(0.3),
-                                  ),
-                                ),
-                              ],
-                            )
+                                    children: [
+                                      Hero(
+                                        tag: 'tag${_.indexSelected.value}',
+                                        child: CachedNetworkImage(
+                                          width: Get.width,
+                                          height: Get.width,
+                                          imageUrl: _.paroisseSelected.value
+                                                  .coverImage?.link ??
+                                              '',
+                                          fit: BoxFit.cover,
+                                          placeholder: (context, url) =>
+                                              LottieLoadingView(
+                                                  size: Get.width / 6),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
+                                        ),
+                                      ),
+                                      Container(
+                                        height: Get.width,
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                          color:
+                                              Colors.black54.withOpacity(0.3),
+                                        ),
+                                      ),
+                                    ],
+                                  )
                                 : Stack(
-                              children: [
-                                Image.asset(
-                                  Assets.imagesBgLogin,
-                                  width: Get.width,
-                                  height: Get.width,
-                                  fit: BoxFit.cover,
-                                ),
-                                Container(
-                                  height: Get.width,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black54.withOpacity(0.3),
-                                  ),
-                                ),
-                              ],
-                            )),
+                                    children: [
+                                      Hero(
+                                        tag: 'tag${_.indexSelected.value}',
+                                        child: Image.asset(
+                                          'assets/images/bg_login.jpg',
+                                          width: Get.width,
+                                          height: Get.width,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Container(
+                                        height: Get.width,
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                          color:
+                                              Colors.black54.withOpacity(0.3),
+                                        ),
+                                      ),
+                                    ],
+                                  )),
                       ),
-                      const SliverPadding(padding: EdgeInsets.symmetric(vertical: 8)),
+                      const SliverPadding(
+                          padding: EdgeInsets.symmetric(vertical: 8)),
                       SliverFillRemaining(
                         child: Column(
                           children: [
                             Hero(
-                              tag: _.code.value,
+                              tag: 'DM',
                               child: Text(
-                                _.getTypeTitle(_.code.value),
+                                'Demande de messe',
                                 textAlign: TextAlign.center,
                                 style: TextStyles.montserratBold(
                                   textSize: TextSizes.eighteen,
@@ -169,31 +175,26 @@ class ParoisseContactScreen extends StatelessWidget {
                               ),
                             ),
                             Separators.normalVertical(),
-                            _.isDataProcessing.isTrue ? Expanded(
-                              child: Center(
-                                child: LottieLoadingView(
-                                  size: Get.width / 4,
+                            Expanded(
+                              child: GridView.builder(
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  childAspectRatio: 3 / 2,
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 0.0,
+                                  mainAxisSpacing: 0.0,
                                 ),
+                                padding: EdgeInsets.zero,
+                                itemCount: _.menus.length,
+                                itemBuilder: (context, index) {
+                                  var menu = _.menus[index];
+                                  return MenuGridItem(item: menu);
+                                },
                               ),
-                            ) : _.hasData.isTrue ? Expanded(
-                              child: FadeIn(
-                                duration: const Duration(milliseconds: 500),
-                                child: SmartRefresher(
-                                  controller: _.refreshController,
-                                  onRefresh: _.onRefresh,
-                                  header: const CustomClassicHeader(),
-                                  child: ListView.builder(
-                                      itemCount: _.contacts.length,
-                                      itemBuilder: (context, index) {
-                                        var user = _.contacts[index];
-                                        return ContactItem(contact: user);
-                                      }),
-                                ),
-                              ),
-                            ) : Expanded(child: NotFoundScreen(message: _.getTypeMessage(_.code.value))),
+                            ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),

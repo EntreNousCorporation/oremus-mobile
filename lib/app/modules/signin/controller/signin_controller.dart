@@ -41,9 +41,12 @@ class SigninController extends GetxController {
   FocusNode emailFocusNode = FocusNode();
   FocusNode passwordFocusNode = FocusNode();
 
+  var tempLogin = false.obs;
+
   @override
   void onInit() {
     super.onInit();
+    getArgument();
     emailController = TextEditingController(text: '');
     passwordController = TextEditingController(text: '');
 
@@ -52,6 +55,13 @@ class SigninController extends GetxController {
       //passwordController = TextEditingController(text: 'test');
       //checkForm();
     } else {}
+  }
+
+  getArgument() {
+    if (Get.arguments != null) {
+      tempLogin.value = Get.arguments;
+    }
+    update();
   }
 
   connectUser() {
@@ -88,6 +98,10 @@ class SigninController extends GetxController {
       );
       isUserConnected.value = true;
       DB.saveUserSigninInfo(userConnection);
+      if (tempLogin.value == true) {
+        Get.back(result: true);
+        return;
+      }
       goToHome();
     }, onError: (error) {
       EasyLoading.dismiss(animation: true).then((v) {

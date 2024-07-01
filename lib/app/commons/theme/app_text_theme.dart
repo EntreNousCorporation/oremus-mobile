@@ -93,6 +93,12 @@ class Separators {
     );
   }
 
+  static Widget normal1Vertical() {
+    return const SizedBox(
+      height: 24,
+    );
+  }
+
   static Widget normalHorizontal() {
     return const SizedBox(
       width: 20,
@@ -102,6 +108,12 @@ class Separators {
   static Widget maximumVertical() {
     return const SizedBox(
       height: 30,
+    );
+  }
+
+  static Widget maximum1Vertical() {
+    return const SizedBox(
+      height: 40,
     );
   }
 

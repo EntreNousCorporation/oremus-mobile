@@ -32,8 +32,7 @@ class ParoisseMenuController extends GetxController {
   getArguments() {
     if (Get.arguments != null) {
       indexSelected.value = Get.arguments[0];
-      paroisseSelected.value = ContentPlace.fromJson(jsonDecode(Get.arguments[1]));
-      log('paroisseSelected ==> ${jsonEncode(paroisseSelected.toJson())}');
+      paroisseSelected.value = ContentPlace.fromJson(Get.arguments[1]);
     }
   }
 
@@ -195,13 +194,9 @@ class ParoisseMenuController extends GetxController {
         activeTint: colorBlack,
         goToPage: () async {
           await Get.toNamed(
-            Routes.PAROISSE_CONTACT,
-            arguments: [
-              'DM',
-              jsonEncode(paroisseSelected.value.toJson()),
-            ],
+            Routes.PAROISSE_MASS_REQUEST_MENU,
+            arguments: paroisseSelected.toJson(),
           );
-          log("retour");
           //on met à jour la liste au cas où favoris mis à jour
           paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
           paroisseSelected.refresh();

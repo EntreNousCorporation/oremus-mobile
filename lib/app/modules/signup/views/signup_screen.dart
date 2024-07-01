@@ -14,6 +14,7 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/signup/controller/signup_controller.dart';
+import 'package:oremusapp/generated/assets.dart';
 
 class SignupScreen extends StatelessWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -23,7 +24,7 @@ class SignupScreen extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(
-        image: AssetImage('assets/images/bg_login.jpg'),
+        image: AssetImage(Assets.imagesBgLogin),
         fit: BoxFit.cover,
       )),
       child: BackdropFilter(

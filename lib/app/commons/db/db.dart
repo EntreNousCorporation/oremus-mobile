@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class DB {
   static var encryptedBox;
   static initDatabase() async {
-    Hive.initFlutter().then((value) => log('==== HIVE INIT SUCCESS===='));
+    Hive.initFlutter();
 
     final sharePrefs = await SharedPreferences.getInstance();
     var containsEncryption = sharePrefs.getString(AppConstants.STORAGE_KEY);

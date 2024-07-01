@@ -15,6 +15,7 @@ import 'package:oremusapp/app/modules/paroisse/binding/paroisse_confession_bindi
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_contact_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_map_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_mass_binding.dart';
+import 'package:oremusapp/app/modules/paroisse/binding/paroisse_mass_request_menu_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_menu_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_office_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_presby_team_binding.dart';
@@ -24,6 +25,7 @@ import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/activity_move
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/confession/paroisse_type_confession_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/mass/paroisse_type_masse_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_contact_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_mass_request_menu_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_menu_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_office_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_presby_team_screen.dart';
@@ -125,6 +127,13 @@ class AppPages {
       name: Routes.PAROISSE_MESSE,
       page: () => const ParoisseTypeMasseScreen(),
       binding: ParoisseMasseBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.PAROISSE_MASS_REQUEST_MENU,
+      page: () => const ParoisseMassRequestMenuScreen(),
+      binding: ParoisseMassRequestMenuBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

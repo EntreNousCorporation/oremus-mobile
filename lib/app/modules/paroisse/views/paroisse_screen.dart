@@ -179,7 +179,8 @@ class ParoisseScreen extends StatelessWidget {
                                                               BoxDecoration(
                                                             borderRadius:
                                                                 BorderRadius
-                                                                    .circular(10),
+                                                                    .circular(
+                                                                        10),
                                                             gradient:
                                                                 const LinearGradient(
                                                               begin: Alignment
@@ -216,20 +217,26 @@ class ParoisseScreen extends StatelessWidget {
                                               );
                                             },
                                           ),
-                                          physics: const BouncingScrollPhysics(),
                                           controller: _.refreshController,
-                                          child: ListView.builder(
-                                              physics: const NeverScrollableScrollPhysics(),
-                                              shrinkWrap: false,
-                                              itemCount: _.paroisses.length,
-                                              itemBuilder: (builder, index) {
-                                                var paroisse = _.paroisses[index];
-                                                return ParoisseItem(
-                                                  paroisse: paroisse,
-                                                  index: index,
-                                                  key: ValueKey(paroisse.identifier),
-                                                );
-                                              }),
+                                          physics: const BouncingScrollPhysics(),
+                                          child: ListView.separated(
+                                            physics: const NeverScrollableScrollPhysics(),
+                                            padding: const EdgeInsets.only(top: 16),
+                                            shrinkWrap: false,
+                                            itemCount: _.paroisses.length,
+                                            itemBuilder: (builder, index) {
+                                              var paroisse = _.paroisses[index];
+                                              return ParoisseItem(
+                                                paroisse: paroisse,
+                                                index: index,
+                                                key: ValueKey(
+                                                    paroisse.identifier),
+                                              );
+                                            },
+                                            separatorBuilder: (builder, index) {
+                                              return Separators.maximum1Vertical();
+                                            },
+                                          ),
                                         ),
                                       ),
                                     ),

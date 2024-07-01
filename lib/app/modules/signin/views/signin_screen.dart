@@ -11,6 +11,7 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/signin/controller/signin_controller.dart';
+import 'package:oremusapp/generated/assets.dart';
 
 class SigninScreen extends StatelessWidget {
   const SigninScreen({Key? key}) : super(key: key);
@@ -22,7 +23,7 @@ class SigninScreen extends StatelessWidget {
       child: Container(
         decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/images/bg_login.jpg'),
+              image: AssetImage(Assets.imagesBgLogin),
               fit: BoxFit.cover,
             )),
         child: BackdropFilter(
@@ -42,19 +43,16 @@ class SigninScreen extends StatelessWidget {
                             child: GetX<SigninController>(
                               builder: (_) {
                                 return WillPopScope(
-                                  onWillPop: () async =>
-                                  _.unlockBackButton.value,
+                                  onWillPop: () async => _.unlockBackButton.value,
                                   child: AbsorbPointer(
                                     absorbing: _.lockScreen.value,
                                     child: Container(
                                       padding: const EdgeInsets.only(
-                                          bottom: 20, left: 32, right: 32),
+                                          bottom: 20, left: 32, right: 32,),
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment
                                             .start,
-                                        //mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          //Separators.maximumVertical(),
                                           Text(
                                             "S'identifier",
                                             style: TextStyles.montserratBold(
@@ -274,26 +272,58 @@ class SigninScreen extends StatelessWidget {
               Positioned(
                 top: Get.height * 0.06,
                 child: GetBuilder<SigninController>(builder: (logic) {
-                  return Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          logic.goToHome();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          margin: const EdgeInsets.only(left: 24),
-                          decoration: BoxDecoration(
-                            color: colorWhite,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                                color: Colors.grey.withOpacity(0)),
+                  return Visibility(
+                    visible: logic.tempLogin.value == false,
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            logic.goToHome();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            margin: const EdgeInsets.only(left: 24),
+                            decoration: BoxDecoration(
+                              color: colorWhite,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                  color: Colors.grey.withOpacity(0)),
+                            ),
+                            child: const Icon(
+                                Icons.home_filled, color: colorGreen),
                           ),
-                          child: const Icon(
-                              Icons.home_filled, color: colorGreen),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                  );
+                }),
+              ),
+              Positioned(
+                top: Get.height * 0.06,
+                child: GetBuilder<SigninController>(builder: (logic) {
+                  return Visibility(
+                    visible: logic.tempLogin.value == true,
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            margin: const EdgeInsets.only(left: 24),
+                            decoration: BoxDecoration(
+                              color: colorWhite,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                  color: Colors.grey.withOpacity(0)),
+                            ),
+                            child: const Icon(
+                                Icons.arrow_back_rounded, color: colorGreen),
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 }),
               ),

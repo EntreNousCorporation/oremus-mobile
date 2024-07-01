@@ -30,12 +30,11 @@ class ParoisseItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ParoisseController>(
-      initState: (_) {},
       builder: (logic) {
         return Padding(
           padding: const EdgeInsets.only(
-            top: 16.0,
-            bottom: 24.0,
+            top: .0,
+            bottom: .0,
           ),
           child: Material(
             borderRadius: BorderRadius.circular(10.0),
@@ -140,13 +139,7 @@ class ParoisseItem extends StatelessWidget {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              Get.toNamed(
-                                Routes.PAROISSE_MENU,
-                                arguments: [
-                                  index,
-                                  jsonEncode(paroisse.toJson())
-                                ],
-                              );
+                              logic.goToParoisseDetail(paroisse, index);
                             },
                             child: Container(
                               padding: const EdgeInsets.all(3.0),
@@ -155,7 +148,7 @@ class ParoisseItem extends StatelessWidget {
                                 color: colorGreenSemiLight,
                               ),
                               child: Text(
-                                '${paroisse.address?.municipality}',
+                                paroisse.address?.municipality ?? 'N/A',
                                 style: TextStyles.montserratBold(
                                     textSize: TextSizes.eleven,
                                     textColor: colorWhite),

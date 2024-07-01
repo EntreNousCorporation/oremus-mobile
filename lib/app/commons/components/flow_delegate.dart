@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -41,9 +40,7 @@ class ParallaxFlowDelegate extends FlowDelegate {
 
     // Convert the background alignment into a pixel offset for
     // painting purposes.
-    final backgroundSize =
-        (backgroundImageKey.currentContext!.findRenderObject() as RenderBox)
-            .size;
+    final backgroundSize = (backgroundImageKey.currentContext!.findRenderObject() as RenderBox).size;
     final listItemSize = context.size;
     final childRect =
     verticalAlignment.inscribe(backgroundSize, Offset.zero & listItemSize);

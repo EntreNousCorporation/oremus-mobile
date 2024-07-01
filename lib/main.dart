@@ -48,16 +48,11 @@ void main() async {
       configOrientation();
       configLoading();
 
-      //runApp(const MyApp());
-      runZonedGuarded<Future<void>>(() async {
-        await Firebase.initializeApp();
-        FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-        FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+      await Firebase.initializeApp();
+      FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
-        runApp(const MyApp());
-      },
-          (error, stack) =>
-              FirebaseCrashlytics.instance.recordError(error, stack));
+      runApp(const MyApp());
     },
   );
 }

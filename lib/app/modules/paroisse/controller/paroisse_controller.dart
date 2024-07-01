@@ -226,21 +226,18 @@ class ParoisseController extends GetxController {
         trailing: Padding(
           padding: const EdgeInsets.all(5.0),
           child: ClipRRect(
-            borderRadius:
-            const BorderRadius.all(Radius.circular(5.0)),
+            borderRadius: const BorderRadius.all(Radius.circular(5.0)),
             child: (paroisse.coverImage?.link?.isNotEmpty == true)
                 ? CachedNetworkImage(
-                  imageUrl: paroisse.coverImage?.link ?? '',
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) =>
-                      SizedBox(
-                          width: Get.width / 4,
-                          height: Get.width / 4,
-                          child: LottieLoadingView(
-                              size: Get.width / 6)),
-                  errorWidget: (context, url, error) =>
-                  const Icon(Icons.error),
-                )
+                    imageUrl: paroisse.coverImage?.link ?? '',
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => SizedBox(
+                        width: Get.width / 4,
+                        height: Get.width / 4,
+                        child: LottieLoadingView(size: Get.width / 6)),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                  )
                 : null,
           ),
         ),
@@ -252,21 +249,18 @@ class ParoisseController extends GetxController {
         trailing: Padding(
           padding: const EdgeInsets.all(5.0),
           child: ClipRRect(
-            borderRadius:
-            const BorderRadius.all(Radius.circular(5.0)),
+            borderRadius: const BorderRadius.all(Radius.circular(5.0)),
             child: (paroisse.coverImage?.link?.isNotEmpty == true)
                 ? CachedNetworkImage(
-              imageUrl: paroisse.coverImage?.link ?? '',
-              fit: BoxFit.cover,
-              placeholder: (context, url) =>
-                  SizedBox(
-                      width: Get.width / 4,
-                      height: Get.width / 4,
-                      child: LottieLoadingView(
-                          size: Get.width / 6)),
-              errorWidget: (context, url, error) =>
-              const Icon(Icons.error),
-            )
+                    imageUrl: paroisse.coverImage?.link ?? '',
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => SizedBox(
+                        width: Get.width / 4,
+                        height: Get.width / 4,
+                        child: LottieLoadingView(size: Get.width / 6)),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                  )
                 : null,
           ),
         ),
@@ -284,7 +278,10 @@ class ParoisseController extends GetxController {
   goToParoisseDetail(ContentPlace paroisse, int index) async {
     await Get.toNamed(
       Routes.PAROISSE_MENU,
-      arguments: [index, jsonEncode(paroisse.toJson())],
+      arguments: [
+        index,
+        paroisse.toJson(),
+      ],
     );
     //on met à jour la liste au cas où favoris mis à jour
     paroisses[index].isFavorite = isWorshipPlaceFavorite(paroisse);

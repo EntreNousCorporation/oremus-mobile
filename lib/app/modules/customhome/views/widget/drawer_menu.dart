@@ -7,6 +7,7 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/customhome/controller/custom_home_controller.dart';
 import 'package:oremusapp/app/modules/customhome/views/widget/drawer_menu_item.dart';
+import 'package:oremusapp/generated/assets.dart';
 import 'package:oremusapp/main.dart';
 
 class DrawerMenu extends StatefulWidget {
@@ -102,7 +103,7 @@ class _MenuState extends State<DrawerMenu> with TickerProviderStateMixin {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SvgPicture.asset(
-                            'assets/images/icon_settings.svg',
+                            Assets.imagesIconSettings,
                             height: 20,
                           ),
                           Separators.normalHorizontal(),
