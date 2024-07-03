@@ -34,7 +34,7 @@ class TextStyles {
   );
 
   static TextStyle montserratSemiBold(
-          {double textSize = TextSizes.twelve, Color textColor = colorBlack}) =>
+          {double textSize = TextSizes.sixteen, Color textColor = colorBlack}) =>
       const TextStyle().copyWith(
           fontFamily: "montserrat_semi_bold",
           fontSize: textSize,
@@ -120,6 +120,12 @@ class Separators {
   static Widget customSizeVertical(double size) {
     return SizedBox(
       height: size,
+    );
+  }
+
+  static Widget customSizeHorizontal(double size) {
+    return SizedBox(
+      width: size,
     );
   }
 

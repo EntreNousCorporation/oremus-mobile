@@ -125,8 +125,7 @@ class FilterMassRequestHistoryScreen extends StatelessWidget {
                                                       scrollDirection:
                                                           Axis.horizontal,
                                                       physics: const BouncingScrollPhysics(),
-                                                      itemCount:
-                                                          _.massRequestTypesTemp.length,
+                                                      itemCount: _.massRequestTypesTemp.length,
                                                       itemBuilder:
                                                           (context, index) {
                                                         var typeData = _.massRequestTypesTemp[index];

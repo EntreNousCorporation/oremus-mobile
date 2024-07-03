@@ -3,30 +3,27 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/massrequesthistory/controller/mass_request_history_controller.dart';
+import 'package:oremusapp/app/modules/massrequestclaim/controller/mass_request_claim_controller.dart';
 
-class SearchWidget extends StatelessWidget {
-  const SearchWidget({Key? key}) : super(key: key);
+class ClaimTypeWidget extends StatelessWidget {
+  const ClaimTypeWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<MassRequestHistoryController>(builder: (logic) {
+    return GetBuilder<MassRequestClaimController>(builder: (logic) {
       return Material(
         borderRadius: BorderRadius.circular(10.0),
         elevation: 10,
         color: colorWhite,
         shadowColor: colorGrey2.withOpacity(0.5),
         child: TextFormField(
-          controller: logic.searchController,
+          controller: logic.claimDescription,
           keyboardAppearance: Brightness.light,
-          style: TextStyles.montserratMedium(textColor: colorBlack),
-          maxLines: 1,
+          style: TextStyles.montserratSemiBold(textColor: colorBlack),
+          maxLines: 6,
           cursorColor: colorBlue,
           keyboardType: TextInputType.text,
-          onTap: () {
-            logic.showRangeDatePicker();
-          },
-          readOnly: true,
+          textInputAction: TextInputAction.done,
           decoration: InputDecoration(
             contentPadding:
                 const EdgeInsets.only(top: 16, left: 16, right: 0, bottom: 0),
@@ -34,20 +31,27 @@ class SearchWidget extends StatelessWidget {
             fillColor: colorWhite,
             border: InputBorder.none,
             focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: colorWhite),
+              borderSide: const BorderSide(color: colorGreen),
               borderRadius: BorderRadius.circular(8),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: colorWhite),
+              borderSide: const BorderSide(color: colorTransparent),
               borderRadius: BorderRadius.circular(8),
             ),
             errorBorder: InputBorder.none,
-            disabledBorder: InputBorder.none,
-            hintText: 'Choisir une période...',
+            disabledBorder: UnderlineInputBorder(
+              borderSide: const BorderSide(color: colorGrey1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            hintText: '',
             hintStyle: TextStyles.montserratItalic(
-                textColor: colorPurpleLight, textSize: TextSizes.fourteen),
-            prefixIcon: const Icon(Icons.search, color: colorPurpleLight,),
+              textColor: colorPurpleLight,
+              textSize: TextSizes.fourteen,
+            ),
           ),
+          onChanged: (value) {
+            logic.checkForm();
+          },
         ),
       );
     });

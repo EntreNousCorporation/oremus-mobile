@@ -155,6 +155,7 @@ class MassRequestScreen extends StatelessWidget {
                       SliverList(
                         delegate: SliverChildListDelegate(
                           [
+                            Separators.minimunVertical(),
                             Text(
                               'Faire une demande de messe',
                               textAlign: TextAlign.center,

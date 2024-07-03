@@ -4,7 +4,6 @@ import 'package:badges/badges.dart' as b;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animator/flutter_animator.dart';
-import 'package:flutter_animator/widgets/fading_entrances/fade_in.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:like_button/like_button.dart';
@@ -151,6 +150,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
                   SliverToBoxAdapter(
                     child: Column(
                       children: [
+                        Separators.minimunVertical(),
                         Text(
                           'Mes historiques de demande',
                           textAlign: TextAlign.center,

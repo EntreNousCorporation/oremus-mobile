@@ -12,10 +12,8 @@ import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/email_validator.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/customhome/controller/custom_home_controller.dart';
-import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
-import 'package:oremusapp/app/remote/api_client.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
@@ -140,7 +138,7 @@ class SigninController extends GetxController {
   }
 
   void checkForm() {
-    String email = emailController.text.trim().toString().replaceAll(' ', '');
+    String email = emailController.text.trim().toString().replaceAll(RegExp(r'\s'), '');
     String password = passwordController.text.trim().toString();
     bool isValidEmail = EmailValidator.validate(email) == true;
 

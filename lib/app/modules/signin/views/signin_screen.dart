@@ -172,8 +172,7 @@ class SigninScreen extends StatelessWidget {
                                                             .withOpacity(0),
                                                         actionColor: colorGreen
                                                             .withOpacity(0.5),
-                                                        enabled: _.isValidForm
-                                                            .value,
+                                                        enabled: _.isValidForm.value,
                                                         action: () {
                                                           _.connectUser();
                                                         },

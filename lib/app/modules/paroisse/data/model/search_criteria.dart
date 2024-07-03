@@ -12,6 +12,7 @@ class SearchCriteria {
   String? endDate;
   dynamic worshipPlace;
   String? typeOfMassRequest;
+  String? typeOfClaim;
 
   SearchCriteria({
     this.name,
@@ -24,6 +25,7 @@ class SearchCriteria {
     this.endDate,
     this.worshipPlace,
     this.typeOfMassRequest,
+    this.typeOfClaim,
   });
 
   ///use to know if we must launch search or not
@@ -46,6 +48,7 @@ class SearchCriteria {
     data['endDate'] = endDate;
     data['worshipPlace'] = worshipPlace;
     data['typeOfMassRequest'] = typeOfMassRequest;
+    data['typeOfClaim'] = typeOfClaim;
     return data;
   }
 }

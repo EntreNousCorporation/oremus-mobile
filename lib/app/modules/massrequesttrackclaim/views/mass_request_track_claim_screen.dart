@@ -2,15 +2,18 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animator/widgets/fading_entrances/fade_in_up.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:like_button/like_button.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
+import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/massrequesttrackclaim/controller/mass_request_track_claim_controller.dart';
+import 'package:oremusapp/app/modules/massrequesttrackclaim/views/widget/claim_item.dart';
 import 'package:oremusapp/generated/assets.dart';
 
 class MassRequestTrackClaimScreen extends StatelessWidget {
@@ -151,9 +154,10 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                   ),
                   const SliverPadding(
                       padding: EdgeInsets.symmetric(vertical: 8)),
-                  SliverList(
-                    delegate: SliverChildListDelegate(
-                      [
+                  SliverToBoxAdapter(
+                    child: Column(
+                      children: [
+                        Separators.minimunVertical(),
                         Text(
                           'Suivi de réclamation',
                           textAlign: TextAlign.center,
@@ -162,10 +166,60 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                             textColor: colorGreenSemiLight,
                           ),
                         ),
-                        Separators.normalVertical(),
+                        Separators.minimunVertical(),
+                        _.isDataProcessing.isTrue
+                            ? Column(
+                          children: [
+                            Separators.customSizeVertical(
+                                Get.height * 0.15),
+                            LottieLoadingView(
+                              size: Get.width / 4,
+                            ),
+                          ],
+                        )
+                            : _.hasData.isTrue
+                            ? FadeInUp(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 10,
+                                  bottom: 0,
+                                  left: 16,
+                                  right: 16,
+                                ),
+                                child: ListView.separated(
+                                  shrinkWrap: true,
+                                  padding: EdgeInsets.zero,
+                                  physics:
+                                  const NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    var claimData = _.claims[index];
+                                    return ClaimItem(claimData: claimData);
+                                  },
+                                  separatorBuilder: (context, index) {
+                                    return Separators.normalVertical();
+                                  },
+                                  itemCount: _.claims.length,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                            : Column(
+                          children: [
+                            Separators.customSizeVertical(
+                                Get.height * 0.15),
+                            NotFoundScreen(
+                              message:
+                              "Aucune réclamation enregistrée pour l'instant !",
+                            ),
+                          ],
+                        ),
+                        Separators.minimunVertical(),
                       ],
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
