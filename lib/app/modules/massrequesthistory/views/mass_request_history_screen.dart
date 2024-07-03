@@ -3,24 +3,21 @@ import 'dart:developer';
 import 'package:badges/badges.dart' as b;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutter_animator/widgets/fading_entrances/fade_in.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:like_button/like_button.dart';
-import 'package:oremusapp/app/commons/components/custom_header.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/controller/mass_request_history_controller.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/views/widget/history_item.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/views/widget/search_widget.dart';
 import 'package:oremusapp/generated/assets.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MassRequestHistoryScreen extends StatelessWidget {
   const MassRequestHistoryScreen({Key? key}) : super(key: key);
@@ -163,6 +160,59 @@ class MassRequestHistoryScreen extends StatelessWidget {
                           ),
                         ),
                         Separators.minimunVertical(),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: 16,
+                            bottom: 0,
+                            left: 16,
+                            right: 16,
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: SizedBox(
+                                  height: (Get.width / 9),
+                                  child: const SearchWidget(),
+                                ),
+                              ),
+                              Separators.normalHorizontal(),
+                              GestureDetector(
+                                onTap: () {
+                                  _.goToAdvancedSearch();
+                                },
+                                child: Material(
+                                  borderRadius:
+                                  BorderRadius.circular(10.0),
+                                  elevation: 10,
+                                  color: colorWhite,
+                                  shadowColor:
+                                  colorGrey2.withOpacity(0.5),
+                                  child: b.Badge(
+                                    showBadge: (_.searchCriteria.value.isMassRequestCriteriaEmpty == false) ? true : false,
+                                    position: b.BadgePosition.topEnd(top: -10, end: -5),
+                                    badgeContent: Text(
+                                      '${_.searchCriteria.value.countCriteria}',
+                                      style: TextStyles.montserratRegular(
+                                        textColor: colorWhite,
+                                        textSize:
+                                        TextSizes.thirteen,
+                                      ),
+                                    ),
+                                    child: SizedBox(
+                                      height: (Get.width / 9),
+                                      width: (Get.width / 9),
+                                      child: const Icon(
+                                        Icons.filter_list_rounded,
+                                        color: colorPurpleLight,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Separators.minimunVertical(),
                         _.isDataProcessing.isTrue
                             ? Column(
                                 children: [
@@ -174,68 +224,9 @@ class MassRequestHistoryScreen extends StatelessWidget {
                                 ],
                               )
                             : _.hasData.isTrue
-                                ? FadeIn(
+                                ? FadeInUp(
                                   child: Column(
                                       children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 16,
-                                            bottom: 0,
-                                            left: 16,
-                                            right: 16,
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: SizedBox(
-                                                  height: (Get.width / 9),
-                                                  child: const SearchWidget(),
-                                                ),
-                                              ),
-                                              Separators.normalHorizontal(),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  //_.goToAdvancedSearch();
-                                                },
-                                                child: Material(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10.0),
-                                                  elevation: 10,
-                                                  color: colorWhite,
-                                                  shadowColor:
-                                                      colorGrey2.withOpacity(0.5),
-                                                  child: b.Badge(
-                                                    showBadge: (_
-                                                                .searchCriteria
-                                                                .value
-                                                                .isCriteriaEmpty ==
-                                                            false)
-                                                        ? true
-                                                        : false,
-                                                    badgeContent: Text(
-                                                      '${_.searchCriteria.value.countCriteria}',
-                                                      style: TextStyles
-                                                          .montserratRegular(
-                                                        textColor: colorWhite,
-                                                        textSize:
-                                                            TextSizes.thirteen,
-                                                      ),
-                                                    ),
-                                                    child: SizedBox(
-                                                      height: (Get.width / 9),
-                                                      width: (Get.width / 9),
-                                                      child: const Icon(
-                                                        Icons.filter_list_rounded,
-                                                        color: colorPurpleLight,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Separators.minimunVertical(),
                                         Padding(
                                           padding: const EdgeInsets.only(
                                             top: 10,
@@ -268,7 +259,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
                                           Get.height * 0.15),
                                       NotFoundScreen(
                                         message:
-                                            "Vous n'avez pas encore effectué de demandes de messe !",
+                                            "Aucune demande de messe trouvée !",
                                       ),
                                     ],
                                   ),

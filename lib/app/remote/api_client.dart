@@ -67,7 +67,7 @@ class ApiClientImpl extends ApiClient {
           break;
       }
 
-      log("statusCode ${response.statusCode}");
+      log("statusCode ${appUrl + endpoint} => ${response.statusCode}");
       log("bodystring => " + response.bodyString.toString());
 
       resp = _response(response);

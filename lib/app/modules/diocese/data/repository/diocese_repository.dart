@@ -19,7 +19,7 @@ class DioceseRepository implements IDioceseRepository {
     Response response = await _apiClient.doRequest(
       endpoint: "/dioceses?page=$page&size=${AppConstants.PAGING_SIZE_1000}&sort=name%2CASC",
       method: HttpMethod.get,
-      useBearer: true,
+      useBearer: false,
     );
     final String resp = json.encode(response.bodyString.toString());
     log('resp => ${response.statusCode}');

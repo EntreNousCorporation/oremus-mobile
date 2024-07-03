@@ -1,7 +1,7 @@
 import 'package:oremusapp/app/modules/profile/data/model/profile.dart';
 
 class PlaceType {
-  int? identifier;
+  dynamic identifier;
   String? createdAt;
   String? updatedAt;
   String? code;

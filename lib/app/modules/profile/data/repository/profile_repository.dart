@@ -23,7 +23,7 @@ class ProfileRepository implements IProfileRepository {
     Response response = await _apiClient.doRequest(
       endpoint: "/users/$userId",
       method: HttpMethod.get,
-      useBearer: true,
+      useBearer: false,
     );
 
     log('resp => ${response.statusCode}');
@@ -42,7 +42,6 @@ class ProfileRepository implements IProfileRepository {
       endpoint: "/users/change-password",
       method: HttpMethod.post,
       body: jsonEncode(request.toJson()),
-      useBearer: true,
     );
 
     log('resp => ${response.statusCode}');
@@ -61,7 +60,6 @@ class ProfileRepository implements IProfileRepository {
       endpoint: "/users/fo-agents/$userId",
       method: HttpMethod.put,
       body: jsonEncode(request.toJson()),
-      useBearer: true,
     );
 
     log('resp => ${response.statusCode}');
@@ -79,7 +77,6 @@ class ProfileRepository implements IProfileRepository {
     Response response = await _apiClient.doRequest(
       endpoint: "/users/$userId",
       method: HttpMethod.delete,
-      useBearer: true,
     );
 
     log('resp => ${response.statusCode}');

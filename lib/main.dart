@@ -20,6 +20,7 @@ import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:platform_device_id/platform_device_id.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 var appUrl;
 //var byPassAuth;
@@ -70,7 +71,15 @@ class MyApp extends StatelessWidget {
         fallbackLocale: TranslationService.fallbackLocale,
         translations: TranslationService(),
         translationsKeys: TranslationService().keys,
-        //defaultTransition: Transition.rightToLeftWithFade,
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en', 'EN'), // English
+          Locale('fr', 'FR'), // French
+        ],
         initialRoute: Routes.SPLASHSCREEN,
         getPages: AppPages.pages,
         builder: EasyLoading.init(builder: (context, child) {

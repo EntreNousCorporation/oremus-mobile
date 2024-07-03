@@ -31,10 +31,9 @@ class ParoisseRepository implements IParoisseRepository {
     Response response = await _apiClient.doRequest(
       endpoint: "/places-of-worship?page=$page&size=${AppConstants.PAGING_SIZE_1000}&sort=name%2CASC${(searchCriteria?.name == null || searchCriteria?.name?.isEmpty == true) ? '' : '&name=${searchCriteria?.name}'}${(searchCriteria?.type == null || searchCriteria?.type?.isEmpty == true) ? '' : '&type=${searchCriteria?.type}'}${(searchCriteria?.diocese == null || searchCriteria?.diocese?.isEmpty == true) ? '' : '&diocese=${searchCriteria?.diocese}'}${(searchCriteria?.city == null || searchCriteria?.city?.isEmpty == true) ? '' : '&city=${searchCriteria?.city}'}${(searchCriteria?.municipality == null || searchCriteria?.municipality?.isEmpty == true) ? '' : '&municipality=${searchCriteria?.municipality}'}${(searchCriteria?.neighborhood == null || searchCriteria?.neighborhood?.isEmpty == true) ? '' : '&neighborhood=${searchCriteria?.neighborhood}'}",
       method: HttpMethod.get,
-      useBearer: true,
+      useBearer: false,
     );
-    final String resp = json.encode(response.bodyString.toString());
-    log('resp => ${response.statusCode}');
+    log('resp getParoisses => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
@@ -51,10 +50,9 @@ class ParoisseRepository implements IParoisseRepository {
     Response response = await _apiClient.doRequest(
       endpoint: "/places-of-worship/$idParoisse/liturgical-celebrations",
       method: HttpMethod.get,
-      useBearer: true,
+      useBearer: false,
     );
-    final String resp = json.encode(response.bodyString.toString());
-    log('resp => ${response.statusCode}');
+    log('resp getLiturgicalCelebration => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
@@ -71,10 +69,9 @@ class ParoisseRepository implements IParoisseRepository {
     Response response = await _apiClient.doRequest(
       endpoint: "/places-of-worship/$idParoisse/activities",
       method: HttpMethod.get,
-      useBearer: true,
+      useBearer: false,
     );
-    final String resp = json.encode(response.bodyString.toString());
-    log('resp => ${response.statusCode}');
+    log('resp getActivities => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
@@ -91,10 +88,9 @@ class ParoisseRepository implements IParoisseRepository {
     Response response = await _apiClient.doRequest(
       endpoint: "/places-of-worship/$idParoisse/movements",
       method: HttpMethod.get,
-      useBearer: true,
+      useBearer: false,
     );
-    final String resp = json.encode(response.bodyString.toString());
-    log('resp => ${response.statusCode}');
+    log('resp getMouvements => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       throw CustomException(response.statusCode, response.statusText);
@@ -110,9 +106,9 @@ class ParoisseRepository implements IParoisseRepository {
     Response response = await _apiClient.doRequest(
       endpoint: "/places-of-worship/$idParoisse/users",
       method: HttpMethod.get,
-      useBearer: true,
+      useBearer: false,
     );
-    log('resp => ${response.statusCode}');
+    log('resp getPlaceOfWorshipUsers => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
@@ -129,9 +125,9 @@ class ParoisseRepository implements IParoisseRepository {
     Response response = await _apiClient.doRequest(
       endpoint: "/places-of-worship/$idParoisse/contacts",
       method: HttpMethod.get,
-      useBearer: true,
+      useBearer: false,
     );
-    log('resp => ${response.statusCode}');
+    log('resp getPlaceOfWorshipContacts => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
@@ -150,9 +146,9 @@ class ParoisseRepository implements IParoisseRepository {
       endpoint:
           "/types-of-worship?page=$page&size=${AppConstants.PAGING_SIZE_1000}&sort=code%2CASC",
       method: HttpMethod.get,
-      useBearer: true,
+      useBearer: false,
     );
-    log('resp => ${response.statusCode}');
+    log('resp getPlaceOfWorshipTypes => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e =
@@ -170,10 +166,9 @@ class ParoisseRepository implements IParoisseRepository {
     Response response = await _apiClient.doRequest(
       endpoint: "/places-of-worship/$idParoisse/services",
       method: HttpMethod.get,
-      useBearer: true,
+      useBearer: false,
     );
-    final String resp = json.encode(response.bodyString.toString());
-    log('resp => ${response.statusCode}');
+    log('resp getOfficeTimes => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       throw CustomException(response.statusCode, response.statusText);

@@ -3,9 +3,13 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
+import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/theme/app_dimension.dart';
+import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/data/repository/mass_request_history_repository.dart';
@@ -28,7 +32,6 @@ class MassRequestHistoryController extends GetxController {
   RxList<MassRequestData> massRequests = RxList<MassRequestData>([]);
   var refreshController = RefreshController();
   late TextEditingController searchController;
-  var isSearchFieldEmpty = true.obs;
   var searchCriteria = SearchCriteria().obs;
   var page = 0.obs;
 
@@ -40,6 +43,13 @@ class MassRequestHistoryController extends GetxController {
 
   var paroisseSelected = ContentPlace().obs;
 
+  var selectedDate = Rx<DateTimeRange>(DateTimeRange(start: DateTime.now(), end: DateTime.now()));
+  var datesRange = ''.obs;
+  var startDate = ''.obs;
+  var endDate = ''.obs;
+  var startDateApi = ''.obs;
+  var endDateApi = ''.obs;
+
   @override
   void onInit() {
     getArguments();
@@ -49,7 +59,7 @@ class MassRequestHistoryController extends GetxController {
 
   @override
   void onReady() {
-    getMassRequests();
+    initCriteria();
     super.onReady();
   }
 
@@ -61,6 +71,92 @@ class MassRequestHistoryController extends GetxController {
 
   initController() {
     searchController = TextEditingController(text: '');
+  }
+
+  initCriteria() {
+    startDate.value = Jiffy.now().format(pattern: AppConstants.TIME_SIMPLE_FORMAT);
+    endDate.value = Jiffy.now().format(pattern: AppConstants.TIME_SIMPLE_FORMAT);
+    startDateApi.value = Jiffy.now().format(pattern: '${AppConstants.TIME_SIMPLE_FORMA1}T00:00:00.988[Z]');
+    endDateApi.value = Jiffy.now().format(pattern: '${AppConstants.TIME_SIMPLE_FORMA1}T23:59:59.988[Z]');
+    datesRange.value = '${startDate.value} - ${endDate.value}';
+    searchController.text = datesRange.value;
+    getMassRequests();
+  }
+
+  showRangeDatePicker() async {
+    final DateTimeRange? selected = await showDateRangePicker(
+      context: Get.context!,
+      initialDateRange: selectedDate.value,
+      saveText: 'Valider',
+      locale: const Locale('fr'),
+      currentDate: selectedDate.value.start,
+      firstDate: DateTime(2023),
+      lastDate: DateTime.now(),
+      cancelText: 'Annuler',
+      confirmText: 'Valider',
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: const ColorScheme.light(
+              onPrimary: colorWhite, // selected text color
+              onSurface: colorBlack, // default text color
+              primary: colorGreen, // circle color
+            ),
+            dialogBackgroundColor: Colors.white,
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                textStyle: TextStyles.montserratMedium(
+                  textSize: TextSizes.fourteen,
+                ),
+                primary: colorWhite, // color of button's letters
+                backgroundColor: colorGreen, // Background color
+                shape: RoundedRectangleBorder(
+                  side: const BorderSide(
+                    color: Colors.transparent,
+                    width: 1,
+                    style: BorderStyle.solid,
+                  ),
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (selected != null) {
+      selectedDate.value = selected;
+
+      //For startDate
+      String startDay = selectedDate.value.start.day.toString();
+      String startMonth = selectedDate.value.start.month.toString();
+      if (selectedDate.value.start.day < 10) {
+        startDay = "0$startDay";
+      }
+      if (selectedDate.value.start.month < 10) {
+        startMonth = "0$startMonth";
+      }
+
+      //For endDate
+      String endDay = selectedDate.value.end.day.toString();
+      String endMonth = selectedDate.value.end.month.toString();
+      if (selectedDate.value.end.day < 10) {
+        endDay = "0$endDay";
+      }
+      if (selectedDate.value.end.month < 10) {
+        endMonth = "0$endMonth";
+      }
+
+      //For result
+      startDateApi.value = "${selectedDate.value.start.year}-$startMonth-$startDay${'T00:00:00.988Z'}";
+      endDateApi.value = "${selectedDate.value.end.year}-$endMonth-$endDay${'T23:59:59.988Z'}";
+      startDate.value = "$startDay/$startMonth/${selectedDate.value.start.year}";
+      endDate.value = "$endDay/$endMonth/${selectedDate.value.end.year}";
+      datesRange.value = '${startDate.value} - ${endDate.value}';
+      searchController.text = datesRange.value;
+      getMassRequests();
+    }
   }
 
   moveToMassRequest(MassRequestData massRequestData) {
@@ -85,19 +181,14 @@ class MassRequestHistoryController extends GetxController {
 
   getMassRequests() {
     hideKeyboard();
-    var dates = searchController.text.trim().split('-');
-    searchCriteria.value = SearchCriteria(
-      startDate: dates.first,
-      endDate: dates.last,
-      worshipPlace: paroisseSelected.value.identifier,
-    );
+    searchCriteria.value.startDate = startDateApi.value;
+    searchCriteria.value.endDate = endDateApi.value;
+    searchCriteria.value.worshipPlace = paroisseSelected.value.identifier;
     isDataProcessing(true);
 
     log('request getMassRequests ::: ${jsonEncode(searchCriteria.toJson())}');
 
-    massRequestHistoryRepository
-        .getMassRequests(searchCriteria: searchCriteria.value)
-        .then((value) {
+    massRequestHistoryRepository.getMassRequests(searchCriteria: searchCriteria.value).then((value) {
       isDataProcessing(false);
       massRequests.value = value.content ?? [];
       if (massRequests.isNotEmpty == true) {
@@ -201,9 +292,13 @@ class MassRequestHistoryController extends GetxController {
   }
 
   goToAdvancedSearch() async {
-    searchCriteria.value = await Get.toNamed(Routes.FILTER_PAROISSE);
+    searchCriteria.value = await Get.toNamed(Routes.FILTER_MASS_REQUEST_HISTORY);
+    log('searchCriteria => ${searchCriteria.value.toJson().toString()}');
     searchCriteria.refresh();
+    log('searchCriteria => ${searchCriteria.value.toJson().toString()}');
     getMassRequests();
+    log('searchCriteria => ${searchCriteria.value.toJson().toString()}');
+    log('searchCriteria isEmpty => ${searchCriteria.value.isMassRequestCriteriaEmpty}');
   }
 
   //SEARCH SECTION
@@ -212,7 +307,6 @@ class MassRequestHistoryController extends GetxController {
     searchCriteria.value = SearchCriteria();
     page.value = 0;
     searchController.clear();
-    isSearchFieldEmpty.value = true;
     hideKeyboard();
   }
 

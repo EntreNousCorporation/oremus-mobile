@@ -41,7 +41,7 @@ class ParoisseMassRequestMenuScreen extends StatelessWidget {
                     backgroundColor: colorGreen,
                     elevation: 10,
                     shadowColor: colorGrey2.withOpacity(0.8),
-                    title: Text(
+                    /*title: Text(
                       '${_.paroisseSelected.value.name}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -49,7 +49,7 @@ class ParoisseMassRequestMenuScreen extends StatelessWidget {
                       style: TextStyles.montserratBold(
                           textSize: TextSizes.eighteen,
                           textColor: colorWhite),
-                    ),
+                    ),*/
                     leading: IconButton(
                       onPressed: () {
                         Get.back();
@@ -97,15 +97,12 @@ class ParoisseMassRequestMenuScreen extends StatelessWidget {
                         centerTitle: true,
                         title: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child:Hero(
-                            tag: 'DM',
-                            child: Text(
-                              'Demande de messe',
-                              textAlign: TextAlign.center,
-                              style: TextStyles.montserratBold(
-                                textSize: TextSizes.eighteen,
-                                textColor: colorWhite,
-                              ),
+                          child: Text(
+                            'Demande de messe',
+                            textAlign: TextAlign.center,
+                            style: TextStyles.montserratBold(
+                              textSize: TextSizes.eighteen,
+                              textColor: colorWhite,
                             ),
                           ),
                         ),

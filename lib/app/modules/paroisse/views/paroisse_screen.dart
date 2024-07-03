@@ -80,10 +80,10 @@ class ParoisseScreen extends StatelessWidget {
                                   shadowColor: colorGrey2.withOpacity(0.5),
                                   child: b.Badge(
                                     showBadge: (_.searchCriteria.value
-                                                .isCriteriaEmpty ==
-                                            false)
+                                                .isCriteriaEmpty == false)
                                         ? true
                                         : false,
+                                    position: b.BadgePosition.topEnd(top: -10, end: -5),
                                     badgeContent: Text(
                                       '${_.searchCriteria.value.countCriteria}',
                                       style: TextStyles.montserratRegular(

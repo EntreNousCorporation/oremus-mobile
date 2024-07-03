@@ -11,6 +11,8 @@ import 'package:oremusapp/app/modules/favorite/views/favorites_screen.dart';
 import 'package:oremusapp/app/modules/massrequest/binding/mass_request_binding.dart';
 import 'package:oremusapp/app/modules/massrequest/views/mass_request_screen.dart';
 import 'package:oremusapp/app/modules/massrequestclaim/binding/mass_request_track_claim_binding.dart';
+import 'package:oremusapp/app/modules/massrequesthistory/binding/filter_mass_request_history_binding.dart';
+import 'package:oremusapp/app/modules/massrequesthistory/views/widget/filter_mass_request_history_screen.dart';
 import 'package:oremusapp/app/modules/massrequesttrackclaim/views/mass_request_track_claim_screen.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/binding/mass_request_history_binding.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/views/mass_request_history_screen.dart';
@@ -214,6 +216,13 @@ class AppPages {
       name: Routes.MASS_REQUEST_HISTORY,
       page: () => const MassRequestHistoryScreen(),
       binding: MassRequestHistoryBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.FILTER_MASS_REQUEST_HISTORY,
+      page: () => const FilterMassRequestHistoryScreen(),
+      binding: FilterMassRequestHistoryBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

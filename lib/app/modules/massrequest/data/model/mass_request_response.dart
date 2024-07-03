@@ -536,3 +536,66 @@ class Contacts {
     return data;
   }
 }
+
+class TypeData {
+  String? code;
+  Name? name;
+
+  TypeData({this.code, this.name});
+
+  TypeData.fromJson(Map<String, dynamic> json) {
+    code = json['code'];
+    name = json['name'] != null ? Name.fromJson(json['name']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['code'] = code;
+    if (name != null) {
+      data['name'] = name!.toJson();
+    }
+    return data;
+  }
+}
+
+class Name {
+  int? identifier;
+  String? createdAt;
+  String? updatedAt;
+  String? createdBy;
+  String? modifiedBy;
+  String? fr;
+  String? en;
+
+  Name({
+    this.identifier,
+    this.createdAt,
+    this.updatedAt,
+    this.createdBy,
+    this.modifiedBy,
+    this.fr,
+    this.en,
+  });
+
+  Name.fromJson(Map<String, dynamic> json) {
+    identifier = json['identifier'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+    createdBy = json['createdBy'];
+    modifiedBy = json['modifiedBy'];
+    fr = json['fr'];
+    en = json['en'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['identifier'] = identifier;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
+    data['createdBy'] = createdBy;
+    data['modifiedBy'] = modifiedBy;
+    data['fr'] = fr;
+    data['en'] = en;
+    return data;
+  }
+}

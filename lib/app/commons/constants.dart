@@ -30,6 +30,13 @@ abstract class AppConstants {
   //CREDENTIALS
   static const KEY_TOKEN = "KEY_TOKEN";
 
+  static const TIME_ZONE_FORMAT1 = "yyyy-MM-ddTHH:mm:ss.SSS[Z]";
+  static const TIME_ZONE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+  static const TIME_DEFAULT_FORMAT = "dd/MM/yyyy HH:mm";
+  static const TIME_SIMPLE_FORMAT = "dd/MM/yyyy";
+  static const TIME_SIMPLE_FORMA1 = "yyyy-MM-dd";
+  static const TIME_HUMAN_FORMAT1 = "dd MMM yyyy [à] HH:mm";
+
   //PAGGING
   static const PAGING_SIZE_1000 = 1000;
   static const PRAY_PAGING_SIZE = 15;

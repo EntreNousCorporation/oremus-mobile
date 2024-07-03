@@ -5,42 +5,45 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
+import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
+import 'package:oremusapp/app/modules/massrequesthistory/controller/filter_mass_request_history_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/filter/filter_paroisse_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_type.dart';
 
-class PlaceTypeItem extends StatelessWidget {
-  PlaceTypeItem({Key? key, required this.placeType}) : super(key: key);
+class TypeDataItem extends StatelessWidget {
+  TypeDataItem({Key? key, required this.typeData}) : super(key: key);
 
-  PlaceType? placeType;
+  TypeData? typeData;
 
   @override
   Widget build(BuildContext context) {
-    return GetX<FilterParoisseController>(builder: (logic) {
+    return GetX<FilterMassRequestHistoryController>(builder: (logic) {
       return GestureDetector(
         onTap: () {
-          logic.onPlaceTypeSelected(placeType ?? PlaceType());
+          logic.onMassRequestTypeDataSelected(typeData ?? TypeData());
         },
         child: Row(
           children: [
             Separators.minimunHorizontal(),
             Container(
-              width: Get.width / 3.5,
               decoration: BoxDecoration(
-                color: logic.placeTypeSelected.value == placeType ? colorGreenSemiLight : colorWhite,
+                color: logic.massRequestTypeSelected.value == typeData
+                    ? colorGreenSemiLight
+                    : colorWhite,
                 border: Border.all(color: colorGreenSemiLight),
-                borderRadius: BorderRadius.circular(Get.width/10),
+                borderRadius: BorderRadius.circular(Get.width / 10),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                  '${placeType?.translate?.fr}',
+                  '${typeData?.name?.fr}',
                   textAlign: TextAlign.center,
-                  style: TextStyles
-                      .montserratSemiBold(
-                      textSize:
-                      TextSizes
-                          .fourteen,
-                      textColor: logic.placeTypeSelected.value == placeType ? colorWhite : colorBlack,),
+                  style: TextStyles.montserratSemiBold(
+                    textSize: TextSizes.fourteen,
+                    textColor: logic.massRequestTypeSelected.value == typeData
+                        ? colorWhite
+                        : colorBlack,
+                  ),
                 ),
               ),
             ),

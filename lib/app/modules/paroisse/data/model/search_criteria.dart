@@ -28,6 +28,7 @@ class SearchCriteria {
 
   ///use to know if we must launch search or not
   get isCriteriaEmpty => (type == null && diocese == null && municipality == null && city == null && neighborhood == null) || (type?.isEmpty == true && diocese?.isEmpty == true && municipality?.isEmpty == true && city?.isEmpty == true && neighborhood?.isEmpty == true);
+  get isMassRequestCriteriaEmpty => (typeOfMassRequest == null) || (typeOfMassRequest?.isEmpty == true);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -38,6 +39,7 @@ class SearchCriteria {
     data['city'] = city;
     data['neighborhood'] = neighborhood;
     data['isCriteriaEmpty'] = isCriteriaEmpty;
+    data['isMassRequestCriteriaEmpty'] = isMassRequestCriteriaEmpty;
     data['countCriteria'] = countCriteria;
 
     data['startDate'] = startDate;
