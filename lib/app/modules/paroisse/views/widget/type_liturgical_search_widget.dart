@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
+import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
@@ -46,7 +46,6 @@ class TypeLiturgicalSearchWidget extends StatelessWidget {
                 textColor: colorPurpleLight, textSize: TextSizes.fourteen),
             suffixIcon: logic.isTypeLiturgicalSearchFieldEmpty.isFalse
                 ? FadeIn(
-                    duration: const Duration(milliseconds: 500),
                     child: IconButton(
                       onPressed: () {
                         //clean search bar

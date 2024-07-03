@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
+import 'package:flutter_animator/widgets/fading_entrances/fade_in.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
@@ -50,7 +50,6 @@ class SearchWidget extends StatelessWidget {
             //prefixIcon: const Icon(Icons.search, color: colorPurpleLight,),
             suffixIcon: logic.isSearchFieldEmpty.isFalse
                 ? FadeIn(
-                    duration: const Duration(milliseconds: 500),
                     child: IconButton(
                       onPressed: () {
                         //clean search bar

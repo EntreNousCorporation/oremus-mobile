@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
+import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
@@ -31,7 +31,6 @@ class SigninScreen extends StatelessWidget {
           child: Stack(
             children: [
               FadeIn(
-                duration: const Duration(milliseconds: 500),
                 child: KeyboardDismisser(
                   child: Scaffold(
                       backgroundColor: Colors.transparent,

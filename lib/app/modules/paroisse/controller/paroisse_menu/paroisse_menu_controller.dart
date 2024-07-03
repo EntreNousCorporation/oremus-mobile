@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
@@ -45,7 +44,7 @@ class ParoisseMenuController extends GetxController {
         title: 'Horaires des messes',
         icon: 'assets/images/messe.svg',
         isPngImage: false,
-        activeTint: colorBlack,
+        activeTint: colorGreenSemiLight,
         goToPage: () async {
           await Get.toNamed(
             Routes.PAROISSE_MESSE,
@@ -66,7 +65,7 @@ class ParoisseMenuController extends GetxController {
         title: 'Horaires des confessions',
         icon: 'assets/images/confession_icon.svg',
         isPngImage: false,
-        activeTint: colorBlack,
+        activeTint: colorGreenSemiLight,
         goToPage: () async {
           await Get.toNamed(
             Routes.PAROISSE_CONFESSION,
@@ -87,7 +86,7 @@ class ParoisseMenuController extends GetxController {
         title: 'Horaires des bureaux',
         icon: 'assets/images/calendar.svg',
         isPngImage: false,
-        activeTint: colorBlack,
+        activeTint: colorGreenSemiLight,
         goToPage: () async {
           await Get.toNamed(
             Routes.PAROISSE_OFFICE,
@@ -107,7 +106,7 @@ class ParoisseMenuController extends GetxController {
         title: 'Activités & mouvements',
         icon: 'assets/images/group.svg',
         isPngImage: false,
-        activeTint: colorBlack,
+        activeTint: colorGreenSemiLight,
         goToPage: () async {
           await Get.toNamed(
             Routes.PAROISSE_ACTIVITY_MOVEMENT,
@@ -128,7 +127,7 @@ class ParoisseMenuController extends GetxController {
         title: 'Equipe presbytérale',
         icon: 'assets/images/priest_icon.svg',
         isPngImage: false,
-        activeTint: colorBlack,
+        activeTint: colorGreenSemiLight,
         goToPage: () async {
           await Get.toNamed(
             Routes.PAROISSE_PRESBY_TEAM,
@@ -149,7 +148,7 @@ class ParoisseMenuController extends GetxController {
         title: 'Contacts',
         icon: 'assets/images/contacts.svg',
         isPngImage: false,
-        activeTint: colorBlack,
+        activeTint: colorGreenSemiLight,
         goToPage: () async {
           await Get.toNamed(
             Routes.PAROISSE_CONTACT,
@@ -170,7 +169,7 @@ class ParoisseMenuController extends GetxController {
         title: 'Infos paroissiales',
         icon: 'assets/images/icon_infos_paroissiales.svg',
         isPngImage: false,
-        activeTint: colorBlack,
+        activeTint: colorGreenSemiLight,
         goToPage: () async {
           log('massInfoUrl => ${paroisseSelected.value.massInfo}');
           await Get.toNamed(
@@ -193,7 +192,7 @@ class ParoisseMenuController extends GetxController {
         title: 'Demandes de messe',
         icon: 'assets/images/icon_demande_de_messe.svg',
         isPngImage: false,
-        activeTint: colorBlack,
+        activeTint: colorGreenSemiLight,
         goToPage: () async {
           await Get.toNamed(
             Routes.PAROISSE_MASS_REQUEST_MENU,

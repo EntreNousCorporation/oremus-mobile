@@ -8,6 +8,14 @@ import 'package:oremusapp/app/modules/editpassword/binding/edit_password_binding
 import 'package:oremusapp/app/modules/editpassword/views/edit_password_screen.dart';
 import 'package:oremusapp/app/modules/favorite/binding/favorite_binding.dart';
 import 'package:oremusapp/app/modules/favorite/views/favorites_screen.dart';
+import 'package:oremusapp/app/modules/massrequest/binding/mass_request_binding.dart';
+import 'package:oremusapp/app/modules/massrequest/views/mass_request_screen.dart';
+import 'package:oremusapp/app/modules/massrequestclaim/binding/mass_request_track_claim_binding.dart';
+import 'package:oremusapp/app/modules/massrequesttrackclaim/views/mass_request_track_claim_screen.dart';
+import 'package:oremusapp/app/modules/massrequesthistory/binding/mass_request_history_binding.dart';
+import 'package:oremusapp/app/modules/massrequesthistory/views/mass_request_history_screen.dart';
+import 'package:oremusapp/app/modules/massrequesttrackclaim/binding/mass_request_claim_binding.dart';
+import 'package:oremusapp/app/modules/massrequestclaim/views/mass_request_claim_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/filter_paroisse_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_activity_movement_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_binding.dart';
@@ -155,21 +163,21 @@ class AppPages {
       page: () => const ParoisseActivityMovementScreen(),
       binding: ParoisseActivityMovementBinding(),
       transition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 700),
+      transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: Routes.PAROISSE_PRESBY_TEAM,
       page: () => const ParoisseBresbyTeamScreen(),
       binding: ParoissePresbyTeamBinding(),
       transition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 700),
+      transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: Routes.PAROISSE_CONTACT,
       page: () => const ParoisseContactScreen(),
       binding: ParoisseContactBinding(),
       transition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 700),
+      transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: Routes.EDIT_PASSWORD,
@@ -194,6 +202,34 @@ class AppPages {
       page: () => const PrayScreen(),
       binding: PrayBinding(),
       transition: Transition.circularReveal,
+    ),
+    GetPage(
+      name: Routes.MASS_REQUEST,
+      page: () => const MassRequestScreen(),
+      binding: MassRequestBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.MASS_REQUEST_HISTORY,
+      page: () => const MassRequestHistoryScreen(),
+      binding: MassRequestHistoryBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.MASS_REQUEST_CLAIM,
+      page: () => const MassRequestClaimScreen(),
+      binding: MassRequestClaimBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.MASS_REQUEST_TRACK_CLAIM,
+      page: () => const MassRequestTrackClaimScreen(),
+      binding: MassRequestTrackClaimBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
     ),
   ];
 }

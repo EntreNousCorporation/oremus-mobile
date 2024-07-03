@@ -92,6 +92,9 @@ const Map<String, String> fr_FR = {
   'help': 'Aide',
 
   //Home
+  'label_update_app_available': 'Une nouvelle mise à jour de l\'application Speedkdo est disponible !',
+  'label_update': 'Mettre à jour',
+  'label_update_app_successfully': '🎉 La mise à jour de l\'application a été effectuée avec succès ! 🎉',
   'greating': 'Bonjour',
   'welcome': 'Bienvenue',
   'my_operations': 'Mes opérations',

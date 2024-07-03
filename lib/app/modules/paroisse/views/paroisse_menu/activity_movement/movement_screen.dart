@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
+import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/custom_header.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
@@ -25,7 +25,6 @@ class MovementScreen extends StatelessWidget {
       } else {
         if (logic.hasMovementData.isTrue) {
           return FadeIn(
-            duration: const Duration(milliseconds: 500),
             child: SmartRefresher(
               controller: logic.refreshMovementsController,
               onRefresh: logic.onRefreshMouvements,

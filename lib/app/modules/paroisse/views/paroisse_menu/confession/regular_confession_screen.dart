@@ -1,7 +1,7 @@
 import 'package:accordion/accordion.dart';
 import 'package:accordion/controllers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
+import 'package:flutter_animator/widgets/fading_entrances/fade_in.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/custom_header.dart';
@@ -14,6 +14,7 @@ import 'package:oremusapp/app/commons/timeline/flutter_timeline.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_confession_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/day_confession_item.dart';
+import 'package:oremusapp/generated/assets.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class RegularConfessionScreen extends StatelessWidget {
@@ -29,7 +30,6 @@ class RegularConfessionScreen extends StatelessWidget {
       } else {
         if (logic.hasRegularConfessionData.isTrue) {
           return FadeIn(
-            duration: const Duration(milliseconds: 500),
             child: SmartRefresher(
               controller: logic.refreshController,
               onRefresh: logic.onRegularConfessionsRefresh,
@@ -39,7 +39,7 @@ class RegularConfessionScreen extends StatelessWidget {
                 maxOpenSections: 1,
                 scaleWhenAnimating: false,
                 leftIcon: SvgPicture.asset(
-                  'assets/images/confession_icon.svg',
+                  Assets.imagesConfessionIcon,
                   height: 25,
                   colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),
                 ),

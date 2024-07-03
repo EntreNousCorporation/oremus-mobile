@@ -117,6 +117,12 @@ class Separators {
     );
   }
 
+  static Widget customSizeVertical(double size) {
+    return SizedBox(
+      height: size,
+    );
+  }
+
   static Widget maximumHorizontal() {
     return const SizedBox(
       width: 30,

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
+import 'package:flutter_animator/widgets/fading_entrances/fade_in.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
+import 'package:oremusapp/generated/assets.dart';
 
 class NotFoundScreen extends StatelessWidget {
   NotFoundScreen(
-      {this.lottieIcon = 'assets/images/lottie_empty_search.json',
+      {this.lottieIcon = Assets.imagesLottieEmptySearch,
       this.repeated = false,
       this.circled = true,
       required this.message,
@@ -22,7 +23,6 @@ class NotFoundScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FadeIn(
-      duration: const Duration(milliseconds: 500),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

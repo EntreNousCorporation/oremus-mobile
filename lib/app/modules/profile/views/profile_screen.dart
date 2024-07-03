@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
+import 'package:flutter_animator/widgets/fading_entrances/fade_in.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
@@ -61,8 +61,6 @@ class ProfileScreen extends StatelessWidget {
                                               physics:
                                                   const BouncingScrollPhysics(),
                                               child: FadeIn(
-                                                duration: const Duration(
-                                                    milliseconds: 500),
                                                 child: Padding(
                                                   padding: const EdgeInsets.only(
                                                     top: 0,

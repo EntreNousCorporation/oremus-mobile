@@ -1,12 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:oremusapp/app/commons/components/dialogs.dart';
-import 'package:oremusapp/app/commons/constants.dart';
-import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
@@ -25,7 +21,6 @@ class ParoisseMassRequestMenuController extends GetxController {
   });
 
   var paroisseSelected = ContentPlace().obs;
-  var indexSelected = 0.obs;
 
   RxList<TypeMenu> menus = RxList<TypeMenu>([]);
 
@@ -49,13 +44,14 @@ class ParoisseMassRequestMenuController extends GetxController {
         title: 'Faire une demande de messe',
         icon: Assets.imagesIconPray,
         isPngImage: false,
-        activeTint: colorBlack,
+        activeTint: colorGreenSemiLight,
+        bgColor: colorGreenLight,
         goToPage: () async {
           if (isUserConnected.value == false) {
             checkIfUserIsconnected('FDM');
             return;
           }
-          moveToAskMass();
+          moveToMassRequest();
           //on met à jour la liste au cas où favoris mis à jour
           paroisseSelected.value.isFavorite =
               isWorshipPlaceFavorite(paroisseSelected.value);
@@ -64,19 +60,19 @@ class ParoisseMassRequestMenuController extends GetxController {
       ),
       TypeMenu(
         code: 'MH',
-        title: 'Mes historiques',
+        title: 'Mes historiques de demande',
         icon: Assets.imagesTime,
         isPngImage: false,
-        activeTint: colorBlack,
+        activeTint: colorPurpleLight2,
+        bgColor: colorPurpleLight1,
         goToPage: () async {
           if (isUserConnected.value == false) {
             checkIfUserIsconnected('MH');
             return;
           }
-          moveToHistory();
+          moveToMassRequestHistory();
           //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite =
-              isWorshipPlaceFavorite(paroisseSelected.value);
+          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
           paroisseSelected.refresh();
         },
       ),
@@ -85,13 +81,15 @@ class ParoisseMassRequestMenuController extends GetxController {
         title: 'Faire une réclamation',
         icon: Assets.imagesEvent,
         isPngImage: false,
-        activeTint: colorBlack,
+        activeTint: colorOrangeLight3,
+        bgColor: colorOrangeLight1,
+        isVisible: false,
         goToPage: () async {
           if (isUserConnected.value == false) {
             checkIfUserIsconnected('FR');
             return;
           }
-          moveToClaims();
+          moveToMassRequestClaims();
           //on met à jour la liste au cas où favoris mis à jour
           paroisseSelected.value.isFavorite =
               isWorshipPlaceFavorite(paroisseSelected.value);
@@ -103,20 +101,21 @@ class ParoisseMassRequestMenuController extends GetxController {
         title: 'Suivi de réclamation',
         icon: Assets.imagesChecklist,
         isPngImage: false,
-        activeTint: colorBlack,
+        activeTint: colorOrangeLight4,
+        bgColor: colorOrangeLight2,
         goToPage: () async {
           if (isUserConnected.value == false) {
             checkIfUserIsconnected('SR');
             return;
           }
-          moveToTrackClaims();
+          moveToMassRequestTrackClaims();
           //on met à jour la liste au cas où favoris mis à jour
           paroisseSelected.value.isFavorite =
               isWorshipPlaceFavorite(paroisseSelected.value);
           paroisseSelected.refresh();
         },
       ),
-    ];
+    ].where((element) => element.isVisible == true).toList();
   }
 
   checkIfUserIsconnected(String code) {
@@ -176,7 +175,7 @@ class ParoisseMassRequestMenuController extends GetxController {
                       ),
                       style: TextButton.styleFrom(
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(10),
                           side: const BorderSide(color: colorGreen, width: 0.5),
                         ),
                       ),
@@ -199,10 +198,14 @@ class ParoisseMassRequestMenuController extends GetxController {
                       style: TextButton.styleFrom(
                         backgroundColor: colorGreen,
                         enableFeedback: true,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: const BorderSide(color: colorGreen, width: 0.5),
+                        ),
                       ),
                       onPressed: () {
                         Get.back();
-                        Future.delayed(const Duration(milliseconds: 300), () {
+                        Future.delayed(const Duration(milliseconds: 250), () {
                           moveToLogin(code);
                         });
                       },
@@ -228,28 +231,54 @@ class ParoisseMassRequestMenuController extends GetxController {
       log('back moveToLogin');
       switch (code) {
         case 'FDM':
-          moveToAskMass();
+          moveToMassRequest();
           break;
         case 'MH':
-          moveToHistory();
+          moveToMassRequestHistory();
           break;
         case 'FR':
-          moveToClaims();
+          moveToMassRequestClaims();
           break;
         case 'SR':
-          moveToTrackClaims();
+          moveToMassRequestTrackClaims();
           break;
       }
     }
   }
 
-  moveToAskMass() {}
+  moveToMassRequest() {
+    Get.toNamed(
+      Routes.MASS_REQUEST,
+      arguments: [
+        paroisseSelected.toJson(),
+        null,
+      ],
+    );
+  }
 
-  moveToHistory() {}
+  moveToMassRequestHistory() {
+    Get.toNamed(
+      Routes.MASS_REQUEST_HISTORY,
+      arguments: paroisseSelected.toJson(),
+    );
+  }
 
-  moveToClaims() {}
+  moveToMassRequestClaims() {
+    Get.toNamed(
+      Routes.MASS_REQUEST_CLAIM,
+      arguments: [
+        paroisseSelected.toJson(),
+        null,
+      ],
+    );
+  }
 
-  moveToTrackClaims() {}
+  moveToMassRequestTrackClaims() {
+    Get.toNamed(
+      Routes.MASS_REQUEST_TRACK_CLAIM,
+      arguments: paroisseSelected.toJson(),
+    );
+  }
 
   bool isWorshipPlaceFavorite(ContentPlace paroisse) {
     var isFavorite = false;

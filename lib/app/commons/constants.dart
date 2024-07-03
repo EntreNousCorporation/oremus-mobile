@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 abstract class AppConstants {
 
   //ENVIRONNEMENT DE DEV
@@ -13,6 +15,7 @@ abstract class AppConstants {
 
   //CONNECTIVITY
   static const REQUEST_TIMEOUT = 2 * 60; //seconds
+  static var kExpandedHeight = Get.width / 1.75; //seconds
 
   //HIVE
   static const BOX_NAME = "oremusBox";
@@ -28,8 +31,9 @@ abstract class AppConstants {
   static const KEY_TOKEN = "KEY_TOKEN";
 
   //PAGGING
-  static const PAGING_SIZE = 1000;
+  static const PAGING_SIZE_1000 = 1000;
   static const PRAY_PAGING_SIZE = 15;
+  static const MASS_REQUEST_PAGING_SIZE = 10;
 
   //DRAWER MENU INDEX
   static const HOME = 0;

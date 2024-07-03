@@ -25,7 +25,7 @@ extension StringExtension on String {
     String value ;
     var formatter = NumberFormat('#,###');
 
-    value = replaceAll(" ", "");
+    value = replaceAll(' ', '');
     try {
       value = formatter.format(int.parse(value)).replaceAll(',', ' '); // tu as été smart, c'est bien 🙂
     } catch(error) {
@@ -78,6 +78,10 @@ String getDay(int code) {
 
 String getDate(String date) {
   return Jiffy.parse(date, pattern: "yyyy-MM-dd'T'HH:mm:ss").yMd;
+}
+
+String getDateTime(String date) {
+  return Jiffy.parse(date, pattern: "yyyy-MM-dd'T'HH:mm:ss").yMMMdjm;
 }
 
 String getHour(String date) {

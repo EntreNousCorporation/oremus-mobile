@@ -5,6 +5,7 @@ import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:like_button/like_button.dart';
 import 'package:oremusapp/app/commons/buttons_tabbar.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
+import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
@@ -31,7 +32,7 @@ class ParoisseTypeMasseScreen extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     slivers: [
                       SliverAppBar(
-                        expandedHeight: Get.width / 1.7,
+                        expandedHeight: AppConstants.kExpandedHeight,
                         floating: false,
                         pinned: true,
                         backgroundColor: colorGreen,

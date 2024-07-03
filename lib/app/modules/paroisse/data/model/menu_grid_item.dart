@@ -47,7 +47,7 @@ class _MenuGridItemState extends State<MenuGridItem> {
         child: Material(
           borderRadius: BorderRadius.circular(10.0),
           elevation: 10,
-          color: _isPressed ? colorGreen.withOpacity(0.5) : colorWhite,
+          color: _isPressed ? item.bgColor.withOpacity(0.5) : item.bgColor,
           shadowColor: colorGrey2.withOpacity(0.5),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -57,12 +57,12 @@ class _MenuGridItemState extends State<MenuGridItem> {
                   ? Image.asset(
                       item.icon,
                       height: Get.width / 8,
-                      color: colorGreenSemiLight,
+                      color: item.activeTint,
                     )
                   : SvgPicture.asset(
                       item.icon,
                       height: Get.width / 10,
-                      color: colorGreenSemiLight,
+                      colorFilter: ColorFilter.mode(item.activeTint, BlendMode.srcIn)
                     ),
               Separators.minimunVertical(),
               Padding(

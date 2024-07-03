@@ -1,7 +1,7 @@
 import 'package:accordion/accordion.dart';
 import 'package:accordion/controllers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
+import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/custom_header.dart';
@@ -29,7 +29,6 @@ class RegularMassScreen extends StatelessWidget {
       } else {
         if (logic.hasRegularMassData.isTrue) {
           return FadeIn(
-            duration: const Duration(milliseconds: 500),
             child: SmartRefresher(
               controller: logic.refreshController,
               onRefresh: logic.onRegularMassesRefresh,

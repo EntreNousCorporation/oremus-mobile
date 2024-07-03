@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/buttons_tabbar.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
+import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
@@ -19,7 +20,6 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
     return Container(
       color: colorGreen,
       child: GetX<ParoisseActivityMovementController>(
-          initState: (state) {},
           builder: (_) {
             return KeyboardDismisser(
               child: Scaffold(
@@ -33,7 +33,7 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     slivers: [
                       SliverAppBar(
-                        expandedHeight: Get.width / 1.7,
+                        expandedHeight: AppConstants.kExpandedHeight,
                         floating: false,
                         pinned: true,
                         backgroundColor: colorGreen,
@@ -66,7 +66,7 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Text(
-                                '${_.paroisseSelected.value.name}',
+                                _.paroisseSelected.value.name ?? '-',
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
@@ -148,7 +148,7 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
                                   textColor: colorWhite,
                                 ),
                                 borderColor: colorGreenSemiLight,
-                                tabs: _.menusTab.value.map((e) {
+                                tabs: _.menusTab.map((e) {
                                   return Tab(text: e);
                                 }).toList(),
                               ),

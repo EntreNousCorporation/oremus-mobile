@@ -8,6 +8,11 @@ class SearchCriteria {
   String? neighborhood;
   int? countCriteria = 0;
 
+  String? startDate;
+  String? endDate;
+  dynamic worshipPlace;
+  String? typeOfMassRequest;
+
   SearchCriteria({
     this.name,
     this.type,
@@ -15,6 +20,10 @@ class SearchCriteria {
     this.municipality,
     this.city,
     this.neighborhood,
+    this.startDate,
+    this.endDate,
+    this.worshipPlace,
+    this.typeOfMassRequest,
   });
 
   ///use to know if we must launch search or not
@@ -30,6 +39,11 @@ class SearchCriteria {
     data['neighborhood'] = neighborhood;
     data['isCriteriaEmpty'] = isCriteriaEmpty;
     data['countCriteria'] = countCriteria;
+
+    data['startDate'] = startDate;
+    data['endDate'] = endDate;
+    data['worshipPlace'] = worshipPlace;
+    data['typeOfMassRequest'] = typeOfMassRequest;
     return data;
   }
 }

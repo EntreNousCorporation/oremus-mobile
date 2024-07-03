@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
+import 'package:flutter_animator/widgets/fading_entrances/fade_in.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/custom_header.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
@@ -25,7 +25,6 @@ class ActivityScreen extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0),
             child: FadeIn(
-              duration: const Duration(milliseconds: 500),
               child: SmartRefresher(
                 controller: logic.refreshActivitiesController,
                 onRefresh: logic.onRefreshActivities,

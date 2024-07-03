@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:like_button/like_button.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
+import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
@@ -34,9 +35,9 @@ class ParoisseMenuScreen extends StatelessWidget {
                     physics: const BouncingScrollPhysics(),
                     slivers: [
                       SliverAppBar(
-                        expandedHeight: _.kExpandedHeight,
-                        floating: true,
-                        snap: true,
+                        expandedHeight: AppConstants.kExpandedHeight,
+                        floating: false,
+                        snap: false,
                         pinned: true,
                         backgroundColor: colorGreen,
                         elevation: 10,
@@ -45,7 +46,7 @@ class ParoisseMenuScreen extends StatelessWidget {
                           onPressed: () {
                             Get.back();
                           },
-                          icon: const Icon(Icons.arrow_back_ios_rounded),
+                          icon: const Icon(Icons.arrow_back_ios_rounded, color: colorWhite,),
                         ),
                         actions: [
                           LikeButton(
@@ -85,7 +86,7 @@ class ParoisseMenuScreen extends StatelessWidget {
                             onPressed: () {
                               _.goToMap();
                             },
-                            icon: const Icon(Icons.map_rounded),
+                            icon: const Icon(Icons.map_rounded, color: colorWhite,),
                           ),
                         ],
                         flexibleSpace: FlexibleSpaceBar(
@@ -94,7 +95,7 @@ class ParoisseMenuScreen extends StatelessWidget {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Text(
-                                '${_.paroisseSelected.value.name}',
+                                _.paroisseSelected.value.name ?? '-',
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
@@ -107,6 +108,7 @@ class ParoisseMenuScreen extends StatelessWidget {
                                         ?.isNotEmpty ==
                                     true)
                                 ? Stack(
+                              alignment: Alignment.center,
                                     children: [
                                       Hero(
                                         tag: 'tag${_.indexSelected.value}',
@@ -134,6 +136,7 @@ class ParoisseMenuScreen extends StatelessWidget {
                                     ],
                                   )
                                 : Stack(
+                              alignment: Alignment.center,
                                     children: [
                                       Hero(
                                         tag: 'tag${_.indexSelected.value}',
@@ -154,24 +157,21 @@ class ParoisseMenuScreen extends StatelessWidget {
                                     ],
                                   )),
                       ),
-                      const SliverPadding(
-                          padding: EdgeInsets.symmetric(vertical: 8)),
-                      SliverGrid(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
+                      SliverPadding(padding: const EdgeInsets.symmetric(vertical: 8), sliver: SliverGrid(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           childAspectRatio: 3 / 2,
                           crossAxisCount: 2,
                           crossAxisSpacing: 0.0,
                           mainAxisSpacing: 0.0,
                         ),
                         delegate: SliverChildBuilderDelegate(
-                          (context, index) {
+                              (context, index) {
                             var menu = _.menus[index];
                             return MenuGridItem(item: menu);
                           },
                           childCount: _.menus.length,
                         ),
-                      ),
+                      )),
                     ],
                   ),
                 ),

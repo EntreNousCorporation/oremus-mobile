@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
+import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
@@ -30,7 +30,6 @@ class SignupScreen extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
         child: FadeIn(
-          duration: const Duration(milliseconds: 500),
           child: KeyboardDismisser(
             child: Scaffold(
                 backgroundColor: Colors.transparent,

@@ -1,11 +1,15 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
 import 'package:hidden_drawer_menu/controllers/simple_hidden_drawer_controller.dart';
+import 'package:in_app_update/in_app_update.dart';
+import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
+import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/customhome/data/model/menu_item.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
@@ -29,10 +33,14 @@ class CustomHomeController extends GetxController {
   var title = ''.obs;
 
   var applyAnim = true.obs;
-  final GlobalKey<AnimatorWidgetState> basicIconAnimation = GlobalKey<AnimatorWidgetState>();
+  final GlobalKey<AnimatorWidgetState> basicIconAnimation =
+      GlobalKey<AnimatorWidgetState>();
 
   @override
   void onInit() {
+    if (flavor == AppConstants.ENV_PROD && GetPlatform.isAndroid) {
+      doPerformAppUpdate();
+    }
     initMenus();
     update();
     super.onInit();
@@ -143,5 +151,57 @@ class CustomHomeController extends GetxController {
     Get.deleteAll(force: true);
     isUserConnected.value = false;
     Get.offAllNamed(Routes.SIGNIN);
+  }
+
+  Future<void> performAppUpdate() async {
+    log('==== perform Oremus Update ====');
+    try {
+      InAppUpdate.checkForUpdate().then((updateInfo) {
+        if (updateInfo.updateAvailability ==
+            UpdateAvailability.updateAvailable) {
+          if (updateInfo.immediateUpdateAllowed) {
+            // Perform immediate update
+            showCustomDialog(Get.context!,
+                message: 'label_update_app_available'.tr,
+                positiveLabel: 'label_update'.tr, positiveCallBack: () {
+              InAppUpdate.performImmediateUpdate().then((appUpdateResult) {
+                if (appUpdateResult == AppUpdateResult.success) {
+                  //App Update successful
+                  showNotification(
+                    message: 'label_update_app_successfully'.tr,
+                    bgColor: colorGreenSemiLight,
+                  );
+                }
+              });
+            });
+          } else if (updateInfo.flexibleUpdateAllowed) {
+            //Perform flexible update
+            InAppUpdate.startFlexibleUpdate().then((appUpdateResult) {
+              if (appUpdateResult == AppUpdateResult.success) {
+                //App Update successful
+                InAppUpdate.completeFlexibleUpdate();
+                showNotification(
+                  message: 'label_update_app_successfully'.tr,
+                  bgColor: colorGreenSemiLight,
+                );
+              }
+            });
+          }
+        }
+      }, onError: (error) {
+        log('checkForUpdate Error performAppUpdate ${error.toString()}');
+      });
+    } catch (ex) {
+      log('Catch Error performAppUpdate ${ex.toString()}');
+    }
+  }
+
+  doPerformAppUpdate() {
+    log('==== Check Oremus Update ====');
+    if (GetPlatform.isAndroid) {
+      Timer(const Duration(seconds: 2), () {
+        performAppUpdate();
+      });
+    }
   }
 }

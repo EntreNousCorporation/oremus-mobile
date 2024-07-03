@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
+import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/custom_header.dart';
@@ -42,7 +42,6 @@ class PrayScreen extends StatelessWidget {
                           : _.hasData.isTrue
                               ? Expanded(
                                   child: FadeIn(
-                                    duration: const Duration(milliseconds: 500),
                                     child: Padding(
                                       padding: const EdgeInsets.only(
                                         top: 0,

@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:oremusapp/app/commons/theme/app_colors.dart';
 
 class TypeMenu {
   final String code;
@@ -7,6 +8,7 @@ class TypeMenu {
   final String icon;
   final bool isPngImage;
   final Color activeTint;
+  final Color bgColor;
   final bool isVisible;
   final Function goToPage;
 
@@ -18,5 +20,6 @@ class TypeMenu {
     this.icon = "",
     this.isPngImage=false,
     required this.activeTint,
+    this.bgColor = colorWhite,
   });
 }

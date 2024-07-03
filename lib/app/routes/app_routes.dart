@@ -33,5 +33,12 @@ abstract class Routes {
   //FAVORIS
   static const FAVORITES = '/favorites';
 
+  //PRAY
   static const PRAY = '/pray';
+
+  //ASK
+  static const MASS_REQUEST = '/mass-request';
+  static const MASS_REQUEST_HISTORY = '/mass-request-history';
+  static const MASS_REQUEST_CLAIM = '/mass-request-claim';
+  static const MASS_REQUEST_TRACK_CLAIM = '/mass-request-track-claim';
 }

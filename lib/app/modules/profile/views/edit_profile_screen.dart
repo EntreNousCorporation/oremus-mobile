@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
+import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
@@ -51,7 +51,6 @@ class EditProfileScreen extends StatelessWidget {
                     width: double.infinity,
                     child: SingleChildScrollView(
                       child: FadeIn(
-                        duration: const Duration(milliseconds: 500),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 32.0),
                           child: Column(

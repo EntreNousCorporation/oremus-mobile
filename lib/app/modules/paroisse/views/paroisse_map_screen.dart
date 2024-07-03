@@ -1,6 +1,6 @@
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
+import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
@@ -14,7 +14,6 @@ class ParoisseMapScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FadeIn(
-      duration: const Duration(milliseconds: 500),
       child: Stack(
         alignment: Alignment.topLeft,
         children: [

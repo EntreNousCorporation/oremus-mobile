@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
+import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/button.dart';
@@ -10,6 +10,7 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/resetpassword/controller/reset_password_controller.dart';
+import 'package:oremusapp/generated/assets.dart';
 
 class ResetPasswordScreen extends StatelessWidget {
   const ResetPasswordScreen({Key? key}) : super(key: key);
@@ -19,13 +20,12 @@ class ResetPasswordScreen extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(
-        image: AssetImage('assets/images/bg_login.jpg'),
+        image: AssetImage(Assets.imagesBgLogin),
         fit: BoxFit.cover,
       )),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
         child: FadeIn(
-          duration: const Duration(milliseconds: 500),
           child: KeyboardDismisser(
             child: Scaffold(
                 backgroundColor: Colors.transparent,

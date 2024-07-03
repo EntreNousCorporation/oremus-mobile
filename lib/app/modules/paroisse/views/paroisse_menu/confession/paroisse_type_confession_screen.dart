@@ -5,10 +5,12 @@ import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:like_button/like_button.dart';
 import 'package:oremusapp/app/commons/buttons_tabbar.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
+import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_confession_controller.dart';
+import 'package:oremusapp/generated/assets.dart';
 
 class ParoisseTypeConfessionScreen extends StatelessWidget {
   const ParoisseTypeConfessionScreen({Key? key}) : super(key: key);
@@ -32,7 +34,7 @@ class ParoisseTypeConfessionScreen extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     slivers: [
                       SliverAppBar(
-                        expandedHeight: Get.width / 1.7,
+                        expandedHeight: AppConstants.kExpandedHeight,
                         floating: false,
                         pinned: true,
                         backgroundColor: colorGreen,
@@ -129,7 +131,7 @@ class ParoisseTypeConfessionScreen extends StatelessWidget {
                                 : Stack(
                                     children: [
                                       Image.asset(
-                                        'assets/images/bg_login.jpg',
+                                        Assets.imagesBgLogin,
                                         width: Get.width,
                                         height: Get.width,
                                         fit: BoxFit.cover,
