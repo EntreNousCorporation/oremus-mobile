@@ -30,15 +30,16 @@ var versionName;
 var versionCode;
 var phoneId;
 var shareAppLink;
+var canCheckConectivity;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   initializeDateFormatting('fr_FR', null).then(
     (_) async {
       final settings = await _getFlavorSettings();
-      appUrl = settings.oremusFlavor.apiBaseUrl.toString() +
-          settings.oremusFlavor.endpoint.toString();
+      appUrl = settings.oremusFlavor.apiBaseUrl.toString() + settings.oremusFlavor.endpoint.toString();
       shareAppLink = settings.oremusFlavor.shareAppLink;
+      canCheckConectivity = settings.oremusFlavor.canCheckConectivity;
       //byPassAuth = settings.oremusFlavor.byPassAuth;
 
       await DB.initDatabase();

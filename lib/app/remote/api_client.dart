@@ -43,7 +43,9 @@ class ApiClientImpl extends ApiClient {
     log("method => " + method.name);
     //log("body => " + body != null ? body: '');
 
-    await checkConectivity();
+    if (canCheckConectivity) {
+      await checkConectivity();
+    }
 
     Response response;
     var resp;

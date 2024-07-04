@@ -55,7 +55,8 @@ class ParoisseItem extends StatelessWidget {
                         child: ClipRRect(
                           borderRadius: const BorderRadius.all(Radius.circular(10.0)),
                           child: SizedBox(
-                            height: Get.width / 2.8,
+                            //height: Get.width / 2.8,
+                            height: Get.width / 2.2,
                             width: double.infinity,
                             child: (paroisse.coverImage?.link?.isNotEmpty == true)
                                 ? Flow(
@@ -89,8 +90,9 @@ class ParoisseItem extends StatelessWidget {
                         ),
                       ),
                       Container(
+                        //height: Get.width / 2.8,
                         width: Get.width,
-                        height: Get.width / 2.8,
+                        height: Get.width / 2.2,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                             color: Colors.black54.withOpacity(0.3),

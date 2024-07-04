@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -73,6 +74,29 @@ String getDay(int code) {
       return 'Dimanche';
     default:
       return '';
+  }
+}
+
+IconData getIcon(String? code) {
+  switch (code) {
+    case 'REFUSED_PAYMENT':
+      return Icons.close_rounded;
+    case 'BEING_PROCESSED':
+      return Icons.autorenew_rounded;
+    default:
+      return Icons.close;
+  }
+}
+
+Color getColor(String? code) {
+  switch (code) {
+    case 'REFUSED_PAYMENT':
+      return colorRed;
+    case 'BEING_PROCESSED':
+    case 'IN_PROGRESS':
+      return colorBlue2;
+    default:
+      return colorTurquois;
   }
 }
 

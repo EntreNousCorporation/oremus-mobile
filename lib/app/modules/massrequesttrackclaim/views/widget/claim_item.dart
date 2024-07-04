@@ -89,18 +89,18 @@ class ClaimItem extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const Icon(
+                  Icon(
                     Icons.circle,
-                    color: colorTurquois,
-                    size: 15,
+                    color: getColor(claimData.status?.code),
+                    size: 12,
                   ),
                   Separators.customSizeHorizontal(3),
                   Text(
                     claimData.status?.name?.fr ?? '-',
                     textAlign: TextAlign.center,
                     style: TextStyles.montserratMedium(
-                      textSize: TextSizes.fifteen,
-                      textColor: colorTurquois,
+                      textSize: TextSizes.thirteen,
+                      textColor: getColor(claimData.status?.code),
                     ),
                   ),
                 ],

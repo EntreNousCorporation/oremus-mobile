@@ -8,6 +8,7 @@ import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
+import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/massrequestclaim/data/model/claim_response.dart';
@@ -150,7 +151,9 @@ class MassRequestClaimController extends GetxController {
       resetForm();
       showNotification(
           message: 'Votre réclamation a été prise en compte',
-          duration: const Duration(seconds: 5));
+          duration: const Duration(seconds: 5),
+        bgColor: colorGreen,
+      );
     }, onError: (error) {
       EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;

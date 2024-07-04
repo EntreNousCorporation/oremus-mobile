@@ -12,6 +12,7 @@ class FlavorSettings {
           endpoint: '',
           shareAppLink: 'https://download-dev.oremus.ci/store-link',
           byPassAuth: false,
+          canCheckConectivity: false,
           envCredentials: EnvCredentials.dev,
         );
 
@@ -34,6 +35,7 @@ class OremusFlavor {
   final String? shareAppLink;
   final bool?
       byPassAuth; // True or False, whether we want to bypass the auth or not
+  final bool? canCheckConectivity;
   final EnvCredentials? envCredentials;
 
   OremusFlavor({
@@ -41,6 +43,7 @@ class OremusFlavor {
     this.endpoint,
     this.shareAppLink,
     this.byPassAuth = false,
+    this.canCheckConectivity = true,
     this.envCredentials = EnvCredentials.dev,
   });
 }

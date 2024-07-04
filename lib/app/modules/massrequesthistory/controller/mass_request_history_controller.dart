@@ -43,7 +43,8 @@ class MassRequestHistoryController extends GetxController {
 
   var paroisseSelected = ContentPlace().obs;
 
-  var selectedDate = Rx<DateTimeRange>(DateTimeRange(start: DateTime.now(), end: DateTime.now()));
+  var selectedDate = Rx<DateTimeRange>(
+      DateTimeRange(start: DateTime.now(), end: DateTime.now()));
   var datesRange = ''.obs;
   var startDate = ''.obs;
   var endDate = ''.obs;
@@ -74,12 +75,21 @@ class MassRequestHistoryController extends GetxController {
   }
 
   initCriteria() {
-    startDate.value = Jiffy.now().format(pattern: AppConstants.TIME_SIMPLE_FORMAT);
-    endDate.value = Jiffy.now().format(pattern: AppConstants.TIME_SIMPLE_FORMAT);
-    startDateApi.value = Jiffy.now().format(pattern: '${AppConstants.TIME_SIMPLE_FORMA1}T00:00:00.988[Z]');
-    endDateApi.value = Jiffy.now().format(pattern: '${AppConstants.TIME_SIMPLE_FORMA1}T23:59:59.988[Z]');
+    startDate.value = Jiffy.now()
+        .subtract(days: 6)
+        .format(pattern: AppConstants.TIME_SIMPLE_FORMAT);
+    endDate.value =
+        Jiffy.now().format(pattern: AppConstants.TIME_SIMPLE_FORMAT);
+    startDateApi.value = Jiffy.now()
+        .subtract(days: 6)
+        .format(pattern: '${AppConstants.TIME_SIMPLE_FORMA1}T00:00:00.988[Z]');
+    endDateApi.value = Jiffy.now()
+        .format(pattern: '${AppConstants.TIME_SIMPLE_FORMA1}T23:59:59.988[Z]');
     datesRange.value = '${startDate.value} - ${endDate.value}';
     searchController.text = datesRange.value;
+    selectedDate.value = DateTimeRange(
+        start: Jiffy.now().subtract(days: 6).dateTime,
+        end: Jiffy.now().dateTime);
     getMassRequests();
   }
 
@@ -149,9 +159,12 @@ class MassRequestHistoryController extends GetxController {
       }
 
       //For result
-      startDateApi.value = "${selectedDate.value.start.year}-$startMonth-$startDay${'T00:00:00.988Z'}";
-      endDateApi.value = "${selectedDate.value.end.year}-$endMonth-$endDay${'T23:59:59.988Z'}";
-      startDate.value = "$startDay/$startMonth/${selectedDate.value.start.year}";
+      startDateApi.value =
+          "${selectedDate.value.start.year}-$startMonth-$startDay${'T00:00:00.988Z'}";
+      endDateApi.value =
+          "${selectedDate.value.end.year}-$endMonth-$endDay${'T23:59:59.988Z'}";
+      startDate.value =
+          "$startDay/$startMonth/${selectedDate.value.start.year}";
       endDate.value = "$endDay/$endMonth/${selectedDate.value.end.year}";
       datesRange.value = '${startDate.value} - ${endDate.value}';
       searchController.text = datesRange.value;
@@ -179,6 +192,16 @@ class MassRequestHistoryController extends GetxController {
     );
   }
 
+  moveToHistoryDetail(MassRequestData massRequestData) {
+    Get.toNamed(
+      Routes.MASS_REQUEST_HISTORY_DETAIL,
+      arguments: [
+        paroisseSelected.toJson(),
+        massRequestData.toJson(),
+      ],
+    );
+  }
+
   getMassRequests() {
     hideKeyboard();
     searchCriteria.value.startDate = startDateApi.value;
@@ -188,7 +211,9 @@ class MassRequestHistoryController extends GetxController {
 
     log('request getMassRequests ::: ${jsonEncode(searchCriteria.toJson())}');
 
-    massRequestHistoryRepository.getMassRequests(searchCriteria: searchCriteria.value).then((value) {
+    massRequestHistoryRepository
+        .getMassRequests(searchCriteria: searchCriteria.value)
+        .then((value) {
       isDataProcessing(false);
       massRequests.value = value.content ?? [];
       if (massRequests.isNotEmpty == true) {
@@ -292,7 +317,8 @@ class MassRequestHistoryController extends GetxController {
   }
 
   goToAdvancedSearch() async {
-    searchCriteria.value = await Get.toNamed(Routes.FILTER_MASS_REQUEST_HISTORY);
+    searchCriteria.value =
+        await Get.toNamed(Routes.FILTER_MASS_REQUEST_HISTORY);
     log('searchCriteria => ${searchCriteria.value.toJson().toString()}');
     searchCriteria.refresh();
     log('searchCriteria => ${searchCriteria.value.toJson().toString()}');

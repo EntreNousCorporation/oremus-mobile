@@ -145,128 +145,133 @@ class MassRequestHistoryScreen extends StatelessWidget {
                                 ],
                               )),
                   ),
-                  const SliverPadding(
-                      padding: EdgeInsets.symmetric(vertical: 8)),
-                  SliverToBoxAdapter(
-                    child: Column(
-                      children: [
-                        Separators.minimunVertical(),
-                        Text(
-                          'Mes historiques de demande',
-                          textAlign: TextAlign.center,
-                          style: TextStyles.montserratBold(
-                            textSize: TextSizes.eighteen,
-                            textColor: colorGreenSemiLight,
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    sliver: SliverToBoxAdapter(
+                      child: Column(
+                        children: [
+                          Separators.minimunVertical(),
+                          Text(
+                            'Mes historiques de demande',
+                            textAlign: TextAlign.center,
+                            style: TextStyles.montserratBold(
+                              textSize: TextSizes.eighteen,
+                              textColor: colorGreenSemiLight,
+                            ),
                           ),
-                        ),
-                        Separators.minimunVertical(),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            top: 16,
-                            bottom: 0,
-                            left: 16,
-                            right: 16,
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: SizedBox(
-                                  height: (Get.width / 9),
-                                  child: const SearchWidget(),
+                          Separators.minimunVertical(),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              top: 16,
+                              bottom: 0,
+                              left: 16,
+                              right: 16,
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: SizedBox(
+                                    height: (Get.width / 9),
+                                    child: const SearchWidget(),
+                                  ),
                                 ),
-                              ),
-                              Separators.normalHorizontal(),
-                              GestureDetector(
-                                onTap: () {
-                                  _.goToAdvancedSearch();
-                                },
-                                child: Material(
-                                  borderRadius:
-                                  BorderRadius.circular(10.0),
-                                  elevation: 10,
-                                  color: colorWhite,
-                                  shadowColor:
-                                  colorGrey2.withOpacity(0.5),
-                                  child: b.Badge(
-                                    showBadge: (_.searchCriteria.value.isMassRequestCriteriaEmpty == false) ? true : false,
-                                    position: b.BadgePosition.topEnd(top: -10, end: -5),
-                                    badgeContent: Text(
-                                      '${_.searchCriteria.value.countCriteria}',
-                                      style: TextStyles.montserratRegular(
-                                        textColor: colorWhite,
-                                        textSize:
-                                        TextSizes.thirteen,
+                                Separators.normalHorizontal(),
+                                GestureDetector(
+                                  onTap: () {
+                                    _.goToAdvancedSearch();
+                                  },
+                                  child: Material(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    elevation: 10,
+                                    color: colorWhite,
+                                    shadowColor: colorGrey2.withOpacity(0.5),
+                                    child: b.Badge(
+                                      showBadge: (_.searchCriteria.value
+                                                  .isMassRequestCriteriaEmpty ==
+                                              false)
+                                          ? true
+                                          : false,
+                                      position: b.BadgePosition.topEnd(
+                                          top: -10, end: -5),
+                                      badgeContent: Text(
+                                        '${_.searchCriteria.value.countCriteria}',
+                                        style: TextStyles.montserratRegular(
+                                          textColor: colorWhite,
+                                          textSize: TextSizes.thirteen,
+                                        ),
                                       ),
-                                    ),
-                                    child: SizedBox(
-                                      height: (Get.width / 9),
-                                      width: (Get.width / 9),
-                                      child: const Icon(
-                                        Icons.filter_list_rounded,
-                                        color: colorPurpleLight,
+                                      child: SizedBox(
+                                        height: (Get.width / 9),
+                                        width: (Get.width / 9),
+                                        child: const Icon(
+                                          Icons.filter_list_rounded,
+                                          color: colorPurpleLight,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        Separators.minimunVertical(),
-                        _.isDataProcessing.isTrue
-                            ? Column(
-                                children: [
-                                  Separators.customSizeVertical(
-                                      Get.height * 0.15),
-                                  LottieLoadingView(
-                                    size: Get.width / 4,
-                                  ),
-                                ],
-                              )
-                            : _.hasData.isTrue
-                                ? FadeInUp(
-                                  child: Column(
+                          Separators.minimunVertical(),
+                          _.isDataProcessing.isTrue
+                              ? Column(
+                                  children: [
+                                    Separators.customSizeVertical(
+                                        Get.height * 0.15),
+                                    LottieLoadingView(
+                                      size: Get.width / 4,
+                                    ),
+                                  ],
+                                )
+                              : _.hasData.isTrue
+                                  ? FadeInUp(
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: 10,
+                                              bottom: 0,
+                                              left: 16,
+                                              right: 16,
+                                            ),
+                                            child: ListView.separated(
+                                              shrinkWrap: true,
+                                              padding: EdgeInsets.zero,
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              itemBuilder: (context, index) {
+                                                var massRequest = _.massRequests[index];
+                                                return HistoryItem(
+                                                    massRequest: massRequest);
+                                              },
+                                              separatorBuilder:
+                                                  (context, index) {
+                                                return Separators
+                                                    .normalVertical();
+                                              },
+                                              itemCount: _.massRequests.length,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : Column(
                                       children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 10,
-                                            bottom: 0,
-                                            left: 16,
-                                            right: 16,
-                                          ),
-                                          child: ListView.separated(
-                                            shrinkWrap: true,
-                                            padding: EdgeInsets.zero,
-                                            physics:
-                                                const NeverScrollableScrollPhysics(),
-                                            itemBuilder: (context, index) {
-                                              var massRequest =
-                                                  _.massRequests[index];
-                                              return HistoryItem(massRequest: massRequest);
-                                            },
-                                            separatorBuilder: (context, index) {
-                                              return Separators.normalVertical();
-                                            },
-                                            itemCount: _.massRequests.length,
-                                          ),
+                                        Separators.customSizeVertical(
+                                            Get.height * 0.15),
+                                        NotFoundScreen(
+                                          message:
+                                              "Aucune demande de messe trouvée !",
                                         ),
                                       ],
                                     ),
-                                )
-                                : Column(
-                                    children: [
-                                      Separators.customSizeVertical(
-                                          Get.height * 0.15),
-                                      NotFoundScreen(
-                                        message:
-                                            "Aucune demande de messe trouvée !",
-                                      ),
-                                    ],
-                                  ),
-                        Separators.minimunVertical(),
-                      ],
+                          Separators.minimunVertical(),
+                        ],
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

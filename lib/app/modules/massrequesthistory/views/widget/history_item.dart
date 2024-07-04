@@ -17,130 +17,154 @@ class HistoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<MassRequestHistoryController>(builder: (logic) {
-      return Material(
-        borderRadius: BorderRadius.circular(10.0),
-        elevation: 10,
-        color: colorWhite,
-        shadowColor: colorGrey2.withOpacity(0.5),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        border: Border.all(color: colorGreen)),
-                    child: SvgPicture.asset(Assets.imagesIconPray,
-                        height: Get.width / 10,
-                        colorFilter: const ColorFilter.mode(
-                            colorGreen, BlendMode.srcIn)),
-                  ),
-                  Separators.minimunHorizontal(),
-                  Separators.minimunHorizontal(),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          massRequest.prayerIntent ?? '-',
-                          textAlign: TextAlign.center,
-                          style: TextStyles.montserratMedium(
-                            textSize: TextSizes.fifteen,
-                            textColor: colorBlack,
-                          ),
-                        ),
-                        Separators.minimunVertical(),
-                        Text(
-                          massRequest.typeOfMassRequest?.name?.fr ?? '-',
-                          textAlign: TextAlign.center,
-                          style: TextStyles.montserratMedium(
-                            textSize: TextSizes.thirteen,
-                            textColor: colorBlue,
-                          ),
-                        ),
-                        Separators.minimunVertical(),
-                        Text(
-                          getDateTime(massRequest.endDate ?? '-'),
-                          textAlign: TextAlign.center,
-                          style: TextStyles.montserratRegular(
-                            textSize: TextSizes.ten,
-                            textColor: colorGreySeparator,
-                          ),
-                        ),
-                      ],
+      return GestureDetector(
+        onTap: () {
+          logic.moveToHistoryDetail(massRequest);
+        },
+        child: Material(
+          borderRadius: BorderRadius.circular(10.0),
+          elevation: 10,
+          color: colorWhite,
+          shadowColor: colorGrey2.withOpacity(0.5),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          border: Border.all(color: colorGreen)),
+                      child: SvgPicture.asset(Assets.imagesIconPray,
+                          height: Get.width / 10,
+                          colorFilter: const ColorFilter.mode(
+                              colorGreen, BlendMode.srcIn)),
                     ),
-                  ),
-                  Text(
-                    "${massRequest.price.toString().split('.').first.amountFormat()} FCFA",
-                    textAlign: TextAlign.center,
-                    style: TextStyles.montserratBold(
-                      textSize: TextSizes.fifteen,
-                      textColor: colorBlack,
-                    ),
-                  ),
-                ],
-              ),
-              const Divider(color: colorTurquois),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      logic.moveToMassRequestClaims(massRequest);
-                    },
-                    child: Container(
-                      color: colorTransparent,
+                    Separators.minimunHorizontal(),
+                    Separators.minimunHorizontal(),
+                    Expanded(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(
-                            Icons.real_estate_agent_rounded,
-                            color: colorTurquois,
-                          ),
-                          Separators.customSizeVertical(3),
                           Text(
-                            'Faire une \nréclamation',
+                            massRequest.typeOfMassRequest?.name?.fr ?? '-',
+                            textAlign: TextAlign.center,
+                            style: TextStyles.montserratBold(
+                              textSize: TextSizes.fifteen,
+                              textColor: colorBlack,
+                            ),
+                          ),
+                          Separators.minimunVertical(),
+                          Text(
+                            "${massRequest.price.toString().split('.').first.amountFormat()} FCFA",
                             textAlign: TextAlign.center,
                             style: TextStyles.montserratMedium(
-                              textSize: TextSizes.twelve,
-                              textColor: colorTurquois,
+                              textSize: TextSizes.thirteen,
+                              textColor: colorBlack,
+                            ),
+                          ),
+                          Separators.minimunVertical(),
+                          Text(
+                            getDateTime(massRequest.endDate ?? '-'),
+                            textAlign: TextAlign.center,
+                            style: TextStyles.montserratRegular(
+                              textSize: TextSizes.ten,
+                              textColor: colorGreySeparator,
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                  Separators.normalHorizontal(),
-                  GestureDetector(
-                    onTap: () {
-                      logic.moveToMassRequest(massRequest);
-                    },
-                    child: Container(
-                      color: colorTransparent,
-                      child: Column(
-                        children: [
-                          const Icon(
-                            Icons.history_rounded,
-                            color: colorTurquois,
-                          ),
-                          Separators.customSizeVertical(3),
-                          Text(
-                            'Répéter\n',
-                            textAlign: TextAlign.center,
-                            style: TextStyles.montserratMedium(
-                              textSize: TextSizes.twelve,
-                              textColor: colorTurquois,
-                            ),
-                          ),
-                        ],
+                    const Icon(Icons.arrow_forward_ios_rounded, size: 15, color: colorGrey1,),
+                  ],
+                ),
+                const Divider(color: colorTurquois),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.circle,
+                      color: getColor(massRequest.status?.code),
+                      size: 15,
+                    ),
+                    Separators.customSizeHorizontal(3),
+                    Text(
+                      massRequest.status?.name?.fr ?? '-',
+                      textAlign: TextAlign.center,
+                      style: TextStyles.montserratMedium(
+                        textSize: TextSizes.fifteen,
+                        textColor: getColor(massRequest.status?.code),
                       ),
                     ),
+                  ],
+                ),
+                Visibility(
+                  visible: false,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Visibility(
+                        visible: massRequest.status?.code?.isEmpty == true,
+                        child: GestureDetector(
+                          onTap: () {
+                            logic.moveToMassRequestClaims(massRequest);
+                          },
+                          child: Container(
+                            color: colorTransparent,
+                            child: Column(
+                              children: [
+                                const Icon(
+                                  Icons.real_estate_agent_rounded,
+                                  color: colorTurquois,
+                                ),
+                                Separators.customSizeVertical(3),
+                                Text(
+                                  'Faire une \nréclamation',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyles.montserratMedium(
+                                    textSize: TextSizes.twelve,
+                                    textColor: colorTurquois,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Separators.normalHorizontal(),
+                      GestureDetector(
+                        onTap: () {
+                          logic.moveToMassRequest(massRequest);
+                        },
+                        child: Container(
+                          color: colorTransparent,
+                          child: Column(
+                            children: [
+                              const Icon(
+                                Icons.history_rounded,
+                                color: colorTurquois,
+                              ),
+                              Separators.customSizeVertical(3),
+                              Text(
+                                'Répéter\n',
+                                textAlign: TextAlign.center,
+                                style: TextStyles.montserratMedium(
+                                  textSize: TextSizes.twelve,
+                                  textColor: colorTurquois,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
       );
