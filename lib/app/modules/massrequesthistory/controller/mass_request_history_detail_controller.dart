@@ -1,16 +1,13 @@
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/data/repository/mass_request_history_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
-import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MassRequestHistoryDetailController extends GetxController {
   final MassRequestHistoryRepository massRequestHistoryRepository;
@@ -28,7 +25,7 @@ class MassRequestHistoryDetailController extends GetxController {
   var isLiked = false.obs;
 
   var paroisseSelected = ContentPlace().obs;
-  var massRequestSelected = MassRequestData().obs;
+  var massRequestSelected = MassRequestResponse().obs;
 
   @override
   void onInit() {
@@ -39,11 +36,11 @@ class MassRequestHistoryDetailController extends GetxController {
   getArguments() {
     if (Get.arguments != null) {
       paroisseSelected.value = ContentPlace.fromJson(Get.arguments[0]);
-      massRequestSelected.value = MassRequestData.fromJson(Get.arguments[1]);
+      massRequestSelected.value = MassRequestResponse.fromJson(Get.arguments[1]);
     }
   }
 
-  moveToMassRequest(MassRequestData massRequestData) {
+  moveToMassRequest(MassRequestResponse massRequestData) {
     Get.toNamed(
       Routes.MASS_REQUEST,
       arguments: [
@@ -53,7 +50,7 @@ class MassRequestHistoryDetailController extends GetxController {
     );
   }
 
-  moveToMassRequestClaims(MassRequestData massRequestData) {
+  moveToMassRequestClaims(MassRequestResponse massRequestData) {
     Get.toNamed(
       Routes.MASS_REQUEST_CLAIM,
       arguments: [

@@ -12,7 +12,7 @@ import 'package:oremusapp/generated/assets.dart';
 class HistoryItem extends StatelessWidget {
   const HistoryItem({Key? key, required this.massRequest}) : super(key: key);
 
-  final MassRequestData massRequest;
+  final MassRequestResponse? massRequest;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class HistoryItem extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            massRequest.typeOfMassRequest?.name?.fr ?? '-',
+                            massRequest?.typeOfMassRequest?.name?.fr ?? '-',
                             textAlign: TextAlign.center,
                             style: TextStyles.montserratBold(
                               textSize: TextSizes.fifteen,
@@ -58,7 +58,7 @@ class HistoryItem extends StatelessWidget {
                           ),
                           Separators.minimunVertical(),
                           Text(
-                            "${massRequest.price.toString().split('.').first.amountFormat()} FCFA",
+                            "${massRequest?.price.toString().split('.').first.amountFormat()} FCFA",
                             textAlign: TextAlign.center,
                             style: TextStyles.montserratMedium(
                               textSize: TextSizes.thirteen,
@@ -67,7 +67,7 @@ class HistoryItem extends StatelessWidget {
                           ),
                           Separators.minimunVertical(),
                           Text(
-                            getDateTime(massRequest.endDate ?? '-'),
+                            getDateTime(massRequest?.endDate ?? ''),
                             textAlign: TextAlign.center,
                             style: TextStyles.montserratRegular(
                               textSize: TextSizes.ten,
@@ -87,16 +87,16 @@ class HistoryItem extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.circle,
-                      color: getColor(massRequest.status?.code),
+                      color: getColor(massRequest?.status?.code),
                       size: 15,
                     ),
                     Separators.customSizeHorizontal(3),
                     Text(
-                      massRequest.status?.name?.fr ?? '-',
+                      massRequest?.status?.name?.fr ?? '-',
                       textAlign: TextAlign.center,
                       style: TextStyles.montserratMedium(
                         textSize: TextSizes.fifteen,
-                        textColor: getColor(massRequest.status?.code),
+                        textColor: getColor(massRequest?.status?.code),
                       ),
                     ),
                   ],
@@ -107,7 +107,7 @@ class HistoryItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Visibility(
-                        visible: massRequest.status?.code?.isEmpty == true,
+                        visible: massRequest?.status?.code?.isEmpty == true,
                         child: GestureDetector(
                           onTap: () {
                             logic.moveToMassRequestClaims(massRequest);

@@ -8,7 +8,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 class GridviewItem extends StatelessWidget {
   const GridviewItem({Key? key, required this.diocese}) : super(key: key);
 
-  final ContentPlace diocese;
+  final ContentPlace? diocese;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class GridviewItem extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      '${diocese.name}',
+                      diocese?.name ?? '-',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyles.montserratBold(

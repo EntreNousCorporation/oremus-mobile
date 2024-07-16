@@ -32,11 +32,11 @@ class FavoriteController extends GetxController {
     log('favorites => ${favorites.length}');
   }
 
-  removeToFavoriteList(ContentPlace paroisseToRemove, int index) {
-    log('${paroisseToRemove.name}');
+  removeToFavoriteList(ContentPlace? paroisseToRemove, int index) {
+    log('${paroisseToRemove?.name}');
     showCustomDialog(
       Get.context!,
-      message: 'Retirer «${paroisseToRemove.name}» des favoris ?',
+      message: 'Retirer «${paroisseToRemove?.name}» des favoris ?',
       negativeLabel: 'Oui, Retirer',
       negativeCallBack: () {
         paroisseRepository.deleteFavorite(paroisseToRemove);

@@ -16,6 +16,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/interface_paroisse_repository.dart';
 import 'package:oremusapp/app/remote/api_client.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
+import 'package:oremusapp/app/remote/data_response.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
 
 class ParoisseRepository implements IParoisseRepository {
@@ -24,7 +25,7 @@ class ParoisseRepository implements IParoisseRepository {
   ParoisseRepository(this._apiClient);
 
   @override
-  Future<PlaceResponse> getParoisses({
+  Future<DataResponse<ContentPlace>> getParoisses({
     int? page = 0,
     SearchCriteria? searchCriteria,
   }) async {
@@ -39,7 +40,7 @@ class ParoisseRepository implements IParoisseRepository {
       var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
       throw CustomException(e.debugMessage, e.status);
     } else {
-      return PlaceResponse.fromJson(
+      return DataResponse<ContentPlace>.fromJson(
           json.decode(response.bodyString.toString()));
     }
   }
@@ -180,12 +181,12 @@ class ParoisseRepository implements IParoisseRepository {
   }
 
   @override
-  void addFavorite(ContentPlace paroisse) {
+  void addFavorite(ContentPlace? paroisse) {
     log('saveFavorite 2');
     var favorites = getAllFavorites();
-    var hasParoisse = favorites.indexWhere((element) => element.identifier == paroisse.identifier);
+    var hasParoisse = favorites.indexWhere((element) => element.identifier == paroisse?.identifier);
     if (hasParoisse == -1) { //pas trouvé donc on peut ajouter
-      favorites.add(paroisse);
+      favorites.add(paroisse ?? ContentPlace());
       DB.saveData(AppConstants.KEY_LIST_FAVORITES, jsonEncode(favorites).toString(),);
       log('favorites length => ${favorites.length}');
     } else {
@@ -194,10 +195,10 @@ class ParoisseRepository implements IParoisseRepository {
   }
 
   @override
-  void deleteFavorite(ContentPlace paroisse) {
+  void deleteFavorite(ContentPlace? paroisse) {
     log('removeFavorite 2');
     var favorites = getAllFavorites();
-    favorites.removeWhere((element) => element.identifier == paroisse.identifier);
+    favorites.removeWhere((element) => element.identifier == paroisse?.identifier);
     log('Favoris supprimé');
     DB.saveData(AppConstants.KEY_LIST_FAVORITES, jsonEncode(favorites).toString());
     log('favorites length => ${favorites.length}');

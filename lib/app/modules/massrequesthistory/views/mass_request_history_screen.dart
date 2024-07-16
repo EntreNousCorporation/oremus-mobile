@@ -226,7 +226,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
                                   ],
                                 )
                               : _.hasData.isTrue
-                                  ? FadeInUp(
+                                  ? FadeIn(
                                       child: Column(
                                         children: [
                                           Padding(
@@ -243,8 +243,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
                                                   const NeverScrollableScrollPhysics(),
                                               itemBuilder: (context, index) {
                                                 var massRequest = _.massRequests[index];
-                                                return HistoryItem(
-                                                    massRequest: massRequest);
+                                                return HistoryItem(massRequest: massRequest);
                                               },
                                               separatorBuilder:
                                                   (context, index) {

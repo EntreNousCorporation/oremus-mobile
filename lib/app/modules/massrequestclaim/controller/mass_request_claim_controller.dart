@@ -39,7 +39,7 @@ class MassRequestClaimController extends GetxController {
   Rx<TypeData?> claimTypeSelected = Rx<TypeData?>(null);
 
   var paroisseSelected = ContentPlace().obs;
-  var massRequestSelected = MassRequestData().obs;
+  var massRequestSelected = MassRequestResponse().obs;
   var claimDescription = TextEditingController();
 
   @override
@@ -53,7 +53,7 @@ class MassRequestClaimController extends GetxController {
     if (Get.arguments != null) {
       paroisseSelected.value = ContentPlace.fromJson(Get.arguments[0]);
       if (Get.arguments[1] != null) {
-        massRequestSelected.value = MassRequestData.fromJson(Get.arguments[1]);
+        massRequestSelected.value = MassRequestResponse.fromJson(Get.arguments[1]);
       }
     }
   }

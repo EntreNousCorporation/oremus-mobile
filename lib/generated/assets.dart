@@ -2,6 +2,7 @@
 class Assets {
   Assets._();
 
+  static const String assetsImagesCheck = 'assets/images/check.json';
   static const String assetsImagesLogo = 'assets/images/logo.svg';
   static const String fontsMontserratAlternatesBlack = 'assets/fonts/MontserratAlternates_Black.otf';
   static const String fontsMontserratAlternatesBlackItalic = 'assets/fonts/MontserratAlternates_BlackItalic.otf';
@@ -49,6 +50,7 @@ class Assets {
   static const String imagesContacts = 'assets/images/contacts.svg';
   static const String imagesDeleteFriend = 'assets/images/delete-friend.png';
   static const String imagesDowntime = 'assets/images/downtime.svg';
+  static const String imagesError = 'assets/images/error.json';
   static const String imagesEvent = 'assets/images/event.svg';
   static const String imagesFacebookLogo = 'assets/images/facebook_logo.svg';
   static const String imagesFaqIcon = 'assets/images/faq_icon.svg';

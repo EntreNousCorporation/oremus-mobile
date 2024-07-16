@@ -9,6 +9,7 @@ import 'package:oremusapp/app/modules/massrequesthistory/data/repository/interfa
 import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 import 'package:oremusapp/app/remote/api_client.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
+import 'package:oremusapp/app/remote/data_response.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
 
 class MassRequestHistoryRepository implements IMassRequestHistoryRepository {
@@ -17,7 +18,7 @@ class MassRequestHistoryRepository implements IMassRequestHistoryRepository {
   MassRequestHistoryRepository(this._apiClient);
 
   @override
-  Future<MassRequestResponse> getMassRequests({
+  Future<DataResponse<MassRequestResponse>> getMassRequests({
     int? page = 0,
     SearchCriteria? searchCriteria,
   }) async {
@@ -26,14 +27,13 @@ class MassRequestHistoryRepository implements IMassRequestHistoryRepository {
       method: HttpMethod.get,
       useBearer: true,
     );
-    final String resp = json.encode(response.bodyString.toString());
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
       throw CustomException(e.debugMessage, e.status);
     } else {
-      return MassRequestResponse.fromJson(
+      return DataResponse<MassRequestResponse>.fromJson(
           json.decode(response.bodyString.toString()));
     }
   }

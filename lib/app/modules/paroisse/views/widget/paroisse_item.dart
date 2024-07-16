@@ -20,7 +20,7 @@ class ParoisseItem extends StatelessWidget {
   }) : super(key: key);
 
   final bool fromFavoriteUI;
-  final ContentPlace paroisse;
+  final ContentPlace? paroisse;
   final int index;
   final GlobalKey _backgroundImageKey = GlobalKey();
 
@@ -58,7 +58,7 @@ class ParoisseItem extends StatelessWidget {
                             //height: Get.width / 2.8,
                             height: Get.width / 2.2,
                             width: double.infinity,
-                            child: (paroisse.coverImage?.link?.isNotEmpty == true)
+                            child: (paroisse?.coverImage?.link?.isNotEmpty == true)
                                 ? Flow(
                                   delegate: ParallaxFlowDelegate(
                                     scrollable: Scrollable.of(context),
@@ -69,7 +69,7 @@ class ParoisseItem extends StatelessWidget {
                                     CachedNetworkImage(
                                       key: _backgroundImageKey,
                                       imageUrl:
-                                      paroisse.coverImage?.link ?? '',
+                                      paroisse?.coverImage?.link ?? '',
                                       fit: BoxFit.cover,
                                       placeholder: (context, url) =>
                                           SizedBox(
@@ -101,7 +101,7 @@ class ParoisseItem extends StatelessWidget {
                           padding:
                           EdgeInsets.symmetric(horizontal: Get.width / 10),
                           child: Text(
-                            '${paroisse.name}',
+                            '${paroisse?.name}',
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,
@@ -123,7 +123,7 @@ class ParoisseItem extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          '${paroisse.diocese?.name}',
+                          '${paroisse?.diocese?.name}',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           softWrap: true,
@@ -147,7 +147,7 @@ class ParoisseItem extends StatelessWidget {
                                 color: colorGreenSemiLight,
                               ),
                               child: Text(
-                                paroisse.address?.municipality ?? 'N/A',
+                                paroisse?.address?.municipality ?? 'N/A',
                                 style: TextStyles.montserratBold(
                                     textSize: TextSizes.eleven,
                                     textColor: colorWhite),
@@ -173,9 +173,9 @@ class ParoisseItem extends StatelessWidget {
                                 ));
                           })
                               : LikeButton(
-                            isLiked: paroisse.isFavorite,
+                            isLiked: paroisse?.isFavorite,
                             onTap: (isLiked) async {
-                              paroisse.isFavorite = !isLiked;
+                              paroisse?.isFavorite = !isLiked;
                               if (isLiked) {
                                 logic.removeFavorite(paroisse);
                               } else {

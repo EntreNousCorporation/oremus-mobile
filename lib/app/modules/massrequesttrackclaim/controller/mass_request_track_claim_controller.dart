@@ -36,7 +36,7 @@ class MassRequestTrackClaimController extends GetxController {
   var page = 0.obs;
   var searchCriteria = SearchCriteria().obs;
 
-  RxList<ClaimData> claims = RxList<ClaimData>([]);
+  RxList<ClaimData?> claims = RxList<ClaimData?>([]);
   var paroisseSelected = ContentPlace().obs;
 
   @override
@@ -61,7 +61,7 @@ class MassRequestTrackClaimController extends GetxController {
 
     massRequestClaimRepository.getClaims(searchCriteria: searchCriteria.value).then((value) {
       isDataProcessing(false);
-      claims.value = value.content ?? [];
+      claims.value = value.contents ?? [];
       if (claims.isNotEmpty == true) {
         hasData(true);
       } else {
@@ -102,7 +102,7 @@ class MassRequestTrackClaimController extends GetxController {
         .getClaims(searchCriteria: searchCriteria.value)
         .then((value) {
       refreshController.refreshCompleted();
-      claims.value = value.content ?? [];
+      claims.value = value.contents ?? [];
       if (value.last == false) {
         page.value += 1;
       } else {
@@ -137,7 +137,7 @@ class MassRequestTrackClaimController extends GetxController {
     massRequestClaimRepository
         .getClaims(page: page.value, searchCriteria: searchCriteria.value)
         .then((value) {
-      claims.addAll(value.content ?? []);
+      claims.addAll(value.contents ?? []);
       claims.refresh();
       refreshController.loadComplete();
       if (value.last == false) {

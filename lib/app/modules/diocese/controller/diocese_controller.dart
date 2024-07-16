@@ -15,7 +15,7 @@ class DioceseController extends GetxController {
   });
 
   var userConnection = Signin().obs;
-  RxList<ContentPlace> dioceses = RxList<ContentPlace>([]);
+  RxList<ContentPlace?> dioceses = RxList<ContentPlace?>([]);
   var unlockBackButton = true.obs;
   var isDataProcessing = false.obs;
   var hasData = false.obs;
@@ -54,7 +54,7 @@ class DioceseController extends GetxController {
       isDataProcessing(false);
       if (value.empty == false) {
         hasData(true);
-        dioceses.value = value.content ?? [];
+        dioceses.value = value.contents ?? [];
       } else {
         hasData(false);
       }
@@ -72,7 +72,7 @@ class DioceseController extends GetxController {
     dioceseRepository.getDioceses().then((value) {
       refreshController.refreshCompleted();
       if (value.empty == false) {
-        dioceses.value = value.content ?? [];
+        dioceses.value = value.contents ?? [];
       }
     }, onError: (error) {
       refreshController.refreshCompleted();

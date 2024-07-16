@@ -229,7 +229,7 @@ class ParoisseScreen extends StatelessWidget {
                                                 paroisse: paroisse,
                                                 index: index,
                                                 key: ValueKey(
-                                                    paroisse.identifier),
+                                                    paroisse?.identifier),
                                               );
                                             },
                                             separatorBuilder: (builder, index) {

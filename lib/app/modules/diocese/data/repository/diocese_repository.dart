@@ -7,6 +7,7 @@ import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/diocese/data/repository/interface_diocese_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/remote/api_client.dart';
+import 'package:oremusapp/app/remote/data_response.dart';
 
 class DioceseRepository implements IDioceseRepository {
 
@@ -15,7 +16,7 @@ class DioceseRepository implements IDioceseRepository {
   DioceseRepository(this._apiClient);
 
   @override
-  Future<PlaceResponse> getDioceses({int? page = 0}) async {
+  Future<DataResponse<ContentPlace>> getDioceses({int? page = 0}) async {
     Response response = await _apiClient.doRequest(
       endpoint: "/dioceses?page=$page&size=${AppConstants.PAGING_SIZE_1000}&sort=name%2CASC",
       method: HttpMethod.get,
@@ -28,7 +29,7 @@ class DioceseRepository implements IDioceseRepository {
       throw Exception(resp);
     } else {
       log('resp => $resp');
-      return PlaceResponse.fromJson(json.decode(response.bodyString.toString()));
+      return DataResponse<ContentPlace>.fromJson(json.decode(response.bodyString.toString()));
     }
   }
 }

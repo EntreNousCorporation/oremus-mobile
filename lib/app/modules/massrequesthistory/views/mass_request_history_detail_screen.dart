@@ -1,25 +1,17 @@
 import 'dart:developer';
-import 'dart:ffi';
 
-import 'package:badges/badges.dart' as b;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
-import 'package:jiffy/jiffy.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:like_button/like_button.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
-import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/commons/utils.dart';
-import 'package:oremusapp/app/modules/massrequesthistory/controller/mass_request_history_controller.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/controller/mass_request_history_detail_controller.dart';
-import 'package:oremusapp/app/modules/massrequesthistory/views/widget/history_item.dart';
-import 'package:oremusapp/app/modules/massrequesthistory/views/widget/search_widget.dart';
 import 'package:oremusapp/generated/assets.dart';
 
 class MassRequestHistoryDetailScreen extends StatelessWidget {
@@ -151,11 +143,11 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                   ),
                   SliverPadding(
                     padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+                        const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
                     sliver: SliverToBoxAdapter(
                       child: Column(
                         children: [
-                          Separators.minimunVertical(),
+                          //Separators.minimunVertical(),
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
@@ -218,7 +210,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                     ),
                                     Separators.minimunVertical(),
                                     Text(
-                                      '${Jiffy.parse(_.massRequestSelected.value.startDate ?? '').format(pattern: AppConstants.TIME_DEFAULT_FORMAT)} au ${Jiffy.parse(_.massRequestSelected.value.endDate ?? '').format(pattern: AppConstants.TIME_DEFAULT_FORMAT)}',
+                                      '${getCustomDate(_.massRequestSelected.value.startDate ?? '')} au ${getCustomDate(_.massRequestSelected.value.endDate ?? '')}',
                                       textAlign: TextAlign.center,
                                       style: TextStyles.montserratSemiBold(
                                         textSize: TextSizes.sixteen,
@@ -271,7 +263,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                         Visibility(
                                           visible: _.massRequestSelected.value
                                                   .status?.code?.isEmpty ==
-                                              true,
+                                              false,
                                           child: Row(
                                             children: [
                                               GestureDetector(
@@ -349,7 +341,6 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Separators.minimunVertical(),
                         ],
                       ),
                     ),

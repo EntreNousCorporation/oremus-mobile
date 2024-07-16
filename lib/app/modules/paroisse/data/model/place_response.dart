@@ -1,133 +1,7 @@
-class PlaceResponse {
-  List<ContentPlace>? content;
-  Pageable? pageable;
-  int? totalPages;
-  int? totalElements;
-  bool? last;
-  bool? first;
-  int? numberOfElements;
-  Sort? sort;
-  int? number;
-  int? size;
-  bool? empty;
+import 'package:oremusapp/app/remote/to_json_interface.dart';
 
-  PlaceResponse({
-    this.content,
-    this.pageable,
-    this.totalPages,
-    this.last,
-    this.first,
-    this.numberOfElements,
-    this.sort,
-    this.number,
-    this.size,
-    this.empty,
-  });
-
-  PlaceResponse.fromJson(Map<String, dynamic> json) {
-    content = json['content'] != null
-        ? (json['content'] as List)
-        .map((i) => ContentPlace.fromJson(i))
-        .toList()
-        : null;
-    pageable = json['pageable'] != null
-        ? Pageable.fromJson(json['pageable'])
-        : null;
-    totalPages = json['totalPages'];
-    last = json['last'];
-    first = json['first'];
-    numberOfElements = json['numberOfElements'];
-    sort = json['sort'] != null
-        ? Sort.fromJson(json['sort'])
-        : null;
-    number = json['number'];
-    size = json['size'];
-    empty = json['empty'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (content != null) {
-      data['content'] = content?.map((v) => v.toJson()).toList();
-    }
-    data['pageable'] = pageable?.toJson();
-    data['totalPages'] = totalPages;
-    data['last'] = last;
-    data['first'] = first;
-    data['numberOfElements'] = numberOfElements;
-    data['sort'] = sort?.toJson();
-    data['number'] = number;
-    data['size'] = size;
-    data['empty'] = empty;
-    return data;
-  }
-}
-
-class Pageable {
-  Sort? sort;
-  int? pageNumber;
-  int? pageSize;
-  int? offset;
-  bool? paged;
-  bool? unpaged;
-
-  Pageable({
-    this.sort,
-    this.pageNumber,
-    this.pageSize,
-    this.offset,
-    this.paged,
-  });
-
-  Pageable.fromJson(Map<String, dynamic> json) {
-    sort = json['sort'] != null
-        ? Sort.fromJson(json['sort'])
-        : null;
-    pageNumber = json['pageNumber'];
-    pageSize = json['pageSize'];
-    offset = json['offset'];
-    paged = json['paged'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['sort'] = sort?.toJson();
-    data['pageNumber'] = pageNumber;
-    data['pageSize'] = pageSize;
-    data['offset'] = offset;
-    data['paged'] = paged;
-    return data;
-  }
-}
-
-class Sort {
-  bool? unsorted;
-  bool? sorted;
-  bool? empty;
-
-  Sort({
-    this.unsorted,
-    this.sorted,
-    this.empty,
-  });
-
-  Sort.fromJson(Map<String, dynamic> json) {
-    unsorted = json['unsorted'];
-    sorted = json['sorted'];
-    empty = json['empty'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['unsorted'] = unsorted;
-    data['sorted'] = sorted;
-    data['empty'] = empty;
-    return data;
-  }
-}
-
-class ContentPlace {
-  int? identifier;
+class ContentPlace extends ToJsonInterface {
+  dynamic identifier;
   String? createdAt;
   String? updatedAt;
   String? createdBy;
@@ -195,6 +69,7 @@ class ContentPlace {
         : null;
   }
 
+  @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['identifier'] = identifier;

@@ -5,13 +5,11 @@ import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_type.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_user.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
+import 'package:oremusapp/app/remote/data_response.dart';
 
 abstract class IParoisseRepository {
   //For API
-  Future<PlaceResponse> getParoisses({
-    int? page = 0,
-    SearchCriteria? searchCriteria,
-  });
+  Future<DataResponse<ContentPlace>> getParoisses({int? page = 0, SearchCriteria? searchCriteria,});
   Future<List<LiturgicalCelebrationResponse>> getLiturgicalCelebration(int idParoisse);
   Future<List<ActivityResponse>> getActivities(int idParoisse);
   Future<List<MovementResponse>> getMouvements(int idParoisse);

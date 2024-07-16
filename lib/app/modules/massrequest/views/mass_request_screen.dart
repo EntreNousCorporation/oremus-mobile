@@ -5,12 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:like_button/like_button.dart';
+import 'package:oremusapp/app/commons/components/button.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
+import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/mass_request_controller.dart';
+import 'package:oremusapp/app/modules/massrequest/views/widget/mass_type_filter.dart';
+import 'package:oremusapp/app/modules/massrequest/views/widget/prayer_intent_filter.dart';
 import 'package:oremusapp/generated/assets.dart';
 
 class MassRequestScreen extends StatelessWidget {
@@ -20,104 +24,103 @@ class MassRequestScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: colorWhite,
-      child: GetX<MassRequestController>(
-          builder: (_) {
-            return KeyboardDismisser(
-              child: Scaffold(
-                resizeToAvoidBottomInset: true,
-                body: NotificationListener<OverscrollIndicatorNotification>(
-                  onNotification: (notification) {
-                    notification.disallowIndicator();
-                    return false;
-                  },
-                  child: CustomScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    slivers: [
-                      SliverAppBar(
-                        expandedHeight: AppConstants.kExpandedHeight,
-                        floating: false,
-                        snap: false,
-                        pinned: true,
-                        backgroundColor: colorGreen,
-                        elevation: 10,
-                        shadowColor: colorGrey2.withOpacity(0.8),
-                        leading: IconButton(
-                          onPressed: () {
-                            Get.back();
-                          },
-                          icon: const Icon(Icons.arrow_back_ios_rounded),
+      child: GetX<MassRequestController>(builder: (_) {
+        return KeyboardDismisser(
+          child: Scaffold(
+            resizeToAvoidBottomInset: true,
+            body: NotificationListener<OverscrollIndicatorNotification>(
+              onNotification: (notification) {
+                notification.disallowIndicator();
+                return false;
+              },
+              child: CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  SliverAppBar(
+                    expandedHeight: AppConstants.kExpandedHeight,
+                    floating: false,
+                    snap: false,
+                    pinned: true,
+                    backgroundColor: colorGreen,
+                    elevation: 10,
+                    shadowColor: colorGrey2.withOpacity(0.8),
+                    leading: IconButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      icon: const Icon(Icons.arrow_back_ios_rounded),
+                    ),
+                    actions: [
+                      LikeButton(
+                        isLiked: _.paroisseSelected.value.isFavorite,
+                        onTap: (isLiked) async {
+                          log('isLiked => $isLiked');
+                          _.paroisseSelected.value.isFavorite = !isLiked;
+                          if (isLiked) {
+                            _.removeFavorite(_.paroisseSelected.value, isLiked);
+                          } else {
+                            _.saveFavorite(_.paroisseSelected.value, isLiked);
+                          }
+                          return !isLiked;
+                        },
+                        size: 25,
+                        circleColor: const CircleColor(
+                            start: Color(0xff93291E), end: Color(0xFFED213A)),
+                        bubblesColor: const BubblesColor(
+                          dotPrimaryColor: Color(0xFFED213A),
+                          dotSecondaryColor: Color(0xff93291E),
                         ),
-                        actions: [
-                          LikeButton(
-                            isLiked: _.paroisseSelected.value.isFavorite,
-                            onTap: (isLiked) async {
-                              log('isLiked => $isLiked');
-                              _.paroisseSelected.value.isFavorite = !isLiked;
-                              if (isLiked) {
-                                _.removeFavorite(_.paroisseSelected.value, isLiked);
-                              } else {
-                                _.saveFavorite(_.paroisseSelected.value, isLiked);
-                              }
-                              return !isLiked;
-                            },
-                            size: 25,
-                            circleColor: const CircleColor(
-                                start: Color(0xff93291E), end: Color(0xFFED213A)),
-                            bubblesColor: const BubblesColor(
-                              dotPrimaryColor: Color(0xFFED213A),
-                              dotSecondaryColor: Color(0xff93291E),
-                            ),
-                            likeBuilder: (bool isLiked) {
-                              return Icon(
-                                isLiked ? Icons.favorite : Icons.favorite_border,
-                                color:
+                        likeBuilder: (bool isLiked) {
+                          return Icon(
+                            isLiked ? Icons.favorite : Icons.favorite_border,
+                            color:
                                 isLiked ? const Color(0xFFED213A) : colorWhite,
-                                size: 25,
-                              );
-                            },
+                            size: 25,
+                          );
+                        },
+                      ),
+                      Separators.minimunHorizontal(),
+                      IconButton(
+                        onPressed: () {
+                          _.goToMap();
+                        },
+                        icon: const Icon(Icons.map_rounded),
+                      ),
+                    ],
+                    flexibleSpace: FlexibleSpaceBar(
+                      centerTitle: true,
+                      title: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          '${_.paroisseSelected.value.name}',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: TextStyles.montserratBold(
+                            textSize: TextSizes.eighteen,
+                            textColor: colorWhite,
                           ),
-                          Separators.minimunHorizontal(),
-                          IconButton(
-                            onPressed: () {
-                              _.goToMap();
-                            },
-                            icon: const Icon(Icons.map_rounded),
-                          ),
-                        ],
-                        flexibleSpace: FlexibleSpaceBar(
-                            centerTitle: true,
-                            title: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text(
-                                '${_.paroisseSelected.value.name}',
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center,
-                                style: TextStyles.montserratBold(
-                                    textSize: TextSizes.eighteen,
-                                    textColor: colorWhite,),
-                              ),
-                            ),
-                            background: (_.paroisseSelected.value.coverImage?.link
-                                ?.isNotEmpty ==
-                                true)
-                                ? Stack(
+                        ),
+                      ),
+                      background: (_.paroisseSelected.value.coverImage?.link
+                                  ?.isNotEmpty ==
+                              true)
+                          ? Stack(
                               children: [
                                 Hero(
                                   tag:
-                                  'tag${_.paroisseSelected.value.identifier}',
+                                      'tag${_.paroisseSelected.value.identifier}',
                                   child: CachedNetworkImage(
                                     width: Get.width,
                                     height: Get.width,
                                     imageUrl: _.paroisseSelected.value
-                                        .coverImage?.link ??
+                                            .coverImage?.link ??
                                         '',
                                     fit: BoxFit.cover,
                                     placeholder: (context, url) =>
-                                        LottieLoadingView(
-                                            size: Get.width / 6),
+                                        LottieLoadingView(size: Get.width / 6),
                                     errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
+                                        const Icon(Icons.error),
                                   ),
                                 ),
                                 Container(
@@ -129,11 +132,11 @@ class MassRequestScreen extends StatelessWidget {
                                 ),
                               ],
                             )
-                                : Stack(
+                          : Stack(
                               children: [
                                 Hero(
                                   tag:
-                                  'tag${_.paroisseSelected.value.identifier}',
+                                      'tag${_.paroisseSelected.value.identifier}',
                                   child: Image.asset(
                                     Assets.imagesBgLogin,
                                     width: Get.width,
@@ -149,31 +152,158 @@ class MassRequestScreen extends StatelessWidget {
                                   ),
                                 ),
                               ],
-                            )),
-                      ),
-                      const SliverPadding(padding: EdgeInsets.symmetric(vertical: 8)),
-                      SliverList(
-                        delegate: SliverChildListDelegate(
-                          [
-                            Separators.minimunVertical(),
-                            Text(
-                              'Faire une demande de messe',
-                              textAlign: TextAlign.center,
-                              style: TextStyles.montserratBold(
-                                textSize: TextSizes.eighteen,
-                                textColor: colorGreenSemiLight,
+                            ),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate(
+                        [
+                          Separators.minimunVertical(),
+                          Text(
+                            'Faire une demande de messe',
+                            textAlign: TextAlign.center,
+                            style: TextStyles.montserratBold(
+                              textSize: TextSizes.eighteen,
+                              textColor: colorGreenSemiLight,
+                            ),
+                          ),
+                          Separators.normalVertical(),
+                          Separators.maximum1Vertical(),
+                          Text(
+                            'Type de demande de messe',
+                            style: TextStyles.montserratMedium(
+                              textColor: colorGrey1,
+                              textSize: TextSizes.fourteen,
+                            ),
+                          ),
+                          Separators.customSizeVertical(8),
+                          Material(
+                            borderRadius: BorderRadius.circular(10.0),
+                            elevation: 10,
+                            color: colorWhite,
+                            shadowColor: colorGrey2.withOpacity(0.5),
+                            child: const MassTypeFilter(),
+                          ),
+                          Separators.maximum1Vertical(),
+                          Text(
+                            'Intention de prière',
+                            style: TextStyles.montserratMedium(
+                              textColor: colorGrey1,
+                              textSize: TextSizes.fourteen,
+                            ),
+                          ),
+                          Separators.customSizeVertical(8),
+                          Material(
+                            borderRadius: BorderRadius.circular(10.0),
+                            elevation: 10,
+                            color: colorWhite,
+                            shadowColor: colorGrey2.withOpacity(0.5),
+                            child: const PrayerIntentFilter(),
+                          ),
+                          Separators.maximum1Vertical(),
+
+                          //WORSHIP HOURS
+                          Material(
+                            borderRadius: BorderRadius.circular(10.0),
+                            elevation: 10,
+                            color: colorWhite,
+                            shadowColor: colorGrey2.withOpacity(0.5),
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
+                              width: double.maxFinite,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Choisir des dates',
+                                    style: TextStyles.montserratMedium(
+                                      textColor: colorGrey1,
+                                      textSize: TextSizes.fourteen,
+                                    ),
+                                  ),
+                                  const Icon(
+                                    Icons.arrow_drop_down_rounded,
+                                    size: 25,
+                                    color: colorGreen,
+                                  ),
+                                ],
                               ),
                             ),
-                            Separators.normalVertical(),
-                          ],
-                        ),
+                          ),
+                          Separators.maximum1Vertical(),
+
+                          //PRICING
+                          Material(
+                            borderRadius: BorderRadius.circular(10.0),
+                            elevation: 10,
+                            color: colorWhite,
+                            shadowColor: colorGrey2.withOpacity(0.5),
+                            child: Container(
+                              padding: const EdgeInsets.all(24),
+                              width: double.maxFinite,
+                              decoration: BoxDecoration(
+                                color: colorGreenlight2,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    'Tarif:',
+                                    style: TextStyles.montserratBold(
+                                      textColor: colorGreySeparator,
+                                      textSize: TextSizes.twenty,
+                                    ),
+                                  ),
+                                  Separators.normalHorizontal(),
+                                  Text(
+                                    _.getPrice(),
+                                    style: TextStyles.montserratBold(
+                                      textColor: colorBlack,
+                                      textSize: TextSizes.twenty_four,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Separators.maximum1Vertical(),
+
+                          Material(
+                            borderRadius: BorderRadius.circular(10.0),
+                            elevation: 10,
+                            color: colorWhite,
+                            shadowColor: colorGrey2.withOpacity(0.5),
+                            child: CustomButton(
+                              text: 'Continuer',
+                              borderRadius: 10,
+                              textSize: TextSizes.sixteen,
+                              bgcolor: _.isValidForm.isTrue
+                                  ? colorGreen
+                                  : colorGrey1.withOpacity(0.5),
+                              borderColor: _.isValidForm.isTrue
+                                  ? colorGreen
+                                  : colorGreen.withOpacity(0),
+                              actionColor: colorGreen.withOpacity(0.5),
+                              enabled: _.isValidForm.value,
+                              action: () {
+                                _.doSendMassRequest();
+                              },
+                            ),
+                          ),
+                          Separators.maximum1Vertical(),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            );
-          }),
+            ),
+          ),
+        );
+      }),
     );
   }
 }

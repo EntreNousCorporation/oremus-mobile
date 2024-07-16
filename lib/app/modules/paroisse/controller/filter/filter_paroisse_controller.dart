@@ -26,8 +26,8 @@ class FilterParoisseController extends GetxController {
 
   RxList<PlaceType> paroisseTypes = RxList<PlaceType>([]);
   RxList<PlaceType> paroisseTypesTemp = RxList<PlaceType>([]);
-  RxList<ContentPlace> dioceses = RxList<ContentPlace>([]);
-  RxList<ContentPlace> diocesesTemp = RxList<ContentPlace>([]);
+  RxList<ContentPlace?> dioceses = RxList<ContentPlace?>([]);
+  RxList<ContentPlace?> diocesesTemp = RxList<ContentPlace?>([]);
   var placeTypeSelected = PlaceType().obs;
   var dioceseSelected = ContentPlace().obs;
   var unlockBackButton = true.obs;
@@ -129,8 +129,8 @@ class FilterParoisseController extends GetxController {
 
       if (value.empty == false) {
         hasDioceseData(true);
-        dioceses.value = value.content ?? [];
-        diocesesTemp.value = value.content ?? [];
+        dioceses.value = value.contents ?? [];
+        diocesesTemp.value = value.contents ?? [];
       } else {
         hasDioceseData(false);
       }
@@ -260,7 +260,7 @@ class FilterParoisseController extends GetxController {
 
   updateDioceseFilter(String value) {
     log(value);
-    diocesesTemp.value = dioceses.where((p) => p.name?.toLowerCase().contains(value.toLowerCase()) == true).toList();
+    diocesesTemp.value = dioceses.where((p) => p?.name?.toLowerCase().contains(value.toLowerCase()) == true).toList();
   }
 
   //SEARCH SECTION

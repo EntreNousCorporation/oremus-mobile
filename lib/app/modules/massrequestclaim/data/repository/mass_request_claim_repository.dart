@@ -10,6 +10,7 @@ import 'package:oremusapp/app/modules/massrequestclaim/data/repository/interface
 import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 import 'package:oremusapp/app/remote/api_client.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
+import 'package:oremusapp/app/remote/data_response.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
 
 class MassRequestClaimRepository implements IMassRequestClaimRepository {
@@ -35,7 +36,7 @@ class MassRequestClaimRepository implements IMassRequestClaimRepository {
   }
 
   @override
-  Future<ClaimResponse> getClaims({
+  Future<DataResponse<ClaimData>> getClaims({
     int? page = 0,
     SearchCriteria? searchCriteria,
   }) async {
@@ -49,7 +50,7 @@ class MassRequestClaimRepository implements IMassRequestClaimRepository {
       var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
       throw CustomException(e.debugMessage, e.status);
     } else {
-      return ClaimResponse.fromJson(
+      return DataResponse<ClaimData>.fromJson(
           json.decode(response.bodyString.toString()));
     }
   }

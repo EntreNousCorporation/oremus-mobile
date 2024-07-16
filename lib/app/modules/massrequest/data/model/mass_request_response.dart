@@ -1,130 +1,9 @@
+import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/profile/data/model/profile.dart';
+import 'package:oremusapp/app/remote/to_json_interface.dart';
 
-class MassRequestResponse {
-  List<MassRequestData>? content;
-  Pageable? pageable;
-  dynamic totalPages;
-  dynamic totalElements;
-  bool? last;
-  bool? first;
-  dynamic numberOfElements;
-  Sort? sort;
-  dynamic number;
-  dynamic size;
-  bool? empty;
-
-  MassRequestResponse({
-    this.content,
-    this.pageable,
-    this.totalPages,
-    this.last,
-    this.first,
-    this.numberOfElements,
-    this.sort,
-    this.number,
-    this.size,
-    this.empty,
-  });
-
-  MassRequestResponse.fromJson(Map<String, dynamic> json) {
-    content = json['content'] != null
-        ? (json['content'] as List)
-            .map((i) => MassRequestData.fromJson(i))
-            .toList()
-        : null;
-    pageable =
-        json['pageable'] != null ? Pageable.fromJson(json['pageable']) : null;
-    totalPages = json['totalPages'];
-    last = json['last'];
-    first = json['first'];
-    numberOfElements = json['numberOfElements'];
-    sort = json['sort'] != null ? Sort.fromJson(json['sort']) : null;
-    number = json['number'];
-    size = json['size'];
-    empty = json['empty'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (content != null) {
-      data['content'] = content?.map((v) => v.toJson()).toList();
-    }
-    data['pageable'] = pageable?.toJson();
-    data['totalPages'] = totalPages;
-    data['last'] = last;
-    data['first'] = first;
-    data['numberOfElements'] = numberOfElements;
-    data['sort'] = sort?.toJson();
-    data['number'] = number;
-    data['size'] = size;
-    data['empty'] = empty;
-    return data;
-  }
-}
-
-class Pageable {
-  Sort? sort;
-  dynamic pageNumber;
-  dynamic pageSize;
-  dynamic offset;
-  bool? paged;
-  bool? unpaged;
-
-  Pageable({
-    this.sort,
-    this.pageNumber,
-    this.pageSize,
-    this.offset,
-    this.paged,
-  });
-
-  Pageable.fromJson(Map<String, dynamic> json) {
-    sort = json['sort'] != null ? Sort.fromJson(json['sort']) : null;
-    pageNumber = json['pageNumber'];
-    pageSize = json['pageSize'];
-    offset = json['offset'];
-    paged = json['paged'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['sort'] = sort?.toJson();
-    data['pageNumber'] = pageNumber;
-    data['pageSize'] = pageSize;
-    data['offset'] = offset;
-    data['paged'] = paged;
-    return data;
-  }
-}
-
-class Sort {
-  bool? unsorted;
-  bool? sorted;
-  bool? empty;
-
-  Sort({
-    this.unsorted,
-    this.sorted,
-    this.empty,
-  });
-
-  Sort.fromJson(Map<String, dynamic> json) {
-    unsorted = json['unsorted'];
-    sorted = json['sorted'];
-    empty = json['empty'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['unsorted'] = unsorted;
-    data['sorted'] = sorted;
-    data['empty'] = empty;
-    return data;
-  }
-}
-
-class MassRequestData {
+class MassRequestResponse extends ToJsonInterface {
   dynamic identifier;
   String? createdAt;
   String? updatedAt;
@@ -138,9 +17,14 @@ class MassRequestData {
   WorshipPlace? worshipPlace;
   Status? status;
   Status? typeOfMassRequest;
-  User? user;
+  Profile? user;
 
-  MassRequestData({
+  String? paymentUrl;
+  String? paymentStatus;
+  String? paymentId;
+  String? transactionId;
+
+  MassRequestResponse({
     this.identifier,
     this.createdAt,
     this.updatedAt,
@@ -157,7 +41,7 @@ class MassRequestData {
     this.user,
   });
 
-  MassRequestData.fromJson(Map<String, dynamic> json) {
+  MassRequestResponse.fromJson(Map<String, dynamic> json) {
     identifier = json['identifier'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
@@ -175,9 +59,10 @@ class MassRequestData {
     typeOfMassRequest = json['typeOfMassRequest'] != null
         ? Status.fromJson(json['typeOfMassRequest'])
         : null;
-    user = json['user'] != null ? User.fromJson(json['user']) : null;
+    user = json['user'] != null ? Profile.fromJson(json['user']) : null;
   }
 
+  @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['identifier'] = identifier;
@@ -206,6 +91,43 @@ class MassRequestData {
   }
 }
 
+class MassRequestData {
+  String? prayerIntent;
+  int? worshipPlace;
+  String? typeOfMassRequest;
+  List<Slot>? slots;
+
+  MassRequestData({
+    this.prayerIntent,
+    this.worshipPlace,
+    this.typeOfMassRequest,
+    this.slots,
+  });
+
+  MassRequestData.fromJson(Map<String, dynamic> json) {
+    prayerIntent = json['prayerIntent'];
+    worshipPlace = json['worshipPlace'];
+    typeOfMassRequest = json['typeOfMassRequest'];
+    if (json['slots'] != null) {
+      slots = <Slot>[];
+      json['slots'].forEach((v) {
+        slots!.add(Slot.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['prayerIntent'] = prayerIntent;
+    data['worshipPlace'] = worshipPlace;
+    data['typeOfMassRequest'] = typeOfMassRequest;
+    if (slots != null) {
+      data['slots'] = slots!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
 class WorshipPlace {
   dynamic identifier;
   String? createdAt;
@@ -216,7 +138,7 @@ class WorshipPlace {
   String? massInfo;
   dynamic massRequestPrice;
   String? status;
-  Type? type;
+  Typee? type;
   String? description;
   Address? address;
   Diocese? diocese;
@@ -253,7 +175,7 @@ class WorshipPlace {
     massInfo = json['massInfo'];
     massRequestPrice = json['massRequestPrice'];
     status = json['status'];
-    type = json['type'] != null ? Type.fromJson(json['type']) : null;
+    type = json['type'] != null ? Typee.fromJson(json['type']) : null;
     description = json['description'];
     address =
         json['address'] != null ? Address.fromJson(json['address']) : null;
@@ -300,7 +222,7 @@ class WorshipPlace {
   }
 }
 
-class Type {
+class Typee {
   dynamic identifier;
   String? createdAt;
   String? updatedAt;
@@ -309,7 +231,7 @@ class Type {
   String? code;
   Translate? translate;
 
-  Type({
+  Typee({
     this.identifier,
     this.createdAt,
     this.updatedAt,
@@ -319,7 +241,7 @@ class Type {
     this.translate,
   });
 
-  Type.fromJson(Map<String, dynamic> json) {
+  Typee.fromJson(Map<String, dynamic> json) {
     identifier = json['identifier'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
@@ -409,134 +331,6 @@ class Status {
   }
 }
 
-class User {
-  dynamic identifier;
-  String? createdAt;
-  String? updatedAt;
-  String? createdBy;
-  String? modifiedBy;
-  String? phone;
-  String? firstname;
-  String? email;
-  String? lastname;
-  bool? isEnabled;
-  String? type;
-  Role? role;
-  bool? isBoUser;
-  List<Contacts>? contacts;
-
-  User({
-    this.identifier,
-    this.createdAt,
-    this.updatedAt,
-    this.createdBy,
-    this.modifiedBy,
-    this.phone,
-    this.firstname,
-    this.email,
-    this.lastname,
-    this.isEnabled,
-    this.type,
-    this.role,
-    this.isBoUser,
-    this.contacts,
-  });
-
-  User.fromJson(Map<String, dynamic> json) {
-    identifier = json['identifier'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
-    createdBy = json['createdBy'];
-    modifiedBy = json['modifiedBy'];
-    phone = json['phone'];
-    firstname = json['firstname'];
-    email = json['email'];
-    lastname = json['lastname'];
-    isEnabled = json['isEnabled'];
-    type = json['type'];
-    role = json['role'] != null ? Role.fromJson(json['role']) : null;
-    isBoUser = json['isBoUser'];
-    if (json['contacts'] != null) {
-      contacts = <Contacts>[];
-      json['contacts'].forEach((v) {
-        contacts!.add(Contacts.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['identifier'] = identifier;
-    data['createdAt'] = createdAt;
-    data['updatedAt'] = updatedAt;
-    data['createdBy'] = createdBy;
-    data['modifiedBy'] = modifiedBy;
-    data['phone'] = phone;
-    data['firstname'] = firstname;
-    data['email'] = email;
-    data['lastname'] = lastname;
-    data['isEnabled'] = isEnabled;
-    data['type'] = type;
-    if (role != null) {
-      data['role'] = role?.toJson();
-    }
-    data['isBoUser'] = isBoUser;
-    if (contacts != null) {
-      data['contacts'] = contacts?.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
-class Contacts {
-  dynamic identifier;
-  String? createdAt;
-  String? updatedAt;
-  String? createdBy;
-  String? modifiedBy;
-  String? name;
-  String? fax;
-  List<String>? emails;
-  List<String>? numbers;
-
-  Contacts(
-      {this.identifier,
-      this.createdAt,
-      this.updatedAt,
-      this.createdBy,
-      this.modifiedBy,
-      this.name,
-      this.fax,
-      this.emails,
-      this.numbers});
-
-  Contacts.fromJson(Map<String, dynamic> json) {
-    identifier = json['identifier'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
-    createdBy = json['createdBy'];
-    modifiedBy = json['modifiedBy'];
-    name = json['name'];
-    fax = json['fax'];
-    emails = json['emails'].cast<String>();
-    numbers = json['numbers'].cast<String>();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['identifier'] = identifier;
-    data['createdAt'] = createdAt;
-    data['updatedAt'] = updatedAt;
-    data['createdBy'] = createdBy;
-    data['modifiedBy'] = modifiedBy;
-    data['name'] = name;
-    data['fax'] = fax;
-    data['emails'] = emails;
-    data['numbers'] = numbers;
-    return data;
-  }
-}
-
 class TypeData {
   String? code;
   Name? name;
@@ -553,6 +347,28 @@ class TypeData {
     data['code'] = code;
     if (name != null) {
       data['name'] = name!.toJson();
+    }
+    return data;
+  }
+}
+
+class PrayerIntentData {
+  String? code;
+  Name? defaultText;
+
+  PrayerIntentData({this.code, this.defaultText});
+
+  PrayerIntentData.fromJson(Map<String, dynamic> json) {
+    code = json['code'];
+    defaultText =
+        json['defaultText'] != null ? Name.fromJson(json['defaultText']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['code'] = code;
+    if (defaultText != null) {
+      data['defaultText'] = defaultText?.toJson();
     }
     return data;
   }
@@ -596,6 +412,75 @@ class Name {
     data['modifiedBy'] = modifiedBy;
     data['fr'] = fr;
     data['en'] = en;
+    return data;
+  }
+}
+
+class PriceResponse {
+  int? price;
+
+  PriceResponse({
+    this.price,
+  });
+
+  PriceResponse.fromJson(Map<String, dynamic> json) {
+    price = json['price'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['price'] = price;
+    return data;
+  }
+}
+
+class PriceData {
+  String? day;
+  List<Slot>? slots;
+
+  PriceData({this.day, this.slots});
+
+  PriceData.fromJson(Map<String, dynamic> json) {
+    day = json['day'];
+    if (json['slots'] != null) {
+      slots = <Slot>[];
+      json['slots'].forEach((v) {
+        slots!.add(Slot.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['day'] = day;
+    if (slots != null) {
+      data['slots'] = slots!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class StartTime {
+  int? hour;
+  int? minute;
+  int? second;
+  int? nano;
+
+  StartTime({this.hour, this.minute, this.second, this.nano});
+
+  StartTime.fromJson(Map<String, dynamic> json) {
+    hour = json['hour'];
+    minute = json['minute'];
+    second = json['second'];
+    nano = json['nano'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['hour'] = hour;
+    data['minute'] = minute;
+    data['second'] = second;
+    data['nano'] = nano;
     return data;
   }
 }

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:path_provider/path_provider.dart';
@@ -56,7 +57,6 @@ extension StringExtension on String {
 }
 
 String getDay(int code) {
-  //log('getCurrentDay 2 => ${getDay(Jiffy(DateTime.now()).day - 1)}');
   switch (code) {
     case 0:
       return 'Lundi';
@@ -100,15 +100,23 @@ Color getColor(String? code) {
   }
 }
 
-String getDate(String date) {
+String getCustomDate(String? date, {String? pattern = AppConstants.TIME_DEFAULT_FORMAT}) {
+  if (date == null || date.isEmpty == true) return '-';
+  return Jiffy.parse(date).format(pattern: pattern);
+}
+
+String getDate(String? date) {
+  if (date == null || date.isEmpty == true) return '-';
   return Jiffy.parse(date, pattern: "yyyy-MM-dd'T'HH:mm:ss").yMd;
 }
 
-String getDateTime(String date) {
+String getDateTime(String? date) {
+  if (date == null || date.isEmpty == true) return '-';
   return Jiffy.parse(date, pattern: "yyyy-MM-dd'T'HH:mm:ss").yMMMdjm;
 }
 
-String getHour(String date) {
+String getHour(String? date) {
+  if (date == null || date.isEmpty == true) return '-';
   return Jiffy.parse(date, pattern: "yyyy-MM-dd'T'HH:mm:ss").jm;
 }
 

@@ -29,7 +29,7 @@ class MassRequestHistoryController extends GetxController {
     required this.paroisseRepository,
   });
 
-  RxList<MassRequestData> massRequests = RxList<MassRequestData>([]);
+  RxList<MassRequestResponse?> massRequests = RxList<MassRequestResponse?>([]);
   var refreshController = RefreshController();
   late TextEditingController searchController;
   var searchCriteria = SearchCriteria().obs;
@@ -172,32 +172,32 @@ class MassRequestHistoryController extends GetxController {
     }
   }
 
-  moveToMassRequest(MassRequestData massRequestData) {
+  moveToMassRequest(MassRequestResponse? massRequestData) {
     Get.toNamed(
       Routes.MASS_REQUEST,
       arguments: [
         paroisseSelected.toJson(),
-        massRequestData.toJson(),
+        massRequestData?.toJson(),
       ],
     );
   }
 
-  moveToMassRequestClaims(MassRequestData massRequestData) {
+  moveToMassRequestClaims(MassRequestResponse? massRequestData) {
     Get.toNamed(
       Routes.MASS_REQUEST_CLAIM,
       arguments: [
         paroisseSelected.toJson(),
-        massRequestData.toJson(),
+        massRequestData?.toJson(),
       ],
     );
   }
 
-  moveToHistoryDetail(MassRequestData massRequestData) {
+  moveToHistoryDetail(MassRequestResponse? massRequestData) {
     Get.toNamed(
       Routes.MASS_REQUEST_HISTORY_DETAIL,
       arguments: [
         paroisseSelected.toJson(),
-        massRequestData.toJson(),
+        massRequestData?.toJson(),
       ],
     );
   }
@@ -215,7 +215,7 @@ class MassRequestHistoryController extends GetxController {
         .getMassRequests(searchCriteria: searchCriteria.value)
         .then((value) {
       isDataProcessing(false);
-      massRequests.value = value.content ?? [];
+      massRequests.value = value.contents ?? [];
       if (massRequests.isNotEmpty == true) {
         hasData(true);
       } else {
@@ -256,7 +256,7 @@ class MassRequestHistoryController extends GetxController {
         .getMassRequests(searchCriteria: searchCriteria.value)
         .then((value) {
       refreshController.refreshCompleted();
-      massRequests.value = value.content ?? [];
+      massRequests.value = value.contents ?? [];
       if (value.last == false) {
         page.value += 1;
       } else {
@@ -291,7 +291,7 @@ class MassRequestHistoryController extends GetxController {
     massRequestHistoryRepository
         .getMassRequests(page: page.value, searchCriteria: searchCriteria.value)
         .then((value) {
-      massRequests.addAll(value.content ?? []);
+      massRequests.addAll(value.contents ?? []);
       massRequests.refresh();
       refreshController.loadComplete();
       if (value.last == false) {

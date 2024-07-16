@@ -108,10 +108,10 @@ Future showLoadingDialog(BuildContext context,
             children: [
               Row(
                 children: [
-                  Container(
+                  const SizedBox(
                     width: 50,
                     height: 50,
-                    child: const CircularProgressIndicator(),
+                    child: CircularProgressIndicator(),
                   ),
                   const SizedBox(
                     width: 10,

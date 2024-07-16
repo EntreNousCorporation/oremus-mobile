@@ -23,7 +23,7 @@ class ParoisseController extends GetxController {
     required this.paroisseRepository,
   });
 
-  RxList<ContentPlace> paroisses = RxList<ContentPlace>([]);
+  RxList<ContentPlace?> paroisses = RxList<ContentPlace?>([]);
 
   var unlockBackButton = true.obs;
 
@@ -83,9 +83,9 @@ class ParoisseController extends GetxController {
     paroisseRepository.getParoisses(searchCriteria: searchCriteria.value).then(
         (value) {
       isDataProcessing(false);
-      paroisses.value = value.content ?? [];
+      paroisses.value = value.contents ?? [];
       for (var paroisse in paroisses) {
-        paroisse.isFavorite = isWorshipPlaceFavorite(paroisse);
+        paroisse?.isFavorite = isWorshipPlaceFavorite(paroisse);
       }
       if (paroisses.isNotEmpty == true) {
         hasData(true);
@@ -127,9 +127,9 @@ class ParoisseController extends GetxController {
     paroisseRepository.getParoisses(searchCriteria: searchCriteria.value).then(
         (value) {
       refreshController.refreshCompleted();
-      paroisses.value = value.content ?? [];
+      paroisses.value = value.contents ?? [];
       for (var paroisse in paroisses) {
-        paroisse.isFavorite = isWorshipPlaceFavorite(paroisse);
+        paroisse?.isFavorite = isWorshipPlaceFavorite(paroisse);
       }
       if (value.last == false) {
         page.value += 1;
@@ -166,9 +166,9 @@ class ParoisseController extends GetxController {
     paroisseRepository
         .getParoisses(page: page.value, searchCriteria: searchCriteria.value)
         .then((value) {
-      paroisses.addAll(value.content ?? []);
+      paroisses.addAll(value.contents ?? []);
       for (var paroisse in paroisses) {
-        paroisse.isFavorite = isWorshipPlaceFavorite(paroisse);
+        paroisse?.isFavorite = isWorshipPlaceFavorite(paroisse);
       }
       paroisses.refresh();
       refreshController.loadComplete();
@@ -196,11 +196,11 @@ class ParoisseController extends GetxController {
   }
 
   ///on vérifie si la paroisse est dans la liste des favoris
-  bool isWorshipPlaceFavorite(ContentPlace paroisse) {
+  bool isWorshipPlaceFavorite(ContentPlace? paroisse) {
     var isFavorite = false;
     var favorites = paroisseRepository.getAllFavorites();
     var hasParoisse = favorites
-        .indexWhere((element) => element.identifier == paroisse.identifier);
+        .indexWhere((element) => element.identifier == paroisse?.identifier);
     if (hasParoisse != -1) {
       isFavorite = true;
     } else {
@@ -209,26 +209,26 @@ class ParoisseController extends GetxController {
     return isFavorite;
   }
 
-  saveFavorite(ContentPlace paroisse) {
+  saveFavorite(ContentPlace? paroisse) {
     paroisseRepository.addFavorite(paroisse);
     showMessageFavorite(paroisse);
   }
 
-  removeFavorite(ContentPlace paroisse) {
+  removeFavorite(ContentPlace? paroisse) {
     paroisseRepository.deleteFavorite(paroisse);
     showMessageFavorite(paroisse);
   }
 
-  showMessageFavorite(ContentPlace paroisse) {
-    if (paroisse.isFavorite == true) {
+  showMessageFavorite(ContentPlace? paroisse) {
+    if (paroisse?.isFavorite == true) {
       showNotification(
         trailing: Padding(
           padding: const EdgeInsets.all(5.0),
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-            child: (paroisse.coverImage?.link?.isNotEmpty == true)
+            child: (paroisse?.coverImage?.link?.isNotEmpty == true)
                 ? CachedNetworkImage(
-                    imageUrl: paroisse.coverImage?.link ?? '',
+                    imageUrl: paroisse?.coverImage?.link ?? '',
                     fit: BoxFit.cover,
                     placeholder: (context, url) => SizedBox(
                         width: Get.width / 4,
@@ -240,7 +240,7 @@ class ParoisseController extends GetxController {
                 : null,
           ),
         ),
-        message: '«${paroisse.name}» a été rajouté dans vos favoris',
+        message: '«${paroisse?.name}» a été rajouté dans vos favoris',
         bgColor: colorGreenSemiLight,
       );
     } else {
@@ -249,9 +249,9 @@ class ParoisseController extends GetxController {
           padding: const EdgeInsets.all(5.0),
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-            child: (paroisse.coverImage?.link?.isNotEmpty == true)
+            child: (paroisse?.coverImage?.link?.isNotEmpty == true)
                 ? CachedNetworkImage(
-                    imageUrl: paroisse.coverImage?.link ?? '',
+                    imageUrl: paroisse?.coverImage?.link ?? '',
                     fit: BoxFit.cover,
                     placeholder: (context, url) => SizedBox(
                         width: Get.width / 4,
@@ -263,7 +263,7 @@ class ParoisseController extends GetxController {
                 : null,
           ),
         ),
-        message: '«${paroisse.name}» a été retiré des favoris',
+        message: '«${paroisse?.name}» a été retiré des favoris',
       );
     }
   }
@@ -274,16 +274,16 @@ class ParoisseController extends GetxController {
     Get.offAllNamed(Routes.SIGNIN);
   }
 
-  goToParoisseDetail(ContentPlace paroisse, int index) async {
+  goToParoisseDetail(ContentPlace? paroisse, int index) async {
     await Get.toNamed(
       Routes.PAROISSE_MENU,
       arguments: [
         index,
-        paroisse.toJson(),
+        paroisse?.toJson(),
       ],
     );
     //on met à jour la liste au cas où favoris mis à jour
-    paroisses[index].isFavorite = isWorshipPlaceFavorite(paroisse);
+    paroisses[index]?.isFavorite = isWorshipPlaceFavorite(paroisse);
     paroisses.refresh();
   }
 

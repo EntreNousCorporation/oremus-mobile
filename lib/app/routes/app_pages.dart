@@ -41,6 +41,11 @@ import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_mass
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_menu_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_office_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_presby_team_screen.dart';
+import 'package:oremusapp/app/modules/payment/binding/payment_binding.dart';
+import 'package:oremusapp/app/modules/payment/binding/payment_status_binding.dart';
+import 'package:oremusapp/app/modules/payment/views/payment_error_screen.dart';
+import 'package:oremusapp/app/modules/payment/views/payment_screen.dart';
+import 'package:oremusapp/app/modules/payment/views/payment_success_screen.dart';
 import 'package:oremusapp/app/modules/pray/binding/pray_binding.dart';
 import 'package:oremusapp/app/modules/pray/views/pray_screen.dart';
 import 'package:oremusapp/app/modules/profile/binding/edit_profile_binding.dart';
@@ -246,6 +251,27 @@ class AppPages {
       name: Routes.MASS_REQUEST_TRACK_CLAIM,
       page: () => const MassRequestTrackClaimScreen(),
       binding: MassRequestTrackClaimBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.PAYMENT,
+      page: () => const PaymentScreen(),
+      binding: PaymentBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.PAYMENT_SUCCESS,
+      page: () => const PaymentSuccessScreen(),
+      binding: PaymentStatusBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.PAYMENT_ERROR,
+      page: () => const PaymentErrorScreen(),
+      binding: PaymentStatusBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

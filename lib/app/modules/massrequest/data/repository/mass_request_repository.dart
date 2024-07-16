@@ -21,7 +21,7 @@ class MassRequestRepository implements IMassRequestRepository {
       endpoint: "/types-of-mass-request?page=$page&size=${AppConstants.PAGING_SIZE_1000}&sort=code%2CASC",
       method: HttpMethod.get,
     );
-    log('resp getParoisses => ${response.statusCode}');
+    log('resp getMassRequestType => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
@@ -30,6 +30,58 @@ class MassRequestRepository implements IMassRequestRepository {
       return (jsonDecode(response.bodyString.toString()) as List)
           .map((i) => TypeData.fromJson(i))
           .toList();
+    }
+  }
+
+  @override
+  Future<List<PrayerIntentData>> getPrayerIntent({int? page = 0}) async {
+    Response response = await _apiClient.doRequest(
+      endpoint: "/prayers-intent?page=$page&size=${AppConstants.PAGING_SIZE_1000}&sort=code%2CASC",
+      method: HttpMethod.get,
+    );
+    log('resp getMassRequestType => ${response.statusCode}');
+
+    if (response.statusCode != 200) {
+      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      throw CustomException(e.debugMessage, e.status);
+    } else {
+      return (jsonDecode(response.bodyString.toString()) as List)
+          .map((i) => PrayerIntentData.fromJson(i))
+          .toList();
+    }
+  }
+
+  @override
+  Future<PriceResponse> getMassRequestPrice({required List<PriceData> request, required String workshipId}) async {
+    Response response = await _apiClient.doRequest(
+      endpoint: "/mass-requests/$workshipId/quotation",
+      method: HttpMethod.post,
+      body: jsonEncode(request),
+    );
+    log('resp getMassRequestPrice => ${response.statusCode}');
+
+    if (response.statusCode != 200) {
+      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      throw CustomException(e.debugMessage, e.status);
+    } else {
+      return PriceResponse.fromJson(json.decode(response.bodyString.toString()));
+    }
+  }
+
+  @override
+  Future<MassRequestResponse> sendMassRequest({required MassRequestData request}) async {
+    Response response = await _apiClient.doRequest(
+      endpoint: "/mass-requests",
+      method: HttpMethod.post,
+      body: request.toJson(),
+    );
+    log('resp sendMassRequest => ${response.statusCode}');
+
+    if (response.statusCode != 200) {
+      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      throw CustomException(e.debugMessage, e.status);
+    } else {
+      return MassRequestResponse.fromJson(json.decode(response.bodyString.toString()));
     }
   }
 }

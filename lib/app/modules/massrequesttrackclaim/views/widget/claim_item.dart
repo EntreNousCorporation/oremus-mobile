@@ -12,7 +12,7 @@ import 'package:oremusapp/generated/assets.dart';
 class ClaimItem extends StatelessWidget {
   const ClaimItem({Key? key, required this.claimData}) : super(key: key);
 
-  final ClaimData claimData;
+  final ClaimData? claimData;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class ClaimItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          claimData.massRequest?.typeOfMassRequest?.name?.fr ??
+                          claimData?.massRequest?.typeOfMassRequest?.name?.fr ??
                               '-',
                           textAlign: TextAlign.center,
                           style: TextStyles.montserratMedium(
@@ -55,7 +55,7 @@ class ClaimItem extends StatelessWidget {
                         ),
                         Separators.minimunVertical(),
                         Text(
-                          getDateTime(claimData.createdAt ?? '-'),
+                          getDateTime(claimData?.createdAt ?? '-'),
                           textAlign: TextAlign.center,
                           style: TextStyles.montserratRegular(
                             textSize: TextSizes.thirteen,
@@ -66,7 +66,7 @@ class ClaimItem extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "${claimData.massRequest?.price.toString().split('.').first.amountFormat()} FCFA",
+                    "${claimData?.massRequest?.price.toString().split('.').first.amountFormat()} FCFA",
                     textAlign: TextAlign.center,
                     style: TextStyles.montserratBold(
                       textSize: TextSizes.fifteen,
@@ -81,7 +81,7 @@ class ClaimItem extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      claimData.typeOfClaim?.name?.fr ?? '-',
+                      claimData?.typeOfClaim?.name?.fr ?? '-',
                       textAlign: TextAlign.start,
                       style: TextStyles.montserratMedium(
                         textSize: TextSizes.thirteen,
@@ -91,16 +91,16 @@ class ClaimItem extends StatelessWidget {
                   ),
                   Icon(
                     Icons.circle,
-                    color: getColor(claimData.status?.code),
+                    color: getColor(claimData?.status?.code),
                     size: 12,
                   ),
                   Separators.customSizeHorizontal(3),
                   Text(
-                    claimData.status?.name?.fr ?? '-',
+                    claimData?.status?.name?.fr ?? '-',
                     textAlign: TextAlign.center,
                     style: TextStyles.montserratMedium(
                       textSize: TextSizes.thirteen,
-                      textColor: getColor(claimData.status?.code),
+                      textColor: getColor(claimData?.status?.code),
                     ),
                   ),
                 ],

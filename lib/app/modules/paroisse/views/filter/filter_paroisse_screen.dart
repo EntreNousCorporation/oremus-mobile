@@ -192,7 +192,7 @@ class FilterParoisseScreen extends StatelessWidget {
                                                         return DioceseItem(
                                                           diocese: diocese,
                                                           key: ValueKey(
-                                                              diocese.identifier),
+                                                              diocese?.identifier),
                                                         );
                                                       }),
                                                 ),

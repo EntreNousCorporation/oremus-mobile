@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animator/widgets/fading_entrances/fade_in.dart';
 import 'package:flutter_animator/widgets/fading_entrances/fade_in_up.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
@@ -178,7 +179,7 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                           ],
                         )
                             : _.hasData.isTrue
-                            ? FadeInUp(
+                            ? FadeIn(
                           child: Column(
                             children: [
                               Padding(
