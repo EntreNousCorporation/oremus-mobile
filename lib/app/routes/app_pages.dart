@@ -8,8 +8,10 @@ import 'package:oremusapp/app/modules/editpassword/binding/edit_password_binding
 import 'package:oremusapp/app/modules/editpassword/views/edit_password_screen.dart';
 import 'package:oremusapp/app/modules/favorite/binding/favorite_binding.dart';
 import 'package:oremusapp/app/modules/favorite/views/favorites_screen.dart';
+import 'package:oremusapp/app/modules/massrequest/binding/filter_mass_request_date_binding.dart';
 import 'package:oremusapp/app/modules/massrequest/binding/mass_request_binding.dart';
 import 'package:oremusapp/app/modules/massrequest/views/mass_request_screen.dart';
+import 'package:oremusapp/app/modules/massrequest/views/widget/filter_mass_request_date_screen.dart';
 import 'package:oremusapp/app/modules/massrequestclaim/binding/mass_request_claim_binding.dart';
 import 'package:oremusapp/app/modules/massrequestclaim/views/mass_request_claim_screen.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/binding/filter_mass_request_history_binding.dart';
@@ -237,6 +239,13 @@ class AppPages {
       name: Routes.FILTER_MASS_REQUEST_HISTORY,
       page: () => const FilterMassRequestHistoryScreen(),
       binding: FilterMassRequestHistoryBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.FILTER_MASS_REQUEST_CHOOSE_DATE,
+      page: () => const FilterMassRequestDateScreen(),
+      binding: FilterMassRequestDateBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

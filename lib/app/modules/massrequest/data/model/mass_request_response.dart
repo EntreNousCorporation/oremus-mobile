@@ -435,13 +435,19 @@ class PriceResponse {
 }
 
 class PriceData {
+  String? dayOfWeek;
   String? day;
   List<Slot>? slots;
 
-  PriceData({this.day, this.slots});
+  PriceData({
+    this.dayOfWeek,
+    this.day,
+    this.slots,
+  });
 
   PriceData.fromJson(Map<String, dynamic> json) {
     day = json['day'];
+    dayOfWeek = json['dayOfWeek'];
     if (json['slots'] != null) {
       slots = <Slot>[];
       json['slots'].forEach((v) {
@@ -452,7 +458,8 @@ class PriceData {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['day'] = day;
+    data['dayOfWeek'] = day;
+    data['dayOfWeek'] = dayOfWeek;
     if (slots != null) {
       data['slots'] = slots!.map((v) => v.toJson()).toList();
     }

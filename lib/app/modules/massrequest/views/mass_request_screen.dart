@@ -206,30 +206,35 @@ class MassRequestScreen extends StatelessWidget {
                           Separators.maximum1Vertical(),
 
                           //WORSHIP HOURS
-                          Material(
-                            borderRadius: BorderRadius.circular(10.0),
-                            elevation: 10,
-                            color: colorWhite,
-                            shadowColor: colorGrey2.withOpacity(0.5),
-                            child: Container(
-                              padding: const EdgeInsets.all(12),
-                              width: double.maxFinite,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Choisir des dates',
-                                    style: TextStyles.montserratMedium(
-                                      textColor: colorGrey1,
-                                      textSize: TextSizes.fourteen,
+                          GestureDetector(
+                            onTap: () {
+                              _.goToDatesChoice();
+                            },
+                            child: Material(
+                              borderRadius: BorderRadius.circular(10.0),
+                              elevation: 10,
+                              color: colorWhite,
+                              shadowColor: colorGrey2.withOpacity(0.5),
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                width: double.maxFinite,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Choisir des dates',
+                                      style: TextStyles.montserratMedium(
+                                        textColor: colorGrey1,
+                                        textSize: TextSizes.fourteen,
+                                      ),
                                     ),
-                                  ),
-                                  const Icon(
-                                    Icons.arrow_drop_down_rounded,
-                                    size: 25,
-                                    color: colorGreen,
-                                  ),
-                                ],
+                                    const Icon(
+                                      Icons.arrow_drop_down_rounded,
+                                      size: 25,
+                                      color: colorGreen,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),

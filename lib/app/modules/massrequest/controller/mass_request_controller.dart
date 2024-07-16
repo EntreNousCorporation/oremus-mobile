@@ -39,6 +39,8 @@ class MassRequestController extends GetxController {
   RxList<PrayerIntentData?> prayerIntents = RxList<PrayerIntentData?>([]);
   Rx<PrayerIntentData?> prayerIntentSelected = Rx<PrayerIntentData?>(null);
 
+  RxList<PriceData> datesChoosen = RxList<PriceData>([]);
+
   RxList<LiturgicalCelebrationResponse> worshipHours = RxList<LiturgicalCelebrationResponse>([]);
 
   var isValidForm = false.obs;
@@ -53,6 +55,7 @@ class MassRequestController extends GetxController {
     doGetMassRequestType();
     doGetPrayerIntent();
     doGetPlaceOfWorshipHours();
+
     super.onInit();
   }
 
@@ -70,6 +73,14 @@ class MassRequestController extends GetxController {
       Routes.PAYMENT,
       arguments: massRequestResponse.toJson(),
     );
+  }
+
+  goToDatesChoice() async {
+    datesChoosen.value = await Get.toNamed(Routes.FILTER_MASS_REQUEST_CHOOSE_DATE, arguments: worshipHours);
+    datesChoosen.refresh();
+    if (datesChoosen.isNotEmpty) {
+      doGetMassRequestPrice();
+    }
   }
 
   void checkForm() {
@@ -162,9 +173,10 @@ class MassRequestController extends GetxController {
     log('request doGetPlaceOfWorshipHours');
     paroisseRepository.getLiturgicalCelebration(paroisseSelected.value.identifier).then((value) {
       if (value.isNotEmpty == true) {
-        log('doGetPlaceOfWorshipHours before ::: ${value.length}');
+        worshipHours.value = value;
+        /*log('doGetPlaceOfWorshipHours before ::: ${value.length}');
         worshipHours.value = getValidPlaceOfWorshipHours(value);
-        log('doGetPlaceOfWorshipHours after ::: ${worshipHours.length}');
+        log('doGetPlaceOfWorshipHours after ::: ${worshipHours.length}');*/
       }
     }, onError: (error) {
       var err = error as CustomException;
@@ -184,13 +196,10 @@ class MassRequestController extends GetxController {
   doGetMassRequestPrice() {
     hideKeyboard();
 
-    List<PriceData> request = [];
-    request.add(PriceData());
-
     isDataProcessing(true);
     hasData(false);
     log('request doGetMassRequestPrice');
-    massRequestRepository.getMassRequestPrice(request: request, workshipId: paroisseSelected.value.identifier ?? '').then((value) {
+    massRequestRepository.getMassRequestPrice(request: datesChoosen, workshipId: paroisseSelected.value.identifier.toString() ?? '').then((value) {
       isDataProcessing(false);
       hasData(true);
       price.value = value.price.toString().amountFormat();

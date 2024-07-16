@@ -41,6 +41,7 @@ abstract class Routes {
   static const MASS_REQUEST_HISTORY = '/mass-request-history';
   static const MASS_REQUEST_HISTORY_DETAIL = '/mass-request-history-detail';
   static const FILTER_MASS_REQUEST_HISTORY = '/filter-mass-request-history';
+  static const FILTER_MASS_REQUEST_CHOOSE_DATE = '/filter-mass-request-choose-date';
   static const MASS_REQUEST_CLAIM = '/mass-request-claim';
   static const MASS_REQUEST_TRACK_CLAIM = '/mass-request-track-claim';
 
