@@ -95,7 +95,7 @@ class MassRequestData {
   String? prayerIntent;
   int? worshipPlace;
   String? typeOfMassRequest;
-  List<Slot>? slots;
+  List<PriceData>? slots;
 
   MassRequestData({
     this.prayerIntent,
@@ -109,9 +109,9 @@ class MassRequestData {
     worshipPlace = json['worshipPlace'];
     typeOfMassRequest = json['typeOfMassRequest'];
     if (json['slots'] != null) {
-      slots = <Slot>[];
+      slots = <PriceData>[];
       json['slots'].forEach((v) {
-        slots!.add(Slot.fromJson(v));
+        slots!.add(PriceData.fromJson(v));
       });
     }
   }
@@ -122,7 +122,7 @@ class MassRequestData {
     data['worshipPlace'] = worshipPlace;
     data['typeOfMassRequest'] = typeOfMassRequest;
     if (slots != null) {
-      data['slots'] = slots!.map((v) => v.toJson()).toList();
+      data['slots'] = slots?.map((v) => v.toJson()).toList();
     }
     return data;
   }

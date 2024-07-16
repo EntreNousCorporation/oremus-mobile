@@ -13,6 +13,7 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/mass_request_controller.dart';
+import 'package:oremusapp/app/modules/massrequest/views/widget/intent_type_description_widget.dart';
 import 'package:oremusapp/app/modules/massrequest/views/widget/mass_type_filter.dart';
 import 'package:oremusapp/app/modules/massrequest/views/widget/prayer_intent_filter.dart';
 import 'package:oremusapp/generated/assets.dart';
@@ -38,6 +39,7 @@ class MassRequestScreen extends StatelessWidget {
                 slivers: [
                   SliverAppBar(
                     expandedHeight: AppConstants.kExpandedHeight,
+                    collapsedHeight: 100,
                     floating: false,
                     snap: false,
                     pinned: true,
@@ -202,6 +204,24 @@ class MassRequestScreen extends StatelessWidget {
                             color: colorWhite,
                             shadowColor: colorGrey2.withOpacity(0.5),
                             child: const PrayerIntentFilter(),
+                          ),
+                          Visibility(
+                            visible: _.prayerIntentSelected.value != null,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Separators.maximum1Vertical(),
+                                Text(
+                                  'Description de l\'intention de prière',
+                                  style: TextStyles.montserratMedium(
+                                    textColor: colorGrey1,
+                                    textSize: TextSizes.fourteen,
+                                  ),
+                                ),
+                                Separators.customSizeVertical(8),
+                                const IntentTypeDescriptionWidget(),
+                              ],
+                            ),
                           ),
                           Separators.maximum1Vertical(),
 

@@ -33,6 +33,8 @@ class MassRequestController extends GetxController {
   var hasData = false.obs;
   var isLiked = false.obs;
 
+  var description = TextEditingController();
+
   RxList<TypeData?> massRequestTypes = RxList<TypeData?>([]);
   Rx<TypeData?> massRequestTypeSelected = Rx<TypeData?>(null);
 
@@ -100,6 +102,7 @@ class MassRequestController extends GetxController {
 
   updatePrayerIntentFilter(PrayerIntentData? prayerIntentData) {
     prayerIntentSelected.value = prayerIntentData;
+    description.text = prayerIntentData?.defaultText?.fr ?? '';
     checkForm();
     update();
   }
@@ -199,7 +202,7 @@ class MassRequestController extends GetxController {
     isDataProcessing(true);
     hasData(false);
     log('request doGetMassRequestPrice');
-    massRequestRepository.getMassRequestPrice(request: datesChoosen, workshipId: paroisseSelected.value.identifier.toString() ?? '').then((value) {
+    massRequestRepository.getMassRequestPrice(request: datesChoosen, workshipId: paroisseSelected.value.identifier.toString()).then((value) {
       isDataProcessing(false);
       hasData(true);
       price.value = value.price.toString().amountFormat();
@@ -233,7 +236,7 @@ class MassRequestController extends GetxController {
     });
 
     var request = MassRequestData(
-      prayerIntent: prayerIntentSelected.value?.code,
+      prayerIntent: description.text.isNotEmpty ? description.text : prayerIntentSelected.value?.defaultText?.fr,
       typeOfMassRequest: massRequestTypeSelected.value?.code,
       slots: [],
       worshipPlace: paroisseSelected.value.identifier,
