@@ -74,6 +74,7 @@ class PaymentController extends GetxController {
     if (isTimerActive.value == true) {
       timer.cancel();
     }
+    checkingPaymentStatus(true);
     Get.back();
   }
 
@@ -128,7 +129,7 @@ class PaymentController extends GetxController {
   listenPaymentStatus() {
     log('request listenPaymentStatus');
     isTimerActive(true);
-    timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       doGetPaymentStatus();
     });
   }
@@ -143,12 +144,12 @@ class PaymentController extends GetxController {
 
     checkingPaymentStatus(true);
     paymentRepository.paymentStatus(transactionId: massRequestResponseSelected.value.transactionId ?? '').then((value) {
-      if (value.status == 'REFUSED') {
+      if (value.paymentStatus == 'REFUSED') {
         checkingPaymentStatus(true);
         moveToError();
         return;
       }
-      if (value.status == 'PENDING') {
+      if (value.paymentStatus == 'PENDING') {
         checkingPaymentStatus(false);
         return;
       }

@@ -202,6 +202,11 @@ class MassRequestHistoryController extends GetxController {
     );
   }
 
+  moveToHome() {
+    Get.deleteAll(force: true);
+    Get.offAllNamed(Routes.CUSTOM_HOME);
+  }
+
   getMassRequests() {
     hideKeyboard();
     searchCriteria.value.startDate = startDateApi.value;

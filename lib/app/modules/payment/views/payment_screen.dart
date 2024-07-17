@@ -34,7 +34,7 @@ class PaymentScreen extends StatelessWidget {
                     children: [
                       IconButton(
                         onPressed: () {
-                          Get.back();
+                          logic.doBack();
                         },
                         icon: const Icon(Icons.arrow_back_ios_rounded,
                             color: colorBlack),

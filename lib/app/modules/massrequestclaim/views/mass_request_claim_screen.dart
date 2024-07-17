@@ -37,6 +37,7 @@ class MassRequestClaimScreen extends StatelessWidget {
                 slivers: [
                   SliverAppBar(
                     expandedHeight: AppConstants.kExpandedHeight,
+                    collapsedHeight: 100,
                     floating: false,
                     pinned: true,
                     backgroundColor: colorGreen,

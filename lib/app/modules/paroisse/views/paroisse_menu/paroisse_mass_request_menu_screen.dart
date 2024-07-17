@@ -35,21 +35,13 @@ class ParoisseMassRequestMenuScreen extends StatelessWidget {
                 slivers: [
                   SliverAppBar(
                     expandedHeight: AppConstants.kExpandedHeight,
+                    collapsedHeight: 100,
                     floating: false,
                     snap: false,
                     pinned: true,
                     backgroundColor: colorGreen,
                     elevation: 10,
                     shadowColor: colorGrey2.withOpacity(0.8),
-                    /*title: Text(
-                      '${_.paroisseSelected.value.name}',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      style: TextStyles.montserratBold(
-                          textSize: TextSizes.eighteen,
-                          textColor: colorWhite),
-                    ),*/
                     leading: IconButton(
                       onPressed: () {
                         Get.back();
@@ -57,6 +49,13 @@ class ParoisseMassRequestMenuScreen extends StatelessWidget {
                       icon: const Icon(Icons.arrow_back_ios_rounded),
                     ),
                     actions: [
+                      IconButton(
+                        onPressed: () {
+                          _.moveToHome();
+                        },
+                        icon: const Icon(Icons.home_filled),
+                      ),
+                      Separators.minimunHorizontal(),
                       LikeButton(
                         isLiked: _.paroisseSelected.value.isFavorite,
                         onTap: (isLiked) async {

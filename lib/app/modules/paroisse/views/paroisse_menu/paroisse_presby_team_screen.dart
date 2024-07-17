@@ -25,7 +25,6 @@ class ParoisseBresbyTeamScreen extends StatelessWidget {
     return Container(
       color: colorGreen,
       child: GetX<ParoissePresbyTeamController>(
-          initState: (state) {},
           builder: (_) {
             return KeyboardDismisser(
               child: Scaffold(
@@ -40,6 +39,7 @@ class ParoisseBresbyTeamScreen extends StatelessWidget {
                     slivers: [
                       SliverAppBar(
                         expandedHeight: AppConstants.kExpandedHeight,
+                        collapsedHeight: 100,
                         floating: false,
                         pinned: true,
                         backgroundColor: colorGreen,

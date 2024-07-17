@@ -1,8 +1,5 @@
 import 'package:get/get.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/filter_mass_request_date_controller.dart';
-import 'package:oremusapp/app/modules/massrequest/data/repository/mass_request_repository.dart';
-import 'package:oremusapp/app/modules/massrequesthistory/controller/filter_mass_request_history_controller.dart';
-import 'package:oremusapp/app/remote/api_client.dart';
 
 class FilterMassRequestDateBinding implements Bindings {
   @override

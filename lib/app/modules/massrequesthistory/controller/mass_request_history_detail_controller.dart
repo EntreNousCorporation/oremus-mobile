@@ -60,6 +60,15 @@ class MassRequestHistoryDetailController extends GetxController {
     );
   }
 
+  moveToHome() {
+    Get.deleteAll(force: true);
+    Get.offAllNamed(Routes.CUSTOM_HOME);
+  }
+
+  canClaimMassRequest() {
+    return massRequestSelected.value.status?.code == 'REQUEST_ACCEPTED' || massRequestSelected.value.status?.code == 'ACCEPTED_PAYMENT' || massRequestSelected.value.status?.code == 'REQUEST_REFUSED' || massRequestSelected.value.status?.code == 'REFUSED_PAYMENT';
+  }
+
   doLogout() {
     DB.saveData(AppConstants.KEY_USER_LOG_INFOS, null);
     Get.deleteAll(force: true);

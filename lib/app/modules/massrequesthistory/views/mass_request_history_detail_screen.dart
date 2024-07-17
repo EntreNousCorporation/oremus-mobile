@@ -35,6 +35,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                 slivers: [
                   SliverAppBar(
                     expandedHeight: AppConstants.kExpandedHeight,
+                    collapsedHeight: 100,
                     floating: false,
                     pinned: true,
                     backgroundColor: colorGreen,
@@ -47,6 +48,13 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                       icon: const Icon(Icons.arrow_back_ios_rounded),
                     ),
                     actions: [
+                      IconButton(
+                        onPressed: () {
+                          _.moveToHome();
+                        },
+                        icon: const Icon(Icons.home_filled),
+                      ),
+                      Separators.minimunHorizontal(),
                       LikeButton(
                         isLiked: _.paroisseSelected.value.isFavorite,
                         onTap: (isLiked) async {
@@ -181,6 +189,24 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     Text(
+                                      'Référence',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyles.montserratRegular(
+                                        textSize: TextSizes.fourteen,
+                                        textColor: colorBlack,
+                                      ),
+                                    ),
+                                    Separators.minimunVertical(),
+                                    Text(
+                                      _.massRequestSelected.value.traceId ?? '-',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyles.montserratSemiBold(
+                                        textSize: TextSizes.sixteen,
+                                        textColor: colorBlack,
+                                      ),
+                                    ),
+                                    Separators.normalVertical(),
+                                    Text(
                                       'Type de demande',
                                       textAlign: TextAlign.center,
                                       style: TextStyles.montserratRegular(
@@ -200,7 +226,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                       ),
                                     ),
                                     Separators.normalVertical(),
-                                    Text(
+                                    /*Text(
                                       'Période',
                                       textAlign: TextAlign.center,
                                       style: TextStyles.montserratRegular(
@@ -217,7 +243,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                         textColor: colorBlack,
                                       ),
                                     ),
-                                    Separators.normalVertical(),
+                                    Separators.normalVertical(),*/
                                     Text(
                                       'Montant',
                                       textAlign: TextAlign.center,
@@ -261,16 +287,12 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         Visibility(
-                                          visible: _.massRequestSelected.value
-                                                  .status?.code?.isEmpty ==
-                                              false,
+                                          visible: _.canClaimMassRequest(),
                                           child: Row(
                                             children: [
                                               GestureDetector(
                                                 onTap: () {
-                                                  _.moveToMassRequestClaims(_
-                                                      .massRequestSelected
-                                                      .value);
+                                                  _.moveToMassRequestClaims(_.massRequestSelected.value);
                                                 },
                                                 child: Container(
                                                   color: colorTransparent,
@@ -305,32 +327,35 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                             ],
                                           ),
                                         ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            _.moveToMassRequest(
-                                                _.massRequestSelected.value);
-                                          },
-                                          child: Container(
-                                            color: colorTransparent,
-                                            child: Column(
-                                              children: [
-                                                Icon(
-                                                  Icons.history_rounded,
-                                                  color: colorTurquois,
-                                                  size: Get.width / 10,
-                                                ),
-                                                Separators.customSizeVertical(
-                                                    3),
-                                                Text(
-                                                  'Répéter\n',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyles
-                                                      .montserratMedium(
-                                                    textSize: TextSizes.fifteen,
-                                                    textColor: colorTurquois,
+                                        Visibility(
+                                          visible: _.canClaimMassRequest(),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              _.moveToMassRequest(
+                                                  _.massRequestSelected.value);
+                                            },
+                                            child: Container(
+                                              color: colorTransparent,
+                                              child: Column(
+                                                children: [
+                                                  Icon(
+                                                    Icons.history_rounded,
+                                                    color: colorTurquois,
+                                                    size: Get.width / 10,
                                                   ),
-                                                ),
-                                              ],
+                                                  Separators.customSizeVertical(
+                                                      3),
+                                                  Text(
+                                                    'Répéter\n',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyles
+                                                        .montserratMedium(
+                                                      textSize: TextSizes.fifteen,
+                                                      textColor: colorTurquois,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),

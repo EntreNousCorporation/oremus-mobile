@@ -246,38 +246,55 @@ class ParoisseMassRequestMenuController extends GetxController {
     }
   }
 
-  moveToMassRequest() {
-    Get.toNamed(
+  moveToMassRequest() async {
+    await Get.toNamed(
       Routes.MASS_REQUEST,
       arguments: [
         paroisseSelected.toJson(),
         null,
       ],
     );
+    //on met à jour la liste au cas où favoris mis à jour
+    paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+    paroisseSelected.refresh();
   }
 
-  moveToMassRequestHistory() {
-    Get.toNamed(
+  moveToMassRequestHistory() async {
+    await Get.toNamed(
       Routes.MASS_REQUEST_HISTORY,
       arguments: paroisseSelected.toJson(),
     );
+    //on met à jour la liste au cas où favoris mis à jour
+    paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+    paroisseSelected.refresh();
   }
 
-  moveToMassRequestClaims() {
-    Get.toNamed(
+  moveToMassRequestClaims() async {
+    await Get.toNamed(
       Routes.MASS_REQUEST_CLAIM,
       arguments: [
         paroisseSelected.toJson(),
         null,
       ],
     );
+    //on met à jour la liste au cas où favoris mis à jour
+    paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+    paroisseSelected.refresh();
   }
 
-  moveToMassRequestTrackClaims() {
-    Get.toNamed(
+  moveToMassRequestTrackClaims() async {
+    await Get.toNamed(
       Routes.MASS_REQUEST_TRACK_CLAIM,
       arguments: paroisseSelected.toJson(),
     );
+    //on met à jour la liste au cas où favoris mis à jour
+    paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+    paroisseSelected.refresh();
+  }
+
+  moveToHome() {
+    Get.deleteAll(force: true);
+    Get.offAllNamed(Routes.CUSTOM_HOME);
   }
 
   bool isWorshipPlaceFavorite(ContentPlace paroisse) {

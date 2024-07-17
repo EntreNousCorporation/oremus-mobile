@@ -24,14 +24,17 @@ extension StringExtension on String {
   }
 
   String amountFormat() {
-    String value ;
+    String value = '';
     var formatter = NumberFormat('#,###');
 
-    value = replaceAll(' ', '');
+    value = split('.').first.replaceAll(" ", "");
     try {
-      value = formatter.format(int.parse(value)).replaceAll(',', ' '); // tu as été smart, c'est bien 🙂
-    } catch(error) {
-      value = "";
+      value = formatter
+          .format(int.parse(value))
+          .replaceAll(',', ' '); // tu as été smart, c'est bien 🙂
+    } catch (error) {
+      log('amountFormat Catch error => $error');
+      value = "-";
     }
     log("AMOUNT_FORMATED --> $value");
     return value;
@@ -41,11 +44,11 @@ extension StringExtension on String {
     String value ;
     var formatter = NumberFormat('#,##');
 
-    value = replaceAll(" ", "");
+    value = replaceAll(RegExp(r'\s'), '');
     try{
       value = formatter.format(int.parse(value)).replaceAll(',', '  '); // tu as été smart, c'est bien 🙂
     } catch(error){
-      value = "";
+      value = '';
     }
     if(value.length.isOdd){
       value="${this[0]}$value";
@@ -80,20 +83,27 @@ String getDay(int code) {
 IconData getIcon(String? code) {
   switch (code) {
     case 'REFUSED_PAYMENT':
+    case 'NOT_PROCESSED':
+    case 'REQUEST_REFUSED':
       return Icons.close_rounded;
     case 'BEING_PROCESSED':
+    case 'REQUEST_INITIATED':
+    case 'REQUEST_ASSUMED':
       return Icons.autorenew_rounded;
     default:
-      return Icons.close;
+      return Icons.check;
   }
 }
 
 Color getColor(String? code) {
   switch (code) {
     case 'REFUSED_PAYMENT':
+    case 'NOT_PROCESSED':
+    case 'REQUEST_REFUSED':
       return colorRed;
     case 'BEING_PROCESSED':
-    case 'IN_PROGRESS':
+    case 'REQUEST_INITIATED':
+    case 'REQUEST_ASSUMED':
       return colorBlue2;
     default:
       return colorTurquois;

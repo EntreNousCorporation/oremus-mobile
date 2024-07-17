@@ -6,6 +6,7 @@ import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/payment/data/model/payment_status_data.dart';
 import 'package:oremusapp/app/remote/api_client.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
+import 'package:oremusapp/app/remote/error_response.dart';
 
 
 abstract class IPaymentRepository {
@@ -21,15 +22,15 @@ class PaymentRepository implements IPaymentRepository {
   Future<PaymentStatusData> paymentStatus({required String transactionId}) async {
     Response response = await _apiClient.doRequest(
       endpoint: "/checkout/check-payment/$transactionId",
-      method: HttpMethod.get,
+      method: HttpMethod.post,
     );
-    final String resp = json.encode(response.bodyString);
     log('resp status code => ${response.statusCode}');
-    if (response.statusCode! >= 200 && response.statusCode! <= 205) {
-      log('resp => $resp');
-      return PaymentStatusData.fromJson(json.decode(resp));
+
+    if (response.statusCode != 200) {
+      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      throw CustomException(e.debugMessage, e.status);
     } else {
-      throw CustomException(response.statusCode, response.statusText);
+      return PaymentStatusData.fromJson(json.decode(response.bodyString.toString()));
     }
   }
 }

@@ -39,9 +39,19 @@ class MassRequestResponse extends ToJsonInterface {
     this.status,
     this.typeOfMassRequest,
     this.user,
+
+    this.paymentUrl,
+    this.paymentStatus,
+    this.paymentId,
+    this.transactionId,
   });
 
   MassRequestResponse.fromJson(Map<String, dynamic> json) {
+    paymentUrl = json['paymentUrl'];
+    paymentStatus = json['paymentStatus'];
+    paymentId = json['paymentId'];
+    transactionId = json['transactionId'];
+
     identifier = json['identifier'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
@@ -65,6 +75,11 @@ class MassRequestResponse extends ToJsonInterface {
   @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['paymentUrl'] = paymentUrl;
+    data['paymentStatus'] = paymentStatus;
+    data['paymentId'] = paymentId;
+    data['transactionId'] = transactionId;
+
     data['identifier'] = identifier;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
@@ -417,7 +432,7 @@ class Name {
 }
 
 class PriceResponse {
-  int? price;
+  dynamic price;
 
   PriceResponse({
     this.price,
@@ -437,31 +452,38 @@ class PriceResponse {
 class PriceData {
   String? dayOfWeek;
   String? day;
+  String? dayToDisplay;
+  bool? isDaySelected;
   List<Slot>? slots;
 
   PriceData({
     this.dayOfWeek,
     this.day,
+    this.dayToDisplay,
+    this.isDaySelected = false,
     this.slots,
   });
 
   PriceData.fromJson(Map<String, dynamic> json) {
     day = json['day'];
+    dayToDisplay = json['dayToDisplay'];
     dayOfWeek = json['dayOfWeek'];
     if (json['slots'] != null) {
       slots = <Slot>[];
       json['slots'].forEach((v) {
-        slots!.add(Slot.fromJson(v));
+        slots?.add(Slot.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['dayOfWeek'] = day;
+    data['day'] = day;
+    data['dayToDisplay'] = dayToDisplay;
     data['dayOfWeek'] = dayOfWeek;
+    data['isDaySelected'] = isDaySelected;
     if (slots != null) {
-      data['slots'] = slots!.map((v) => v.toJson()).toList();
+      data['slots'] = slots?.map((v) => v.toJson()).toList();
     }
     return data;
   }

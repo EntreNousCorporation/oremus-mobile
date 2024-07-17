@@ -77,11 +77,11 @@ class MassRequestRepository implements IMassRequestRepository {
     );
     log('resp sendMassRequest => ${response.statusCode}');
 
-    if (response.statusCode != 200) {
+    if (response.statusCode! >= 200 && response.statusCode! <= 204) {
+      return MassRequestResponse.fromJson(json.decode(response.bodyString.toString()));
+    } else {
       var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
       throw CustomException(e.debugMessage, e.status);
-    } else {
-      return MassRequestResponse.fromJson(json.decode(response.bodyString.toString()));
     }
   }
 }

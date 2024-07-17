@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animator/widgets/fading_entrances/fade_in.dart';
-import 'package:flutter_animator/widgets/fading_entrances/fade_in_up.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:like_button/like_button.dart';
@@ -38,6 +37,7 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                 slivers: [
                   SliverAppBar(
                     expandedHeight: AppConstants.kExpandedHeight,
+                    collapsedHeight: 100,
                     floating: false,
                     pinned: true,
                     backgroundColor: colorGreen,
@@ -50,6 +50,13 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                       icon: const Icon(Icons.arrow_back_ios_rounded),
                     ),
                     actions: [
+                      IconButton(
+                        onPressed: () {
+                          _.moveToHome();
+                        },
+                        icon: const Icon(Icons.home_filled),
+                      ),
+                      Separators.minimunHorizontal(),
                       LikeButton(
                         isLiked: _.paroisseSelected.value.isFavorite,
                         onTap: (isLiked) async {
@@ -105,21 +112,17 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                               true)
                           ? Stack(
                               children: [
-                                Hero(
-                                  tag:
-                                      'tag${_.paroisseSelected.value.identifier}',
-                                  child: CachedNetworkImage(
-                                    width: Get.width,
-                                    height: Get.width,
-                                    imageUrl: _.paroisseSelected.value
-                                            .coverImage?.link ??
-                                        '',
-                                    fit: BoxFit.cover,
-                                    placeholder: (context, url) =>
-                                        LottieLoadingView(size: Get.width / 6),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
-                                  ),
+                                CachedNetworkImage(
+                                  width: Get.width,
+                                  height: Get.width,
+                                  imageUrl: _.paroisseSelected.value
+                                          .coverImage?.link ??
+                                      '',
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) =>
+                                      LottieLoadingView(size: Get.width / 6),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
                                 ),
                                 Container(
                                   height: Get.width,
@@ -132,15 +135,11 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                             )
                           : Stack(
                               children: [
-                                Hero(
-                                  tag:
-                                      'tag${_.paroisseSelected.value.identifier}',
-                                  child: Image.asset(
-                                    Assets.imagesBgLogin,
-                                    width: Get.width,
-                                    height: Get.width,
-                                    fit: BoxFit.cover,
-                                  ),
+                                Image.asset(
+                                  Assets.imagesBgLogin,
+                                  width: Get.width,
+                                  height: Get.width,
+                                  fit: BoxFit.cover,
                                 ),
                                 Container(
                                   height: Get.width,

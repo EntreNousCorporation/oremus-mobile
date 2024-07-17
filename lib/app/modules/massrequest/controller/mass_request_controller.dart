@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:jiffy/jiffy.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
@@ -29,7 +28,8 @@ class MassRequestController extends GetxController {
 
   var unlockBackButton = true.obs;
 
-  var isDataProcessing = false.obs;
+  var isPricingProcessing = false.obs;
+  var isDatesProcessing = false.obs;
   var hasData = false.obs;
   var isLiked = false.obs;
 
@@ -77,21 +77,30 @@ class MassRequestController extends GetxController {
     );
   }
 
+  moveToHome() {
+    Get.deleteAll(force: true);
+    Get.offAllNamed(Routes.CUSTOM_HOME);
+  }
+
   goToDatesChoice() async {
     datesChoosen.value = await Get.toNamed(Routes.FILTER_MASS_REQUEST_CHOOSE_DATE, arguments: worshipHours);
     datesChoosen.refresh();
     if (datesChoosen.isNotEmpty) {
       doGetMassRequestPrice();
+    } else {
+      price.value = '-';
     }
+    checkForm();
+    update();
   }
 
   void checkForm() {
     isValidForm.value = massRequestTypeSelected.value != null && prayerIntentSelected.value != null && price.value != '-';
   }
 
-  String getPrice() {
-    if (price.value == '-') return '-';
-    return '${price.value.amountFormat()} FCFA';
+  RxString getPrice() {
+    if (price.value == '-') return '-'.obs;
+    return '${price.value.amountFormat()} FCFA'.obs;
   }
 
   updateMassTypeFilter(TypeData? typeData) {
@@ -155,33 +164,18 @@ class MassRequestController extends GetxController {
     });
   }
 
-  ///remove all old dates
-  List<LiturgicalCelebrationResponse> getValidPlaceOfWorshipHours(List<LiturgicalCelebrationResponse> data) {
-    List<LiturgicalCelebrationResponse> worships = [];
-    for (LiturgicalCelebrationResponse item in data) {
-      if (item.isRecurrent == false) {
-        if (Jiffy.parse(item.startDate ?? Jiffy.now().format(), pattern: AppConstants.TIME_ZONE_FORMAT).isAfter(Jiffy.now().add(hours: 24))) {
-          worships.add(item);
-        }
-      } else {
-        worships.add(item);
-      }
-    }
-    return worships;
-  }
-
   doGetPlaceOfWorshipHours() {
     hideKeyboard();
 
     log('request doGetPlaceOfWorshipHours');
+    isDatesProcessing(true);
     paroisseRepository.getLiturgicalCelebration(paroisseSelected.value.identifier).then((value) {
+      isDatesProcessing(false);
       if (value.isNotEmpty == true) {
         worshipHours.value = value;
-        /*log('doGetPlaceOfWorshipHours before ::: ${value.length}');
-        worshipHours.value = getValidPlaceOfWorshipHours(value);
-        log('doGetPlaceOfWorshipHours after ::: ${worshipHours.length}');*/
       }
     }, onError: (error) {
+      isDatesProcessing(false);
       var err = error as CustomException;
       if (err.code == 401) {
         showCustomDialog(
@@ -199,15 +193,15 @@ class MassRequestController extends GetxController {
   doGetMassRequestPrice() {
     hideKeyboard();
 
-    isDataProcessing(true);
+    isPricingProcessing(true);
     hasData(false);
     log('request doGetMassRequestPrice');
     massRequestRepository.getMassRequestPrice(request: datesChoosen, workshipId: paroisseSelected.value.identifier.toString()).then((value) {
-      isDataProcessing(false);
+      isPricingProcessing(false);
       hasData(true);
-      price.value = value.price.toString().amountFormat();
+      price.value = value.price.toString();
     }, onError: (error) {
-      isDataProcessing(false);
+      isPricingProcessing(false);
       hasData(false);
       var err = error as CustomException;
       if (err.code == 401) {
@@ -228,7 +222,7 @@ class MassRequestController extends GetxController {
   doSendMassRequest() {
     hideKeyboard();
     EasyLoading.show(
-      status: 'Soumission en cours...',
+      status: 'Traitement en cours...',
       maskType: EasyLoadingMaskType.black,
       indicator: LottieLoadingView(),
     ).then((v) {
@@ -238,11 +232,11 @@ class MassRequestController extends GetxController {
     var request = MassRequestData(
       prayerIntent: description.text.isNotEmpty ? description.text : prayerIntentSelected.value?.defaultText?.fr,
       typeOfMassRequest: massRequestTypeSelected.value?.code,
-      slots: [],
+      slots: datesChoosen,
       worshipPlace: paroisseSelected.value.identifier,
     );
 
-    log('request doSendClaim => ${jsonEncode(request.toJson())}');
+    log('request doSendMassRequest => ${jsonEncode(request.toJson())}');
 
     massRequestRepository.sendMassRequest(request: request).then((value) {
       EasyLoading.dismiss(animation: true).then((v) {

@@ -8,6 +8,7 @@ class LiturgicalCelebrationResponse {
   String? modifiedBy;
   String? name;
   String? startDate;
+  String? startDateFormatted;
   String? description;
   LiturgicalType? type;
   bool? isRecurrent;
@@ -22,6 +23,7 @@ class LiturgicalCelebrationResponse {
     this.modifiedBy,
     this.name,
     this.startDate,
+    this.startDateFormatted,
     this.description,
     this.type,
     this.isRecurrent,
@@ -47,6 +49,7 @@ class LiturgicalCelebrationResponse {
     modifiedBy = json['modifiedBy'];
     name = json['name'];
     startDate = json['startDate'];
+    startDateFormatted = json['startDateFormatted'];
     description = json['description'];
     type = json['type'] != null ? LiturgicalType.fromJson(json['type']) : null;
     isRecurrent = json['isRecurrent'];
@@ -67,6 +70,7 @@ class LiturgicalCelebrationResponse {
     data['modifiedBy'] = modifiedBy;
     data['name'] = name;
     data['startDate'] = startDate;
+    data['startDateFormatted'] = startDateFormatted;
     data['description'] = description;
     data['type'] = type?.toJson();
     data['isRecurrent'] = isRecurrent;
@@ -169,6 +173,8 @@ class Slot {
   String? startTime;
   String? endTime;
 
+  bool? isHourSelected = false;
+
   Slot({
     this.identifier,
     this.createdAt,
@@ -177,6 +183,7 @@ class Slot {
     this.modifiedBy,
     this.startTime,
     this.endTime,
+    this.isHourSelected,
   });
 
   Slot.fromJson(Map<String, dynamic> json) {
@@ -198,6 +205,7 @@ class Slot {
     data['modifiedBy'] = modifiedBy;
     data['startTime'] = startTime;
     data['endTime'] = endTime;
+    data['isHourSelected'] = isHourSelected;
     return data;
   }
 }

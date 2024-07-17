@@ -36,6 +36,7 @@ class ParoisseMenuScreen extends StatelessWidget {
                     slivers: [
                       SliverAppBar(
                         expandedHeight: AppConstants.kExpandedHeight,
+                        collapsedHeight: 100,
                         floating: false,
                         snap: false,
                         pinned: true,

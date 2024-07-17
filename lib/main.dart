@@ -7,6 +7,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:jiffy/jiffy.dart';
@@ -20,7 +21,6 @@ import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:platform_device_id/platform_device_id.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 var appUrl;
 //var byPassAuth;

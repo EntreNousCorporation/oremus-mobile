@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/button.dart';
-import 'package:oremusapp/app/commons/components/loader_widget.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/filter_mass_request_date_controller.dart';
-import 'package:oremusapp/app/modules/massrequesthistory/views/widget/mass_request_type_search_widget.dart';
-import 'package:oremusapp/app/modules/massrequesthistory/views/widget/type_data_item.dart';
+import 'package:oremusapp/app/modules/massrequest/views/widget/worship_recurrent_hours_list.dart';
+import 'package:oremusapp/app/modules/massrequest/views/widget/worship_special_hours_list.dart';
 
 class FilterMassRequestDateScreen extends StatelessWidget {
   const FilterMassRequestDateScreen({Key? key}) : super(key: key);
@@ -43,8 +41,7 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                           children: [
                             IconButton(
                               onPressed: () {
-                                _.doResetFilter();
-                                _.goBackToMassRequestHistory();
+                                _.doResetAndCloseFilter();
                               },
                               icon: const Icon(
                                 Icons.cancel_rounded,
@@ -71,7 +68,7 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                         ),
                         Separators.normalVertical(),
                         Text(
-                          'Choix de dates',
+                          'Choix des dates',
                           style: TextStyles.montserratBold(
                             textColor: colorBlack,
                             textSize: TextSizes.thirty_eight,
@@ -101,7 +98,7 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                                         Container(
                                           padding: const EdgeInsets.all(10),
                                           width: double.maxFinite,
-                                          color: colorGreen,
+                                          color: colorPurpleLight,
                                           child: Text(
                                             'Jours récurrents',
                                             style: TextStyles.montserratSemiBold(
@@ -110,95 +107,21 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                                             ),
                                           ),
                                         ),
-                                        Separators.minimunVertical(),
-                                        ListView.separated(
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemCount:
-                                              _.worshipRecurrentHours.length,
-                                          itemBuilder: (context, index) {
-                                            var item = _.worshipRecurrentHours[index];
-                                            return Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  getDay(int.parse(item.dayOfWeek ?? '')),
-                                                  style: TextStyles
-                                                      .montserratSemiBold(
-                                                    textColor: colorGrey1,
-                                                    textSize:
-                                                    TextSizes.fourteen,
-                                                  ),
-                                                ),
-                                                Separators.normalVertical(),
-                                                Wrap(
-                                                  alignment:
-                                                  WrapAlignment.start,
-                                                  direction: Axis.horizontal,
-                                                  children: item.slots
-                                                      ?.map(
-                                                        (e) => Container(
-                                                      margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                                                      decoration:
-                                                      BoxDecoration(
-                                                        /*color: logic.massRequestTypeSelected.value == typeData
-                                                                    ? colorGreenSemiLight
-                                                                    : colorWhite,*/
-                                                        color:
-                                                        colorWhite,
-                                                        border: Border.all(
-                                                            color:
-                                                            colorGreenSemiLight),
-                                                        borderRadius:
-                                                        BorderRadius.circular(Get.width /
-                                                            10),
-                                                      ),
-                                                      child:
-                                                      Padding(
-                                                        padding: const EdgeInsets.all(10.0),
-                                                        child:
-                                                        Text(
-                                                          '${e.startTime}',
-                                                          textAlign:
-                                                          TextAlign.center,
-                                                          style:
-                                                          TextStyles.montserratSemiBold(
-                                                            textSize:
-                                                            TextSizes.fourteen,
-                                                            textColor:
-                                                            colorBlack,
-                                                            /*textColor: logic.massRequestTypeSelected.value == typeData
-                                                                        ? colorWhite
-                                                                        : colorBlack,*/
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ).toList() ?? [],
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                          separatorBuilder: (context, index) {
-                                            return Separators.normalVertical();
-                                          },
-                                        ),
+                                        Separators.normalVertical(),
+                                        const WorshipRecurrentHoursList(),
                                       ],
                                     ),
                                   ),
                                   Visibility(
                                     visible: _.worshipSpecialHours.isNotEmpty,
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Separators.maximumVertical(),
                                         Container(
                                           padding: const EdgeInsets.all(10),
                                           width: double.maxFinite,
-                                          color: colorGreen,
+                                          color: colorPurpleLight,
                                           child: Text(
                                             'Jours spéciaux',
                                             style: TextStyles.montserratSemiBold(
@@ -207,84 +130,8 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                                             ),
                                           ),
                                         ),
-                                        Separators.minimunVertical(),
-                                        ListView.separated(
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemCount:
-                                              _.worshipSpecialHours.length,
-                                          itemBuilder: (context, index) {
-                                            var item =
-                                                _.worshipSpecialHours[index];
-                                            return Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  '${item.day}',
-                                                  style: TextStyles
-                                                      .montserratSemiBold(
-                                                    textColor: colorGrey1,
-                                                    textSize:
-                                                        TextSizes.fourteen,
-                                                  ),
-                                                ),
-                                                Separators.normalVertical(),
-                                                Wrap(
-                                                  alignment:
-                                                      WrapAlignment.start,
-                                                  direction: Axis.horizontal,
-                                                  children: item.slots
-                                                          ?.map(
-                                                            (e) => Container(
-                                                              margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                /*color: logic.massRequestTypeSelected.value == typeData
-                                                                    ? colorGreenSemiLight
-                                                                    : colorWhite,*/
-                                                                color:
-                                                                    colorWhite,
-                                                                border: Border.all(
-                                                                    color:
-                                                                        colorGreenSemiLight),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(Get.width /
-                                                                        10),
-                                                              ),
-                                                              child:
-                                                                  Padding(
-                                                                padding: const EdgeInsets.all(10.0),
-                                                                child:
-                                                                    Text(
-                                                                  '${e.startTime}',
-                                                                  textAlign:
-                                                                      TextAlign.center,
-                                                                  style:
-                                                                      TextStyles.montserratSemiBold(
-                                                                    textSize:
-                                                                        TextSizes.fourteen,
-                                                                    textColor:
-                                                                        colorBlack,
-                                                                    /*textColor: logic.massRequestTypeSelected.value == typeData
-                                                                        ? colorWhite
-                                                                        : colorBlack,*/
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          )
-                                                          .toList() ??
-                                                      [],
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                          separatorBuilder: (context, index) {
-                                            return Separators.normalVertical();
-                                          },
-                                        ),
+                                        Separators.normalVertical(),
+                                        const WorshipSpecialHoursList(),
                                       ],
                                     ),
                                   ),
@@ -309,7 +156,7 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                               ? colorGrey1
                               : colorGreen,
                           action: () {
-                            _.goBackToMassRequestHistory();
+                            _.goBackToMassRequest();
                           },
                         ),
                         Separators.normalVertical(),

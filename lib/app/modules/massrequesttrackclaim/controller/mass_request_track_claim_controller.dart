@@ -52,6 +52,11 @@ class MassRequestTrackClaimController extends GetxController {
     }
   }
 
+  moveToHome() {
+    Get.deleteAll(force: true);
+    Get.offAllNamed(Routes.CUSTOM_HOME);
+  }
+
   doGetClaims() {
     hideKeyboard();
     searchCriteria.value.worshipPlace = paroisseSelected.value.identifier;

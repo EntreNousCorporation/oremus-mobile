@@ -4,7 +4,6 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/mass_request_controller.dart';
-import 'package:oremusapp/app/modules/massrequestclaim/controller/mass_request_claim_controller.dart';
 
 class IntentTypeDescriptionWidget extends StatelessWidget {
   const IntentTypeDescriptionWidget({Key? key}) : super(key: key);

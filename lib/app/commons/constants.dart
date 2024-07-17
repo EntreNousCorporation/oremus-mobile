@@ -34,6 +34,7 @@ abstract class AppConstants {
   static const TIME_ZONE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
   static const TIME_DEFAULT_FORMAT = "dd/MM/yyyy HH:mm";
   static const TIME_SIMPLE_FORMAT = "dd/MM/yyyy";
+  static const TIME_SIMPLE_FORMAT2 = "dd-MM-yyyy";
   static const TIME_SIMPLE_FORMA1 = "yyyy-MM-dd";
   static const TIME_HUMAN_FORMAT1 = "dd MMM yyyy [à] HH:mm";
 

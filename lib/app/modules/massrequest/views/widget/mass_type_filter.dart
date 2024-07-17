@@ -6,7 +6,6 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/mass_request_controller.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
-import 'package:oremusapp/app/modules/massrequestclaim/controller/mass_request_claim_controller.dart';
 
 class MassTypeFilter extends StatelessWidget {
   const MassTypeFilter({Key? key}) : super(key: key);

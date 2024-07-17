@@ -39,6 +39,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
                 slivers: [
                   SliverAppBar(
                     expandedHeight: AppConstants.kExpandedHeight,
+                    collapsedHeight: 100,
                     floating: false,
                     pinned: true,
                     backgroundColor: colorGreen,
@@ -51,6 +52,13 @@ class MassRequestHistoryScreen extends StatelessWidget {
                       icon: const Icon(Icons.arrow_back_ios_rounded),
                     ),
                     actions: [
+                      IconButton(
+                        onPressed: () {
+                          _.moveToHome();
+                        },
+                        icon: const Icon(Icons.home_filled),
+                      ),
+                      Separators.minimunHorizontal(),
                       LikeButton(
                         isLiked: _.paroisseSelected.value.isFavorite,
                         onTap: (isLiked) async {
