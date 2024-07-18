@@ -41,7 +41,7 @@ class MassRequestClaimRepository implements IMassRequestClaimRepository {
     SearchCriteria? searchCriteria,
   }) async {
     Response response = await _apiClient.doRequest(
-      endpoint: "/users/claims?page=$page&size=${AppConstants.MASS_REQUEST_PAGING_SIZE}${(searchCriteria?.worshipPlace == null) ? '' : '&worshipPlace=${searchCriteria?.worshipPlace}'}${(searchCriteria?.typeOfClaim == null || searchCriteria?.typeOfClaim?.isEmpty == true) ? '' : '&typeOfClaim=${searchCriteria?.typeOfClaim}'}",
+      endpoint: "/users/claims?page=$page&size=${AppConstants.MASS_REQUEST_PAGING_SIZE}&sort=createdAt,desc${(searchCriteria?.worshipPlace == null) ? '' : '&worshipPlace=${searchCriteria?.worshipPlace}'}${(searchCriteria?.typeOfClaim == null || searchCriteria?.typeOfClaim?.isEmpty == true) ? '' : '&typeOfClaim=${searchCriteria?.typeOfClaim}'}",
       method: HttpMethod.get,
     );
     log('resp => ${response.statusCode}');
