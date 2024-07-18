@@ -17,7 +17,7 @@ class IntentTypeDescriptionWidget extends StatelessWidget {
         color: colorWhite,
         shadowColor: colorGrey2.withOpacity(0.5),
         child: TextFormField(
-          controller: logic.description,
+          controller: logic.descriptionController,
           keyboardAppearance: Brightness.light,
           style: TextStyles.montserratSemiBold(textColor: colorBlack),
           maxLines: 6,

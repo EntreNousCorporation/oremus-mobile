@@ -17,44 +17,65 @@ class SplashscreenScreen extends StatelessWidget {
       child: GetBuilder<SplashscreenController>(builder: (logic) {
         return SafeArea(
           child: Scaffold(
-              backgroundColor: Colors.transparent,
-              body: Container(
-                color: colorWhite,
-                width: Get.width,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    FadeIn(
-                      key: logic.basicIconAnimation,
-                      preferences: AnimationPreferences(
-                        offset: const Duration(seconds: 0),
-                        autoPlay: logic.applyAnimation(),
-                        magnitude: 0.5,
-                        duration: const Duration(seconds: 3),
-                      ),
-                      child: SvgPicture.asset('assets/images/logo.svg', height: 60,),
-                    ),
-                    Separators.minimunVertical(),
-                    FadeIn(
-                      key: logic.basicTextAnimation,
-                      preferences: AnimationPreferences(
-                        offset: const Duration(seconds: 0),
-                        autoPlay: logic.applyAnimation(),
-                        magnitude: 0.5,
-                        duration: const Duration(seconds: 3),
-                      ),
-                      child: Text('Oremus',
-                        textAlign: TextAlign.center,
-                        style: TextStyles.montserratBold(
-                          textSize: TextSizes.twenty_four,
-                          textColor: colorGreen,
+            backgroundColor: Colors.transparent,
+            body: Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  color: colorWhite,
+                  width: Get.width,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      FadeIn(
+                        key: logic.basicIconAnimation,
+                        preferences: AnimationPreferences(
+                          offset: const Duration(seconds: 0),
+                          autoPlay: logic.applyAnimation(),
+                          magnitude: 0.5,
+                          duration: const Duration(seconds: 3),
+                        ),
+                        child: SvgPicture.asset(
+                          'assets/images/logo.svg',
+                          height: 60,
                         ),
                       ),
-                    ),
-                  ],
+                      Separators.minimunVertical(),
+                      FadeIn(
+                        key: logic.basicTextAnimation,
+                        preferences: AnimationPreferences(
+                          offset: const Duration(seconds: 0),
+                          autoPlay: logic.applyAnimation(),
+                          magnitude: 0.5,
+                          duration: const Duration(seconds: 3),
+                        ),
+                        child: Text(
+                          'Oremus',
+                          textAlign: TextAlign.center,
+                          style: TextStyles.montserratBold(
+                            textSize: TextSizes.twenty_four,
+                            textColor: colorGreen,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              )),
+                Positioned(
+                  bottom: 24,
+                  child: Text(
+                    'Powered by YPY it',
+                    textAlign: TextAlign.center,
+                    style: TextStyles.montserratRegular(
+                      textSize: TextSizes.twelve,
+                      textColor: colorGrey1,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       }),
     );

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
@@ -55,7 +54,7 @@ class ClaimTypeFilter extends StatelessWidget {
           return DropdownMenuItem<TypeData?>(
             value: typeData,
             child: Text(
-              '${DB.getCurrentLanguage() == 'fr' ? typeData?.name?.fr : typeData?.name?.en}',
+              typeData?.name?.fr ?? '-',
               maxLines: 2,
               softWrap: true,
               overflow: TextOverflow.ellipsis,

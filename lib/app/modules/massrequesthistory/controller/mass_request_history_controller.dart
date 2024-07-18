@@ -289,7 +289,7 @@ class MassRequestHistoryController extends GetxController {
 
   onLoading() {
     hideKeyboard();
-    searchCriteria.value.name = searchController.text.trim();
+    //searchCriteria.value.name = searchController.text.trim();
 
     log('request onLoading');
 

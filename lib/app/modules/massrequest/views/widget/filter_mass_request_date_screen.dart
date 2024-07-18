@@ -41,7 +41,8 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                           children: [
                             IconButton(
                               onPressed: () {
-                                _.doResetAndCloseFilter();
+                                //_.doResetAndCloseFilter();
+                                _.goBackToMassRequest();
                               },
                               icon: const Icon(
                                 Icons.cancel_rounded,

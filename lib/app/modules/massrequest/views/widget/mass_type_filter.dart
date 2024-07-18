@@ -55,7 +55,7 @@ class MassTypeFilter extends StatelessWidget {
           return DropdownMenuItem<TypeData?>(
             value: typeData,
             child: Text(
-              '${DB.getCurrentLanguage() == 'fr' ? typeData?.name?.fr : typeData?.name?.en}',
+              typeData?.name?.fr ?? '-',
               maxLines: 2,
               softWrap: true,
               overflow: TextOverflow.ellipsis,

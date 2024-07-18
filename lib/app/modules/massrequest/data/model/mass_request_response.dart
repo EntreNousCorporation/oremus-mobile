@@ -39,7 +39,6 @@ class MassRequestResponse extends ToJsonInterface {
     this.status,
     this.typeOfMassRequest,
     this.user,
-
     this.paymentUrl,
     this.paymentStatus,
     this.paymentId,
@@ -349,19 +348,28 @@ class Status {
 class TypeData {
   String? code;
   Name? name;
+  Name? template;
 
-  TypeData({this.code, this.name});
+  TypeData({
+    this.code,
+    this.name,
+    this.template,
+  });
 
   TypeData.fromJson(Map<String, dynamic> json) {
     code = json['code'];
     name = json['name'] != null ? Name.fromJson(json['name']) : null;
+    template = json['template'] != null ? Name.fromJson(json['template']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['code'] = code;
     if (name != null) {
-      data['name'] = name!.toJson();
+      data['name'] = name?.toJson();
+    }
+    if (template != null) {
+      data['template'] = template?.toJson();
     }
     return data;
   }

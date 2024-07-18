@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/payment/data/repository/payment_repository.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
@@ -23,6 +24,8 @@ class PaymentController extends GetxController {
   var isDataProcessing = false.obs;
   var hasData = false.obs;
 
+  var paroisseSelected = ContentPlace().obs;
+
   var massRequestResponseSelected = MassRequestResponse().obs;
   var webViewController = Rx<WebViewController>(WebViewController());
   var paymentProcessing = false.obs;
@@ -40,7 +43,8 @@ class PaymentController extends GetxController {
 
   getArguments() {
     if (Get.arguments != null) {
-      massRequestResponseSelected.value = MassRequestResponse.fromJson(Get.arguments);
+      massRequestResponseSelected.value =
+          MassRequestResponse.fromJson(Get.arguments);
       initWebview();
     }
   }
@@ -49,9 +53,12 @@ class PaymentController extends GetxController {
     if (isTimerActive.value == true) {
       timer.cancel();
     }
-    Get.offAllNamed(
+    Get.offNamed(
       Routes.PAYMENT_ERROR,
-      arguments: paymentStatusMessage.value,
+      arguments: [
+        paroisseSelected.toJson(),
+        paymentStatusMessage.value,
+      ],
     );
   }
 
@@ -59,14 +66,13 @@ class PaymentController extends GetxController {
     if (isTimerActive.value == true) {
       timer.cancel();
     }
-    Get.offAllNamed(
+    Get.offNamed(
       Routes.PAYMENT_SUCCESS,
-      arguments: paymentStatusMessage.value,
+      arguments: [
+        paroisseSelected.toJson(),
+        paymentStatusMessage.value,
+      ],
     );
-  }
-
-  moveToHome() {
-    Get.offAllNamed(Routes.CUSTOM_HOME);
   }
 
   doBack() async {
@@ -93,10 +99,9 @@ class PaymentController extends GetxController {
       ),
     );
 
-    if (massRequestResponseSelected.value.paymentUrl?.isNotEmpty ==
-        true) {
-      webViewController.value.loadRequest(Uri.parse(
-          massRequestResponseSelected.value.paymentUrl ?? ''));
+    if (massRequestResponseSelected.value.paymentUrl?.isNotEmpty == true) {
+      webViewController.value.loadRequest(
+          Uri.parse(massRequestResponseSelected.value.paymentUrl ?? ''));
     } else {
       showCustomDialog(
         Get.context!,
@@ -143,9 +148,14 @@ class PaymentController extends GetxController {
     log('request doGetPaymentStatus :::');
 
     checkingPaymentStatus(true);
-    paymentRepository.paymentStatus(transactionId: massRequestResponseSelected.value.transactionId ?? '').then((value) {
+    paymentRepository
+        .paymentStatus(
+            transactionId:
+                massRequestResponseSelected.value.transactionId ?? '')
+        .then((value) {
       if (value.paymentStatus == 'REFUSED') {
         checkingPaymentStatus(true);
+        paymentStatusMessage.value = 'Le paiement a échoué. Veuillez-réessayer svp !';
         moveToError();
         return;
       }

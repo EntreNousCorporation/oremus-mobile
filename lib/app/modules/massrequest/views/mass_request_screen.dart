@@ -206,25 +206,7 @@ class MassRequestScreen extends StatelessWidget {
                               elevation: 10,
                               color: colorWhite,
                               shadowColor: colorGrey2.withOpacity(0.5),
-                              child: const PrayerIntentFilter(),
-                            ),
-                            Visibility(
-                              visible: _.prayerIntentSelected.value != null,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Separators.maximum1Vertical(),
-                                  Text(
-                                    'Description de l\'intention de prière',
-                                    style: TextStyles.montserratMedium(
-                                      textColor: colorGrey1,
-                                      textSize: TextSizes.fourteen,
-                                    ),
-                                  ),
-                                  Separators.customSizeVertical(8),
-                                  const IntentTypeDescriptionWidget(),
-                                ],
-                              ),
+                              child: const IntentTypeDescriptionWidget(),
                             ),
                             Separators.maximum1Vertical(),
 

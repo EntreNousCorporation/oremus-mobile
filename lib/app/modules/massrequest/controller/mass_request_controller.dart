@@ -33,7 +33,7 @@ class MassRequestController extends GetxController {
   var hasData = false.obs;
   var isLiked = false.obs;
 
-  var description = TextEditingController();
+  var descriptionController = TextEditingController();
 
   RxList<TypeData?> massRequestTypes = RxList<TypeData?>([]);
   Rx<TypeData?> massRequestTypeSelected = Rx<TypeData?>(null);
@@ -54,8 +54,8 @@ class MassRequestController extends GetxController {
   @override
   void onInit() {
     getArguments();
+    // doGetPrayerIntent();
     doGetMassRequestType();
-    doGetPrayerIntent();
     doGetPlaceOfWorshipHours();
 
     super.onInit();
@@ -91,11 +91,11 @@ class MassRequestController extends GetxController {
       price.value = '-';
     }
     checkForm();
-    update();
   }
 
   void checkForm() {
-    isValidForm.value = massRequestTypeSelected.value != null && prayerIntentSelected.value != null && price.value != '-';
+    isValidForm.value = massRequestTypeSelected.value != null && descriptionController.text.isNotEmpty && price.value != '-';
+    update();
   }
 
   RxString getPrice() {
@@ -105,15 +105,14 @@ class MassRequestController extends GetxController {
 
   updateMassTypeFilter(TypeData? typeData) {
     massRequestTypeSelected.value = typeData;
+    descriptionController.text = "${typeData?.template?.fr ?? ''} ";
     checkForm();
-    update();
   }
 
   updatePrayerIntentFilter(PrayerIntentData? prayerIntentData) {
     prayerIntentSelected.value = prayerIntentData;
-    description.text = prayerIntentData?.defaultText?.fr ?? '';
+    descriptionController.text = prayerIntentData?.defaultText?.fr ?? '';
     checkForm();
-    update();
   }
 
   doGetMassRequestType() {
@@ -200,6 +199,7 @@ class MassRequestController extends GetxController {
       isPricingProcessing(false);
       hasData(true);
       price.value = value.price.toString();
+      checkForm();
     }, onError: (error) {
       isPricingProcessing(false);
       hasData(false);
@@ -230,7 +230,7 @@ class MassRequestController extends GetxController {
     });
 
     var request = MassRequestData(
-      prayerIntent: description.text.isNotEmpty ? description.text : prayerIntentSelected.value?.defaultText?.fr,
+      prayerIntent: descriptionController.text.isNotEmpty ? descriptionController.text : prayerIntentSelected.value?.defaultText?.fr,
       typeOfMassRequest: massRequestTypeSelected.value?.code,
       slots: datesChoosen,
       worshipPlace: paroisseSelected.value.identifier,

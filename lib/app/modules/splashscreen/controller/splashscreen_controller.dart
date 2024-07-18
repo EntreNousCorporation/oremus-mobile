@@ -20,9 +20,6 @@ class SplashscreenController extends GetxController {
     required this.signinRepository,
   });
 
-  var userConnection = Signin().obs;
-  var userInfo;
-
   var applyAnim = true.obs;
   final GlobalKey<AnimatorWidgetState> basicIconAnimation = GlobalKey<AnimatorWidgetState>();
   final GlobalKey<AnimatorWidgetState> basicTextAnimation = GlobalKey<AnimatorWidgetState>();
