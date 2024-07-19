@@ -106,7 +106,7 @@ Color getColor(String? code) {
     case 'REQUEST_ASSUMED':
       return colorBlue2;
     default:
-      return colorTurquois;
+      return colorGreen;
   }
 }
 

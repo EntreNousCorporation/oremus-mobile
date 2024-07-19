@@ -5,4 +5,5 @@ import 'package:oremusapp/app/remote/data_response.dart';
 abstract class IMassRequestHistoryRepository {
   //For API
   Future<DataResponse<MassRequestResponse>> getMassRequests({int? page = 0, SearchCriteria? searchCriteria});
+  Future<List<MassRequestStatusData>> getMassRequestsStatus({int? page = 0, SearchCriteria? searchCriteria});
 }

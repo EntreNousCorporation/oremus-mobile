@@ -13,6 +13,8 @@ class SearchCriteria {
   dynamic worshipPlace;
   String? typeOfMassRequest;
   String? typeOfClaim;
+  String? traceId;
+  String? identifier;
 
   SearchCriteria({
     this.name,
@@ -26,6 +28,8 @@ class SearchCriteria {
     this.worshipPlace,
     this.typeOfMassRequest,
     this.typeOfClaim,
+    this.traceId,
+    this.identifier,
   });
 
   ///use to know if we must launch search or not
@@ -49,6 +53,8 @@ class SearchCriteria {
     data['worshipPlace'] = worshipPlace;
     data['typeOfMassRequest'] = typeOfMassRequest;
     data['typeOfClaim'] = typeOfClaim;
+    data['traceId'] = traceId;
+    data['identifier'] = identifier;
     return data;
   }
 }

@@ -521,3 +521,51 @@ class StartTime {
     return data;
   }
 }
+
+class MassRequestStatusData {
+  int? identifier;
+  String? createdAt;
+  String? updatedAt;
+  String? createdBy;
+  String? modifiedBy;
+  String? traceId;
+  int? massRequestId;
+  Status? status;
+
+  MassRequestStatusData(
+      {this.identifier,
+        this.createdAt,
+        this.updatedAt,
+        this.createdBy,
+        this.modifiedBy,
+        this.traceId,
+        this.massRequestId,
+        this.status});
+
+  MassRequestStatusData.fromJson(Map<String, dynamic> json) {
+    identifier = json['identifier'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+    createdBy = json['createdBy'];
+    modifiedBy = json['modifiedBy'];
+    traceId = json['traceId'];
+    massRequestId = json['massRequestId'];
+    status =
+    json['status'] != null ? Status.fromJson(json['status']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['identifier'] = identifier;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
+    data['createdBy'] = createdBy;
+    data['modifiedBy'] = modifiedBy;
+    data['traceId'] = traceId;
+    data['massRequestId'] = massRequestId;
+    if (status != null) {
+      data['status'] = status?.toJson();
+    }
+    return data;
+  }
+}

@@ -1,12 +1,18 @@
+import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
+import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/data/repository/mass_request_history_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
+import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
 class MassRequestHistoryDetailController extends GetxController {
@@ -22,14 +28,18 @@ class MassRequestHistoryDetailController extends GetxController {
 
   var isDataProcessing = false.obs;
   var hasData = false.obs;
+  var hasError = false.obs;
   var isLiked = false.obs;
 
   var paroisseSelected = ContentPlace().obs;
   var massRequestSelected = MassRequestResponse().obs;
 
+  RxList<MassRequestStatusData> massRequestStatuses = RxList<MassRequestStatusData>([]);
+
   @override
   void onInit() {
     getArguments();
+    doGetMassRequestStatuses();
     super.onInit();
   }
 
@@ -67,6 +77,50 @@ class MassRequestHistoryDetailController extends GetxController {
 
   canClaimMassRequest() {
     return massRequestSelected.value.status?.code == 'REQUEST_ACCEPTED' || massRequestSelected.value.status?.code == 'ACCEPTED_PAYMENT' || massRequestSelected.value.status?.code == 'REQUEST_REFUSED' || massRequestSelected.value.status?.code == 'REFUSED_PAYMENT';
+  }
+
+  doGetMassRequestStatuses() {
+    hideKeyboard();
+    var request = SearchCriteria(
+      identifier: massRequestSelected.value.identifier.toString(),
+    );
+    isDataProcessing(true);
+    hasData(false);
+    hasError(false);
+
+    log('request doGetMassRequestStatuses ::: ${jsonEncode(request.toJson())}');
+
+    massRequestHistoryRepository
+        .getMassRequestsStatus(searchCriteria: request)
+        .then((value) {
+      isDataProcessing(false);
+      massRequestStatuses.value = value;
+      if (massRequestStatuses.isNotEmpty == true) {
+        hasData(true);
+      } else {
+        hasData(false);
+      }
+      hasError(false);
+    }, onError: (error) {
+      isDataProcessing(false);
+      hasData(false);
+      hasError(false);
+      var err = error as CustomException;
+      if (err.code.toString().contains('401')) {
+        showCustomDialog(
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      } else if (err.code.toString().contains('900')) {
+        showCustomDialog(
+          Get.context!,
+          message: err.message.toString(),
+        );
+      }
+      debugPrint("doGetMassRequestStatuses error => ${error.toString()}");
+    });
   }
 
   doLogout() {

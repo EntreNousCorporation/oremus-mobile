@@ -12,6 +12,7 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/controller/mass_request_history_detail_controller.dart';
+import 'package:oremusapp/app/modules/massrequesthistory/views/widget/mass_request_state_view.dart';
 import 'package:oremusapp/generated/assets.dart';
 
 class MassRequestHistoryDetailScreen extends StatelessWidget {
@@ -155,7 +156,6 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                     sliver: SliverToBoxAdapter(
                       child: Column(
                         children: [
-                          //Separators.minimunVertical(),
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
@@ -217,7 +217,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                     Separators.minimunVertical(),
                                     Text(
                                       _.massRequestSelected.value
-                                              .typeOfMassRequest?.name?.fr ??
+                                          .typeOfMassRequest?.name?.fr ??
                                           '-',
                                       textAlign: TextAlign.center,
                                       style: TextStyles.montserratSemiBold(
@@ -273,7 +273,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                     Separators.minimunVertical(),
                                     Text(
                                       _.massRequestSelected.value
-                                              .prayerIntent ??
+                                          .prayerIntent ??
                                           '-',
                                       textAlign: TextAlign.center,
                                       style: TextStyles.montserratSemiBold(
@@ -284,7 +284,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                     Separators.maximum1Vertical(),
                                     Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      MainAxisAlignment.center,
                                       children: [
                                         Visibility(
                                           visible: _.canClaimMassRequest(),
@@ -306,17 +306,17 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                                       ),
                                                       Separators
                                                           .customSizeVertical(
-                                                              3),
+                                                          3),
                                                       Text(
                                                         'Faire une \nréclamation',
                                                         textAlign:
-                                                            TextAlign.center,
+                                                        TextAlign.center,
                                                         style: TextStyles
                                                             .montserratMedium(
                                                           textSize:
-                                                              TextSizes.fifteen,
+                                                          TextSizes.fifteen,
                                                           textColor:
-                                                              colorTurquois,
+                                                          colorTurquois,
                                                         ),
                                                       ),
                                                     ],
@@ -362,6 +362,23 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                       ],
                                     ),
                                   ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Separators.normalVertical(),
+                          Visibility(
+                            visible: _.massRequestStatuses.isNotEmpty,
+                            child: SizedBox(
+                              width: double.maxFinite,
+                              child: Material(
+                                borderRadius: BorderRadius.circular(10.0),
+                                elevation: 10,
+                                color: colorWhite,
+                                shadowColor: colorGrey2.withOpacity(0.5),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Container() //MassRequestStateView(),
                                 ),
                               ),
                             ),

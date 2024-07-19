@@ -68,6 +68,7 @@ dependencies:
   upgrader: ^8.2.0
   webview_flutter: ^4.0.7
   shimmer: ^2.0.0
+  dotted_line: ^3.2.2
 
 dependency_overrides:
   #collection: ^1.18.0
