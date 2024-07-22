@@ -4,17 +4,18 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
+import 'package:oremusapp/app/modules/massrequest/views/widget/custom_calendar_date_picker.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 
 class FilterMassRequestDateController extends GetxController {
-
   FilterMassRequestDateController();
 
   RxList<TypeData> massRequestTypes = RxList<TypeData>([]);
@@ -32,19 +33,21 @@ class FilterMassRequestDateController extends GetxController {
   var searchCriteria = SearchCriteria().obs;
   var enabledApplyButton = false.obs;
 
-
   RxList<PriceData> datesChoosen = RxList<PriceData>([]);
-  RxList<PriceData> datesChoosenForWorshipRecurrentHours = RxList<PriceData>([]);
+  RxList<PriceData> datesChoosenForWorshipRecurrentHours =
+      RxList<PriceData>([]);
   RxList<PriceData> datesChoosenWorshipSpecialHours = RxList<PriceData>([]);
 
-  RxList<LiturgicalCelebrationResponse> worshipHours = RxList<LiturgicalCelebrationResponse>([]);
+  RxList<LiturgicalCelebrationResponse> worshipHours =
+      RxList<LiturgicalCelebrationResponse>([]);
 
-  RxList<LiturgicalCelebrationResponse> worshipRecurrentHoursTemp = RxList<LiturgicalCelebrationResponse>([]);
+  RxList<LiturgicalCelebrationResponse> worshipRecurrentHoursTemp =
+      RxList<LiturgicalCelebrationResponse>([]);
   RxList<PriceData> worshipRecurrentHours = RxList<PriceData>([]);
 
-  RxList<LiturgicalCelebrationResponse> worshipSpecialHoursTemp = RxList<LiturgicalCelebrationResponse>([]);
+  RxList<LiturgicalCelebrationResponse> worshipSpecialHoursTemp =
+      RxList<LiturgicalCelebrationResponse>([]);
   RxList<PriceData> worshipSpecialHours = RxList<PriceData>([]);
-
 
   @override
   void onInit() {
@@ -55,15 +58,25 @@ class FilterMassRequestDateController extends GetxController {
   getArguments() {
     if (Get.arguments != null) {
       worshipHours.value = Get.arguments;
-      worshipRecurrentHoursTemp.value = worshipHours.where((element) => element.isRecurrent == true).toList();
-      worshipSpecialHoursTemp.value = worshipHours.where((element) => element.isRecurrent == false && (Jiffy.parse(element.startDate ?? Jiffy.now().format(), pattern: AppConstants.TIME_ZONE_FORMAT).isAfter(Jiffy.now().add(hours: 24)))).toList();
+      worshipRecurrentHoursTemp.value =
+          worshipHours.where((element) => element.isRecurrent == true).toList();
+      worshipSpecialHoursTemp.value = worshipHours
+          .where((element) =>
+              element.isRecurrent == false &&
+              (Jiffy.parse(element.startDate ?? Jiffy.now().format(),
+                      pattern: AppConstants.TIME_ZONE_FORMAT)
+                  .isAfter(Jiffy.now().add(hours: 24))))
+          .toList();
 
-      worshipRecurrentHours.value = transformWorshipRecurrentHours(worshipRecurrentHoursTemp);
-      worshipSpecialHours.value = transformWorshipSpecialHours(worshipSpecialHoursTemp);
+      worshipRecurrentHours.value =
+          transformWorshipRecurrentHours(worshipRecurrentHoursTemp);
+      worshipSpecialHours.value =
+          transformWorshipSpecialHours(worshipSpecialHoursTemp);
     }
   }
 
-  List<PriceData> transformWorshipSpecialHours(List<LiturgicalCelebrationResponse> worshipDataList) {
+  List<PriceData> transformWorshipSpecialHours(
+      List<LiturgicalCelebrationResponse> worshipDataList) {
     Map<String, List<Slot>> groupedSlots = {};
 
     for (var event in worshipDataList) {
@@ -84,7 +97,8 @@ class FilterMassRequestDateController extends GetxController {
     }).toList();
   }
 
-  List<PriceData> transformWorshipRecurrentHours(List<LiturgicalCelebrationResponse> worshipDataList) {
+  List<PriceData> transformWorshipRecurrentHours(
+      List<LiturgicalCelebrationResponse> worshipDataList) {
     Map<String, List<Slot>> groupedByDay = {};
 
     for (var worshipData in worshipDataList) {
@@ -99,13 +113,14 @@ class FilterMassRequestDateController extends GetxController {
       }
     }
 
-    return groupedByDay.entries.map((entry) =>
-        PriceData(dayOfWeek: entry.key, slots: entry.value)
-    ).toList();
+    return groupedByDay.entries
+        .map((entry) => PriceData(dayOfWeek: entry.key, slots: entry.value))
+        .toList();
   }
 
   onWorshipRecurrentHoursRemoved(PriceData priceData) {
-    var hasData = datesChoosenForWorshipRecurrentHours.firstWhereOrNull((element) => element.day == priceData.day);
+    var hasData = datesChoosenForWorshipRecurrentHours
+        .firstWhereOrNull((element) => element.day == priceData.day);
     if (hasData != null) {
       worshipRecurrentHours.refresh();
       for (PriceData item in worshipRecurrentHours) {
@@ -123,14 +138,15 @@ class FilterMassRequestDateController extends GetxController {
     canDoApplyAction();
   }
 
-  onWorshipRecurrentHoursSelected(PriceData hour, bool isDateSelected, {String? hourSelected = ''}) {
+  onWorshipRecurrentHoursSelected(PriceData hour, bool isDateSelected,
+      {String? hourSelected = ''}) {
+    worshipRecurrentHours.refresh();
     var hasData = datesChoosenForWorshipRecurrentHours.firstWhereOrNull((element) => element.day == hour.day);
     if (isDateSelected) {
       if (hasData == null) {
         worshipRecurrentHours.refresh();
         datesChoosenForWorshipRecurrentHours.add(hour);
-      } else {
-      }
+      } else {}
     } else {
       worshipRecurrentHours.refresh();
     }
@@ -138,7 +154,8 @@ class FilterMassRequestDateController extends GetxController {
   }
 
   onWorshipSpecialHoursSelected(PriceData hour) {
-    var hasData = datesChoosenWorshipSpecialHours.firstWhereOrNull((element) => element.day == hour.day);
+    var hasData = datesChoosenWorshipSpecialHours
+        .firstWhereOrNull((element) => element.day == hour.day);
     if (hasData == null) {
       worshipSpecialHours.refresh();
       datesChoosenWorshipSpecialHours.add(hour);
@@ -185,12 +202,12 @@ class FilterMassRequestDateController extends GetxController {
                 onPrimary: colorWhite, // selected text color
                 onSurface: colorBlack, // default text color
                 primary: colorPurpleLight // circle color
-            ),
+                ),
             dialogBackgroundColor: Colors.white,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                 textStyle:
-                TextStyles.montserratRegular(textSize: TextSizes.fourteen),
+                    TextStyles.montserratRegular(textSize: TextSizes.fourteen),
                 primary: colorWhite, // color of button's letters
                 backgroundColor: colorPurpleLight, // Background color
                 shape: RoundedRectangleBorder(
@@ -221,6 +238,75 @@ class FilterMassRequestDateController extends GetxController {
       item.dayToDisplay = "$day-$month-${selected.year}";
       onWorshipRecurrentHoursSelected(item, true);
     }
+  }
+
+  void showCustomDatePicker(BuildContext context, PriceData item) {
+    final weekDay = int.parse(item.dayOfWeek ?? '0');
+    final DateTime now = DateTime.now();
+    final DateTime today = DateTime(now.year, now.month, now.day);
+
+    // Trouver la prochaine date valide
+    DateTime initialDate = _findNextValidDate(today, (weekDay + 1));
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          insetAnimationCurve: Curves.bounceIn,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Separators.normalVertical(),
+              CustomCalendarDatePicker(
+                initialDate: initialDate,
+                firstDate: today,
+                lastDate: DateTime(today.year + 5),
+                onDateChanged: (DateTime date) {
+                  bool isSelectable = date.weekday == (weekDay + 1);
+                  if (isSelectable) {
+                    String day = date.day.toString();
+                    String month = date.month.toString();
+                    if (date.day < 10) {
+                      day = "0$day";
+                    }
+                    if (date.month < 10) {
+                      month = "0$month";
+                    }
+                    item.isDaySelected = true;
+                    item.day = "${date.year}-$month-$day";
+                    item.dayToDisplay = "$day-$month-${date.year}";
+                    onWorshipRecurrentHoursSelected(item, true);
+                    Get.back();
+                  } else {
+                    showNotification(
+                      message: 'Il n\'y a pas de Messe à cette date',
+                      bgColor: colorBlue2,
+                    );
+                  }
+                },
+                selectableDayPredicate: (date) {
+                  bool isSelectable = date.weekday == (weekDay + 1);
+                  return isSelectable;
+                },
+              ),
+              TextButton(
+                child: Text(
+                  'Fermer',
+                  textAlign: TextAlign.center,
+                  style: TextStyles
+                      .montserratMedium(
+                    textSize: TextSizes.fifteen,
+                    textColor: colorBlack,
+                  ),
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              Separators.normalVertical(),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   List<PriceData> _filterSelectedSlots(List<PriceData> days) {
@@ -276,7 +362,8 @@ class FilterMassRequestDateController extends GetxController {
     bool hasSelectedRecurrentHours = false;
     bool hasSelectedRecurrentDay = false;
     for (PriceData item in datesChoosenWorshipSpecialHours) {
-      var slots = item.slots?.where((element) => element.isHourSelected == true);
+      var slots =
+          item.slots?.where((element) => element.isHourSelected == true);
       if (slots?.isNotEmpty == true) {
         hasSelectedSpecialHours = true;
         break;
@@ -284,20 +371,26 @@ class FilterMassRequestDateController extends GetxController {
     }
     for (PriceData item in datesChoosenForWorshipRecurrentHours) {
       hasSelectedRecurrentDay = item.isDaySelected == true;
-      var slots = item.slots?.where((element) => element.isHourSelected == true);
+      var slots =
+          item.slots?.where((element) => element.isHourSelected == true);
       if (slots?.isNotEmpty == true) {
         hasSelectedRecurrentHours = true;
         break;
       }
     }
-    enabledApplyButton.value = (hasSelectedRecurrentHours && hasSelectedRecurrentDay) || hasSelectedSpecialHours;
+    enabledApplyButton.value =
+        (hasSelectedRecurrentHours && hasSelectedRecurrentDay) ||
+            hasSelectedSpecialHours;
   }
 
   goBackToMassRequest() {
-    var selectedRecurentHours = _filterSelectedSlots(datesChoosenForWorshipRecurrentHours);
-    var selectedSpecialHours = _filterSelectedSlots(datesChoosenWorshipSpecialHours);
+    var selectedRecurentHours =
+        _filterSelectedSlots(datesChoosenForWorshipRecurrentHours);
+    var selectedSpecialHours =
+        _filterSelectedSlots(datesChoosenWorshipSpecialHours);
     datesChoosen.addAll(selectedRecurentHours);
-    datesChoosen.value = _mergeDayLists(selectedRecurentHours, selectedSpecialHours);
+    datesChoosen.value =
+        _mergeDayLists(selectedRecurentHours, selectedSpecialHours);
     log('datesChoosen ::: ${jsonEncode(datesChoosen)}');
     Get.back(result: datesChoosen);
   }

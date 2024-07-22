@@ -35,7 +35,8 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                     Separators.minimunHorizontal(),
                     GestureDetector(
                       onTap: () {
-                        _.selectDate(context, item);
+                        //_.selectDate(context, item);
+                        _.showCustomDatePicker(context, item);
                       },
                       child: const Icon(
                         Icons.edit_calendar_rounded,
