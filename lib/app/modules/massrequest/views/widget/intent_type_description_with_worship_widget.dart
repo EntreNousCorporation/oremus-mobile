@@ -4,13 +4,14 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/mass_request_controller.dart';
+import 'package:oremusapp/app/modules/massrequest/controller/mass_request_with_worship_controller.dart';
 
-class IntentTypeDescriptionWidget extends StatelessWidget {
-  const IntentTypeDescriptionWidget({Key? key}) : super(key: key);
+class IntentTypeDescriptionWithWorshipWidget extends StatelessWidget {
+  const IntentTypeDescriptionWithWorshipWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<MassRequestController>(builder: (logic) {
+    return GetBuilder<MassRequestWithWorshipController>(builder: (logic) {
       return Material(
         borderRadius: BorderRadius.circular(10.0),
         elevation: 10,

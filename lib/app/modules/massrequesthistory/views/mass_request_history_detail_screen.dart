@@ -226,8 +226,8 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                       ),
                                     ),
                                     Separators.normalVertical(),
-                                    /*Text(
-                                      'Période',
+                                    Text(
+                                      'Date',
                                       textAlign: TextAlign.center,
                                       style: TextStyles.montserratRegular(
                                         textSize: TextSizes.fourteen,
@@ -236,14 +236,14 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                     ),
                                     Separators.minimunVertical(),
                                     Text(
-                                      '${getCustomDate(_.massRequestSelected.value.startDate ?? '')} au ${getCustomDate(_.massRequestSelected.value.endDate ?? '')}',
+                                      getCustomDate(_.massRequestSelected.value.createdAt ?? ''),
                                       textAlign: TextAlign.center,
                                       style: TextStyles.montserratSemiBold(
                                         textSize: TextSizes.sixteen,
                                         textColor: colorBlack,
                                       ),
                                     ),
-                                    Separators.normalVertical(),*/
+                                    Separators.normalVertical(),
                                     Text(
                                       'Montant',
                                       textAlign: TextAlign.center,

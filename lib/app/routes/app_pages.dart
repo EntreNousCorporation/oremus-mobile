@@ -9,9 +9,15 @@ import 'package:oremusapp/app/modules/editpassword/views/edit_password_screen.da
 import 'package:oremusapp/app/modules/favorite/binding/favorite_binding.dart';
 import 'package:oremusapp/app/modules/favorite/views/favorites_screen.dart';
 import 'package:oremusapp/app/modules/massrequest/binding/filter_mass_request_date_binding.dart';
+import 'package:oremusapp/app/modules/massrequest/binding/filter_mass_request_worship_binding.dart';
 import 'package:oremusapp/app/modules/massrequest/binding/mass_request_binding.dart';
+import 'package:oremusapp/app/modules/massrequest/binding/mass_request_menu_binding.dart';
+import 'package:oremusapp/app/modules/massrequest/binding/mass_request_with_worship_binding.dart';
+import 'package:oremusapp/app/modules/massrequest/views/mass_request_menu_screen.dart';
 import 'package:oremusapp/app/modules/massrequest/views/mass_request_screen.dart';
+import 'package:oremusapp/app/modules/massrequest/views/mass_request_with_worship_screen.dart';
 import 'package:oremusapp/app/modules/massrequest/views/widget/filter_mass_request_date_screen.dart';
+import 'package:oremusapp/app/modules/massrequest/views/widget/filter_mass_request_worship_screen.dart';
 import 'package:oremusapp/app/modules/massrequestclaim/binding/mass_request_claim_binding.dart';
 import 'package:oremusapp/app/modules/massrequestclaim/views/mass_request_claim_screen.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/binding/filter_mass_request_history_binding.dart';
@@ -250,6 +256,13 @@ class AppPages {
       transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
+      name: Routes.FILTER_MASS_REQUEST_CHOOSE_WORSHIP,
+      page: () => const FilterMassRequestWorshipScreen(),
+      binding: FilterMassRequestWorshipBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
       name: Routes.MASS_REQUEST_CLAIM,
       page: () => const MassRequestClaimScreen(),
       binding: MassRequestClaimBinding(),
@@ -260,6 +273,20 @@ class AppPages {
       name: Routes.MASS_REQUEST_TRACK_CLAIM,
       page: () => const MassRequestTrackClaimScreen(),
       binding: MassRequestTrackClaimBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.MASS_REQUEST_WITH_WORSHIP,
+      page: () => const MassRequestWithWorshipScreen(),
+      binding: MassRequestWithWorshipBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.MASS_REQUEST_MENU,
+      page: () => const MassRequestMenuScreen(),
+      binding: MassRequestMenuBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

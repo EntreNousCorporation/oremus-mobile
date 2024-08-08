@@ -9,6 +9,7 @@ import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/utils.dart';
+import 'package:oremusapp/app/modules/massrequest/controller/filter_mass_request_date_controller.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/massrequest/data/repository/mass_request_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
@@ -17,11 +18,11 @@ import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_reposito
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
-class MassRequestController extends GetxController {
+class MassRequestWithWorshipController extends GetxController {
   final MassRequestRepository massRequestRepository;
   final ParoisseRepository paroisseRepository;
 
-  MassRequestController({
+  MassRequestWithWorshipController({
     required this.massRequestRepository,
     required this.paroisseRepository,
   });
@@ -53,23 +54,8 @@ class MassRequestController extends GetxController {
 
   @override
   void onInit() {
-    getArguments();
-    // doGetPrayerIntent();
     doGetMassRequestType();
-    doGetPlaceOfWorshipHours();
-
     super.onInit();
-  }
-
-  getArguments() {
-    if (Get.arguments != null) {
-      paroisseSelected.value = ContentPlace.fromJson(Get.arguments[0]);
-      log('arguments ::: ${jsonEncode(Get.arguments[0])}');
-      log('paroisseSelected :::${jsonEncode(paroisseSelected.value)}');
-      if (Get.arguments[1] != null) {
-        massRequestSelected.value = MassRequestResponse.fromJson(Get.arguments[1]);
-      }
-    }
   }
 
   moveToPayment(MassRequestResponse massRequestResponse) {
@@ -84,7 +70,16 @@ class MassRequestController extends GetxController {
     Get.offAllNamed(Routes.CUSTOM_HOME);
   }
 
+  resetChooseDate() {
+    worshipHours.clear();
+    datesChoosen.clear();
+    Get.delete<FilterMassRequestDateController>(force: true);
+  }
+
   goToDatesChoice() async {
+    if (paroisseSelected.value.identifier == null) {
+      return;
+    }
     if (worshipHours.isEmpty) {
       showNotification(message: 'Aucun horaire disponible.\nVeuillez choisir une autre paroisse svp');
       return;
@@ -95,6 +90,17 @@ class MassRequestController extends GetxController {
       doGetMassRequestPrice();
     } else {
       price.value = '-';
+    }
+    checkForm();
+  }
+
+  goToWorshipChoice() async {
+    paroisseSelected = await Get.toNamed(Routes.FILTER_MASS_REQUEST_CHOOSE_WORSHIP);
+    log('goToWorshipChoice ::: ${paroisseSelected.value.identifier}');
+    if (paroisseSelected.value.identifier != null) {
+      paroisseSelected.refresh();
+      resetChooseDate();
+      doGetPlaceOfWorshipHours();
     }
     checkForm();
   }
@@ -274,37 +280,5 @@ class MassRequestController extends GetxController {
     DB.saveData(AppConstants.KEY_USER_LOG_INFOS, null);
     Get.deleteAll(force: true);
     Get.offAllNamed(Routes.SIGNIN);
-  }
-
-  bool isWorshipPlaceFavorite(ContentPlace paroisse) {
-    var isFavorite = false;
-    var favorites = paroisseRepository.getAllFavorites();
-    var hasParoisse = favorites
-        .indexWhere((element) => element.identifier == paroisse.identifier);
-    if (hasParoisse != -1) {
-      isFavorite = true;
-    } else {
-      isFavorite = false;
-    }
-    return isFavorite;
-  }
-
-  goToMap() {
-    Get.toNamed(
-      Routes.PAROISSE_MAP,
-      arguments: jsonEncode(paroisseSelected.value.toJson()),
-    );
-  }
-
-  saveFavorite(ContentPlace paroisse, bool state) {
-    log('saveFavorite 1 => ${paroisse.isFavorite}');
-    paroisseRepository.addFavorite(paroisse);
-    //showMessageFavorite(state);
-  }
-
-  removeFavorite(ContentPlace paroisse, bool state) {
-    log('removeFavorite 1 => ${paroisse.isFavorite}');
-    paroisseRepository.deleteFavorite(paroisse);
-    //showMessageFavorite(state);
   }
 }

@@ -53,6 +53,7 @@ abstract class AppConstants {
   static const ABOUT = 6;
   static const PRAY = 7;
   static const SIGNIN = 8;
+  static const REQUEST_MASS = 9;
 
   //LITURGICAL CELEBRATION
   static const SPECIAL_MASS = 'SPECIAL_MASS';

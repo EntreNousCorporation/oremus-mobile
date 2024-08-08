@@ -50,7 +50,7 @@ class HistoryItem extends StatelessWidget {
                         children: [
                           Text(
                             massRequest?.typeOfMassRequest?.name?.fr ?? '-',
-                            textAlign: TextAlign.center,
+                            textAlign: TextAlign.start,
                             style: TextStyles.montserratBold(
                               textSize: TextSizes.fifteen,
                               textColor: colorBlack,
@@ -58,20 +58,13 @@ class HistoryItem extends StatelessWidget {
                           ),
                           Separators.minimunVertical(),
                           Text(
-                            "${massRequest?.price.toString().split('.').first.amountFormat()} FCFA",
-                            textAlign: TextAlign.center,
+                            "${massRequest?.prayerIntent}",
+                            textAlign: TextAlign.start,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyles.montserratMedium(
                               textSize: TextSizes.thirteen,
                               textColor: colorBlack,
-                            ),
-                          ),
-                          Separators.minimunVertical(),
-                          Text(
-                            getDateTime(massRequest?.endDate ?? ''),
-                            textAlign: TextAlign.center,
-                            style: TextStyles.montserratRegular(
-                              textSize: TextSizes.ten,
-                              textColor: colorGreySeparator,
                             ),
                           ),
                         ],

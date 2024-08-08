@@ -65,6 +65,12 @@ class CustomHomeController extends GetxController {
         icon: 'assets/images/icon_pray.svg',
       ),
       MenusItem(
+        code: AppConstants.REQUEST_MASS,
+        libelle: "Demande de messe",
+        icon: 'assets/images/icon_pray.svg',
+        isVisible: false,
+      ),
+      MenusItem(
         code: AppConstants.PROMO,
         libelle: 'Codes promo',
         icon: 'assets/images/icon_settings.svg',

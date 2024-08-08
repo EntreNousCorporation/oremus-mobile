@@ -34,6 +34,7 @@ class ParoisseMenuController extends GetxController {
     if (Get.arguments != null) {
       indexSelected.value = Get.arguments[0];
       paroisseSelected.value = ContentPlace.fromJson(Get.arguments[1]);
+      log('paroisseSelected paroisse menu :::${jsonEncode(paroisseSelected.value)}');
     }
   }
 

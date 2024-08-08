@@ -1,31 +1,27 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
-import 'package:like_button/like_button.dart';
 import 'package:oremusapp/app/commons/components/button.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/massrequest/controller/filter_mass_request_date_controller.dart';
-import 'package:oremusapp/app/modules/massrequest/controller/mass_request_controller.dart';
-import 'package:oremusapp/app/modules/massrequest/views/widget/intent_type_description_widget.dart';
-import 'package:oremusapp/app/modules/massrequest/views/widget/mass_type_filter.dart';
+import 'package:oremusapp/app/modules/massrequest/controller/mass_request_with_worship_controller.dart';
+import 'package:oremusapp/app/modules/massrequest/views/widget/intent_type_description_with_worship_widget.dart';
+import 'package:oremusapp/app/modules/massrequest/views/widget/mass_type_with_worship_filter.dart';
 import 'package:oremusapp/app/modules/massrequest/views/widget/shimmer_price.dart';
 import 'package:oremusapp/generated/assets.dart';
 
-class MassRequestScreen extends StatelessWidget {
-  const MassRequestScreen({Key? key}) : super(key: key);
+class MassRequestWithWorshipScreen extends StatelessWidget {
+  const MassRequestWithWorshipScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: colorWhite,
-      child: GetX<MassRequestController>(builder: (_) {
+      child: GetX<MassRequestWithWorshipController>(builder: (_) {
         return KeyboardDismisser(
           child: WillPopScope(
             onWillPop: () async => _.unlockBackButton.value,
@@ -51,60 +47,16 @@ class MassRequestScreen extends StatelessWidget {
                       leading: IconButton(
                         onPressed: () {
                           Get.back();
-                          Get.delete<FilterMassRequestDateController>(force: true);
+                          //Get.delete<FilterMassRequestDateController>(force: true);
                         },
                         icon: const Icon(Icons.arrow_back_ios_rounded),
                       ),
-                      actions: [
-                        IconButton(
-                          onPressed: () {
-                            _.moveToHome();
-                          },
-                          icon: const Icon(Icons.home_filled),
-                        ),
-                        Separators.minimunHorizontal(),
-                        LikeButton(
-                          isLiked: _.paroisseSelected.value.isFavorite,
-                          onTap: (isLiked) async {
-                            log('isLiked => $isLiked');
-                            _.paroisseSelected.value.isFavorite = !isLiked;
-                            if (isLiked) {
-                              _.removeFavorite(_.paroisseSelected.value, isLiked);
-                            } else {
-                              _.saveFavorite(_.paroisseSelected.value, isLiked);
-                            }
-                            return !isLiked;
-                          },
-                          size: 25,
-                          circleColor: const CircleColor(
-                              start: Color(0xff93291E), end: Color(0xFFED213A)),
-                          bubblesColor: const BubblesColor(
-                            dotPrimaryColor: Color(0xFFED213A),
-                            dotSecondaryColor: Color(0xff93291E),
-                          ),
-                          likeBuilder: (bool isLiked) {
-                            return Icon(
-                              isLiked ? Icons.favorite : Icons.favorite_border,
-                              color:
-                              isLiked ? const Color(0xFFED213A) : colorWhite,
-                              size: 25,
-                            );
-                          },
-                        ),
-                        Separators.minimunHorizontal(),
-                        IconButton(
-                          onPressed: () {
-                            _.goToMap();
-                          },
-                          icon: const Icon(Icons.map_rounded),
-                        ),
-                      ],
                       flexibleSpace: FlexibleSpaceBar(
                         centerTitle: true,
                         title: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
-                            '${_.paroisseSelected.value.name}',
+                            'Faire une demande de messe',
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,
@@ -166,16 +118,49 @@ class MassRequestScreen extends StatelessWidget {
                         delegate: SliverChildListDelegate(
                           [
                             Separators.minimunVertical(),
-                            Text(
-                              'Faire une demande de messe',
-                              textAlign: TextAlign.center,
-                              style: TextStyles.montserratBold(
-                                textSize: TextSizes.eighteen,
-                                textColor: colorGreenSemiLight,
+
+                            //WORSHIP
+                            GestureDetector(
+                              onTap: () {
+                                _.goToWorshipChoice();
+                              },
+                              child: Material(
+                                borderRadius: BorderRadius.circular(10.0),
+                                elevation: 10,
+                                color: colorWhite,
+                                shadowColor: colorGrey2.withOpacity(0.5),
+                                child: Container(
+                                  padding: const EdgeInsets.all(12),
+                                  width: double.maxFinite,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .spaceBetween,
+                                    children: [
+                                      _.paroisseSelected.value.identifier == null ? Text(
+                                        'Choisir une paroisse',
+                                        style: TextStyles.montserratMedium(
+                                          textColor: colorGrey1,
+                                          textSize: TextSizes.fourteen,
+                                        ),
+                                      ) : Text(
+                                        '${_.paroisseSelected.value.name}',
+                                        style: TextStyles.montserratBold(
+                                          textColor: colorBlack,
+                                          textSize: TextSizes.fourteen,
+                                        ),
+                                      ),
+                                      Icon(
+                                        _.paroisseSelected.value.identifier != null ? Icons.edit : Icons.arrow_drop_down_rounded,
+                                        size: 25,
+                                        color: colorGreen,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
-                            Separators.normalVertical(),
                             Separators.maximum1Vertical(),
+
                             Text(
                               'Type de demande de messe',
                               style: TextStyles.montserratMedium(
@@ -189,7 +174,7 @@ class MassRequestScreen extends StatelessWidget {
                               elevation: 10,
                               color: colorWhite,
                               shadowColor: colorGrey2.withOpacity(0.5),
-                              child: const MassTypeFilter(),
+                              child: const MassTypeWithWorshipFilter(),
                             ),
                             Separators.maximum1Vertical(),
 
@@ -242,7 +227,7 @@ class MassRequestScreen extends StatelessWidget {
                               elevation: 10,
                               color: colorWhite,
                               shadowColor: colorGrey2.withOpacity(0.5),
-                              child: const IntentTypeDescriptionWidget(),
+                              child: const IntentTypeDescriptionWithWorshipWidget(),
                             ),
                             Separators.maximum1Vertical(),
 

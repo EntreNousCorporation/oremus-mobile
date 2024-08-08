@@ -13,6 +13,9 @@ import 'package:oremusapp/app/modules/contact/views/contact_screen.dart';
 import 'package:oremusapp/app/modules/customhome/controller/custom_home_controller.dart';
 import 'package:oremusapp/app/modules/customhome/views/widget/drawer_menu.dart';
 import 'package:oremusapp/app/modules/faq/views/faq_screen.dart';
+import 'package:oremusapp/app/modules/massrequest/views/mass_request_menu_screen.dart';
+import 'package:oremusapp/app/modules/massrequest/views/mass_request_screen.dart';
+import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_mass_request_menu_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_screen.dart';
 import 'package:oremusapp/app/modules/pray/views/pray_screen.dart';
 import 'package:oremusapp/app/modules/profile/controller/profile_controller.dart';
@@ -46,6 +49,10 @@ class CustomHomeScreen extends StatelessWidget {
             case AppConstants.PRAY:
               logic.title.value = logic.menus[position].libelle ?? 'Mini Missel';
               screenCurrent = const PrayScreen();
+              break;
+            case AppConstants.REQUEST_MASS:
+              logic.title.value = logic.menus[position].libelle ?? 'Demande de messe';
+              screenCurrent = const MassRequestMenuScreen();
               break;
             /*case AppConstants.SHARE_APP:
               logic.title.value = logic.menus[position].libelle ?? 'Partager l\'application';

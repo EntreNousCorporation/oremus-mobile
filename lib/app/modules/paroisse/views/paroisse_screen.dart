@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart' as b;
 import 'package:flutter/material.dart';
 import 'package:flutter_animator/flutter_animator.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/custom_header.dart';
@@ -80,10 +81,12 @@ class ParoisseScreen extends StatelessWidget {
                                   shadowColor: colorGrey2.withOpacity(0.5),
                                   child: b.Badge(
                                     showBadge: (_.searchCriteria.value
-                                                .isCriteriaEmpty == false)
+                                                .isCriteriaEmpty ==
+                                            false)
                                         ? true
                                         : false,
-                                    position: b.BadgePosition.topEnd(top: -10, end: -5),
+                                    position: b.BadgePosition.topEnd(
+                                        top: -10, end: -5),
                                     badgeContent: Text(
                                       '${_.searchCriteria.value.countCriteria}',
                                       style: TextStyles.montserratRegular(
@@ -129,6 +132,7 @@ class ParoisseScreen extends StatelessWidget {
                                           return false;
                                         },
                                         child: SmartRefresher(
+                                          scrollController: _.scrollController,
                                           enablePullDown: true,
                                           enablePullUp: true,
                                           onRefresh: _.onRefresh,
@@ -217,10 +221,13 @@ class ParoisseScreen extends StatelessWidget {
                                             },
                                           ),
                                           controller: _.refreshController,
-                                          physics: const BouncingScrollPhysics(),
+                                          physics:
+                                              const BouncingScrollPhysics(),
                                           child: ListView.separated(
-                                            physics: const NeverScrollableScrollPhysics(),
-                                            padding: const EdgeInsets.only(top: 16),
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            padding:
+                                                const EdgeInsets.only(top: 16),
                                             shrinkWrap: false,
                                             itemCount: _.paroisses.length,
                                             itemBuilder: (builder, index) {
@@ -233,7 +240,8 @@ class ParoisseScreen extends StatelessWidget {
                                               );
                                             },
                                             separatorBuilder: (builder, index) {
-                                              return Separators.maximum1Vertical();
+                                              return Separators
+                                                  .maximum1Vertical();
                                             },
                                           ),
                                         ),
@@ -243,9 +251,44 @@ class ParoisseScreen extends StatelessWidget {
                                 )
                               : Expanded(
                                   child: NotFoundScreen(
-                                  message: "Aucune paroisse trouvée !",
-                                )),
+                                    message: "Aucune paroisse trouvée !",
+                                  ),
+                                ),
                     ],
+                  ),
+                ),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.endFloat,
+                floatingActionButton: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: _.isExtended.isTrue ? 250.0 : 70.0,
+                  height: 70,
+                  child: FloatingActionButton.extended(
+                    onPressed: () {
+                      _.moveToRequestMass();
+                    },
+                    backgroundColor: colorGreen,
+                    enableFeedback: true,
+                    tooltip: 'Demande de messe',
+                    foregroundColor: colorWhite,
+                    label: _.isExtended.isTrue
+                        ? Text(
+                            "Demande de messe",
+                            style: TextStyles.montserratSemiBold(
+                              textSize: TextSizes.fifteen,
+                              textColor: colorWhite,
+                            ),
+                          )
+                        : SvgPicture.asset(
+                            'assets/images/icon_pray.svg',
+                            height: 35,
+                          ),
+                    icon: _.isExtended.isTrue
+                        ? SvgPicture.asset(
+                            'assets/images/icon_pray.svg',
+                            height: 35,
+                          )
+                        : const SizedBox.shrink(),
                   ),
                 ),
               ),

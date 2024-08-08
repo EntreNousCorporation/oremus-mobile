@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
@@ -27,6 +28,9 @@ class ParoisseController extends GetxController {
 
   var unlockBackButton = true.obs;
 
+  var isExtended = true.obs;
+  ScrollController scrollController = ScrollController();
+
   var isDataProcessing = false.obs;
   var hasData = false.obs;
   var isLiked = false.obs;
@@ -45,6 +49,7 @@ class ParoisseController extends GetxController {
   @override
   void onInit() {
     initController();
+    scrollController.addListener(_scrollListener);
     super.onInit();
   }
 
@@ -58,7 +63,21 @@ class ParoisseController extends GetxController {
   void dispose() {
     refreshController.dispose();
     searchController.dispose();
+    scrollController.dispose();
     super.dispose();
+  }
+
+  void _scrollListener() {
+    if (scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+      if (isExtended.isTrue) {
+        isExtended.value = false;
+      }
+    }
+    if (scrollController.position.userScrollDirection == ScrollDirection.forward) {
+      if (isExtended.isFalse) {
+        isExtended.value = true;
+      }
+    }
   }
 
   initController() {
@@ -70,6 +89,10 @@ class ParoisseController extends GetxController {
       previousSimpleSearchValue.value = currentSimpleSearchValue.value;
       getParoisses();
     }
+  }
+
+  moveToRequestMass() {
+    Get.toNamed(Routes.MASS_REQUEST_WITH_WORSHIP);
   }
 
   ///Chargement initial des paroisses
