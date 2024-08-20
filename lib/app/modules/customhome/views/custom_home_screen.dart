@@ -14,8 +14,6 @@ import 'package:oremusapp/app/modules/customhome/controller/custom_home_controll
 import 'package:oremusapp/app/modules/customhome/views/widget/drawer_menu.dart';
 import 'package:oremusapp/app/modules/faq/views/faq_screen.dart';
 import 'package:oremusapp/app/modules/massrequest/views/mass_request_menu_screen.dart';
-import 'package:oremusapp/app/modules/massrequest/views/mass_request_screen.dart';
-import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_mass_request_menu_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_screen.dart';
 import 'package:oremusapp/app/modules/pray/views/pray_screen.dart';
 import 'package:oremusapp/app/modules/profile/controller/profile_controller.dart';

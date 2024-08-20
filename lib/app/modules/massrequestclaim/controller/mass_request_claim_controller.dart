@@ -45,7 +45,7 @@ class MassRequestClaimController extends GetxController {
   @override
   void onInit() {
     getArguments();
-    //doGetClaimTypes();
+    doGetClaimTypes();
     super.onInit();
   }
 
@@ -69,9 +69,11 @@ class MassRequestClaimController extends GetxController {
         claimDescription.text.trim().toString().replaceAll(RegExp(r'\s'), '');
     isValidForm.value =
         description.isNotEmpty && claimTypeSelected.value != null;
+    update();
   }
 
   resetForm() {
+    //paroisseSelected.value = ContentPlace();
     claimTypeSelected.value = null;
     claimDescription.clear();
     checkForm();
@@ -97,9 +99,9 @@ class MassRequestClaimController extends GetxController {
     });*/
     log('request getClaimTypes');
     massRequestClaimRepository.getClaimTypes(page: 0).then((value) {
-      EasyLoading.dismiss(animation: true).then((v) {
+      /*EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;
-      });
+      });*/
       if (value.isNotEmpty == true) {
         hasData(true);
         claimTypes.value = value;
@@ -108,9 +110,9 @@ class MassRequestClaimController extends GetxController {
         hasData(false);
       }
     }, onError: (error) {
-      EasyLoading.dismiss(animation: true).then((v) {
+      /*EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;
-      });
+      });*/
       var err = error as CustomException;
       if (err.code == 401) {
         showCustomDialog(

@@ -57,6 +57,16 @@ class MassRequestTrackClaimController extends GetxController {
     Get.offAllNamed(Routes.CUSTOM_HOME);
   }
 
+  goToWorshipChoice() async {
+    paroisseSelected = await Get.toNamed(Routes.FILTER_MASS_REQUEST_CHOOSE_WORSHIP, arguments: 'Suivi de réclamation',);
+    log('goToWorshipChoice ::: ${paroisseSelected.value.identifier}');
+    if (paroisseSelected.value.identifier != null) {
+      paroisseSelected.refresh();
+    }
+    doGetClaims();
+    update();
+  }
+
   doGetClaims() {
     hideKeyboard();
     searchCriteria.value.worshipPlace = paroisseSelected.value.identifier;

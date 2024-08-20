@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:ffi';
 
 import 'package:badges/badges.dart' as b;
 import 'package:cached_network_image/cached_network_image.dart';
@@ -102,7 +101,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
                         title: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
-                            _.paroisseSelected.value.name ?? '-',
+                            _.paroisseSelected.value.name ?? '',
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,

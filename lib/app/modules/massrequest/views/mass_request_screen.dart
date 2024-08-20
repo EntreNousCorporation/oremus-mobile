@@ -104,7 +104,7 @@ class MassRequestScreen extends StatelessWidget {
                         title: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
-                            '${_.paroisseSelected.value.name}',
+                            _.paroisseSelected.value.name ?? '-',
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,

@@ -18,6 +18,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:oremusapp/main.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MassRequestHistoryController extends GetxController {
@@ -196,7 +197,7 @@ class MassRequestHistoryController extends GetxController {
     Get.toNamed(
       Routes.MASS_REQUEST_HISTORY_DETAIL,
       arguments: [
-        paroisseSelected.toJson(),
+        requestMassWithoutWorship.value ? massRequestData?.worshipPlace?.toJson() : paroisseSelected.toJson(),
         massRequestData?.toJson(),
       ],
     );

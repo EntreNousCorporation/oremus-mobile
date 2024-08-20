@@ -15,11 +15,26 @@ import 'package:oremusapp/app/modules/paroisse/controller/paroisse_controller.da
 import 'package:oremusapp/app/modules/paroisse/views/widget/paroisse_item.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class ParoisseScreen extends StatelessWidget {
+class ParoisseScreen extends StatefulWidget {
   const ParoisseScreen({Key? key}) : super(key: key);
 
   @override
+  State<ParoisseScreen> createState() => _ParoisseScreenState();
+}
+
+class _ParoisseScreenState extends State<ParoisseScreen> {
+  Offset? _fabPosition; // Position du FAB
+  double fabSize = 250.0; // Taille par défaut du FAB
+
+  @override
   Widget build(BuildContext context) {
+    //final Size screenSize = MediaQuery.of(context).size;
+
+    // Si la position initiale n'est pas encore définie, la définir en bas à droite
+    _fabPosition ??= Offset(
+        Get.width - fabSize - 16.0, // 16.0 pour une petite marge du bord
+        Get.height - 150 - 16.0 - kToolbarHeight - MediaQuery.of(context).padding.top, // Compense la AppBar et la barre de statut
+      );
     return Container(
       color: colorGreen,
       child: SafeArea(
@@ -153,9 +168,10 @@ class ParoisseScreen extends StatelessWidget {
                                             LoadStatus.failed) {
                                           body = Text(
                                             "Une erreur est survenue lors du chargement",
-                                            style:
-                                            TextStyles.montserratBold(
-                                                textSize: TextSizes
+                                            style: TextStyles
+                                                .montserratBold(
+                                                textSize:
+                                                TextSizes
                                                     .thirteen,
                                                 textColor:
                                                 colorBlack),
@@ -164,9 +180,10 @@ class ParoisseScreen extends StatelessWidget {
                                             LoadStatus.canLoading) {
                                           body = Text(
                                             "Relacher pour charger plus de paroisses",
-                                            style:
-                                            TextStyles.montserratBold(
-                                                textSize: TextSizes
+                                            style: TextStyles
+                                                .montserratBold(
+                                                textSize:
+                                                TextSizes
                                                     .thirteen,
                                                 textColor:
                                                 colorBlack),
@@ -177,7 +194,8 @@ class ParoisseScreen extends StatelessWidget {
                                             child: Column(
                                               children: [
                                                 SizedBox(
-                                                  width: Get.width / 1.7,
+                                                  width:
+                                                  Get.width / 1.7,
                                                   height: 4,
                                                   child: Container(
                                                     decoration:
@@ -226,24 +244,26 @@ class ParoisseScreen extends StatelessWidget {
                                     physics:
                                     const BouncingScrollPhysics(),
                                     child: ListView.separated(
-                                      physics:
-                                      const NeverScrollableScrollPhysics(),
-                                      padding:
-                                      const EdgeInsets.only(top: 16),
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      padding: const EdgeInsets.only(top: 16),
                                       shrinkWrap: false,
+                                      //itemCount: 20,
                                       itemCount: _.paroisses.length,
                                       itemBuilder: (builder, index) {
                                         var paroisse = _.paroisses[index];
+                                        /*return Container(
+                                          height: 50,
+                                          width: 200,
+                                          color: colorGreen,
+                                        );*/
                                         return ParoisseItem(
-                                          paroisse: paroisse,
-                                          index: index,
-                                          key: ValueKey(
-                                              paroisse?.identifier),
-                                        );
+                                                    paroisse: paroisse,
+                                                    index: index,
+                                                    key: ValueKey(paroisse?.identifier),
+                                                  );
                                       },
                                       separatorBuilder: (builder, index) {
-                                        return Separators
-                                            .maximum1Vertical();
+                                        return Separators.maximum1Vertical();
                                       },
                                     ),
                                   ),
@@ -259,7 +279,62 @@ class ParoisseScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    AnimatedPositioned(
+                    Positioned(
+                      left: _fabPosition!.dx,
+                      top: _fabPosition!.dy,
+                      child: GestureDetector(
+                        onPanUpdate: (details) {
+                          setState(() {
+                            double newX = _fabPosition!.dx + details.delta.dx;
+                            double newY = _fabPosition!.dy + details.delta.dy;
+
+                            // Limiter la position à l'intérieur des bords de l'écran
+                            if (_.isExtended.isTrue) {
+                              newX = newX.clamp(0.0, Get.width - 250);
+                              newY = newY.clamp(0.0, Get.height - 150 - kToolbarHeight - MediaQuery.of(context).padding.top);
+                            } else {
+                              newX = newX.clamp(0.0, Get.width - 70);
+                              newY = newY.clamp(0.0, Get.height - 150 - kToolbarHeight - MediaQuery.of(context).padding.top);
+                            }
+
+                            _fabPosition = Offset(newX, newY);
+                          });
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          width: _.isExtended.isTrue ? 250.0 : 70.0,
+                          height: 70,
+                          child: FloatingActionButton.extended(
+                            onPressed: () {
+                              _.doMoveRequestMass();
+                            },
+                            backgroundColor: colorGreen,
+                            enableFeedback: true,
+                            tooltip: 'Demande de messe ${fabSize}',
+                            foregroundColor: colorWhite,
+                            label: _.isExtended.isTrue
+                                ? Text(
+                              "Demande de messe",
+                              style: TextStyles.montserratSemiBold(
+                                textSize: TextSizes.fifteen,
+                                textColor: colorWhite,
+                              ),
+                            )
+                                : SvgPicture.asset(
+                              'assets/images/icon_pray.svg',
+                              height: 35,
+                            ),
+                            icon: _.isExtended.isTrue
+                                ? SvgPicture.asset(
+                              'assets/images/icon_pray.svg',
+                              height: 35,
+                            )
+                                : const SizedBox.shrink(),
+                          ),
+                        ),
+                      ),
+                    ),
+                    /*AnimatedPositioned(
                       duration: const Duration(milliseconds: 100),  // Adjust for desired smoothness
                       right: _.offset.value.dx,
                       bottom: _.offset.value.dy,
@@ -303,7 +378,7 @@ class ParoisseScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ),
+                    ),*/
                   ],
                 ),
               ),

@@ -6,7 +6,6 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/controller/mass_request_history_controller.dart';
-import 'package:oremusapp/generated/assets.dart';
 
 class MassRequestStateView extends StatelessWidget {
   const MassRequestStateView({Key? key}) : super(key: key);

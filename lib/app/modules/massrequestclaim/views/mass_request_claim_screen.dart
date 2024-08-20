@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:ffi';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -172,7 +171,8 @@ class MassRequestClaimScreen extends StatelessWidget {
 
                           //WORSHIP
                           Visibility(
-                            visible: requestMassWithoutWorship.value,
+                            visible: false,
+                            //visible: requestMassWithoutWorship.value, //todo: remettre si feature faire reclamation fait partie deu menu
                             child: Column(
                               children: [
                                 GestureDetector(

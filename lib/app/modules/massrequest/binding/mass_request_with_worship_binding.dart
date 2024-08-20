@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:oremusapp/app/modules/massrequest/controller/mass_request_controller.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/mass_request_with_worship_controller.dart';
 import 'package:oremusapp/app/modules/massrequest/data/repository/mass_request_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';

@@ -12,8 +12,8 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/controller/mass_request_history_detail_controller.dart';
-import 'package:oremusapp/app/modules/massrequesthistory/views/widget/mass_request_state_view.dart';
 import 'package:oremusapp/generated/assets.dart';
+import 'package:oremusapp/main.dart';
 
 class MassRequestHistoryDetailScreen extends StatelessWidget {
   const MassRequestHistoryDetailScreen({Key? key}) : super(key: key);
@@ -48,7 +48,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                       },
                       icon: const Icon(Icons.arrow_back_ios_rounded),
                     ),
-                    actions: [
+                    actions: requestMassWithoutWorship.value ? null : [
                       IconButton(
                         onPressed: () {
                           _.moveToHome();
@@ -97,7 +97,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                         title: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
-                            _.paroisseSelected.value.name ?? '-',
+                            _.paroisseSelected.value.name ?? '',
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,

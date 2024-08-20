@@ -99,7 +99,7 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                       title: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text(
-                          '${_.paroisseSelected.value.name}',
+                          _.paroisseSelected.value.name ?? '-',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
@@ -167,6 +167,64 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                             textColor: colorGreenSemiLight,
                           ),
                         ),
+
+                        //WORSHIP
+                        Visibility(
+                          visible: requestMassWithoutWorship.value,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 0,
+                              bottom: 0,
+                              left: 16,
+                              right: 16,
+                            ),
+                            child: Column(
+                              children: [
+                                Separators.normal1Vertical(),
+                                GestureDetector(
+                                  onTap: () {
+                                    _.goToWorshipChoice();
+                                  },
+                                  child: Material(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    elevation: 10,
+                                    color: colorWhite,
+                                    shadowColor: colorGrey2.withOpacity(0.5),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(12),
+                                      width: double.maxFinite,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .spaceBetween,
+                                        children: [
+                                          _.paroisseSelected.value.identifier == null ? Text(
+                                            'Choisir une paroisse',
+                                            style: TextStyles.montserratMedium(
+                                              textColor: colorGrey1,
+                                              textSize: TextSizes.fourteen,
+                                            ),
+                                          ) : Text(
+                                            '${_.paroisseSelected.value.name}',
+                                            style: TextStyles.montserratBold(
+                                              textColor: colorBlack,
+                                              textSize: TextSizes.fourteen,
+                                            ),
+                                          ),
+                                          Icon(
+                                            _.paroisseSelected.value.identifier != null ? Icons.edit : Icons.arrow_drop_down_rounded,
+                                            size: 25,
+                                            color: colorGreen,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
                         Separators.minimunVertical(),
                         _.isDataProcessing.isTrue
                             ? Column(

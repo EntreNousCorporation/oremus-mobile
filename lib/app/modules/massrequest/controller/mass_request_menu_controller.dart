@@ -220,7 +220,11 @@ class MassRequestMenuController extends GetxController {
       log('back moveToLogin');
       switch (code) {
         case 'FDM':
-          moveToMassRequest();
+          if (requestMassWithoutWorship.value == true) {
+            moveToRequestMassWithoutWorship();
+          } else {
+            moveToMassRequest();
+          }
           break;
         case 'MH':
           moveToMassRequestHistory();
