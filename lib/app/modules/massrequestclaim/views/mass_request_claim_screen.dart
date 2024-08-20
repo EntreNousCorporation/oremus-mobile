@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ffi';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ import 'package:oremusapp/app/modules/massrequestclaim/controller/mass_request_c
 import 'package:oremusapp/app/modules/massrequestclaim/views/widget/claim_type_filter.dart';
 import 'package:oremusapp/app/modules/massrequestclaim/views/widget/claim_type_widget.dart';
 import 'package:oremusapp/generated/assets.dart';
+import 'package:oremusapp/main.dart';
 
 class MassRequestClaimScreen extends StatelessWidget {
   const MassRequestClaimScreen({Key? key}) : super(key: key);
@@ -49,7 +51,7 @@ class MassRequestClaimScreen extends StatelessWidget {
                       },
                       icon: const Icon(Icons.arrow_back_ios_rounded),
                     ),
-                    actions: [
+                    actions: requestMassWithoutWorship.value ? null : [
                       LikeButton(
                         isLiked: _.paroisseSelected.value.isFavorite,
                         onTap: (isLiked) async {
@@ -91,7 +93,7 @@ class MassRequestClaimScreen extends StatelessWidget {
                       title: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text(
-                          '${_.paroisseSelected.value.name}',
+                          _.paroisseSelected.value.name ?? '',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
@@ -167,6 +169,56 @@ class MassRequestClaimScreen extends StatelessWidget {
                             ),
                           ),
                           Separators.maximum1Vertical(),
+
+                          //WORSHIP
+                          Visibility(
+                            visible: requestMassWithoutWorship.value,
+                            child: Column(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    _.goToWorshipChoice();
+                                  },
+                                  child: Material(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    elevation: 10,
+                                    color: colorWhite,
+                                    shadowColor: colorGrey2.withOpacity(0.5),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(12),
+                                      width: double.maxFinite,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .spaceBetween,
+                                        children: [
+                                          _.paroisseSelected.value.identifier == null ? Text(
+                                            'Choisir une paroisse',
+                                            style: TextStyles.montserratMedium(
+                                              textColor: colorGrey1,
+                                              textSize: TextSizes.fourteen,
+                                            ),
+                                          ) : Text(
+                                            '${_.paroisseSelected.value.name}',
+                                            style: TextStyles.montserratBold(
+                                              textColor: colorBlack,
+                                              textSize: TextSizes.fourteen,
+                                            ),
+                                          ),
+                                          Icon(
+                                            _.paroisseSelected.value.identifier != null ? Icons.edit : Icons.arrow_drop_down_rounded,
+                                            size: 25,
+                                            color: colorGreen,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Separators.maximum1Vertical(),
+                              ],
+                            ),
+                          ),
+
                           Text(
                             'Type de réclamation',
                             style: TextStyles.montserratMedium(

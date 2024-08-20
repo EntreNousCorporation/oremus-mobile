@@ -28,6 +28,8 @@ class FilterMassRequestWorshipController extends GetxController {
   var isSearchFieldEmpty = true.obs;
   var page = 0.obs;
 
+  var title = ''.obs;
+
   var isDataProcessing = false.obs;
   var hasData = false.obs;
   RxList<ContentPlace?> paroisses = RxList<ContentPlace?>([]);
@@ -35,13 +37,27 @@ class FilterMassRequestWorshipController extends GetxController {
 
   @override
   void onInit() {
+    getArguments();
     initController();
     getParoisses();
     super.onInit();
   }
 
+  @override
+  void onReady() {
+    getArguments();
+    super.onReady();
+  }
+
   initController() {
     searchController = TextEditingController(text: '');
+  }
+
+  getArguments() {
+    if (Get.arguments != null) {
+      title.value = Get.arguments;
+    }
+    title.refresh();
   }
 
   doLaunchSimpleSearch() {

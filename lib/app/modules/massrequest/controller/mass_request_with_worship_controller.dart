@@ -44,7 +44,8 @@ class MassRequestWithWorshipController extends GetxController {
 
   RxList<PriceData> datesChoosen = RxList<PriceData>([]);
 
-  RxList<LiturgicalCelebrationResponse> worshipHours = RxList<LiturgicalCelebrationResponse>([]);
+  RxList<LiturgicalCelebrationResponse> worshipHours =
+      RxList<LiturgicalCelebrationResponse>([]);
 
   var isValidForm = false.obs;
 
@@ -81,10 +82,14 @@ class MassRequestWithWorshipController extends GetxController {
       return;
     }
     if (worshipHours.isEmpty) {
-      showNotification(message: 'Aucun horaire disponible.\nVeuillez choisir une autre paroisse svp');
+      showNotification(
+          message:
+              'Aucun horaire disponible.\nVeuillez choisir une autre paroisse svp');
       return;
     }
-    datesChoosen.value = await Get.toNamed(Routes.FILTER_MASS_REQUEST_CHOOSE_DATE, arguments: worshipHours);
+    datesChoosen.value = await Get.toNamed(
+        Routes.FILTER_MASS_REQUEST_CHOOSE_DATE,
+        arguments: worshipHours);
     datesChoosen.refresh();
     if (datesChoosen.isNotEmpty) {
       doGetMassRequestPrice();
@@ -95,7 +100,10 @@ class MassRequestWithWorshipController extends GetxController {
   }
 
   goToWorshipChoice() async {
-    paroisseSelected = await Get.toNamed(Routes.FILTER_MASS_REQUEST_CHOOSE_WORSHIP);
+    paroisseSelected = await Get.toNamed(
+      Routes.FILTER_MASS_REQUEST_CHOOSE_WORSHIP,
+      arguments: 'Demande de messe',
+    );
     log('goToWorshipChoice ::: ${paroisseSelected.value.identifier}');
     if (paroisseSelected.value.identifier != null) {
       paroisseSelected.refresh();
@@ -106,7 +114,9 @@ class MassRequestWithWorshipController extends GetxController {
   }
 
   void checkForm() {
-    isValidForm.value = massRequestTypeSelected.value != null && descriptionController.text.isNotEmpty && price.value != '-';
+    isValidForm.value = massRequestTypeSelected.value != null &&
+        descriptionController.text.isNotEmpty &&
+        price.value != '-';
     update();
   }
 
@@ -134,7 +144,8 @@ class MassRequestWithWorshipController extends GetxController {
     massRequestRepository.getMassRequestType(page: 0).then((value) {
       if (value.isNotEmpty == true) {
         massRequestTypes.value = value;
-        var massRequestTypeSelected = value.firstWhereOrNull((element) => element.code == 'ACTION_OF_GRACE');
+        var massRequestTypeSelected = value
+            .firstWhereOrNull((element) => element.code == 'ACTION_OF_GRACE');
         updateMassTypeFilter(massRequestTypeSelected);
       }
       update();
@@ -142,7 +153,8 @@ class MassRequestWithWorshipController extends GetxController {
       var err = error as CustomException;
       if (err.code == 401) {
         showCustomDialog(
-          Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
@@ -166,7 +178,8 @@ class MassRequestWithWorshipController extends GetxController {
       var err = error as CustomException;
       if (err.code == 401) {
         showCustomDialog(
-          Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
@@ -182,7 +195,9 @@ class MassRequestWithWorshipController extends GetxController {
 
     log('request doGetPlaceOfWorshipHours');
     isDatesProcessing(true);
-    paroisseRepository.getLiturgicalCelebration(paroisseSelected.value.identifier).then((value) {
+    paroisseRepository
+        .getLiturgicalCelebration(paroisseSelected.value.identifier)
+        .then((value) {
       isDatesProcessing(false);
       if (value.isNotEmpty == true) {
         worshipHours.value = value;
@@ -192,7 +207,8 @@ class MassRequestWithWorshipController extends GetxController {
       var err = error as CustomException;
       if (err.code == 401) {
         showCustomDialog(
-          Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
@@ -209,7 +225,11 @@ class MassRequestWithWorshipController extends GetxController {
     isPricingProcessing(true);
     hasData(false);
     log('request doGetMassRequestPrice');
-    massRequestRepository.getMassRequestPrice(request: datesChoosen, workshipId: paroisseSelected.value.identifier.toString()).then((value) {
+    massRequestRepository
+        .getMassRequestPrice(
+            request: datesChoosen,
+            workshipId: paroisseSelected.value.identifier.toString())
+        .then((value) {
       isPricingProcessing(false);
       hasData(true);
       price.value = value.price.toString();
@@ -244,7 +264,9 @@ class MassRequestWithWorshipController extends GetxController {
     });
 
     var request = MassRequestData(
-      prayerIntent: descriptionController.text.isNotEmpty ? descriptionController.text : prayerIntentSelected.value?.defaultText?.fr,
+      prayerIntent: descriptionController.text.isNotEmpty
+          ? descriptionController.text
+          : prayerIntentSelected.value?.defaultText?.fr,
       typeOfMassRequest: massRequestTypeSelected.value?.code,
       slots: datesChoosen,
       worshipPlace: paroisseSelected.value.identifier,
@@ -271,7 +293,9 @@ class MassRequestWithWorshipController extends GetxController {
           doLogout();
         });
       } else {
-        showNotification(message: err.message.toString(), duration: const Duration(seconds: 4));
+        showNotification(
+            message: err.message.toString(),
+            duration: const Duration(seconds: 4));
       }
     });
   }

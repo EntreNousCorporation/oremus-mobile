@@ -50,7 +50,7 @@ class CustomHomeScreen extends StatelessWidget {
               logic.title.value = logic.menus[position].libelle ?? 'Mini Missel';
               screenCurrent = const PrayScreen();
               break;
-            case AppConstants.REQUEST_MASS:
+            case AppConstants.REQUEST_MASS_WITHOUT_WORSHIP:
               logic.title.value = logic.menus[position].libelle ?? 'Demande de messe';
               screenCurrent = const MassRequestMenuScreen();
               break;

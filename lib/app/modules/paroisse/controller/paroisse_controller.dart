@@ -9,12 +9,15 @@ import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/theme/app_dimension.dart';
+import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:oremusapp/main.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoisseController extends GetxController {
@@ -45,6 +48,8 @@ class ParoisseController extends GetxController {
 
   var previousSimpleSearchValue = ''.obs;
   var currentSimpleSearchValue = ''.obs;
+
+  var offset = const Offset(16, 16).obs;
 
   @override
   void onInit() {
@@ -91,8 +96,135 @@ class ParoisseController extends GetxController {
     }
   }
 
+  moveToLogin(String code) async {
+    var result = await Get.toNamed(
+      Routes.SIGNIN,
+      arguments: true,
+    );
+    if (result == true) {
+      log('back moveToLogin');
+      switch (code) {
+        case 'FDM':
+          moveToRequestMass();
+          break;
+      }
+    }
+  }
+
+  checkIfUserIsconnected(String code) {
+    Get.bottomSheet(
+      Container(
+        height: Get.height * 0.3,
+        decoration: const BoxDecoration(
+          color: colorWhite,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Authentification requise',
+                style: TextStyles.montserratBold(
+                  textSize: TextSizes.twenty,
+                  textColor: colorBlack,
+                ),
+              ),
+              Separators.maximumVertical(),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Veuillez-vous connecter afin de mener cette action',
+                      textAlign: TextAlign.center,
+                      style: TextStyles.montserratMedium(
+                        textSize: TextSizes.sixteen,
+                        textColor: colorBlack,
+                      ),
+                    ),
+                    Separators.maximumVertical(),
+                  ],
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Annuler",
+                          style: TextStyles.montserratMedium(
+                            textSize: TextSizes.fourteen,
+                            textColor: colorBlack,
+                          ),
+                        ),
+                      ),
+                      style: TextButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: const BorderSide(color: colorGreen, width: 0.5),
+                        ),
+                      ),
+                      onPressed: Get.back,
+                    ),
+                  ),
+                  Separators.normalHorizontal(),
+                  Expanded(
+                    child: TextButton(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Se connecter",
+                          style: TextStyles.montserratBold(
+                            textSize: TextSizes.fourteen,
+                            textColor: colorWhite,
+                          ),
+                        ),
+                      ),
+                      style: TextButton.styleFrom(
+                        backgroundColor: colorGreen,
+                        enableFeedback: true,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: const BorderSide(color: colorGreen, width: 0.5),
+                        ),
+                      ),
+                      onPressed: () {
+                        Get.back();
+                        Future.delayed(const Duration(milliseconds: 250), () {
+                          moveToLogin(code);
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+      enableDrag: false,
+      isDismissible: false,
+    );
+  }
+
+  doMoveRequestMass() {
+    if (isUserConnected.value == false) {
+      checkIfUserIsconnected('FDM');
+      return;
+    }
+    moveToRequestMass();
+  }
+
   moveToRequestMass() {
-    Get.toNamed(Routes.MASS_REQUEST_WITH_WORSHIP);
+    Get.toNamed(Routes.MASS_REQUEST_WITHOUT_WORSHIP);
   }
 
   ///Chargement initial des paroisses

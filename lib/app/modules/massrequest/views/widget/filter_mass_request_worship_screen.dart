@@ -57,7 +57,7 @@ class FilterMassRequestWorshipScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                'Demande de messe',
+                                _.title.value,
                                 style: TextStyles.montserratBold(
                                   textColor: colorBlack,
                                   textSize: TextSizes.twenty,

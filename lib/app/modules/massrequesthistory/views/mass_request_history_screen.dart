@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ffi';
 
 import 'package:badges/badges.dart' as b;
 import 'package:cached_network_image/cached_network_image.dart';
@@ -17,6 +18,7 @@ import 'package:oremusapp/app/modules/massrequesthistory/controller/mass_request
 import 'package:oremusapp/app/modules/massrequesthistory/views/widget/history_item.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/views/widget/search_widget.dart';
 import 'package:oremusapp/generated/assets.dart';
+import 'package:oremusapp/main.dart';
 
 class MassRequestHistoryScreen extends StatelessWidget {
   const MassRequestHistoryScreen({Key? key}) : super(key: key);
@@ -51,7 +53,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
                       },
                       icon: const Icon(Icons.arrow_back_ios_rounded),
                     ),
-                    actions: [
+                    actions: requestMassWithoutWorship.value ? null : [
                       IconButton(
                         onPressed: () {
                           _.moveToHome();

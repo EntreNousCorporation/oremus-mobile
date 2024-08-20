@@ -88,6 +88,7 @@ class AppPages {
       bindings: [
         CustomHomeBinding(),
         ParoisseBinding(),
+        MassRequestMenuBinding(),
         ProfileBinding(),
         PrayBinding(),
       ],
@@ -277,7 +278,7 @@ class AppPages {
       transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
-      name: Routes.MASS_REQUEST_WITH_WORSHIP,
+      name: Routes.MASS_REQUEST_WITHOUT_WORSHIP,
       page: () => const MassRequestWithWorshipScreen(),
       binding: MassRequestWithWorshipBinding(),
       transition: Transition.fadeIn,

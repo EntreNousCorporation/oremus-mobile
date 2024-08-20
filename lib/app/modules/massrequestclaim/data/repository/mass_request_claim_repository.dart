@@ -51,7 +51,8 @@ class MassRequestClaimRepository implements IMassRequestClaimRepository {
       throw CustomException(e.debugMessage, e.status);
     } else {
       return DataResponse<ClaimData>.fromJson(
-          json.decode(response.bodyString.toString()));
+          json.decode(response.bodyString.toString())
+      );
     }
   }
 

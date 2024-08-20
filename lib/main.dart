@@ -25,6 +25,7 @@ import 'package:platform_device_id/platform_device_id.dart';
 var appUrl;
 //var byPassAuth;
 var isUserConnected = false.obs;
+var requestMassWithoutWorship = false.obs;
 var flavor;
 var versionName;
 var versionCode;

@@ -29,267 +29,282 @@ class ParoisseScreen extends StatelessWidget {
             child: KeyboardDismisser(
               child: Scaffold(
                 resizeToAvoidBottomInset: true,
-                body: Container(
-                  color: colorGrey4,
-                  width: double.infinity,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: 16,
-                          bottom: 0,
-                          left: 16,
-                          right: 16,
-                        ),
-                        child: Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                _.doLaunchSimpleSearch();
-                              },
-                              child: Material(
-                                borderRadius: BorderRadius.circular(10.0),
-                                elevation: 10,
-                                color: colorWhite,
-                                shadowColor: colorGrey2.withOpacity(0.5),
-                                child: SizedBox(
-                                  height: (Get.width / 9),
-                                  width: (Get.width / 9),
-                                  child: const Icon(
-                                    Icons.search_rounded,
-                                    color: colorPurpleLight,
-                                  ),
-                                ),
-                              ),
+                body: Stack(
+                  children: [
+                    Container(
+                      color: colorGrey4,
+                      width: double.infinity,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              top: 16,
+                              bottom: 0,
+                              left: 16,
+                              right: 16,
                             ),
-                            Separators.normalHorizontal(),
-                            Expanded(
-                              child: SizedBox(
-                                height: (Get.width / 9),
-                                child: const SearchWidget(),
-                              ),
-                            ),
-                            Separators.normalHorizontal(),
-                            GestureDetector(
-                              onTap: () {
-                                _.goToAdvancedSearch();
-                              },
-                              child: Material(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  elevation: 10,
-                                  color: colorWhite,
-                                  shadowColor: colorGrey2.withOpacity(0.5),
-                                  child: b.Badge(
-                                    showBadge: (_.searchCriteria.value
-                                                .isCriteriaEmpty ==
-                                            false)
-                                        ? true
-                                        : false,
-                                    position: b.BadgePosition.topEnd(
-                                        top: -10, end: -5),
-                                    badgeContent: Text(
-                                      '${_.searchCriteria.value.countCriteria}',
-                                      style: TextStyles.montserratRegular(
-                                          textColor: colorWhite,
-                                          textSize: TextSizes.thirteen),
-                                    ),
+                            child: Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    _.doLaunchSimpleSearch();
+                                  },
+                                  child: Material(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    elevation: 10,
+                                    color: colorWhite,
+                                    shadowColor: colorGrey2.withOpacity(0.5),
                                     child: SizedBox(
                                       height: (Get.width / 9),
                                       width: (Get.width / 9),
                                       child: const Icon(
-                                        Icons.filter_list_rounded,
+                                        Icons.search_rounded,
                                         color: colorPurpleLight,
                                       ),
                                     ),
-                                  )),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Separators.minimunVertical(),
-                      _.isDataProcessing.isTrue
-                          ? Expanded(
-                              child: Center(
-                                child: LottieLoadingView(
-                                  size: Get.width / 4,
+                                  ),
                                 ),
-                              ),
-                            )
-                          : _.hasData.isTrue
-                              ? Expanded(
-                                  child: FadeIn(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 0,
-                                        bottom: 0,
-                                        left: 16,
-                                        right: 16,
-                                      ),
-                                      child: NotificationListener<
-                                          OverscrollIndicatorNotification>(
-                                        onNotification: (notification) {
-                                          notification.disallowIndicator();
-                                          return false;
-                                        },
-                                        child: SmartRefresher(
-                                          scrollController: _.scrollController,
-                                          enablePullDown: true,
-                                          enablePullUp: true,
-                                          onRefresh: _.onRefresh,
-                                          onLoading: _.onLoading,
-                                          header: const CustomClassicHeader(),
-                                          footer: CustomFooter(
-                                            builder: (BuildContext context,
-                                                LoadStatus? mode) {
-                                              Widget body;
-                                              if (mode == LoadStatus.idle) {
-                                                body = Container();
-                                              } else if (mode ==
-                                                  LoadStatus.loading) {
-                                                body = LottieLoadingView();
-                                              } else if (mode ==
-                                                  LoadStatus.failed) {
-                                                body = Text(
-                                                  "Une erreur est survenue lors du chargement",
-                                                  style:
-                                                      TextStyles.montserratBold(
-                                                          textSize: TextSizes
-                                                              .thirteen,
-                                                          textColor:
-                                                              colorBlack),
-                                                );
-                                              } else if (mode ==
-                                                  LoadStatus.canLoading) {
-                                                body = Text(
-                                                  "Relacher pour charger plus de paroisses",
-                                                  style:
-                                                      TextStyles.montserratBold(
-                                                          textSize: TextSizes
-                                                              .thirteen,
-                                                          textColor:
-                                                              colorBlack),
-                                                );
-                                              } else {
-                                                body = Visibility(
-                                                  visible: false,
-                                                  child: Column(
-                                                    children: [
-                                                      SizedBox(
-                                                        width: Get.width / 1.7,
-                                                        height: 4,
-                                                        child: Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10),
-                                                            gradient:
-                                                                const LinearGradient(
-                                                              begin: Alignment
-                                                                  .topRight,
-                                                              end: Alignment
-                                                                  .bottomLeft,
-                                                              colors: [
-                                                                colorGreen,
-                                                                colorGreenSemiLight,
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Separators
-                                                          .minimunVertical(),
-                                                      Text(
-                                                        "Aucune donnée à charger",
-                                                        style: TextStyles
-                                                            .montserratBold(
-                                                                textSize:
-                                                                    TextSizes
-                                                                        .thirteen,
-                                                                textColor:
-                                                                    colorBlack),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              }
-                                              return SizedBox(
-                                                height: 55.0,
-                                                child: Center(child: body),
-                                              );
-                                            },
-                                          ),
-                                          controller: _.refreshController,
-                                          physics:
-                                              const BouncingScrollPhysics(),
-                                          child: ListView.separated(
-                                            physics:
-                                                const NeverScrollableScrollPhysics(),
-                                            padding:
-                                                const EdgeInsets.only(top: 16),
-                                            shrinkWrap: false,
-                                            itemCount: _.paroisses.length,
-                                            itemBuilder: (builder, index) {
-                                              var paroisse = _.paroisses[index];
-                                              return ParoisseItem(
-                                                paroisse: paroisse,
-                                                index: index,
-                                                key: ValueKey(
-                                                    paroisse?.identifier),
-                                              );
-                                            },
-                                            separatorBuilder: (builder, index) {
-                                              return Separators
-                                                  .maximum1Vertical();
-                                            },
+                                Separators.normalHorizontal(),
+                                Expanded(
+                                  child: SizedBox(
+                                    height: (Get.width / 9),
+                                    child: const SearchWidget(),
+                                  ),
+                                ),
+                                Separators.normalHorizontal(),
+                                GestureDetector(
+                                  onTap: () {
+                                    _.goToAdvancedSearch();
+                                  },
+                                  child: Material(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      elevation: 10,
+                                      color: colorWhite,
+                                      shadowColor: colorGrey2.withOpacity(0.5),
+                                      child: b.Badge(
+                                        showBadge: (_.searchCriteria.value
+                                            .isCriteriaEmpty ==
+                                            false)
+                                            ? true
+                                            : false,
+                                        position: b.BadgePosition.topEnd(
+                                            top: -10, end: -5),
+                                        badgeContent: Text(
+                                          '${_.searchCriteria.value.countCriteria}',
+                                          style: TextStyles.montserratRegular(
+                                              textColor: colorWhite,
+                                              textSize: TextSizes.thirteen),
+                                        ),
+                                        child: SizedBox(
+                                          height: (Get.width / 9),
+                                          width: (Get.width / 9),
+                                          child: const Icon(
+                                            Icons.filter_list_rounded,
+                                            color: colorPurpleLight,
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : Expanded(
-                                  child: NotFoundScreen(
-                                    message: "Aucune paroisse trouvée !",
-                                  ),
+                                      )),
                                 ),
-                    ],
-                  ),
-                ),
-                floatingActionButtonLocation:
-                    FloatingActionButtonLocation.endFloat,
-                floatingActionButton: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  width: _.isExtended.isTrue ? 250.0 : 70.0,
-                  height: 70,
-                  child: FloatingActionButton.extended(
-                    onPressed: () {
-                      _.moveToRequestMass();
-                    },
-                    backgroundColor: colorGreen,
-                    enableFeedback: true,
-                    tooltip: 'Demande de messe',
-                    foregroundColor: colorWhite,
-                    label: _.isExtended.isTrue
-                        ? Text(
-                            "Demande de messe",
-                            style: TextStyles.montserratSemiBold(
-                              textSize: TextSizes.fifteen,
-                              textColor: colorWhite,
+                              ],
+                            ),
+                          ),
+                          Separators.minimunVertical(),
+                          _.isDataProcessing.isTrue
+                              ? Expanded(
+                            child: Center(
+                              child: LottieLoadingView(
+                                size: Get.width / 4,
+                              ),
                             ),
                           )
-                        : SvgPicture.asset(
-                            'assets/images/icon_pray.svg',
-                            height: 35,
-                          ),
-                    icon: _.isExtended.isTrue
-                        ? SvgPicture.asset(
-                            'assets/images/icon_pray.svg',
-                            height: 35,
+                              : _.hasData.isTrue
+                              ? Expanded(
+                            child: FadeIn(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 0,
+                                  bottom: 0,
+                                  left: 16,
+                                  right: 16,
+                                ),
+                                child: NotificationListener<
+                                    OverscrollIndicatorNotification>(
+                                  onNotification: (notification) {
+                                    notification.disallowIndicator();
+                                    return false;
+                                  },
+                                  child: SmartRefresher(
+                                    scrollController: _.scrollController,
+                                    enablePullDown: true,
+                                    enablePullUp: true,
+                                    onRefresh: _.onRefresh,
+                                    onLoading: _.onLoading,
+                                    header: const CustomClassicHeader(),
+                                    footer: CustomFooter(
+                                      builder: (BuildContext context,
+                                          LoadStatus? mode) {
+                                        Widget body;
+                                        if (mode == LoadStatus.idle) {
+                                          body = Container();
+                                        } else if (mode ==
+                                            LoadStatus.loading) {
+                                          body = LottieLoadingView();
+                                        } else if (mode ==
+                                            LoadStatus.failed) {
+                                          body = Text(
+                                            "Une erreur est survenue lors du chargement",
+                                            style:
+                                            TextStyles.montserratBold(
+                                                textSize: TextSizes
+                                                    .thirteen,
+                                                textColor:
+                                                colorBlack),
+                                          );
+                                        } else if (mode ==
+                                            LoadStatus.canLoading) {
+                                          body = Text(
+                                            "Relacher pour charger plus de paroisses",
+                                            style:
+                                            TextStyles.montserratBold(
+                                                textSize: TextSizes
+                                                    .thirteen,
+                                                textColor:
+                                                colorBlack),
+                                          );
+                                        } else {
+                                          body = Visibility(
+                                            visible: false,
+                                            child: Column(
+                                              children: [
+                                                SizedBox(
+                                                  width: Get.width / 1.7,
+                                                  height: 4,
+                                                  child: Container(
+                                                    decoration:
+                                                    BoxDecoration(
+                                                      borderRadius:
+                                                      BorderRadius
+                                                          .circular(
+                                                          10),
+                                                      gradient:
+                                                      const LinearGradient(
+                                                        begin: Alignment
+                                                            .topRight,
+                                                        end: Alignment
+                                                            .bottomLeft,
+                                                        colors: [
+                                                          colorGreen,
+                                                          colorGreenSemiLight,
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Separators
+                                                    .minimunVertical(),
+                                                Text(
+                                                  "Aucune donnée à charger",
+                                                  style: TextStyles
+                                                      .montserratBold(
+                                                      textSize:
+                                                      TextSizes
+                                                          .thirteen,
+                                                      textColor:
+                                                      colorBlack),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        }
+                                        return SizedBox(
+                                          height: 55.0,
+                                          child: Center(child: body),
+                                        );
+                                      },
+                                    ),
+                                    controller: _.refreshController,
+                                    physics:
+                                    const BouncingScrollPhysics(),
+                                    child: ListView.separated(
+                                      physics:
+                                      const NeverScrollableScrollPhysics(),
+                                      padding:
+                                      const EdgeInsets.only(top: 16),
+                                      shrinkWrap: false,
+                                      itemCount: _.paroisses.length,
+                                      itemBuilder: (builder, index) {
+                                        var paroisse = _.paroisses[index];
+                                        return ParoisseItem(
+                                          paroisse: paroisse,
+                                          index: index,
+                                          key: ValueKey(
+                                              paroisse?.identifier),
+                                        );
+                                      },
+                                      separatorBuilder: (builder, index) {
+                                        return Separators
+                                            .maximum1Vertical();
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           )
-                        : const SizedBox.shrink(),
-                  ),
+                              : Expanded(
+                            child: NotFoundScreen(
+                              message: "Aucune paroisse trouvée !",
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 100),  // Adjust for desired smoothness
+                      right: _.offset.value.dx,
+                      bottom: _.offset.value.dy,
+                      child: GestureDetector(
+                        onPanUpdate: (details) {
+                          _.offset.value = Offset(
+                            _.offset.value.dx - details.delta.dx,
+                            _.offset.value.dy - details.delta.dy,
+                          );
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          width: _.isExtended.isTrue ? 250.0 : 70.0,
+                          height: 70,
+                          child: FloatingActionButton.extended(
+                            onPressed: () {
+                              _.doMoveRequestMass();
+                            },
+                            backgroundColor: colorGreen,
+                            enableFeedback: true,
+                            tooltip: 'Demande de messe',
+                            foregroundColor: colorWhite,
+                            label: _.isExtended.isTrue
+                                ? Text(
+                              "Demande de messe",
+                              style: TextStyles.montserratSemiBold(
+                                textSize: TextSizes.fifteen,
+                                textColor: colorWhite,
+                              ),
+                            )
+                                : SvgPicture.asset(
+                              'assets/images/icon_pray.svg',
+                              height: 35,
+                            ),
+                            icon: _.isExtended.isTrue
+                                ? SvgPicture.asset(
+                              'assets/images/icon_pray.svg',
+                              height: 35,
+                            )
+                                : const SizedBox.shrink(),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

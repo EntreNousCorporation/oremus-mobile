@@ -45,7 +45,7 @@ class MassRequestClaimController extends GetxController {
   @override
   void onInit() {
     getArguments();
-    doGetClaimTypes();
+    //doGetClaimTypes();
     super.onInit();
   }
 
@@ -77,15 +77,24 @@ class MassRequestClaimController extends GetxController {
     checkForm();
   }
 
+  goToWorshipChoice() async {
+    paroisseSelected = await Get.toNamed(Routes.FILTER_MASS_REQUEST_CHOOSE_WORSHIP, arguments: 'Faire une reclamation',);
+    log('goToWorshipChoice ::: ${paroisseSelected.value.identifier}');
+    if (paroisseSelected.value.identifier != null) {
+      paroisseSelected.refresh();
+    }
+    checkForm();
+  }
+
   doGetClaimTypes() {
     hideKeyboard();
-    EasyLoading.show(
+    /*EasyLoading.show(
       status: 'Veuillez patienter...',
       maskType: EasyLoadingMaskType.black,
       indicator: LottieLoadingView(),
     ).then((v) {
       unlockBackButton.value = false;
-    });
+    });*/
     log('request getClaimTypes');
     massRequestClaimRepository.getClaimTypes(page: 0).then((value) {
       EasyLoading.dismiss(animation: true).then((v) {

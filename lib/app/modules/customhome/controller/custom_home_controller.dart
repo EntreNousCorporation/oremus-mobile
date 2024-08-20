@@ -33,8 +33,7 @@ class CustomHomeController extends GetxController {
   var title = ''.obs;
 
   var applyAnim = true.obs;
-  final GlobalKey<AnimatorWidgetState> basicIconAnimation =
-      GlobalKey<AnimatorWidgetState>();
+  final GlobalKey<AnimatorWidgetState> basicIconAnimation = GlobalKey<AnimatorWidgetState>();
 
   @override
   void onInit() {
@@ -65,10 +64,10 @@ class CustomHomeController extends GetxController {
         icon: 'assets/images/icon_pray.svg',
       ),
       MenusItem(
-        code: AppConstants.REQUEST_MASS,
+        code: AppConstants.REQUEST_MASS_WITHOUT_WORSHIP,
         libelle: "Demande de messe",
         icon: 'assets/images/icon_pray.svg',
-        isVisible: false,
+        isVisible: true,
       ),
       MenusItem(
         code: AppConstants.PROMO,
@@ -132,8 +131,13 @@ class CustomHomeController extends GetxController {
       goToSignin();
     } else {
       if (menuCode == AppConstants.SHARE_APP) {
+        requestMassWithoutWorship.value = false;
         doShareApp();
+      } else if (menuCode == AppConstants.REQUEST_MASS_WITHOUT_WORSHIP) {
+        requestMassWithoutWorship.value = true;
+        controller.setSelectedMenuPosition(index);
       } else {
+        requestMassWithoutWorship.value = false;
         controller.setSelectedMenuPosition(index);
       }
       update();

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -51,6 +50,10 @@ class MassRequestMenuController extends GetxController {
             checkIfUserIsconnected('FDM');
             return;
           }
+          if (requestMassWithoutWorship.value == true) {
+            moveToRequestMassWithoutWorship();
+            return;
+          }
           moveToMassRequest();
         },
       ),
@@ -77,6 +80,7 @@ class MassRequestMenuController extends GetxController {
         activeTint: colorOrangeLight3,
         bgColor: colorOrangeLight1,
         isVisible: false,
+        //isVisible: requestMassWithoutWorship.value ? true : false,
         goToPage: () async {
           if (isUserConnected.value == false) {
             checkIfUserIsconnected('FR');
@@ -239,6 +243,10 @@ class MassRequestMenuController extends GetxController {
         null,
       ],
     );
+  }
+
+  moveToRequestMassWithoutWorship() {
+    Get.toNamed(Routes.MASS_REQUEST_WITHOUT_WORSHIP);
   }
 
   moveToMassRequestHistory() async {

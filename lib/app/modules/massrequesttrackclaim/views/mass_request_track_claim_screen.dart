@@ -15,6 +15,7 @@ import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/massrequesttrackclaim/controller/mass_request_track_claim_controller.dart';
 import 'package:oremusapp/app/modules/massrequesttrackclaim/views/widget/claim_item.dart';
 import 'package:oremusapp/generated/assets.dart';
+import 'package:oremusapp/main.dart';
 
 class MassRequestTrackClaimScreen extends StatelessWidget {
   const MassRequestTrackClaimScreen({Key? key}) : super(key: key);
@@ -49,7 +50,7 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                       },
                       icon: const Icon(Icons.arrow_back_ios_rounded),
                     ),
-                    actions: [
+                    actions: requestMassWithoutWorship.value ? null :  [
                       IconButton(
                         onPressed: () {
                           _.moveToHome();

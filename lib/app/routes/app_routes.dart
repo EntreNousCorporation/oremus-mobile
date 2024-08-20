@@ -45,7 +45,7 @@ abstract class Routes {
   static const FILTER_MASS_REQUEST_CHOOSE_WORSHIP = '/filter-mass-request-choose-worship';
   static const MASS_REQUEST_CLAIM = '/mass-request-claim';
   static const MASS_REQUEST_TRACK_CLAIM = '/mass-request-track-claim';
-  static const MASS_REQUEST_WITH_WORSHIP = '/mass-request-with-worship';
+  static const MASS_REQUEST_WITHOUT_WORSHIP = '/mass-request-with-worship';
   static const MASS_REQUEST_MENU = '/mass-request-menu';
 
   //PAYMENT
