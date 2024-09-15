@@ -4,16 +4,26 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/utils.dart';
+import 'package:oremusapp/app/modules/customhome/controller/custom_home_controller.dart';
+import 'package:oremusapp/app/modules/massrequest/controller/mass_request_menu_controller.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/massrequest/data/repository/mass_request_repository.dart';
+import 'package:oremusapp/app/modules/paroisse/controller/paroisse_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
+import 'package:oremusapp/app/modules/pray/controller/pray_controller.dart';
+import 'package:oremusapp/app/modules/pray/data/repository/pray_repository.dart';
+import 'package:oremusapp/app/modules/profile/controller/profile_controller.dart';
+import 'package:oremusapp/app/modules/profile/data/repository/profile_repository.dart';
+import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
+import 'package:oremusapp/app/remote/api_client.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
@@ -37,13 +47,31 @@ class MassRequestController extends GetxController {
 
   RxList<TypeData?> massRequestTypes = RxList<TypeData?>([]);
   Rx<TypeData?> massRequestTypeSelected = Rx<TypeData?>(null);
+  RxList<MassTypeRepetitionData?> massRequestTypeRepetitions =
+      RxList<MassTypeRepetitionData?>([]);
+  Rx<MassTypeRepetitionData?> massRequestTypeRepetitionSelected =
+      Rx<MassTypeRepetitionData?>(null);
 
   RxList<PrayerIntentData?> prayerIntents = RxList<PrayerIntentData?>([]);
   Rx<PrayerIntentData?> prayerIntentSelected = Rx<PrayerIntentData?>(null);
 
   RxList<PriceData> datesChoosen = RxList<PriceData>([]);
 
-  RxList<LiturgicalCelebrationResponse> worshipHours = RxList<LiturgicalCelebrationResponse>([]);
+  RxList<LiturgicalCelebrationResponse> worshipHours =
+      RxList<LiturgicalCelebrationResponse>([]);
+
+  RxList<LiturgicalCelebrationResponse> worshipRecurrentHoursTemp =
+      RxList<LiturgicalCelebrationResponse>([]);
+  RxList<PriceData> worshipRecurrentHours = RxList<PriceData>([]);
+
+  RxList<LiturgicalCelebrationResponse> worshipSpecialHoursTemp =
+      RxList<LiturgicalCelebrationResponse>([]);
+  RxList<PriceData> worshipSpecialHours = RxList<PriceData>([]);
+
+  var allowedDates = RxList<DateTime>([]);
+  var selectedDate = Rx<PriceData?>(null);
+  var selectedHours = RxList<Slot?>([]);
+  var selectedHour = Rx<Slot?>(null);
 
   var isValidForm = false.obs;
 
@@ -54,10 +82,9 @@ class MassRequestController extends GetxController {
   @override
   void onInit() {
     getArguments();
-    // doGetPrayerIntent();
     doGetMassRequestType();
     doGetPlaceOfWorshipHours();
-
+    initMassTypeRepetitions();
     super.onInit();
   }
 
@@ -67,9 +94,25 @@ class MassRequestController extends GetxController {
       log('arguments ::: ${jsonEncode(Get.arguments[0])}');
       log('paroisseSelected :::${jsonEncode(paroisseSelected.value)}');
       if (Get.arguments[1] != null) {
-        massRequestSelected.value = MassRequestResponse.fromJson(Get.arguments[1]);
+        massRequestSelected.value =
+            MassRequestResponse.fromJson(Get.arguments[1]);
       }
     }
+  }
+
+  initMassTypeRepetitions() {
+    massRequestTypeRepetitions.value = [
+      MassTypeRepetitionData(
+        code: 'once',
+        name: 'Une seule messe',
+      ),
+      MassTypeRepetitionData(
+        code: 'many',
+        name: 'Plusieurs messes',
+      ),
+    ];
+    massRequestTypeRepetitionSelected.value =
+        massRequestTypeRepetitions.firstWhereOrNull((p0) => p0?.code == 'once');
   }
 
   moveToPayment(MassRequestResponse massRequestResponse) {
@@ -84,23 +127,112 @@ class MassRequestController extends GetxController {
     Get.offAllNamed(Routes.CUSTOM_HOME);
   }
 
+  reBinding() {
+    //Get.delete<CustomHomeController>(force: true);
+    /*Get.put(
+      MassRequestMenuController(
+        paroisseRepository: ParoisseRepository(ApiClientImpl()),
+      ),
+    );
+    Get.put(
+        ParoisseController(
+          paroisseRepository: ParoisseRepository(ApiClientImpl()),
+        ),
+        permanent: true,);
+    Get.put(
+        ProfileController(
+          profileRepository: ProfileRepository(ApiClientImpl()),
+          signinRepository: SigninRepository(ApiClientImpl()),
+          paroisseRepository: ParoisseRepository(ApiClientImpl()),
+        ),
+        permanent: false,);
+    Get.put(PrayController(prayRepository: PrayRepository(ApiClientImpl())));
+    Get.lazyPut<CustomHomeController>(
+          () {
+        return CustomHomeController(
+          signinRepository: SigninRepository(ApiClientImpl()),
+          paroisseRepository: ParoisseRepository(ApiClientImpl()),
+        );
+      },
+      fenix: true,
+    );*/
+    Get.toNamed(Routes.CUSTOM_HOME);
+  }
+
+  // Ouvrir un date picker qui ne permet que les dates calculées
+  Future<void> showPicker(BuildContext context) async {
+    // S'assurer que la première date dans _allowedDates est valide comme initialDate
+    DateTime initialDate = allowedDates.firstWhere(
+        (date) =>
+            date.isAfter(DateTime.now()) ||
+            date.isAtSameMomentAs(DateTime.now()),
+        orElse: () => allowedDates
+            .first); // Utiliser la première date valide de _allowedDates
+
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate, // On utilise une date initiale valide
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 30)),
+      selectableDayPredicate: (DateTime day) {
+        // Comparer seulement année, mois et jour (ignorer les heures)
+        return allowedDates.contains(DateTime(day.year, day.month, day.day));
+      },
+    );
+    if (picked != null) {
+      resetPrice();
+      updateRepetitionFilter(picked, isFirst: false);
+
+      /*String day = picked.day.toString();
+      String month = picked.month.toString();
+      if (picked.day < 10) {
+        day = "0$day";
+      }
+      if (picked.month < 10) {
+        month = "0$month";
+      }
+      selectedDate.value = PriceData(
+        day: "${picked.year}-$month-$day",
+        dayOfWeek: picked.weekday.toString(),
+        isDaySelected: true,
+        dayToDisplay: "$day-$month-${picked.year}",
+      );
+      checkForm();*/
+    }
+  }
+
+  String getTime(String value) {
+    if (value.isEmpty) return '-';
+    return '${value.split(':').first}:${value.split(':')[1]}';
+  }
+
   goToDatesChoice() async {
     if (worshipHours.isEmpty) {
-      showNotification(message: 'Aucun horaire disponible.\nVeuillez choisir une autre paroisse svp');
+      showNotification(
+          message:
+              'Aucun horaire disponible.\nVeuillez choisir une autre paroisse svp');
       return;
     }
-    datesChoosen.value = await Get.toNamed(Routes.FILTER_MASS_REQUEST_CHOOSE_DATE, arguments: worshipHours);
+    datesChoosen.value = await Get.toNamed(
+        Routes.FILTER_MASS_REQUEST_CHOOSE_DATE,
+        arguments: worshipHours);
     datesChoosen.refresh();
     if (datesChoosen.isNotEmpty) {
       doGetMassRequestPrice();
     } else {
-      price.value = '-';
+      resetPrice();
     }
     checkForm();
   }
 
+  void resetPrice() {
+    price.value = '-';
+  }
+
   void checkForm() {
-    isValidForm.value = massRequestTypeSelected.value != null && descriptionController.text.isNotEmpty && price.value != '-';
+    isValidForm.value = massRequestTypeSelected.value != null &&
+        descriptionController.text.isNotEmpty &&
+        price.value != '-';
     update();
   }
 
@@ -115,10 +247,89 @@ class MassRequestController extends GetxController {
     checkForm();
   }
 
+  updateMassTypeRepetitionFilter(MassTypeRepetitionData? massTypeRepetitionData) {
+    //selectedHour.value = null;
+    datesChoosen.clear();
+    massRequestTypeRepetitionSelected.value = massTypeRepetitionData;
+    checkForm();
+    if (selectedDate.value != null && selectedHour.value != null && massRequestTypeRepetitionSelected.value?.code == 'once') {
+      selectedDate.value?.slots = [selectedHour.value ?? Slot()];
+      datesChoosen.value = [selectedDate.value ?? PriceData()];
+      doGetMassRequestPrice();
+    } else {
+      resetPrice();
+    }
+  }
+
+  updateMassTypeRepetitionHourFilter(Slot? slot) {
+    selectedHour.value = slot;
+    checkForm();
+    if (selectedDate.value != null && selectedHour.value != null) {
+      selectedDate.value?.slots = [selectedHour.value ?? Slot()];
+      datesChoosen.value = [selectedDate.value ?? PriceData()];
+      doGetMassRequestPrice();
+    }
+  }
+
   updatePrayerIntentFilter(PrayerIntentData? prayerIntentData) {
     prayerIntentSelected.value = prayerIntentData;
     descriptionController.text = prayerIntentData?.defaultText?.fr ?? '';
     checkForm();
+  }
+
+  //todo
+  updateRepetitionFilter(DateTime datetime, {bool? isFirst = true, Slot? selectHour}) {
+    String day = datetime.day.toString();
+    String month = datetime.month.toString();
+    if (datetime.day < 10) {
+      day = "0$day";
+    }
+    if (datetime.month < 10) {
+      month = "0$month";
+    }
+
+    for (var i in worshipRecurrentHours) {
+      log('worshipRecurrentHours ::: ${i.toJson()}\n');
+    }
+
+    List<Slot>? tempSlots = [];
+    var recurentHour = worshipRecurrentHours.value.firstWhereOrNull((element) {
+      log('element ::: ${element.dayOfWeek}');
+      log('datetime.weekday ::: ${datetime.weekday -1}');
+      return int.parse(element.dayOfWeek ?? '0') == (datetime.weekday - 1);
+    });
+    log('tempSlotss ::: ${recurentHour?.toJson()}');
+    tempSlots = recurentHour?.slots ?? [];
+    log('tempSlots ::: ${tempSlots.length}');
+    selectedHours.clear();
+    for (var i in tempSlots) {
+      log('tempSlots i ::: ${i.toJson()}\n');
+      selectedHours.add(i);
+    }
+    log('selectedHours ::: ${selectedHours.length}\n');
+    for (var i in selectedHours) {
+      log('selectedHours ::: ${i?.toJson()}\n');
+    }
+
+    if (isFirst == true) {
+      selectedHour.value = tempSlots.first;
+    } else {
+      selectedHour.value = selectHour;
+    }
+
+    selectedDate.value = PriceData(
+      day: "${datetime.year}-$month-$day",
+      dayOfWeek: datetime.weekday.toString(),
+      isDaySelected: true,
+      dayToDisplay: "$day-$month-${datetime.year}",
+      slots: [selectedHour.value ?? Slot()],
+    );
+    log('selectedDate ::: ${selectedDate.toJson()}');
+    checkForm();
+    if (selectedDate.value != null && selectedHour.value != null) {
+      datesChoosen.value = [selectedDate.value ?? PriceData()];
+      doGetMassRequestPrice();
+    }
   }
 
   doGetMassRequestType() {
@@ -128,7 +339,8 @@ class MassRequestController extends GetxController {
     massRequestRepository.getMassRequestType(page: 0).then((value) {
       if (value.isNotEmpty == true) {
         massRequestTypes.value = value;
-        var massRequestTypeSelected = value.firstWhereOrNull((element) => element.code == 'ACTION_OF_GRACE');
+        var massRequestTypeSelected = value
+            .firstWhereOrNull((element) => element.code == 'ACTION_OF_GRACE');
         updateMassTypeFilter(massRequestTypeSelected);
       }
       update();
@@ -136,7 +348,8 @@ class MassRequestController extends GetxController {
       var err = error as CustomException;
       if (err.code == 401) {
         showCustomDialog(
-          Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
@@ -160,7 +373,8 @@ class MassRequestController extends GetxController {
       var err = error as CustomException;
       if (err.code == 401) {
         showCustomDialog(
-          Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
@@ -176,17 +390,40 @@ class MassRequestController extends GetxController {
 
     log('request doGetPlaceOfWorshipHours');
     isDatesProcessing(true);
-    paroisseRepository.getLiturgicalCelebration(paroisseSelected.value.identifier).then((value) {
+    paroisseRepository
+        .getLiturgicalCelebration(paroisseSelected.value.identifier)
+        .then((value) {
       isDatesProcessing(false);
       if (value.isNotEmpty == true) {
         worshipHours.value = value;
+        worshipRecurrentHoursTemp.value = worshipHours
+            .where((element) => element.isRecurrent == true)
+            .toList();
+        worshipSpecialHoursTemp.value = worshipHours
+            .where((element) =>
+                element.isRecurrent == false &&
+                (Jiffy.parse(element.startDate ?? Jiffy.now().format(),
+                        pattern: AppConstants.TIME_ZONE_FORMAT)
+                    .isAfter(Jiffy.now().add(hours: 24))))
+            .toList();
+
+        worshipRecurrentHours.value = transformWorshipRecurrentHours(worshipRecurrentHoursTemp);
+        worshipSpecialHours.value = transformWorshipSpecialHours(worshipSpecialHoursTemp);
+
+        List<int> temp = [];
+        temp = worshipRecurrentHours.value.map((element) => int.parse(element.dayOfWeek ?? '0') + 1).toList();
+        allowedDates.value = getNextDatesForDays(temp);
+        DateTime datetime = allowedDates.value.firstWhere((date) => date.isAfter(DateTime.now()) || date.isAtSameMomentAs(DateTime.now()), orElse: () => allowedDates.first); // Utiliser la première date valide de _allowedDates
+
+        updateRepetitionFilter(datetime);
       }
     }, onError: (error) {
       isDatesProcessing(false);
       var err = error as CustomException;
       if (err.code == 401) {
         showCustomDialog(
-          Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
         ).then((value) {
           doLogout();
         });
@@ -203,7 +440,14 @@ class MassRequestController extends GetxController {
     isPricingProcessing(true);
     hasData(false);
     log('request doGetMassRequestPrice');
-    massRequestRepository.getMassRequestPrice(request: datesChoosen, workshipId: paroisseSelected.value.identifier.toString()).then((value) {
+    for (var i in datesChoosen) {
+      log('datesChoosen ::: ${i.toJson()}');
+    }
+    massRequestRepository
+        .getMassRequestPrice(
+            request: datesChoosen,
+            workshipId: paroisseSelected.value.identifier.toString())
+        .then((value) {
       isPricingProcessing(false);
       hasData(true);
       price.value = value.price.toString();
@@ -238,7 +482,9 @@ class MassRequestController extends GetxController {
     });
 
     var request = MassRequestData(
-      prayerIntent: descriptionController.text.isNotEmpty ? descriptionController.text : prayerIntentSelected.value?.defaultText?.fr,
+      prayerIntent: descriptionController.text.isNotEmpty
+          ? descriptionController.text
+          : prayerIntentSelected.value?.defaultText?.fr,
       typeOfMassRequest: massRequestTypeSelected.value?.code,
       slots: datesChoosen,
       worshipPlace: paroisseSelected.value.identifier,
@@ -265,7 +511,9 @@ class MassRequestController extends GetxController {
           doLogout();
         });
       } else {
-        showNotification(message: err.message.toString(), duration: const Duration(seconds: 4));
+        showNotification(
+            message: err.message.toString(),
+            duration: const Duration(seconds: 4));
       }
     });
   }

@@ -69,7 +69,7 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                         ),
                         Separators.normalVertical(),
                         Text(
-                          'Choix des dates',
+                          'Plusieurs messes',
                           style: TextStyles.montserratBold(
                             textColor: colorBlack,
                             textSize: TextSizes.thirty_eight,
@@ -101,7 +101,7 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                                           width: double.maxFinite,
                                           color: colorPurpleLight,
                                           child: Text(
-                                            'Jours récurrents',
+                                            'Sélectionner les horaires de vos messes pour répetition',
                                             style: TextStyles.montserratSemiBold(
                                               textColor: colorWhite,
                                               textSize: TextSizes.twenty,

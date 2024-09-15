@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -168,4 +169,66 @@ shareApp(String message, {bool? includeFile = true, String filePath = ''}) async
       sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
     );
   }
+}
+
+List<PriceData> transformWorshipSpecialHours(
+    List<LiturgicalCelebrationResponse> worshipDataList) {
+  Map<String, List<Slot>> groupedSlots = {};
+
+  for (var event in worshipDataList) {
+    String formattedDate = event.startDate?.split('T')[0] ?? '';
+    event.startDateFormatted = formattedDate;
+  }
+
+  for (var event in worshipDataList) {
+    String day = event.startDateFormatted ?? '';
+    if (!groupedSlots.containsKey(day)) {
+      groupedSlots[day] = [];
+    }
+    groupedSlots[day]?.addAll(event.slots ?? []);
+  }
+
+  return groupedSlots.entries.map((entry) {
+    return PriceData(day: entry.key, slots: entry.value);
+  }).toList();
+}
+
+List<PriceData> transformWorshipRecurrentHours(List<LiturgicalCelebrationResponse> worshipDataList) {
+  Map<String, List<Slot>> groupedByDay = {};
+
+  // Itération à travers la liste des données de célébration
+  for (var worshipData in worshipDataList) {
+    // Assurez-vous qu'il y a des heures d'ouverture avant de les parcourir
+    for (var openingTime in worshipData.openingTime ?? []) {
+      String dayOfWeek = openingTime.dayOfWeek.toString(); // Convertir le jour de la semaine en chaîne de caractères
+
+      // Initialiser la liste pour ce jour s'il n'existe pas encore dans le dictionnaire
+      if (!groupedByDay.containsKey(dayOfWeek)) {
+        groupedByDay[dayOfWeek] = [];
+      }
+
+      // Ajouter les créneaux horaires à la clé correspondant au jour de la semaine dans le dictionnaire
+      groupedByDay[dayOfWeek]?.addAll(openingTime.slots);
+    }
+  }
+
+  // Transformer le dictionnaire en une liste d'objets PriceData
+  return groupedByDay.entries
+      .map((entry) => PriceData(dayOfWeek: entry.key, slots: entry.value))
+      .toList();
+}
+
+// Fonction pour obtenir les dates des jours spécifiques
+List<DateTime> getNextDatesForDays(List<int> daysOfWeek) {
+  List<DateTime> upcomingDates = [];
+  DateTime today = DateTime.now();
+  int daysInMonth = 30;
+
+  for (int i = 0; i < daysInMonth; i++) {
+    DateTime futureDate = today.add(Duration(days: i));
+    if (daysOfWeek.contains(futureDate.weekday % 7)) {
+      upcomingDates.add(DateTime(futureDate.year, futureDate.month, futureDate.day)); // Ignorer les heures pour comparaison
+    }
+  }
+  return upcomingDates;
 }

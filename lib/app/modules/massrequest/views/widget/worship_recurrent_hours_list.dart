@@ -33,30 +33,37 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                       ),
                     ),
                     Separators.minimunHorizontal(),
-                    GestureDetector(
-                      onTap: () {
-                        //_.selectDate(context, item);
-                        _.showCustomDatePicker(context, item);
-                      },
-                      child: const Icon(
-                        Icons.edit_calendar_rounded,
-                        color: colorPurpleLight,
-                        size: 25,
-                      ),
-                    ),
                     Visibility(
-                      visible: item.isDaySelected == true,
+                      visible: true,
                       child: Row(
                         children: [
-                          Separators.minimunHorizontal(),
                           GestureDetector(
                             onTap: () {
-                              _.onWorshipRecurrentHoursRemoved(item);
+                              //_.selectDate(context, item);
+                              _.showCustomDatePicker(context, item);
                             },
                             child: const Icon(
-                              Icons.delete_forever,
-                              color: colorRed1,
+                              Icons.edit_calendar_rounded,
+                              color: colorPurpleLight,
                               size: 25,
+                            ),
+                          ),
+                          Visibility(
+                            visible: item.isDaySelected == true,
+                            child: Row(
+                              children: [
+                                Separators.minimunHorizontal(),
+                                GestureDetector(
+                                  onTap: () {
+                                    _.onWorshipRecurrentHoursRemoved(item);
+                                  },
+                                  child: const Icon(
+                                    Icons.delete_forever,
+                                    color: colorRed1,
+                                    size: 25,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -90,7 +97,8 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                               onTap: item.isDaySelected == true
                                   ? () {
                                       e.isHourSelected = !e.isHourSelected!;
-                                      _.onWorshipRecurrentHoursSelected(item, false);
+                                      _.onWorshipRecurrentHoursSelected(
+                                          item, false);
                                     }
                                   : () {
                                       showNotification(
@@ -99,35 +107,55 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                                         bgColor: colorBlue2,
                                       );
                                     },
-                              child: Container(
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                decoration: BoxDecoration(
-                                  color: e.isHourSelected == true
-                                      ? colorGreenSemiLight
-                                      : colorWhite,
-                                  border: Border.all(
-                                      color: item.isDaySelected == true
+                              child: Stack(
+                                clipBehavior: Clip.none,
+                                alignment: Alignment.topRight,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    decoration: BoxDecoration(
+                                      color: e.isHourSelected == true
                                           ? colorGreenSemiLight
-                                          : colorGrey1),
-                                  borderRadius:
-                                      BorderRadius.circular(Get.width / 10),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Text(
-                                    '${e.startTime}',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyles.montserratSemiBold(
-                                      textSize: TextSizes.fourteen,
-                                      textColor: e.isHourSelected == true
-                                          ? colorWhite
-                                          : item.isDaySelected == true
-                                              ? colorBlack
-                                              : colorGrey1,
+                                          : colorWhite,
+                                      border: Border.all(
+                                          color: item.isDaySelected == true
+                                              ? colorGreenSemiLight
+                                              : colorGrey1),
+                                      borderRadius:
+                                          BorderRadius.circular(Get.width / 10),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Text(
+                                        '${e.startTime}',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyles.montserratSemiBold(
+                                          textSize: TextSizes.fourteen,
+                                          textColor: e.isHourSelected == true
+                                              ? colorWhite
+                                              : item.isDaySelected == true
+                                                  ? colorBlack
+                                                  : colorGrey1,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
+                                  e.isHourSelected == true
+                                      ? Positioned(
+                                          top: -8,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(2),
+                                            decoration: BoxDecoration(
+                                              color: colorWhite,
+                                              border: Border.all(color: colorGreenSemiLight),
+                                              borderRadius: BorderRadius.circular(20),
+                                            ),
+                                            child: const Icon(Icons.check, color: colorGreenSemiLight, size: 15,),
+                                          ),
+                                        )
+                                      : const SizedBox.shrink(),
+                                ],
                               ),
                             ),
                           )

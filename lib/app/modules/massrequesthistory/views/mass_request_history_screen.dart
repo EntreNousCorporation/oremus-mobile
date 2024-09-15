@@ -53,11 +53,14 @@ class MassRequestHistoryScreen extends StatelessWidget {
                       icon: const Icon(Icons.arrow_back_ios_rounded),
                     ),
                     actions: requestMassWithoutWorship.value ? null : [
-                      IconButton(
-                        onPressed: () {
-                          _.moveToHome();
-                        },
-                        icon: const Icon(Icons.home_filled),
+                      Visibility(
+                        visible: false,
+                        child: IconButton(
+                          onPressed: () {
+                            _.moveToHome();
+                          },
+                          icon: const Icon(Icons.home_filled),
+                        ),
                       ),
                       Separators.minimunHorizontal(),
                       LikeButton(

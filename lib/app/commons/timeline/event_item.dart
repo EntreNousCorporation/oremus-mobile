@@ -62,7 +62,7 @@ class TimelineEventCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _title(context),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             _description(context),
@@ -72,14 +72,14 @@ class TimelineEventCard extends StatelessWidget {
 
   Widget _title(BuildContext context) {
     return DefaultTextStyle(
-      style: Theme.of(context).textTheme.subtitle1 ?? TextStyle(),
+      style: Theme.of(context).textTheme.titleMedium ?? const TextStyle(),
       child: title,
     );
   }
 
   Widget _description(BuildContext context) {
     return DefaultTextStyle(
-      style: Theme.of(context).textTheme.overline ?? TextStyle(),
+      style: Theme.of(context).textTheme.labelSmall ?? const TextStyle(),
       child: content,
     );
   }
@@ -105,7 +105,7 @@ class TimelineSectionDivider extends StatelessWidget {
   Widget _content(BuildContext context) {
     return AnimatedDefaultTextStyle(
         child: content,
-        style: Theme.of(context).textTheme.headline5 ?? TextStyle(),
+        style: Theme.of(context).textTheme.headlineSmall ?? const TextStyle(),
         duration: kThemeChangeDuration);
   }
 }

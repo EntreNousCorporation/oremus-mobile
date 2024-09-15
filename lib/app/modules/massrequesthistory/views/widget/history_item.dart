@@ -75,86 +75,61 @@ class HistoryItem extends StatelessWidget {
                 ),
                 const Divider(color: colorTurquois),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.circle,
-                      color: getColor(massRequest?.status?.code),
-                      size: 15,
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.circle,
+                          color: getColor(massRequest?.status?.code),
+                          size: 15,
+                        ),
+                        Separators.customSizeHorizontal(3),
+                        Text(
+                          massRequest?.status?.name?.fr ?? '-',
+                          textAlign: TextAlign.center,
+                          style: TextStyles.montserratMedium(
+                            textSize: TextSizes.fifteen,
+                            textColor: getColor(massRequest?.status?.code),
+                          ),
+                        ),
+                      ],
                     ),
-                    Separators.customSizeHorizontal(3),
-                    Text(
-                      massRequest?.status?.name?.fr ?? '-',
-                      textAlign: TextAlign.center,
-                      style: TextStyles.montserratMedium(
-                        textSize: TextSizes.fifteen,
-                        textColor: getColor(massRequest?.status?.code),
+                    Visibility(
+                      visible: true,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              logic.moveToPayment(massRequest);
+                            },
+                            child: Container(
+                              color: colorTransparent,
+                              child: Column(
+                                children: [
+                                  const Icon(
+                                    Icons.money,
+                                    color: colorTurquois,
+                                  ),
+                                  Separators.customSizeVertical(3),
+                                  Text(
+                                    'Réessayer\nle paiement',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyles.montserratMedium(
+                                      textSize: TextSizes.twelve,
+                                      textColor: colorTurquois,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
-                ),
-                Visibility(
-                  visible: false,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Visibility(
-                        visible: massRequest?.status?.code?.isEmpty == true,
-                        child: GestureDetector(
-                          onTap: () {
-                            logic.moveToMassRequestClaims(massRequest);
-                          },
-                          child: Container(
-                            color: colorTransparent,
-                            child: Column(
-                              children: [
-                                const Icon(
-                                  Icons.real_estate_agent_rounded,
-                                  color: colorTurquois,
-                                ),
-                                Separators.customSizeVertical(3),
-                                Text(
-                                  'Faire une \nréclamation',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyles.montserratMedium(
-                                    textSize: TextSizes.twelve,
-                                    textColor: colorTurquois,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Separators.normalHorizontal(),
-                      GestureDetector(
-                        onTap: () {
-                          logic.moveToMassRequest(massRequest);
-                        },
-                        child: Container(
-                          color: colorTransparent,
-                          child: Column(
-                            children: [
-                              const Icon(
-                                Icons.history_rounded,
-                                color: colorTurquois,
-                              ),
-                              Separators.customSizeVertical(3),
-                              Text(
-                                'Répéter\n',
-                                textAlign: TextAlign.center,
-                                style: TextStyles.montserratMedium(
-                                  textSize: TextSizes.twelve,
-                                  textColor: colorTurquois,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
               ],
             ),

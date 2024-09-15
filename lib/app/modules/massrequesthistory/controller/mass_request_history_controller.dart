@@ -116,10 +116,9 @@ class MassRequestHistoryController extends GetxController {
             dialogBackgroundColor: Colors.white,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                textStyle: TextStyles.montserratMedium(
+                foregroundColor: colorWhite, textStyle: TextStyles.montserratMedium(
                   textSize: TextSizes.fourteen,
-                ),
-                primary: colorWhite, // color of button's letters
+                ), // color of button's letters
                 backgroundColor: colorGreen, // Background color
                 shape: RoundedRectangleBorder(
                   side: const BorderSide(
@@ -171,6 +170,14 @@ class MassRequestHistoryController extends GetxController {
       searchController.text = datesRange.value;
       getMassRequests();
     }
+  }
+
+  moveToPayment(MassRequestResponse? massRequestResponse) {
+    log('moveToPayment ::: ${massRequestResponse?.toJson()}');
+    Get.toNamed(
+      Routes.PAYMENT,
+      arguments: massRequestResponse?.toJson(),
+    );
   }
 
   moveToMassRequest(MassRequestResponse? massRequestData) {

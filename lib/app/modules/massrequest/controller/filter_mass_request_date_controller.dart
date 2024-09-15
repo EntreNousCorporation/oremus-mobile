@@ -58,64 +58,12 @@ class FilterMassRequestDateController extends GetxController {
   getArguments() {
     if (Get.arguments != null) {
       worshipHours.value = Get.arguments;
-      worshipRecurrentHoursTemp.value =
-          worshipHours.where((element) => element.isRecurrent == true).toList();
-      worshipSpecialHoursTemp.value = worshipHours
-          .where((element) =>
-              element.isRecurrent == false &&
-              (Jiffy.parse(element.startDate ?? Jiffy.now().format(),
-                      pattern: AppConstants.TIME_ZONE_FORMAT)
-                  .isAfter(Jiffy.now().add(hours: 24))))
-          .toList();
+      worshipRecurrentHoursTemp.value = worshipHours.where((element) => element.isRecurrent == true).toList();
+      worshipSpecialHoursTemp.value = worshipHours.where((element) => element.isRecurrent == false && (Jiffy.parse(element.startDate ?? Jiffy.now().format(), pattern: AppConstants.TIME_ZONE_FORMAT).isAfter(Jiffy.now().add(hours: 24)))).toList();
 
-      worshipRecurrentHours.value =
-          transformWorshipRecurrentHours(worshipRecurrentHoursTemp);
-      worshipSpecialHours.value =
-          transformWorshipSpecialHours(worshipSpecialHoursTemp);
+      worshipRecurrentHours.value = transformWorshipRecurrentHours(worshipRecurrentHoursTemp);
+      worshipSpecialHours.value = transformWorshipSpecialHours(worshipSpecialHoursTemp);
     }
-  }
-
-  List<PriceData> transformWorshipSpecialHours(
-      List<LiturgicalCelebrationResponse> worshipDataList) {
-    Map<String, List<Slot>> groupedSlots = {};
-
-    for (var event in worshipDataList) {
-      String formattedDate = event.startDate?.split('T')[0] ?? '';
-      event.startDateFormatted = formattedDate;
-    }
-
-    for (var event in worshipDataList) {
-      String day = event.startDateFormatted ?? '';
-      if (!groupedSlots.containsKey(day)) {
-        groupedSlots[day] = [];
-      }
-      groupedSlots[day]?.addAll(event.slots ?? []);
-    }
-
-    return groupedSlots.entries.map((entry) {
-      return PriceData(day: entry.key, slots: entry.value);
-    }).toList();
-  }
-
-  List<PriceData> transformWorshipRecurrentHours(
-      List<LiturgicalCelebrationResponse> worshipDataList) {
-    Map<String, List<Slot>> groupedByDay = {};
-
-    for (var worshipData in worshipDataList) {
-      for (var openingTime in worshipData.openingTime ?? []) {
-        String dayOfWeek = openingTime.dayOfWeek.toString();
-
-        if (!groupedByDay.containsKey(dayOfWeek)) {
-          groupedByDay[dayOfWeek] = [];
-        }
-
-        groupedByDay[dayOfWeek]?.addAll(openingTime.slots);
-      }
-    }
-
-    return groupedByDay.entries
-        .map((entry) => PriceData(dayOfWeek: entry.key, slots: entry.value))
-        .toList();
   }
 
   onWorshipRecurrentHoursRemoved(PriceData priceData) {
@@ -206,9 +154,8 @@ class FilterMassRequestDateController extends GetxController {
             dialogBackgroundColor: Colors.white,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                textStyle:
-                    TextStyles.montserratRegular(textSize: TextSizes.fourteen),
-                primary: colorWhite, // color of button's letters
+                foregroundColor: colorWhite, textStyle:
+                    TextStyles.montserratRegular(textSize: TextSizes.fourteen), // color of button's letters
                 backgroundColor: colorPurpleLight, // Background color
                 shape: RoundedRectangleBorder(
                   side: const BorderSide(

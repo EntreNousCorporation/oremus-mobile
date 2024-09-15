@@ -20,7 +20,7 @@ import 'package:oremusapp/app/configs/flavor_settings.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:platform_device_id/platform_device_id.dart';
+import 'package:platform_device_id_v3/platform_device_id.dart';
 
 var appUrl;
 //var byPassAuth;
