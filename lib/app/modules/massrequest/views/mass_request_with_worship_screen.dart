@@ -11,6 +11,8 @@ import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/mass_request_with_worship_controller.dart';
 import 'package:oremusapp/app/modules/massrequest/views/widget/intent_type_description_with_worship_widget.dart';
 import 'package:oremusapp/app/modules/massrequest/views/widget/mass_type_with_worship_filter.dart';
+import 'package:oremusapp/app/modules/massrequest/views/widget/mass_without_repetition_filter.dart';
+import 'package:oremusapp/app/modules/massrequest/views/widget/mass_without_worship_hour_filter.dart';
 import 'package:oremusapp/app/modules/massrequest/views/widget/shimmer_price.dart';
 import 'package:oremusapp/generated/assets.dart';
 
@@ -179,40 +181,136 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                             Separators.maximum1Vertical(),
 
                             //WORSHIP HOURS
-                            GestureDetector(
-                              onTap: () {
-                                _.goToDatesChoice();
-                              },
-                              child: Material(
-                                borderRadius: BorderRadius.circular(10.0),
-                                elevation: 10,
-                                color: colorWhite,
-                                shadowColor: colorGrey2.withOpacity(0.5),
-                                child: _.isDatesProcessing.isTrue ? const ShimmerPrice(height: 50) : Container(
-                                  padding: const EdgeInsets.all(12),
-                                  width: double.maxFinite,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .spaceBetween,
+                            Visibility(
+                              visible: _.paroisseSelected.value.identifier != null,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Date',
+                                    style: TextStyles.montserratMedium(
+                                      textColor: colorGrey1,
+                                      textSize: TextSizes.fourteen,
+                                    ),
+                                  ),
+                                  Separators.customSizeVertical(8),
+                                  Column(
                                     children: [
-                                      Text(
-                                        'Choisir des dates',
-                                        style: TextStyles.montserratMedium(
-                                          textColor: colorGrey1,
-                                          textSize: TextSizes.fourteen,
-                                        ),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 2,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                _.showPicker(context);
+                                              },
+                                              child: Material(
+                                                borderRadius: BorderRadius.circular(10.0),
+                                                elevation: 10,
+                                                color: colorWhite,
+                                                shadowColor: colorGrey2.withOpacity(0.5),
+                                                child: _.isDatesProcessing.isTrue ? const ShimmerPrice(height: 50) : Container(
+                                                  padding: const EdgeInsets.all(12),
+                                                  width: double.maxFinite,
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        '${_.selectedDate.value?.dayToDisplay}',
+                                                        style: TextStyles.montserratBold(
+                                                          textColor: colorBlack,
+                                                          textSize: TextSizes.sixteen,
+                                                        ),
+                                                      ),
+                                                      const Icon(
+                                                        Icons.arrow_drop_down_rounded,
+                                                        size: 25,
+                                                        color: colorGreen,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Separators.customSizeHorizontal(16),
+                                          Expanded(
+                                            child: Material(
+                                              borderRadius: BorderRadius.circular(10.0),
+                                              elevation: 10,
+                                              color: colorWhite,
+                                              shadowColor: colorGrey2.withOpacity(0.5),
+                                              child: const MassWithoutWorshipHourFilter(),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      Icon(
-                                        _.datesChoosen.isNotEmpty == true ? Icons.check_circle : Icons.arrow_drop_down_rounded,
-                                        size: 25,
-                                        color: _.worshipHours.isNotEmpty ? colorGreen : colorGrey1.withOpacity(0.5),
-                                      ),
+                                      Separators.maximumVertical(),
                                     ],
                                   ),
-                                ),
+
+                                  //NUMBER OF MASS
+                                  Text(
+                                    'Répétition',
+                                    style: TextStyles.montserratMedium(
+                                      textColor: colorGrey1,
+                                      textSize: TextSizes.fourteen,
+                                    ),
+                                  ),
+                                  Separators.customSizeVertical(8),
+                                  Material(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    elevation: 10,
+                                    color: colorWhite,
+                                    shadowColor: colorGrey2.withOpacity(0.5),
+                                    child: const MassTypeWithoutRepetitionFilter(),
+                                  ),
+                                  Separators.maximumVertical(),
+                                  Visibility(
+                                    visible: _.massRequestTypeRepetitionSelected.value?.code == 'many',
+                                    child: Column(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            //showNotification(message: 'Bientôt disponible !');
+                                            _.goToDatesChoice();
+                                          },
+                                          child: Material(
+                                            borderRadius: BorderRadius.circular(10.0),
+                                            elevation: 10,
+                                            color: colorWhite,
+                                            shadowColor: colorGrey2.withOpacity(0.5),
+                                            child: _.isDatesProcessing.isTrue ? const ShimmerPrice(height: 50) : Container(
+                                              padding: const EdgeInsets.all(12),
+                                              width: double.maxFinite,
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment
+                                                    .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    'Choisir les horaires de messe',
+                                                    style: TextStyles.montserratMedium(
+                                                      textColor: colorGrey1,
+                                                      textSize: TextSizes.fourteen,
+                                                    ),
+                                                  ),
+                                                  Icon(
+                                                    (_.datesChoosen.length > 1 && _.massRequestTypeRepetitionSelected.value?.code == 'many') ? Icons.check_circle : Icons.arrow_drop_down_rounded,
+                                                    size: 25,
+                                                    color: _.worshipHours.isNotEmpty ? colorGreen : colorGrey1.withOpacity(0.5),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Separators.maximumVertical(),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            Separators.maximum1Vertical(),
 
                             Text(
                               'Intention de messe',
@@ -229,7 +327,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                               shadowColor: colorGrey2.withOpacity(0.5),
                               child: const IntentTypeDescriptionWithWorshipWidget(),
                             ),
-                            Separators.maximum1Vertical(),
+                            Separators.maximumVertical(),
 
                             //PRICING
                             Material(

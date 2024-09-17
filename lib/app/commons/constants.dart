@@ -43,6 +43,8 @@ abstract class AppConstants {
   static const PRAY_PAGING_SIZE = 15;
   static const MASS_REQUEST_PAGING_SIZE = 10;
 
+  static const END_DATE_LIMIT = 365;
+
   //DRAWER MENU INDEX
   static const HOME = 0;
   static const PROFILE = 1;

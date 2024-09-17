@@ -42,7 +42,8 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                             IconButton(
                               onPressed: () {
                                 //_.doResetAndCloseFilter();
-                                _.goBackToMassRequest();
+                                //_.goBackToMassRequest();
+                                Get.back();
                               },
                               icon: const Icon(
                                 Icons.cancel_rounded,
@@ -85,7 +86,7 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                             child: SingleChildScrollView(
                               physics: GetPlatform.isAndroid
                                   ? const BouncingScrollPhysics()
-                                  : const ClampingScrollPhysics(),
+                                  : null,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -101,7 +102,7 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                                           width: double.maxFinite,
                                           color: colorPurpleLight,
                                           child: Text(
-                                            'Sélectionner les horaires de vos messes pour répetition',
+                                            'Sélectionner les horaires de vos messes pour répétition',
                                             style: TextStyles.montserratSemiBold(
                                               textColor: colorWhite,
                                               textSize: TextSizes.twenty,
@@ -114,7 +115,7 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                                     ),
                                   ),
                                   Visibility(
-                                    visible: _.worshipSpecialHours.isNotEmpty,
+                                    visible: false, //_.worshipSpecialHours.isNotEmpty,
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
@@ -137,6 +138,54 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                                     ),
                                   ),
                                   Separators.normalVertical(),
+
+                                  //REPETITION END
+                                  Text(
+                                    'Date de fin de la répétition',
+                                    style: TextStyles.montserratMedium(
+                                      textColor: colorGrey1,
+                                      textSize: TextSizes.fourteen,
+                                    ),
+                                  ),
+                                  Separators.customSizeVertical(8),
+                                  Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          _.selectDate(context, _.initialSelectedDate.value);
+                                        },
+                                        child: Material(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          elevation: 10,
+                                          color: colorWhite,
+                                          shadowColor: colorGrey2.withOpacity(0.5),
+                                          child: Container(
+                                            padding: const EdgeInsets.all(12),
+                                            width: double.maxFinite,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  '${_.endSelectedDate.value?.dayToDisplay}',
+                                                  style: TextStyles.montserratBold(
+                                                    textColor: colorBlack,
+                                                    textSize: TextSizes.sixteen,
+                                                  ),
+                                                ),
+                                                const Icon(
+                                                  Icons.arrow_drop_down_rounded,
+                                                  size: 25,
+                                                  color: colorGreen,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Separators.maximumVertical(),
+                                    ],
+                                  ),
+                                  Separators.normalVertical(),
                                 ],
                               ),
                             ),
@@ -144,7 +193,7 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                         ),
                         Separators.normalVertical(),
                         CustomButton(
-                          text: 'Valider',
+                          text: 'Continuer',
                           textSize: TextSizes.eighteen,
                           actionColor: colorGreenSemiLight,
                           enabled: _.enabledApplyButton.value == false
@@ -157,7 +206,7 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                               ? colorGrey1
                               : colorGreen,
                           action: () {
-                            _.goBackToMassRequest();
+                            _.moveToRecap();
                           },
                         ),
                         Separators.normalVertical(),

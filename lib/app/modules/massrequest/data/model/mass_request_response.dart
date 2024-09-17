@@ -359,7 +359,8 @@ class TypeData {
   TypeData.fromJson(Map<String, dynamic> json) {
     code = json['code'];
     name = json['name'] != null ? Name.fromJson(json['name']) : null;
-    template = json['template'] != null ? Name.fromJson(json['template']) : null;
+    template =
+        json['template'] != null ? Name.fromJson(json['template']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -484,25 +485,56 @@ class PriceData {
   String? day;
   String? dayToDisplay;
   bool? isDaySelected;
+  int? repeat;
+  int? identifier;
   List<Slot>? slots;
+  List<DateTime>? dates;
 
   PriceData({
     this.dayOfWeek,
     this.day,
     this.dayToDisplay,
+    this.repeat,
+    this.identifier,
     this.isDaySelected = false,
     this.slots,
-  });
+    List<DateTime>? dates,
+  }) : dates = dates ?? [];
+
+  // Méthode pour cloner un PriceData avec une nouvelle date
+  PriceData cloneWithDate(DateTime date) {
+    return PriceData(
+      dayOfWeek: dayOfWeek,
+      repeat: repeat,
+      slots: slots,
+      day: day,
+      dayToDisplay: dayToDisplay,
+      identifier: identifier,
+      dates: [date],
+    );
+  }
 
   PriceData.fromJson(Map<String, dynamic> json) {
     day = json['day'];
     dayToDisplay = json['dayToDisplay'];
     dayOfWeek = json['dayOfWeek'];
+    isDaySelected = json['isDaySelected'];
+    repeat = json['repeat'];
+    identifier = json['identifier'];
     if (json['slots'] != null) {
       slots = <Slot>[];
       json['slots'].forEach((v) {
         slots?.add(Slot.fromJson(v));
       });
+    }
+    // Parsing des dates
+    if (json['dates'] != null) {
+      dates = <DateTime>[];
+      json['dates'].forEach((v) {
+        dates?.add(DateTime.parse(v)); // Assure que la date est parsée correctement
+      });
+    } else {
+      dates = [];
     }
   }
 
@@ -512,8 +544,13 @@ class PriceData {
     data['dayToDisplay'] = dayToDisplay;
     data['dayOfWeek'] = dayOfWeek;
     data['isDaySelected'] = isDaySelected;
+    data['repeat'] = repeat;
+    data['identifier'] = identifier;
     if (slots != null) {
       data['slots'] = slots?.map((v) => v.toJson()).toList();
+    }
+    if (dates != null) {
+      data['dates'] = dates?.map((date) => date.toIso8601String()).toList();
     }
     return data;
   }
@@ -556,13 +593,13 @@ class MassRequestStatusData {
 
   MassRequestStatusData(
       {this.identifier,
-        this.createdAt,
-        this.updatedAt,
-        this.createdBy,
-        this.modifiedBy,
-        this.traceId,
-        this.massRequestId,
-        this.status});
+      this.createdAt,
+      this.updatedAt,
+      this.createdBy,
+      this.modifiedBy,
+      this.traceId,
+      this.massRequestId,
+      this.status});
 
   MassRequestStatusData.fromJson(Map<String, dynamic> json) {
     identifier = json['identifier'];
@@ -572,8 +609,7 @@ class MassRequestStatusData {
     modifiedBy = json['modifiedBy'];
     traceId = json['traceId'];
     massRequestId = json['massRequestId'];
-    status =
-    json['status'] != null ? Status.fromJson(json['status']) : null;
+    status = json['status'] != null ? Status.fromJson(json['status']) : null;
   }
 
   Map<String, dynamic> toJson() {

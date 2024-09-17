@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
@@ -47,7 +48,20 @@ class MassRequestWithWorshipController extends GetxController {
   RxList<LiturgicalCelebrationResponse> worshipHours =
       RxList<LiturgicalCelebrationResponse>([]);
 
+  RxList<MassTypeRepetitionData?> massRequestTypeRepetitions = RxList<MassTypeRepetitionData?>([]);
+  Rx<MassTypeRepetitionData?> massRequestTypeRepetitionSelected = Rx<MassTypeRepetitionData?>(null);
+
+  RxList<LiturgicalCelebrationResponse> worshipRecurrentHoursTemp = RxList<LiturgicalCelebrationResponse>([]);
+  RxList<PriceData> worshipRecurrentHours = RxList<PriceData>([]);
+
+  RxList<LiturgicalCelebrationResponse> worshipSpecialHoursTemp = RxList<LiturgicalCelebrationResponse>([]);
+  RxList<PriceData> worshipSpecialHours = RxList<PriceData>([]);
+
   var isValidForm = false.obs;
+  var allowedDates = RxList<DateTime>([]);
+  var selectedDate = Rx<PriceData?>(null);
+  var selectedHours = RxList<Slot?>([]);
+  var selectedHour = Rx<Slot?>(null);
 
   var paroisseSelected = ContentPlace().obs;
   var massRequestSelected = MassRequestResponse().obs;
@@ -56,7 +70,23 @@ class MassRequestWithWorshipController extends GetxController {
   @override
   void onInit() {
     doGetMassRequestType();
+    initMassTypeRepetitions();
     super.onInit();
+  }
+
+  initMassTypeRepetitions() {
+    massRequestTypeRepetitions.value = [
+      MassTypeRepetitionData(
+        code: 'once',
+        name: 'Une seule messe',
+      ),
+      MassTypeRepetitionData(
+        code: 'many',
+        name: 'Plusieurs messes',
+      ),
+    ];
+    massRequestTypeRepetitionSelected.value =
+        massRequestTypeRepetitions.firstWhereOrNull((p0) => p0?.code == 'once');
   }
 
   moveToPayment(MassRequestResponse massRequestResponse) {
@@ -89,12 +119,15 @@ class MassRequestWithWorshipController extends GetxController {
     }
     datesChoosen.value = await Get.toNamed(
         Routes.FILTER_MASS_REQUEST_CHOOSE_DATE,
-        arguments: worshipHours);
+      arguments: [
+        worshipHours,
+        selectedDate.toJson(),
+      ],);
     datesChoosen.refresh();
     if (datesChoosen.isNotEmpty) {
       doGetMassRequestPrice();
     } else {
-      price.value = '-';
+      resetPrice();
     }
     checkForm();
   }
@@ -135,6 +168,145 @@ class MassRequestWithWorshipController extends GetxController {
     prayerIntentSelected.value = prayerIntentData;
     descriptionController.text = prayerIntentData?.defaultText?.fr ?? '';
     checkForm();
+  }
+
+  String getTime(String value) {
+    if (value.isEmpty) return '-';
+    return '${value.split(':').first}:${value.split(':')[1]}';
+  }
+
+  void resetPrice() {
+    price.value = '-';
+  }
+
+  updateMassTypeRepetitionHourFilter(Slot? slot) {
+    selectedHour.value = slot;
+    checkForm();
+    if (selectedDate.value != null && selectedHour.value != null) {
+      selectedDate.value?.slots = [selectedHour.value ?? Slot()];
+      datesChoosen.value = [selectedDate.value ?? PriceData()];
+      doGetMassRequestPrice();
+    }
+  }
+
+  // Ouvrir un date picker qui ne permet que les dates calculées
+  Future<void> showPicker(BuildContext context) async {
+    // Normaliser les dates de _allowedDates pour ne garder que l'année, le mois et le jour
+    final allowedDatesNormalized = allowedDates
+        .map((date) => DateTime(date.year, date.month, date.day))
+        .toList();
+
+    // S'assurer que la première date dans _allowedDates est valide comme initialDate
+    DateTime initialDate = allowedDatesNormalized.firstWhere(
+          (date) => date.isAfter(DateTime.now()) || date.isAtSameMomentAs(DateTime.now()),
+      orElse: () => allowedDatesNormalized.first,
+    );
+
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate, // On utilise une date initiale valide
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: AppConstants.END_DATE_LIMIT)),
+      selectableDayPredicate: (DateTime day) {
+        // Comparer seulement année, mois et jour (ignorer les heures)
+        DateTime normalizedDay = DateTime(day.year, day.month, day.day);
+        return allowedDatesNormalized.contains(normalizedDay);
+      },
+    );
+    if (picked != null) {
+      resetPrice();
+      updateRepetitionFilter(picked, isFirst: false);
+
+      /*String day = picked.day.toString();
+      String month = picked.month.toString();
+      if (picked.day < 10) {
+        day = "0$day";
+      }
+      if (picked.month < 10) {
+        month = "0$month";
+      }
+      selectedDate.value = PriceData(
+        day: "${picked.year}-$month-$day",
+        dayOfWeek: picked.weekday.toString(),
+        isDaySelected: true,
+        dayToDisplay: "$day-$month-${picked.year}",
+      );
+      checkForm();*/
+    }
+  }
+
+
+  updateRepetitionFilter(DateTime datetime,
+      {bool? isFirst = true, Slot? selectHour}) {
+    String day = datetime.day.toString();
+    String month = datetime.month.toString();
+    if (datetime.day < 10) {
+      day = "0$day";
+    }
+    if (datetime.month < 10) {
+      month = "0$month";
+    }
+
+    for (var i in worshipRecurrentHours) {
+      log('worshipRecurrentHours ::: ${i.toJson()}\n');
+    }
+
+    List<Slot>? tempSlots = [];
+    var recurentHour = worshipRecurrentHours.value.firstWhereOrNull((element) {
+      log('element ::: ${element.dayOfWeek}');
+      log('datetime.weekday ::: ${datetime.weekday - 1}');
+      return int.parse(element.dayOfWeek ?? '0') == (datetime.weekday - 1);
+    });
+    log('tempSlotss ::: ${recurentHour?.toJson()}');
+    tempSlots = recurentHour?.slots ?? [];
+    log('tempSlots ::: ${tempSlots.length}');
+    selectedHours.clear();
+    for (var i in tempSlots) {
+      log('tempSlots i ::: ${i.toJson()}\n');
+      selectedHours.add(i);
+    }
+    log('selectedHours ::: ${selectedHours.length}\n');
+    for (var i in selectedHours) {
+      log('selectedHours ::: ${i?.toJson()}\n');
+    }
+
+    if (isFirst == true) {
+      selectedHour.value = tempSlots.first;
+    } else {
+      selectedHour.value = selectHour;
+    }
+
+    selectedDate.value = PriceData(
+      day: "${datetime.year}-$month-$day",
+      dayOfWeek: datetime.weekday.toString(),
+      isDaySelected: true,
+      dayToDisplay: "$day-$month-${datetime.year}",
+      slots: [selectedHour.value ?? Slot()],
+    );
+    log('selectedDate ::: ${selectedDate.toJson()}');
+    checkForm();
+    if (selectedDate.value != null && selectedHour.value != null) {
+      datesChoosen.value = [selectedDate.value ?? PriceData()];
+      doGetMassRequestPrice();
+    }
+  }
+
+
+  updateMassTypeRepetitionFilter(
+      MassTypeRepetitionData? massTypeRepetitionData) {
+    //selectedHour.value = null;
+    datesChoosen.clear();
+    massRequestTypeRepetitionSelected.value = massTypeRepetitionData;
+    checkForm();
+    if (selectedDate.value != null &&
+        selectedHour.value != null &&
+        massRequestTypeRepetitionSelected.value?.code == 'once') {
+      selectedDate.value?.slots = [selectedHour.value ?? Slot()];
+      datesChoosen.value = [selectedDate.value ?? PriceData()];
+      doGetMassRequestPrice();
+    } else {
+      resetPrice();
+    }
   }
 
   doGetMassRequestType() {
@@ -201,6 +373,35 @@ class MassRequestWithWorshipController extends GetxController {
       isDatesProcessing(false);
       if (value.isNotEmpty == true) {
         worshipHours.value = value;
+        worshipRecurrentHoursTemp.value = worshipHours
+            .where((element) => element.isRecurrent == true)
+            .toList();
+        worshipSpecialHoursTemp.value = worshipHours
+            .where((element) =>
+        element.isRecurrent == false &&
+            (Jiffy.parse(element.startDate ?? Jiffy.now().format(),
+                pattern: AppConstants.TIME_ZONE_FORMAT)
+                .isAfter(Jiffy.now().add(hours: 24))))
+            .toList();
+
+        worshipRecurrentHours.value =
+            transformWorshipRecurrentHours(worshipRecurrentHoursTemp);
+        worshipSpecialHours.value =
+            transformWorshipSpecialHours(worshipSpecialHoursTemp);
+
+        List<int> temp = [];
+        temp = worshipRecurrentHours.value
+            .map((element) => int.parse(element.dayOfWeek ?? '0') + 1)
+            .toList();
+        allowedDates.value = getNextDatesForDays(temp);
+        DateTime datetime = allowedDates.value.firstWhere(
+                (date) =>
+            date.isAfter(DateTime.now()) ||
+                date.isAtSameMomentAs(DateTime.now()),
+            orElse: () => allowedDates
+                .first); // Utiliser la première date valide de _allowedDates
+
+        updateRepetitionFilter(datetime);
       }
     }, onError: (error) {
       isDatesProcessing(false);

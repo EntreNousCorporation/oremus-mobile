@@ -10,20 +10,11 @@ import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/utils.dart';
-import 'package:oremusapp/app/modules/customhome/controller/custom_home_controller.dart';
-import 'package:oremusapp/app/modules/massrequest/controller/mass_request_menu_controller.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/massrequest/data/repository/mass_request_repository.dart';
-import 'package:oremusapp/app/modules/paroisse/controller/paroisse_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
-import 'package:oremusapp/app/modules/pray/controller/pray_controller.dart';
-import 'package:oremusapp/app/modules/pray/data/repository/pray_repository.dart';
-import 'package:oremusapp/app/modules/profile/controller/profile_controller.dart';
-import 'package:oremusapp/app/modules/profile/data/repository/profile_repository.dart';
-import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
-import 'package:oremusapp/app/remote/api_client.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
@@ -47,10 +38,8 @@ class MassRequestController extends GetxController {
 
   RxList<TypeData?> massRequestTypes = RxList<TypeData?>([]);
   Rx<TypeData?> massRequestTypeSelected = Rx<TypeData?>(null);
-  RxList<MassTypeRepetitionData?> massRequestTypeRepetitions =
-      RxList<MassTypeRepetitionData?>([]);
-  Rx<MassTypeRepetitionData?> massRequestTypeRepetitionSelected =
-      Rx<MassTypeRepetitionData?>(null);
+  RxList<MassTypeRepetitionData?> massRequestTypeRepetitions = RxList<MassTypeRepetitionData?>([]);
+  Rx<MassTypeRepetitionData?> massRequestTypeRepetitionSelected = Rx<MassTypeRepetitionData?>(null);
 
   RxList<PrayerIntentData?> prayerIntents = RxList<PrayerIntentData?>([]);
   Rx<PrayerIntentData?> prayerIntentSelected = Rx<PrayerIntentData?>(null);
@@ -161,43 +150,31 @@ class MassRequestController extends GetxController {
 
   // Ouvrir un date picker qui ne permet que les dates calculées
   Future<void> showPicker(BuildContext context) async {
+    // Normaliser les dates de _allowedDates pour ne garder que l'année, le mois et le jour
+    final allowedDatesNormalized = allowedDates
+        .map((date) => DateTime(date.year, date.month, date.day))
+        .toList();
+
     // S'assurer que la première date dans _allowedDates est valide comme initialDate
-    DateTime initialDate = allowedDates.firstWhere(
-        (date) =>
-            date.isAfter(DateTime.now()) ||
-            date.isAtSameMomentAs(DateTime.now()),
-        orElse: () => allowedDates
-            .first); // Utiliser la première date valide de _allowedDates
+    DateTime initialDate = allowedDatesNormalized.firstWhere(
+          (date) => date.isAfter(DateTime.now()) || date.isAtSameMomentAs(DateTime.now()),
+      orElse: () => allowedDatesNormalized.first,
+    );
 
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: initialDate, // On utilise une date initiale valide
       firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: 30)),
+      lastDate: DateTime.now().add(const Duration(days: AppConstants.END_DATE_LIMIT)),
       selectableDayPredicate: (DateTime day) {
         // Comparer seulement année, mois et jour (ignorer les heures)
-        return allowedDates.contains(DateTime(day.year, day.month, day.day));
+        DateTime normalizedDay = DateTime(day.year, day.month, day.day);
+        return allowedDatesNormalized.contains(normalizedDay);
       },
     );
     if (picked != null) {
       resetPrice();
       updateRepetitionFilter(picked, isFirst: false);
-
-      /*String day = picked.day.toString();
-      String month = picked.month.toString();
-      if (picked.day < 10) {
-        day = "0$day";
-      }
-      if (picked.month < 10) {
-        month = "0$month";
-      }
-      selectedDate.value = PriceData(
-        day: "${picked.year}-$month-$day",
-        dayOfWeek: picked.weekday.toString(),
-        isDaySelected: true,
-        dayToDisplay: "$day-$month-${picked.year}",
-      );
-      checkForm();*/
     }
   }
 
@@ -214,8 +191,12 @@ class MassRequestController extends GetxController {
       return;
     }
     datesChoosen.value = await Get.toNamed(
-        Routes.FILTER_MASS_REQUEST_CHOOSE_DATE,
-        arguments: worshipHours);
+      Routes.FILTER_MASS_REQUEST_CHOOSE_DATE,
+      arguments: [
+        worshipHours,
+        selectedDate.toJson(),
+      ],
+    );
     datesChoosen.refresh();
     if (datesChoosen.isNotEmpty) {
       doGetMassRequestPrice();
@@ -247,12 +228,15 @@ class MassRequestController extends GetxController {
     checkForm();
   }
 
-  updateMassTypeRepetitionFilter(MassTypeRepetitionData? massTypeRepetitionData) {
+  updateMassTypeRepetitionFilter(
+      MassTypeRepetitionData? massTypeRepetitionData) {
     //selectedHour.value = null;
     datesChoosen.clear();
     massRequestTypeRepetitionSelected.value = massTypeRepetitionData;
     checkForm();
-    if (selectedDate.value != null && selectedHour.value != null && massRequestTypeRepetitionSelected.value?.code == 'once') {
+    if (selectedDate.value != null &&
+        selectedHour.value != null &&
+        massRequestTypeRepetitionSelected.value?.code == 'once') {
       selectedDate.value?.slots = [selectedHour.value ?? Slot()];
       datesChoosen.value = [selectedDate.value ?? PriceData()];
       doGetMassRequestPrice();
@@ -277,8 +261,8 @@ class MassRequestController extends GetxController {
     checkForm();
   }
 
-  //todo
-  updateRepetitionFilter(DateTime datetime, {bool? isFirst = true, Slot? selectHour}) {
+  updateRepetitionFilter(DateTime datetime,
+      {bool? isFirst = true, Slot? selectHour}) {
     String day = datetime.day.toString();
     String month = datetime.month.toString();
     if (datetime.day < 10) {
@@ -295,7 +279,7 @@ class MassRequestController extends GetxController {
     List<Slot>? tempSlots = [];
     var recurentHour = worshipRecurrentHours.value.firstWhereOrNull((element) {
       log('element ::: ${element.dayOfWeek}');
-      log('datetime.weekday ::: ${datetime.weekday -1}');
+      log('datetime.weekday ::: ${datetime.weekday - 1}');
       return int.parse(element.dayOfWeek ?? '0') == (datetime.weekday - 1);
     });
     log('tempSlotss ::: ${recurentHour?.toJson()}');
@@ -339,8 +323,7 @@ class MassRequestController extends GetxController {
     massRequestRepository.getMassRequestType(page: 0).then((value) {
       if (value.isNotEmpty == true) {
         massRequestTypes.value = value;
-        var massRequestTypeSelected = value
-            .firstWhereOrNull((element) => element.code == 'ACTION_OF_GRACE');
+        var massRequestTypeSelected = value.firstWhereOrNull((element) => element.code == 'ACTION_OF_GRACE');
         updateMassTypeFilter(massRequestTypeSelected);
       }
       update();
@@ -407,13 +390,22 @@ class MassRequestController extends GetxController {
                     .isAfter(Jiffy.now().add(hours: 24))))
             .toList();
 
-        worshipRecurrentHours.value = transformWorshipRecurrentHours(worshipRecurrentHoursTemp);
-        worshipSpecialHours.value = transformWorshipSpecialHours(worshipSpecialHoursTemp);
+        worshipRecurrentHours.value =
+            transformWorshipRecurrentHours(worshipRecurrentHoursTemp);
+        worshipSpecialHours.value =
+            transformWorshipSpecialHours(worshipSpecialHoursTemp);
 
         List<int> temp = [];
-        temp = worshipRecurrentHours.value.map((element) => int.parse(element.dayOfWeek ?? '0') + 1).toList();
+        temp = worshipRecurrentHours.value
+            .map((element) => int.parse(element.dayOfWeek ?? '0') + 1)
+            .toList();
         allowedDates.value = getNextDatesForDays(temp);
-        DateTime datetime = allowedDates.value.firstWhere((date) => date.isAfter(DateTime.now()) || date.isAtSameMomentAs(DateTime.now()), orElse: () => allowedDates.first); // Utiliser la première date valide de _allowedDates
+        DateTime datetime = allowedDates.value.firstWhere(
+            (date) =>
+                date.isAfter(DateTime.now()) ||
+                date.isAtSameMomentAs(DateTime.now()),
+            orElse: () => allowedDates
+                .first); // Utiliser la première date valide de _allowedDates
 
         updateRepetitionFilter(datetime);
       }

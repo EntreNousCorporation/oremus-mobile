@@ -6,7 +6,7 @@ class FilterMassRequestDateBinding implements Bindings {
   void dependencies() {
     Get.put(
       FilterMassRequestDateController(),
-      permanent: true,
+      permanent: false,
     );
   }
 }

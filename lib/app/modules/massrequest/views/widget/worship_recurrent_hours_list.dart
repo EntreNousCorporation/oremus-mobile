@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
@@ -34,7 +35,7 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                     ),
                     Separators.minimunHorizontal(),
                     Visibility(
-                      visible: true,
+                      visible: false,
                       child: Row(
                         children: [
                           GestureDetector(
@@ -72,7 +73,7 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                   ],
                 ),
                 Visibility(
-                  visible: item.day?.isNotEmpty == true,
+                  visible: false, //item.day?.isNotEmpty == true,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -94,18 +95,18 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                   children: item.slots
                           ?.map(
                             (e) => GestureDetector(
-                              onTap: item.isDaySelected == true
+                              onTap: !isDayOfWeekInDateRange(int.parse(item.dayOfWeek ?? '0'), Jiffy.parse(_.initialSelectedDate.value?.day ?? '').dateTime, Jiffy.parse(_.endSelectedDate.value?.day ?? '').dateTime)
                                   ? () {
-                                      e.isHourSelected = !e.isHourSelected!;
-                                      _.onWorshipRecurrentHoursSelected(
-                                          item, false);
-                                    }
-                                  : () {
                                       showNotification(
                                         message:
-                                            'Veuillez d\'abord choisir une date pour le ${getDay(int.parse(item.dayOfWeek ?? ''))}',
+                                            'Vous ne pouvez pas sélectionner cette horaire',
                                         bgColor: colorBlue2,
                                       );
+                                    }
+                                  : () {
+                                      e.isHourSelected = !e.isHourSelected!;
+                                      _.onWorshipRecurrentHoursSelected(
+                                          item, true);
                                     },
                               child: Stack(
                                 clipBehavior: Clip.none,
@@ -113,15 +114,14 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                                 children: [
                                   Container(
                                     margin: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
+                                      horizontal: 8.0,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: e.isHourSelected == true
                                           ? colorGreenSemiLight
                                           : colorWhite,
                                       border: Border.all(
-                                          color: item.isDaySelected == true
-                                              ? colorGreenSemiLight
-                                              : colorGrey1),
+                                          color: colorGreenSemiLight),
                                       borderRadius:
                                           BorderRadius.circular(Get.width / 10),
                                     ),
@@ -134,9 +134,7 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                                           textSize: TextSizes.fourteen,
                                           textColor: e.isHourSelected == true
                                               ? colorWhite
-                                              : item.isDaySelected == true
-                                                  ? colorBlack
-                                                  : colorGrey1,
+                                              : colorBlack,
                                         ),
                                       ),
                                     ),
@@ -144,14 +142,21 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                                   e.isHourSelected == true
                                       ? Positioned(
                                           top: -8,
+                                    right: 3,
                                           child: Container(
                                             padding: const EdgeInsets.all(2),
                                             decoration: BoxDecoration(
                                               color: colorWhite,
-                                              border: Border.all(color: colorGreenSemiLight),
-                                              borderRadius: BorderRadius.circular(20),
+                                              border: Border.all(
+                                                  color: colorGreenSemiLight),
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
                                             ),
-                                            child: const Icon(Icons.check, color: colorGreenSemiLight, size: 15,),
+                                            child: const Icon(
+                                              Icons.check,
+                                              color: colorGreenSemiLight,
+                                              size: 15,
+                                            ),
                                           ),
                                         )
                                       : const SizedBox.shrink(),

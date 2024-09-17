@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:like_button/like_button.dart';
 import 'package:oremusapp/app/commons/components/button.dart';
-import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
@@ -286,6 +285,7 @@ class MassRequestScreen extends StatelessWidget {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
+                                      //showNotification(message: 'Bientôt disponible !');
                                       _.goToDatesChoice();
                                     },
                                     child: Material(
