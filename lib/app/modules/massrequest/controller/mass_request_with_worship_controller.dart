@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -35,7 +36,8 @@ class MassRequestWithWorshipController extends GetxController {
   var hasData = false.obs;
   var isLiked = false.obs;
 
-  var descriptionController = TextEditingController();
+  late TextEditingController massIntentionController;
+  var massIntentionFocusNode = FocusNode();
 
   RxList<TypeData?> massRequestTypes = RxList<TypeData?>([]);
   Rx<TypeData?> massRequestTypeSelected = Rx<TypeData?>(null);
@@ -69,9 +71,25 @@ class MassRequestWithWorshipController extends GetxController {
 
   @override
   void onInit() {
+    initControllers();
     doGetMassRequestType();
     initMassTypeRepetitions();
     super.onInit();
+  }
+
+  @override
+  void dispose() {
+    massIntentionController.dispose();
+    massIntentionFocusNode.dispose();
+    super.dispose();
+  }
+
+  initControllers() {
+    massIntentionController = TextEditingController();
+    // Attendre 2 secondes avant de donner le focus au TextField
+    Timer(const Duration(milliseconds: 500), () {
+      FocusScope.of(Get.context!).requestFocus(massIntentionFocusNode);
+    });
   }
 
   initMassTypeRepetitions() {
@@ -148,7 +166,7 @@ class MassRequestWithWorshipController extends GetxController {
 
   void checkForm() {
     isValidForm.value = massRequestTypeSelected.value != null &&
-        descriptionController.text.isNotEmpty &&
+        massIntentionController.text.isNotEmpty &&
         price.value != '-';
     update();
   }
@@ -160,13 +178,13 @@ class MassRequestWithWorshipController extends GetxController {
 
   updateMassTypeFilter(TypeData? typeData) {
     massRequestTypeSelected.value = typeData;
-    descriptionController.text = "${typeData?.template?.fr ?? ''} ";
+    massIntentionController.text = "${typeData?.template?.fr ?? ''} ";
     checkForm();
   }
 
   updatePrayerIntentFilter(PrayerIntentData? prayerIntentData) {
     prayerIntentSelected.value = prayerIntentData;
-    descriptionController.text = prayerIntentData?.defaultText?.fr ?? '';
+    massIntentionController.text = prayerIntentData?.defaultText?.fr ?? '';
     checkForm();
   }
 
@@ -465,8 +483,8 @@ class MassRequestWithWorshipController extends GetxController {
     });
 
     var request = MassRequestData(
-      prayerIntent: descriptionController.text.isNotEmpty
-          ? descriptionController.text
+      prayerIntent: massIntentionController.text.isNotEmpty
+          ? massIntentionController.text
           : prayerIntentSelected.value?.defaultText?.fr,
       typeOfMassRequest: massRequestTypeSelected.value?.code,
       slots: datesChoosen,

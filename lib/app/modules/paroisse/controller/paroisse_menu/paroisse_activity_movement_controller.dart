@@ -77,6 +77,13 @@ class ParoisseActivityMovementController extends GetxController {
     ];
   }
 
+  goToReportProblem() {
+    Get.toNamed(
+      Routes.REPORT_PROBLEM,
+      arguments: paroisseSelected.value.toJson(),
+    );
+  }
+
   getMovements() {
 
     log('request getMovements');
@@ -206,5 +213,17 @@ class ParoisseActivityMovementController extends GetxController {
       Routes.PAROISSE_MAP,
       arguments: jsonEncode(paroisseSelected.value.toJson()),
     );
+  }
+
+  saveFavorite(ContentPlace paroisse, bool state) {
+    log('saveFavorite 1 => ${paroisse.isFavorite}');
+    paroisseRepository.addFavorite(paroisse);
+    //showMessageFavorite(state);
+  }
+
+  removeFavorite(ContentPlace paroisse, bool state) {
+    log('removeFavorite 1 => ${paroisse.isFavorite}');
+    paroisseRepository.deleteFavorite(paroisse);
+    //showMessageFavorite(state);
   }
 }

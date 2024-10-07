@@ -94,5 +94,6 @@ class Assets {
   static const String imagesShareIcon = 'assets/images/share_icon.svg';
   static const String imagesTime = 'assets/images/time.svg';
   static const String imagesUserLogin = 'assets/images/user_login.svg';
+  static const String imagesWarning = 'assets/images/warning.svg';
 
 }

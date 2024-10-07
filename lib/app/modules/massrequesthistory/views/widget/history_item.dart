@@ -97,7 +97,7 @@ class HistoryItem extends StatelessWidget {
                       ],
                     ),
                     Visibility(
-                      visible: true,
+                      visible: logic.canRedoPayment(massRequest),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [

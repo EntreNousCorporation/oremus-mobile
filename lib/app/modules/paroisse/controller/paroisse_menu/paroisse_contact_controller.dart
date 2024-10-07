@@ -134,6 +134,13 @@ class ParoisseContactController extends GetxController {
     return value;
   }
 
+  goToReportProblem() {
+    Get.toNamed(
+      Routes.REPORT_PROBLEM,
+      arguments: paroisseSelected.value.toJson(),
+    );
+  }
+
   getContacts() {
 
     if (code.value == 'IP') {

@@ -48,53 +48,61 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                       },
                       icon: const Icon(Icons.arrow_back_ios_rounded),
                     ),
-                    actions: requestMassWithoutWorship.value ? null : [
-                      Visibility(
-                        visible: false,
-                        child: IconButton(
-                          onPressed: () {
-                            _.moveToHome();
-                          },
-                          icon: const Icon(Icons.home_filled),
-                        ),
-                      ),
-                      Separators.minimunHorizontal(),
-                      LikeButton(
-                        isLiked: _.paroisseSelected.value.isFavorite,
-                        onTap: (isLiked) async {
-                          log('isLiked => $isLiked');
-                          _.paroisseSelected.value.isFavorite = !isLiked;
-                          if (isLiked) {
-                            _.removeFavorite(_.paroisseSelected.value, isLiked);
-                          } else {
-                            _.saveFavorite(_.paroisseSelected.value, isLiked);
-                          }
-                          return !isLiked;
-                        },
-                        size: 25,
-                        circleColor: const CircleColor(
-                            start: Color(0xff93291E), end: Color(0xFFED213A)),
-                        bubblesColor: const BubblesColor(
-                          dotPrimaryColor: Color(0xFFED213A),
-                          dotSecondaryColor: Color(0xff93291E),
-                        ),
-                        likeBuilder: (bool isLiked) {
-                          return Icon(
-                            isLiked ? Icons.favorite : Icons.favorite_border,
-                            color:
-                                isLiked ? const Color(0xFFED213A) : colorWhite,
-                            size: 25,
-                          );
-                        },
-                      ),
-                      Separators.minimunHorizontal(),
-                      IconButton(
-                        onPressed: () {
-                          _.goToMap();
-                        },
-                        icon: const Icon(Icons.map_rounded),
-                      ),
-                    ],
+                    actions: requestMassWithoutWorship.value
+                        ? null
+                        : [
+                            Visibility(
+                              visible: false,
+                              child: IconButton(
+                                onPressed: () {
+                                  _.moveToHome();
+                                },
+                                icon: const Icon(Icons.home_filled),
+                              ),
+                            ),
+                            Separators.minimunHorizontal(),
+                            LikeButton(
+                              isLiked: _.paroisseSelected.value.isFavorite,
+                              onTap: (isLiked) async {
+                                log('isLiked => $isLiked');
+                                _.paroisseSelected.value.isFavorite = !isLiked;
+                                if (isLiked) {
+                                  _.removeFavorite(
+                                      _.paroisseSelected.value, isLiked);
+                                } else {
+                                  _.saveFavorite(
+                                      _.paroisseSelected.value, isLiked);
+                                }
+                                return !isLiked;
+                              },
+                              size: 25,
+                              circleColor: const CircleColor(
+                                  start: Color(0xff93291E),
+                                  end: Color(0xFFED213A)),
+                              bubblesColor: const BubblesColor(
+                                dotPrimaryColor: Color(0xFFED213A),
+                                dotSecondaryColor: Color(0xff93291E),
+                              ),
+                              likeBuilder: (bool isLiked) {
+                                return Icon(
+                                  isLiked
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: isLiked
+                                      ? const Color(0xFFED213A)
+                                      : colorWhite,
+                                  size: 25,
+                                );
+                              },
+                            ),
+                            Separators.minimunHorizontal(),
+                            IconButton(
+                              onPressed: () {
+                                _.goToMap();
+                              },
+                              icon: const Icon(Icons.map_rounded),
+                            ),
+                          ],
                     flexibleSpace: FlexibleSpaceBar(
                         centerTitle: true,
                         title: Padding(
@@ -154,8 +162,8 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                               )),
                   ),
                   SliverPadding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 24, horizontal: 24),
                     sliver: SliverToBoxAdapter(
                       child: Column(
                         children: [
@@ -163,10 +171,14 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(100),
-                                border: Border.all(color: getColor(_.massRequestSelected.value.status?.code),)),
+                                border: Border.all(
+                                  color: getColor(
+                                      _.massRequestSelected.value.status?.code),
+                                )),
                             child: Icon(
                               getIcon(_.massRequestSelected.value.status?.code),
-                              color: getColor(_.massRequestSelected.value.status?.code),
+                              color: getColor(
+                                  _.massRequestSelected.value.status?.code),
                               size: Get.width / 10,
                             ),
                           ),
@@ -176,7 +188,8 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                             textAlign: TextAlign.center,
                             style: TextStyles.montserratBold(
                               textSize: TextSizes.eighteen,
-                              textColor: getColor(_.massRequestSelected.value.status?.code),
+                              textColor: getColor(
+                                  _.massRequestSelected.value.status?.code),
                             ),
                           ),
                           Separators.normalVertical(),
@@ -201,7 +214,8 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                     ),
                                     Separators.minimunVertical(),
                                     Text(
-                                      _.massRequestSelected.value.traceId ?? '-',
+                                      _.massRequestSelected.value.traceId ??
+                                          '-',
                                       textAlign: TextAlign.center,
                                       style: TextStyles.montserratSemiBold(
                                         textSize: TextSizes.sixteen,
@@ -220,26 +234,8 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                     Separators.minimunVertical(),
                                     Text(
                                       _.massRequestSelected.value
-                                          .typeOfMassRequest?.name?.fr ??
+                                              .typeOfMassRequest?.name?.fr ??
                                           '-',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyles.montserratSemiBold(
-                                        textSize: TextSizes.sixteen,
-                                        textColor: colorBlack,
-                                      ),
-                                    ),
-                                    Separators.normalVertical(),
-                                    Text(
-                                      'Date',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyles.montserratRegular(
-                                        textSize: TextSizes.fourteen,
-                                        textColor: colorBlack,
-                                      ),
-                                    ),
-                                    Separators.minimunVertical(),
-                                    Text(
-                                      getCustomDate(_.massRequestSelected.value.createdAt ?? ''),
                                       textAlign: TextAlign.center,
                                       style: TextStyles.montserratSemiBold(
                                         textSize: TextSizes.sixteen,
@@ -276,7 +272,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                     Separators.minimunVertical(),
                                     Text(
                                       _.massRequestSelected.value
-                                          .prayerIntent ??
+                                              .prayerIntent ??
                                           '-',
                                       textAlign: TextAlign.center,
                                       style: TextStyles.montserratSemiBold(
@@ -284,10 +280,38 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                         textColor: colorBlack,
                                       ),
                                     ),
+                                    Separators.normalVertical(),
+                                    TextButton(
+                                      onPressed: () {
+                                        _.showMassHours();
+                                      },
+                                      style: ButtonStyle(
+                                        enableFeedback: true,
+                                        shape: MaterialStateProperty.all(
+                                          RoundedRectangleBorder(
+                                            side: const BorderSide(
+                                                color: colorGreen),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                        ),
+                                      ),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(8),
+                                        child: Text(
+                                          'Afficher les horaires',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyles.montserratMedium(
+                                            textSize: TextSizes.fourteen,
+                                            textColor: colorBlack,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                     Separators.maximum1Vertical(),
                                     Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                       children: [
                                         Visibility(
                                           visible: _.canClaimMassRequest(),
@@ -295,7 +319,9 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                             children: [
                                               GestureDetector(
                                                 onTap: () {
-                                                  _.moveToMassRequestClaims(_.massRequestSelected.value);
+                                                  _.moveToMassRequestClaims(_
+                                                      .massRequestSelected
+                                                      .value);
                                                 },
                                                 child: Container(
                                                   color: colorTransparent,
@@ -309,17 +335,17 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                                       ),
                                                       Separators
                                                           .customSizeVertical(
-                                                          3),
+                                                              3),
                                                       Text(
                                                         'Faire une \nréclamation',
                                                         textAlign:
-                                                        TextAlign.center,
+                                                            TextAlign.center,
                                                         style: TextStyles
                                                             .montserratMedium(
                                                           textSize:
-                                                          TextSizes.fifteen,
+                                                              TextSizes.fifteen,
                                                           textColor:
-                                                          colorTurquois,
+                                                              colorTurquois,
                                                         ),
                                                       ),
                                                     ],
@@ -353,7 +379,8 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                                     textAlign: TextAlign.center,
                                                     style: TextStyles
                                                         .montserratMedium(
-                                                      textSize: TextSizes.fifteen,
+                                                      textSize:
+                                                          TextSizes.fifteen,
                                                       textColor: colorTurquois,
                                                     ),
                                                   ),
@@ -380,9 +407,9 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                 color: colorWhite,
                                 shadowColor: colorGrey2.withOpacity(0.5),
                                 child: Padding(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Container() //MassRequestStateView(),
-                                ),
+                                    padding: const EdgeInsets.all(16),
+                                    child: Container() //MassRequestStateView(),
+                                    ),
                               ),
                             ),
                           ),

@@ -101,16 +101,16 @@ Future recapDialog() {
                       child: ListView.separated(
                         shrinkWrap: true,
                         //physics: const NeverScrollableScrollPhysics(),
-                        itemCount: _.datesChoosenForWorshipRecurrentHours.length,
+                        itemCount: _.datesChoosen.length,
                         itemBuilder: (context, index) {
-                          var item = _.datesChoosenForWorshipRecurrentHours[index];
+                          var item = _.datesChoosen[index];
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
                                   Text(
-                                    getDay(int.parse(item?.dayOfWeek ?? '')),
+                                    getDay(int.parse(item.dayOfWeek ?? '')),
                                     style: TextStyles.montserratSemiBold(
                                       textColor: colorPurpleLight,
                                       textSize: TextSizes.twenty,
@@ -118,7 +118,7 @@ Future recapDialog() {
                                   ),
                                   Separators.minimunHorizontal(),
                                   Text(
-                                    '(x${item?.repeat ?? '-'})',
+                                    '(x${item.repeat ?? '-'})',
                                     style: TextStyles.montserratSemiBold(
                                       textColor: colorPurpleLight,
                                       textSize: TextSizes.twenty,
@@ -130,7 +130,7 @@ Future recapDialog() {
                               Wrap(
                                 alignment: WrapAlignment.start,
                                 direction: Axis.horizontal,
-                                children: item?.slots
+                                children: item.slots
                                     ?.map(
                                       (e) => Stack(
                                         clipBehavior: Clip.none,

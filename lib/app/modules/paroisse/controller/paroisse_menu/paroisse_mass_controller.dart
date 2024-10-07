@@ -77,6 +77,13 @@ class ParoisseMassController extends GetxController {
     }
   }
 
+  goToReportProblem() {
+    Get.toNamed(
+      Routes.REPORT_PROBLEM,
+      arguments: paroisseSelected.value.toJson(),
+    );
+  }
+
   getTime(String timeToConverted) {
     var hour = timeToConverted.split(':').first;
     var minutes = timeToConverted.split(':')[1];

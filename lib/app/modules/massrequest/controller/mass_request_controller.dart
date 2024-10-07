@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -34,7 +35,8 @@ class MassRequestController extends GetxController {
   var hasData = false.obs;
   var isLiked = false.obs;
 
-  var descriptionController = TextEditingController();
+  late TextEditingController massIntentionController;
+  var massIntentionFocusNode = FocusNode();
 
   RxList<TypeData?> massRequestTypes = RxList<TypeData?>([]);
   Rx<TypeData?> massRequestTypeSelected = Rx<TypeData?>(null);
@@ -71,10 +73,26 @@ class MassRequestController extends GetxController {
   @override
   void onInit() {
     getArguments();
+    initControllers();
     doGetMassRequestType();
     doGetPlaceOfWorshipHours();
     initMassTypeRepetitions();
     super.onInit();
+  }
+
+  @override
+  void dispose() {
+    massIntentionController.dispose();
+    massIntentionFocusNode.dispose();
+    super.dispose();
+  }
+
+  initControllers() {
+    massIntentionController = TextEditingController();
+    // Attendre 2 secondes avant de donner le focus au TextField
+    Timer(const Duration(milliseconds: 500), () {
+      FocusScope.of(Get.context!).requestFocus(massIntentionFocusNode);
+    });
   }
 
   getArguments() {
@@ -114,38 +132,6 @@ class MassRequestController extends GetxController {
   moveToHome() {
     Get.deleteAll(force: true);
     Get.offAllNamed(Routes.CUSTOM_HOME);
-  }
-
-  reBinding() {
-    //Get.delete<CustomHomeController>(force: true);
-    /*Get.put(
-      MassRequestMenuController(
-        paroisseRepository: ParoisseRepository(ApiClientImpl()),
-      ),
-    );
-    Get.put(
-        ParoisseController(
-          paroisseRepository: ParoisseRepository(ApiClientImpl()),
-        ),
-        permanent: true,);
-    Get.put(
-        ProfileController(
-          profileRepository: ProfileRepository(ApiClientImpl()),
-          signinRepository: SigninRepository(ApiClientImpl()),
-          paroisseRepository: ParoisseRepository(ApiClientImpl()),
-        ),
-        permanent: false,);
-    Get.put(PrayController(prayRepository: PrayRepository(ApiClientImpl())));
-    Get.lazyPut<CustomHomeController>(
-          () {
-        return CustomHomeController(
-          signinRepository: SigninRepository(ApiClientImpl()),
-          paroisseRepository: ParoisseRepository(ApiClientImpl()),
-        );
-      },
-      fenix: true,
-    );*/
-    Get.toNamed(Routes.CUSTOM_HOME);
   }
 
   // Ouvrir un date picker qui ne permet que les dates calculées
@@ -212,8 +198,8 @@ class MassRequestController extends GetxController {
 
   void checkForm() {
     isValidForm.value = massRequestTypeSelected.value != null &&
-        descriptionController.text.isNotEmpty &&
-        price.value != '-';
+        massIntentionController.text.isNotEmpty &&
+        price.value != '-' && (massRequestTypeRepetitionSelected.value?.code == 'many' ? datesChoosen.isNotEmpty : selectedDate.value != null);
     update();
   }
 
@@ -224,7 +210,7 @@ class MassRequestController extends GetxController {
 
   updateMassTypeFilter(TypeData? typeData) {
     massRequestTypeSelected.value = typeData;
-    descriptionController.text = "${typeData?.template?.fr ?? ''} ";
+    massIntentionController.text = "${typeData?.template?.fr ?? ''} ";
     checkForm();
   }
 
@@ -257,7 +243,7 @@ class MassRequestController extends GetxController {
 
   updatePrayerIntentFilter(PrayerIntentData? prayerIntentData) {
     prayerIntentSelected.value = prayerIntentData;
-    descriptionController.text = prayerIntentData?.defaultText?.fr ?? '';
+    massIntentionController.text = prayerIntentData?.defaultText?.fr ?? '';
     checkForm();
   }
 
@@ -474,8 +460,8 @@ class MassRequestController extends GetxController {
     });
 
     var request = MassRequestData(
-      prayerIntent: descriptionController.text.isNotEmpty
-          ? descriptionController.text
+      prayerIntent: massIntentionController.text.isNotEmpty
+          ? massIntentionController.text
           : prayerIntentSelected.value?.defaultText?.fr,
       typeOfMassRequest: massRequestTypeSelected.value?.code,
       slots: datesChoosen,
@@ -504,7 +490,7 @@ class MassRequestController extends GetxController {
         });
       } else {
         showNotification(
-            message: err.message.toString(),
+            message: 'Une erreur est survenue',
             duration: const Duration(seconds: 4));
       }
     });

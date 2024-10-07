@@ -17,95 +17,96 @@ class ClaimItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<MassRequestTrackClaimController>(builder: (logic) {
-      return Material(
-        borderRadius: BorderRadius.circular(10.0),
-        elevation: 10,
-        color: colorWhite,
-        shadowColor: colorGrey2.withOpacity(0.5),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        border: Border.all(color: colorGreen)),
-                    child: SvgPicture.asset(Assets.imagesIconPray,
-                        height: Get.width / 10,
-                        colorFilter: const ColorFilter.mode(
-                            colorGreen, BlendMode.srcIn)),
-                  ),
-                  Separators.minimunHorizontal(),
-                  Separators.minimunHorizontal(),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          claimData?.massRequest?.typeOfMassRequest?.name?.fr ??
-                              '-',
-                          textAlign: TextAlign.center,
-                          style: TextStyles.montserratMedium(
-                            textSize: TextSizes.fifteen,
-                            textColor: colorBlue,
-                          ),
-                        ),
-                        Separators.minimunVertical(),
-                        Text(
-                          getDateTime(claimData?.createdAt ?? '-'),
-                          textAlign: TextAlign.center,
-                          style: TextStyles.montserratRegular(
-                            textSize: TextSizes.thirteen,
-                            textColor: colorGreySeparator,
-                          ),
-                        ),
-                      ],
+      return GestureDetector(
+        onTap: () {
+          logic.moveToTrackClaimDetails(claimData);
+        },
+        child: Material(
+          borderRadius: BorderRadius.circular(10.0),
+          elevation: 10,
+          color: colorWhite,
+          shadowColor: colorGrey2.withOpacity(0.5),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          border: Border.all(color: colorGreen)),
+                      child: SvgPicture.asset(Assets.imagesIconPray,
+                          height: Get.width / 10,
+                          colorFilter: const ColorFilter.mode(
+                              colorGreen, BlendMode.srcIn)),
                     ),
-                  ),
-                  Text(
-                    "${claimData?.massRequest?.price.toString().split('.').first.amountFormat()} FCFA",
-                    textAlign: TextAlign.center,
-                    style: TextStyles.montserratBold(
-                      textSize: TextSizes.fifteen,
-                      textColor: colorBlack,
-                    ),
-                  ),
-                ],
-              ),
-              const Divider(color: colorTurquois),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Text(
-                      claimData?.typeOfClaim?.name?.fr ?? '-',
-                      textAlign: TextAlign.start,
-                      style: TextStyles.montserratMedium(
-                        textSize: TextSizes.thirteen,
-                        textColor: colorBlack,
+                    Separators.minimunHorizontal(),
+                    Separators.minimunHorizontal(),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            claimData?.typeOfClaim?.name?.fr ?? '-',
+                            textAlign: TextAlign.start,
+                            style: TextStyles.montserratMedium(
+                              textSize: TextSizes.fifteen,
+                              textColor: colorBlue,
+                            ),
+                          ),
+                          Separators.minimunVertical(),
+                          Text(
+                            'Créée le ${getDateTime(claimData?.createdAt ?? ' - ')}',
+                            textAlign: TextAlign.start,
+                            style: TextStyles.montserratRegular(
+                              textSize: TextSizes.thirteen,
+                              textColor: colorGreySeparator,
+                            ),
+                          ),
+                          Separators.minimunVertical(),
+                          Text(
+                            'Modifiée le ${getDateTime(claimData?.updatedAt ?? ' - ')}',
+                            textAlign: TextAlign.start,
+                            style: TextStyles.montserratRegular(
+                              textSize: TextSizes.thirteen,
+                              textColor: colorGreySeparator,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  Icon(
-                    Icons.circle,
-                    color: getColor(claimData?.status?.code),
-                    size: 12,
-                  ),
-                  Separators.customSizeHorizontal(3),
-                  Text(
-                    claimData?.status?.name?.fr ?? '-',
-                    textAlign: TextAlign.center,
-                    style: TextStyles.montserratMedium(
-                      textSize: TextSizes.thirteen,
-                      textColor: getColor(claimData?.status?.code),
+                    const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 15,
+                      color: colorGrey1,
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+                const Divider(color: colorTurquois),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const Spacer(),
+                    Icon(
+                      Icons.circle,
+                      color: getColor(claimData?.status?.code),
+                      size: 12,
+                    ),
+                    Separators.customSizeHorizontal(3),
+                    Text(
+                      claimData?.status?.name?.fr ?? '-',
+                      textAlign: TextAlign.center,
+                      style: TextStyles.montserratMedium(
+                        textSize: TextSizes.thirteen,
+                        textColor: getColor(claimData?.status?.code),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       );

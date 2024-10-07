@@ -219,6 +219,13 @@ class ParoisseMenuController extends GetxController {
     return isFavorite;
   }
 
+  goToReportProblem() {
+    Get.toNamed(
+      Routes.REPORT_PROBLEM,
+      arguments: paroisseSelected.value.toJson(),
+    );
+  }
+
   goToMap() {
     Get.toNamed(
       Routes.PAROISSE_MAP,

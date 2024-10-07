@@ -156,8 +156,7 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                             ),
                     ),
                   ),
-                  const SliverPadding(
-                      padding: EdgeInsets.symmetric(vertical: 8)),
+                  const SliverPadding(padding: EdgeInsets.symmetric(vertical: 8)),
                   SliverToBoxAdapter(
                     child: Column(
                       children: [
@@ -201,7 +200,7 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                                             .spaceBetween,
                                         children: [
                                           _.paroisseSelected.value.identifier == null ? Text(
-                                            'Choisir une paroisse',
+                                            'Filtrer par paroisse',
                                             style: TextStyles.montserratMedium(
                                               textColor: colorGrey1,
                                               textSize: TextSizes.fourteen,

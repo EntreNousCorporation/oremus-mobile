@@ -15,6 +15,7 @@ class MassRequestResponse extends ToJsonInterface {
   String? endDate;
   String? prayerIntent;
   WorshipPlace? worshipPlace;
+  List<PriceData>? bookings;
   Status? status;
   Status? typeOfMassRequest;
   Profile? user;
@@ -43,6 +44,7 @@ class MassRequestResponse extends ToJsonInterface {
     this.paymentStatus,
     this.paymentId,
     this.transactionId,
+    this.bookings,
   });
 
   MassRequestResponse.fromJson(Map<String, dynamic> json) {
@@ -69,6 +71,12 @@ class MassRequestResponse extends ToJsonInterface {
         ? Status.fromJson(json['typeOfMassRequest'])
         : null;
     user = json['user'] != null ? Profile.fromJson(json['user']) : null;
+    if (json['bookings'] != null) {
+      bookings = <PriceData>[];
+      json['bookings'].forEach((v) {
+        bookings?.add(PriceData.fromJson(v));
+      });
+    }
   }
 
   @override
@@ -101,6 +109,9 @@ class MassRequestResponse extends ToJsonInterface {
     if (user != null) {
       data['user'] = user?.toJson();
     }
+    if (bookings != null) {
+      data['bookings'] = bookings?.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }
@@ -125,7 +136,7 @@ class MassRequestData {
     if (json['slots'] != null) {
       slots = <PriceData>[];
       json['slots'].forEach((v) {
-        slots!.add(PriceData.fromJson(v));
+        slots?.add(PriceData.fromJson(v));
       });
     }
   }

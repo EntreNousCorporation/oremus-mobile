@@ -202,6 +202,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                                             flex: 2,
                                             child: GestureDetector(
                                               onTap: () {
+                                                if (_.selectedDate.value == null) return;
                                                 _.showPicker(context);
                                               },
                                               child: Material(
@@ -216,16 +217,16 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
                                                       Text(
-                                                        '${_.selectedDate.value?.dayToDisplay}',
+                                                        _.selectedDate.value?.dayToDisplay ?? 'Aucune date définie',
                                                         style: TextStyles.montserratBold(
-                                                          textColor: colorBlack,
+                                                          textColor: _.selectedDate.value != null ? colorBlack : colorGrey1,
                                                           textSize: TextSizes.sixteen,
                                                         ),
                                                       ),
-                                                      const Icon(
+                                                      Icon(
                                                         Icons.arrow_drop_down_rounded,
                                                         size: 25,
-                                                        color: colorGreen,
+                                                        color: _.selectedDate.value != null ? colorGreen : colorGrey1,
                                                       ),
                                                     ],
                                                   ),

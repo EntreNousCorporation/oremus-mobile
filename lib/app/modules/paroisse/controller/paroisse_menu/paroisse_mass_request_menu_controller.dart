@@ -118,6 +118,13 @@ class ParoisseMassRequestMenuController extends GetxController {
     ].where((element) => element.isVisible == true).toList();
   }
 
+  goToReportProblem() {
+    Get.toNamed(
+      Routes.REPORT_PROBLEM,
+      arguments: paroisseSelected.value.toJson(),
+    );
+  }
+
   checkIfUserIsconnected(String code) {
     Get.bottomSheet(
       Container(

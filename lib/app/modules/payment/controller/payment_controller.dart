@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:app_links/app_links.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
@@ -9,6 +10,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/payment/data/repository/payment_repository.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class PaymentController extends GetxController {
@@ -43,8 +45,7 @@ class PaymentController extends GetxController {
 
   getArguments() {
     if (Get.arguments != null) {
-      massRequestResponseSelected.value =
-          MassRequestResponse.fromJson(Get.arguments);
+      massRequestResponseSelected.value = MassRequestResponse.fromJson(Get.arguments);
       initWebview();
     }
   }
@@ -96,6 +97,17 @@ class PaymentController extends GetxController {
         onPageStarted: onPageStarted,
         onPageFinished: onPageFinished,
         onWebResourceError: onWebResourceError,
+        onNavigationRequest: (navigation) {
+          log('onNavigationRequest URL ::: ${navigation.url}');
+          /*counter.value = counter.value + 1;
+          _handleInterceptedLink(navigation.url);
+          if (counter.value == 100) {
+            return NavigationDecision.navigate;
+          }*/
+          _handleInterceptedLink(navigation.url);
+          return NavigationDecision.navigate;
+          //return NavigationDecision.prevent;
+        },
       ),
     );
 
@@ -110,6 +122,61 @@ class PaymentController extends GetxController {
           Get.back();
         },
       );
+    }
+  }
+
+  _handleInterceptedLink(String value) async {
+    log('_handleInterceptedLink value: $value');
+    if (value.contains('wave.com')) {
+      var newUrl = value.split('capture/').last;
+      log('_handleInterceptedLink newUrl: $newUrl');
+      launchWaveOrFallback(newUrl);
+      await listenForDeepLink(); //not really usefull for now
+    }
+  }
+
+  Future<void> listenForDeepLink() async {
+    Timer? timeoutTimer;
+    StreamSubscription? subscription;
+    final appLinks = AppLinks();
+
+    try {
+      Completer<void> completer = Completer<void>();
+
+      timeoutTimer = Timer(const Duration(minutes: 5), () {
+        completer.completeError(TimeoutException('Délai d\'attente dépassé'));
+      });
+
+      // Subscribe to all events (initial link and further)
+      subscription = appLinks.uriLinkStream.listen((Uri? uri) {
+        log('subscription ::: ${uri.toString()}');
+        if (uri != null) {
+          //String status = uri.queryParameters['status'] ?? '';
+          //String transactionId = uri.queryParameters['transactionId'] ?? '';
+          //handlePaymentResult(status, transactionId);
+          completer.complete();
+        }
+      });
+
+      await completer.future;
+    } catch (e) {
+      // Gérer les erreurs (timeout, erreurs de liens profonds, etc.)
+      print('Erreur lors de l\'attente du retour de paiement: $e');
+    } finally {
+      timeoutTimer?.cancel();
+      await subscription?.cancel();
+    }
+  }
+
+  Future<void> launchWaveOrFallback(String waveUrl) async {
+    if (await canLaunchUrl(Uri.parse(waveUrl))) {
+      await launchUrl(Uri.parse(waveUrl), mode: LaunchMode.externalNonBrowserApplication);
+    } else {
+      // L'application Wave n'est pas installée
+      // Redirigez l'utilisateur vers le site Web de Wave ou affichez un message
+      showCustomDialog(Get.context!,
+          title: 'Application Wave non trouvée',
+          message: 'Veuillez installer l\'application Wave pour continuer.');
     }
   }
 

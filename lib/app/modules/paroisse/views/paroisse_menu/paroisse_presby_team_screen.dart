@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animator/flutter_animator.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:like_button/like_button.dart';
@@ -15,6 +16,7 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_presby_team_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/presby_team_item.dart';
+import 'package:oremusapp/generated/assets.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoisseBresbyTeamScreen extends StatelessWidget {
@@ -52,6 +54,13 @@ class ParoisseBresbyTeamScreen extends StatelessWidget {
                           icon: const Icon(Icons.arrow_back_ios_rounded),
                         ),
                         actions: [
+                          IconButton(
+                            onPressed: () {
+                              _.goToReportProblem();
+                            },
+                            icon: SvgPicture.asset(Assets.imagesWarning, colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),),
+                          ),
+                          Separators.minimunHorizontal(),
                           LikeButton(
                             isLiked: _.paroisseSelected.value.isFavorite,
                             onTap: (isLiked) async {

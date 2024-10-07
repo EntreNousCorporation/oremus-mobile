@@ -29,9 +29,11 @@ class FilterMassRequestWorshipController extends GetxController {
   var page = 0.obs;
 
   var title = ''.obs;
+  var errorMessage = ''.obs;
 
   var isDataProcessing = false.obs;
   var hasData = false.obs;
+  var hasError = false.obs;
   RxList<ContentPlace?> paroisses = RxList<ContentPlace?>([]);
   Rx<ContentPlace?> worshipSelected = ContentPlace().obs;
 
@@ -78,6 +80,7 @@ class FilterMassRequestWorshipController extends GetxController {
     paroisseRepository.getParoisses(searchCriteria: searchCriteria.value).then(
         (value) {
       isDataProcessing(false);
+      hasError(false);
       paroisses.value = value.contents ?? [];
       if (paroisses.isNotEmpty == true) {
         hasData(true);
@@ -92,6 +95,7 @@ class FilterMassRequestWorshipController extends GetxController {
     }, onError: (error) {
       isDataProcessing(false);
       hasData(false);
+      hasError(true);
 
       var err = error as CustomException;
       if (err.code.toString().contains('401')) {
@@ -107,6 +111,7 @@ class FilterMassRequestWorshipController extends GetxController {
           message: err.message.toString(),
         );
       }
+      errorMessage.value = err.message ?? 'Une erreur est survenue';
       debugPrint("error => ${error.toString()}");
     });
   }
@@ -141,6 +146,7 @@ class FilterMassRequestWorshipController extends GetxController {
           message: err.message.toString(),
         );
       }
+      errorMessage.value = err.message ?? 'Une erreur est survenue';
       debugPrint("error => ${error.toString()}");
     });
   }
@@ -177,6 +183,7 @@ class FilterMassRequestWorshipController extends GetxController {
       } else if (err.code == 900) {
         showNotification(message: err.message.toString());
       }
+      errorMessage.value = err.message ?? 'Une erreur est survenue';
       debugPrint("error => ${error.toString()}");
     });
   }

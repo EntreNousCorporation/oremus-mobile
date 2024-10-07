@@ -23,7 +23,7 @@ class MassRequestHistoryRepository implements IMassRequestHistoryRepository {
     SearchCriteria? searchCriteria,
   }) async {
     Response response = await _apiClient.doRequest(
-      endpoint: "/users/mass-requests?page=$page&size=${AppConstants.MASS_REQUEST_PAGING_SIZE}&sort=createdAt,desc${(searchCriteria?.worshipPlace == null) ? '' : '&worshipPlace=${searchCriteria?.worshipPlace}'}${(searchCriteria?.typeOfMassRequest == null || searchCriteria?.typeOfMassRequest?.isEmpty == true) ? '' : '&typeOfMassRequest=${searchCriteria?.typeOfMassRequest}'}${(searchCriteria?.startDate == null || searchCriteria?.startDate?.isEmpty == true) ? '' : '&startDate=${searchCriteria?.startDate}'}${(searchCriteria?.endDate == null || searchCriteria?.endDate?.isEmpty == true) ? '' : '&endDate=${searchCriteria?.endDate}'}",
+      endpoint: "/mass-requests/me?page=$page&size=${AppConstants.MASS_REQUEST_PAGING_SIZE}&sort=createdAt,desc${(searchCriteria?.worshipPlace == null) ? '' : '&worshipPlace=${searchCriteria?.worshipPlace}'}${(searchCriteria?.typeOfMassRequest == null || searchCriteria?.typeOfMassRequest?.isEmpty == true) ? '' : '&typeOfMassRequest=${searchCriteria?.typeOfMassRequest}'}${(searchCriteria?.startDate == null || searchCriteria?.startDate?.isEmpty == true) ? '' : '&startDate=${searchCriteria?.startDate}'}${(searchCriteria?.endDate == null || searchCriteria?.endDate?.isEmpty == true) ? '' : '&endDate=${searchCriteria?.endDate}'}",
       method: HttpMethod.get,
       useBearer: true,
     );

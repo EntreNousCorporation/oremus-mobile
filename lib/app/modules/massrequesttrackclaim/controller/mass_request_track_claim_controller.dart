@@ -52,13 +52,26 @@ class MassRequestTrackClaimController extends GetxController {
     }
   }
 
+  moveToTrackClaimDetails(ClaimData? claimData) {
+    Get.toNamed(
+      Routes.MASS_REQUEST_TRACK_CLAIM_DETAILS,
+      arguments: [
+        paroisseSelected.toJson(),
+        claimData?.toJson(),
+      ],
+    );
+  }
+
   moveToHome() {
     Get.deleteAll(force: true);
     Get.offAllNamed(Routes.CUSTOM_HOME);
   }
 
   goToWorshipChoice() async {
-    paroisseSelected = await Get.toNamed(Routes.FILTER_MASS_REQUEST_CHOOSE_WORSHIP, arguments: 'Suivi de réclamation',);
+    paroisseSelected = await Get.toNamed(
+      Routes.FILTER_MASS_REQUEST_CHOOSE_WORSHIP,
+      arguments: 'Suivi de réclamation',
+    );
     log('goToWorshipChoice ::: ${paroisseSelected.value.identifier}');
     if (paroisseSelected.value.identifier != null) {
       paroisseSelected.refresh();
@@ -74,7 +87,9 @@ class MassRequestTrackClaimController extends GetxController {
 
     log('request doGetClaims ::: ${jsonEncode(searchCriteria.toJson())}');
 
-    massRequestClaimRepository.getClaims(searchCriteria: searchCriteria.value).then((value) {
+    massRequestClaimRepository
+        .getClaims(searchCriteria: searchCriteria.value)
+        .then((value) {
       isDataProcessing(false);
       claims.value = value.contents ?? [];
       if (claims.isNotEmpty == true) {
@@ -195,7 +210,8 @@ class MassRequestTrackClaimController extends GetxController {
   bool isWorshipPlaceFavorite(ContentPlace paroisse) {
     var isFavorite = false;
     var favorites = paroisseRepository.getAllFavorites();
-    var hasParoisse = favorites.indexWhere((element) => element.identifier == paroisse.identifier);
+    var hasParoisse = favorites
+        .indexWhere((element) => element.identifier == paroisse.identifier);
     if (hasParoisse != -1) {
       isFavorite = true;
     } else {

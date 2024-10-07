@@ -57,6 +57,13 @@ class ParoissePresbyTeamController extends GetxController {
     }
   }
 
+  goToReportProblem() {
+    Get.toNamed(
+      Routes.REPORT_PROBLEM,
+      arguments: paroisseSelected.value.toJson(),
+    );
+  }
+
   getTypeTitle(String code) {
     switch (code) {
       case 'HM':

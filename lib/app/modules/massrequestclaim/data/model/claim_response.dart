@@ -36,6 +36,7 @@ class ClaimData extends ToJsonInterface {
   String? createdBy;
   String? modifiedBy;
   String? description;
+  String? observation;
   String? reasonForRejection;
   TypeOfClaim? typeOfClaim;
   MassRequest? massRequest;
@@ -48,6 +49,7 @@ class ClaimData extends ToJsonInterface {
     this.createdBy,
     this.modifiedBy,
     this.description,
+    this.observation,
     this.reasonForRejection,
     this.typeOfClaim,
     this.massRequest,
@@ -61,6 +63,7 @@ class ClaimData extends ToJsonInterface {
     createdBy = json['createdBy'];
     modifiedBy = json['modifiedBy'];
     description = json['description'];
+    observation = json['observation'];
     reasonForRejection = json['reasonForRejection'];
     typeOfClaim = json['typeOfClaim'] != null
         ? TypeOfClaim.fromJson(json['typeOfClaim'])
@@ -81,6 +84,7 @@ class ClaimData extends ToJsonInterface {
     data['createdBy'] = createdBy;
     data['modifiedBy'] = modifiedBy;
     data['description'] = description;
+    data['observation'] = observation;
     data['reasonForRejection'] = reasonForRejection;
     if (typeOfClaim != null) {
       data['typeOfClaim'] = typeOfClaim!.toJson();

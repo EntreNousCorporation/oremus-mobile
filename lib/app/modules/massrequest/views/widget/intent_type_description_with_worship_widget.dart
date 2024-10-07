@@ -17,11 +17,11 @@ class IntentTypeDescriptionWithWorshipWidget extends StatelessWidget {
         color: colorWhite,
         shadowColor: colorGrey2.withOpacity(0.5),
         child: TextFormField(
-          controller: logic.descriptionController,
+          controller: logic.massIntentionController,
           keyboardAppearance: Brightness.light,
           style: TextStyles.montserratSemiBold(textColor: colorBlack),
           maxLines: 6,
-          autofocus: true,
+          focusNode: logic.massIntentionFocusNode,
           cursorColor: colorBlue,
           keyboardType: TextInputType.multiline,
           //textInputAction: TextInputAction.done,

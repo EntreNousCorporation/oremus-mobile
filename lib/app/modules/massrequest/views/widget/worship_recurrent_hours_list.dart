@@ -24,73 +24,18 @@ class WorshipRecurrentHoursList extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Text(
-                      getDay(int.parse(item.dayOfWeek ?? '')),
-                      style: TextStyles.montserratSemiBold(
-                        textColor: colorPurpleLight,
-                        textSize: TextSizes.twenty,
-                      ),
-                    ),
-                    Separators.minimunHorizontal(),
-                    Visibility(
-                      visible: false,
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              //_.selectDate(context, item);
-                              _.showCustomDatePicker(context, item);
-                            },
-                            child: const Icon(
-                              Icons.edit_calendar_rounded,
-                              color: colorPurpleLight,
-                              size: 25,
-                            ),
-                          ),
-                          Visibility(
-                            visible: item.isDaySelected == true,
-                            child: Row(
-                              children: [
-                                Separators.minimunHorizontal(),
-                                GestureDetector(
-                                  onTap: () {
-                                    _.onWorshipRecurrentHoursRemoved(item);
-                                  },
-                                  child: const Icon(
-                                    Icons.delete_forever,
-                                    color: colorRed1,
-                                    size: 25,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Visibility(
-                  visible: false, //item.day?.isNotEmpty == true,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Separators.minimunVertical(),
-                      Text(
-                        item.dayToDisplay ?? '-',
-                        style: TextStyles.montserratSemiBold(
-                          textColor: colorGreenSemiLight,
-                          textSize: TextSizes.sixteen,
-                        ),
-                      ),
-                    ],
+                Text(
+                  getDay(int.parse(item.dayOfWeek ?? '')),
+                  style: TextStyles.montserratSemiBold(
+                    textColor: colorPurpleLight,
+                    textSize: TextSizes.twenty,
                   ),
                 ),
                 Separators.normalVertical(),
                 Wrap(
                   alignment: WrapAlignment.start,
+                  runSpacing: 15,
+                  spacing: 0,
                   direction: Axis.horizontal,
                   children: item.slots
                           ?.map(
@@ -99,7 +44,7 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                                   ? () {
                                       showNotification(
                                         message:
-                                            'Vous ne pouvez pas sélectionner cette horaire',
+                                            'Vous ne pouvez pas sélectionner cet horaire après la date de fin',
                                         bgColor: colorBlue2,
                                       );
                                     }

@@ -75,6 +75,10 @@ class MassRequestHistoryController extends GetxController {
     searchController = TextEditingController(text: '');
   }
 
+  canRedoPayment(MassRequestResponse? massRequestSelected) {
+    return massRequestSelected?.status?.code != 'REQUEST_PAID' && massRequestSelected?.status?.code != 'REQUEST_ACCEPTED';
+  }
+
   initCriteria() {
     startDate.value = Jiffy.now()
         .subtract(days: 6)
@@ -116,7 +120,8 @@ class MassRequestHistoryController extends GetxController {
             dialogBackgroundColor: Colors.white,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor: colorWhite, textStyle: TextStyles.montserratMedium(
+                foregroundColor: colorWhite,
+                textStyle: TextStyles.montserratMedium(
                   textSize: TextSizes.fourteen,
                 ), // color of button's letters
                 backgroundColor: colorGreen, // Background color
@@ -204,7 +209,9 @@ class MassRequestHistoryController extends GetxController {
     Get.toNamed(
       Routes.MASS_REQUEST_HISTORY_DETAIL,
       arguments: [
-        requestMassWithoutWorship.value ? massRequestData?.worshipPlace?.toJson() : paroisseSelected.toJson(),
+        requestMassWithoutWorship.value
+            ? massRequestData?.worshipPlace?.toJson()
+            : paroisseSelected.toJson(),
         massRequestData?.toJson(),
       ],
     );

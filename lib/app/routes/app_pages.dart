@@ -27,6 +27,8 @@ import 'package:oremusapp/app/modules/massrequesthistory/views/mass_request_hist
 import 'package:oremusapp/app/modules/massrequesthistory/views/mass_request_history_screen.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/views/widget/filter_mass_request_history_screen.dart';
 import 'package:oremusapp/app/modules/massrequesttrackclaim/binding/mass_request_track_claim_binding.dart';
+import 'package:oremusapp/app/modules/massrequesttrackclaim/binding/mass_request_track_claim_detail_binding.dart';
+import 'package:oremusapp/app/modules/massrequesttrackclaim/views/mass_request_track_claim_detail_screen.dart';
 import 'package:oremusapp/app/modules/massrequesttrackclaim/views/mass_request_track_claim_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/filter_paroisse_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/binding/paroisse_activity_movement_binding.dart';
@@ -59,6 +61,8 @@ import 'package:oremusapp/app/modules/pray/views/pray_screen.dart';
 import 'package:oremusapp/app/modules/profile/binding/edit_profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/binding/profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/views/edit_profile_screen.dart';
+import 'package:oremusapp/app/modules/reportproblem/binding/report_problem_binding.dart';
+import 'package:oremusapp/app/modules/reportproblem/views/report_problem_screen.dart';
 import 'package:oremusapp/app/modules/resetpassword/bindings/init_reset_password_binding.dart';
 import 'package:oremusapp/app/modules/resetpassword/bindings/otp_binding.dart';
 import 'package:oremusapp/app/modules/resetpassword/bindings/reset_password_binding.dart';
@@ -278,6 +282,13 @@ class AppPages {
       transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
+      name: Routes.MASS_REQUEST_TRACK_CLAIM_DETAILS,
+      page: () => const MassRequestTrackClaimDetailScreen(),
+      binding: MassRequestTrackClaimDetialsBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
       name: Routes.MASS_REQUEST_WITHOUT_WORSHIP,
       page: () => const MassRequestWithWorshipScreen(),
       binding: MassRequestWithWorshipBinding(),
@@ -309,6 +320,13 @@ class AppPages {
       name: Routes.PAYMENT_ERROR,
       page: () => const PaymentErrorScreen(),
       binding: PaymentStatusBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.REPORT_PROBLEM,
+      page: () => const ReportProblemScreen(),
+      binding: ReportProblemBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),
