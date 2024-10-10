@@ -127,7 +127,7 @@ class ReportProblemController extends GetxController {
       resetForm();
       showCustomDialog(
         Get.context!,
-        message: 'Merci d\'avoir pris le temps de signaler cette paroisse. Votre demande a bien été envoyée.',
+        message: 'Merci d\'avoir pris le temps de signaler ce souci. Votre demande a bien été envoyée.',
       );
     }, onError: (error) {
       EasyLoading.dismiss(animation: true).then((v) {

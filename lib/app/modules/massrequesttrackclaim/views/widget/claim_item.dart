@@ -37,10 +37,14 @@ class ClaimItem extends StatelessWidget {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
                           border: Border.all(color: colorGreen)),
-                      child: SvgPicture.asset(Assets.imagesIconPray,
-                          height: Get.width / 10,
-                          colorFilter: const ColorFilter.mode(
-                              colorGreen, BlendMode.srcIn)),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        child: SvgPicture.asset(
+                          Assets.imagesChecklist,
+                          height: Get.width / 15,
+                          colorFilter: const ColorFilter.mode(colorOrangeLight4, BlendMode.srcIn),
+                        ),
+                      ),
                     ),
                     Separators.minimunHorizontal(),
                     Separators.minimunHorizontal(),
@@ -88,6 +92,14 @@ class ClaimItem extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+                    Text(
+                      claimData?.massRequest?.worshipPlace?.name ?? '-',
+                      textAlign: TextAlign.center,
+                      style: TextStyles.montserratSemiBold(
+                        textSize: TextSizes.thirteen,
+                        textColor: colorBlack,
+                      ),
+                    ),
                     const Spacer(),
                     Icon(
                       Icons.circle,

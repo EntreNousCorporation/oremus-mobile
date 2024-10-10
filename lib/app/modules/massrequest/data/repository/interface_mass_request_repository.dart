@@ -1,4 +1,5 @@
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
+import 'package:oremusapp/app/modules/payment/data/model/payment_status_data.dart';
 
 abstract class IMassRequestRepository {
   //For API
@@ -6,4 +7,5 @@ abstract class IMassRequestRepository {
   Future<PriceResponse> getMassRequestPrice({required List<PriceData> request, required String workshipId});
   Future<List<PrayerIntentData>> getPrayerIntent({int? page = 0});
   Future<MassRequestResponse> sendMassRequest({required MassRequestData request});
+  Future<MassRequestResponse> retryPayment({required PaymentStatusData request});
 }

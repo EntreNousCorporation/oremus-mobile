@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
+import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
@@ -12,10 +14,12 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
+import 'package:oremusapp/app/modules/massrequest/data/repository/mass_request_repository.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/data/repository/mass_request_history_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
+import 'package:oremusapp/app/modules/payment/data/model/payment_status_data.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main.dart';
@@ -23,10 +27,12 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MassRequestHistoryController extends GetxController {
   final MassRequestHistoryRepository massRequestHistoryRepository;
+  final MassRequestRepository massRequestRepository;
   final ParoisseRepository paroisseRepository;
 
   MassRequestHistoryController({
     required this.massRequestHistoryRepository,
+    required this.massRequestRepository,
     required this.paroisseRepository,
   });
 
@@ -76,7 +82,7 @@ class MassRequestHistoryController extends GetxController {
   }
 
   canRedoPayment(MassRequestResponse? massRequestSelected) {
-    return massRequestSelected?.status?.code != 'REQUEST_PAID' && massRequestSelected?.status?.code != 'REQUEST_ACCEPTED';
+    return massRequestSelected?.status?.code != 'REQUEST_PAID' && massRequestSelected?.status?.code != 'REQUEST_ACCEPTED' && massRequestSelected?.status?.code != 'REQUEST_REFUSED';
   }
 
   initCriteria() {
@@ -178,7 +184,6 @@ class MassRequestHistoryController extends GetxController {
   }
 
   moveToPayment(MassRequestResponse? massRequestResponse) {
-    log('moveToPayment ::: ${massRequestResponse?.toJson()}');
     Get.toNamed(
       Routes.PAYMENT,
       arguments: massRequestResponse?.toJson(),
@@ -220,6 +225,49 @@ class MassRequestHistoryController extends GetxController {
   moveToHome() {
     Get.deleteAll(force: true);
     Get.offAllNamed(Routes.CUSTOM_HOME);
+  }
+
+  doSendMassRequest(MassRequestResponse? massRequestData) {
+    hideKeyboard();
+    EasyLoading.show(
+      status: 'Traitement en cours...',
+      maskType: EasyLoadingMaskType.black,
+      indicator: LottieLoadingView(),
+    ).then((v) {
+      unlockBackButton.value = false;
+    });
+
+    var request = PaymentStatusData(
+      transactionId: massRequestData?.transactionId ?? '-',
+      id: massRequestData?.identifier,
+    );
+
+    log('request doSendMassRequest => ${jsonEncode(request.toJson())}');
+
+    massRequestRepository.retryPayment(request: request).then((value) {
+      EasyLoading.dismiss(animation: true).then((v) {
+        unlockBackButton.value = true;
+      });
+      moveToPayment(value);
+    }, onError: (error) {
+      EasyLoading.dismiss(animation: true).then((v) {
+        unlockBackButton.value = true;
+      });
+      debugPrint("error => ${error.toString()}");
+      var err = error as CustomException;
+      if (err.code == 401) {
+        showCustomDialog(
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      } else {
+        showNotification(
+            message: 'Une erreur est survenue',
+            duration: const Duration(seconds: 4));
+      }
+    });
   }
 
   getMassRequests() {

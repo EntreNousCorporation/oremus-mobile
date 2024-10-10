@@ -67,6 +67,20 @@ class HistoryItem extends StatelessWidget {
                               textColor: colorBlack,
                             ),
                           ),
+                          Separators.minimunVertical(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                getCustomDate(massRequest?.updatedAt ?? ''),
+                                textAlign: TextAlign.center,
+                                style: TextStyles.montserratMedium(
+                                  textSize: TextSizes.twelve,
+                                  textColor: colorTurquois,
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -103,7 +117,7 @@ class HistoryItem extends StatelessWidget {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              logic.moveToPayment(massRequest);
+                              logic.doSendMassRequest(massRequest);
                             },
                             child: Container(
                               color: colorTransparent,
@@ -111,7 +125,7 @@ class HistoryItem extends StatelessWidget {
                                 children: [
                                   const Icon(
                                     Icons.money,
-                                    color: colorTurquois,
+                                    color: colorGreen4,
                                   ),
                                   Separators.customSizeVertical(3),
                                   Text(
@@ -119,7 +133,7 @@ class HistoryItem extends StatelessWidget {
                                     textAlign: TextAlign.center,
                                     style: TextStyles.montserratMedium(
                                       textSize: TextSizes.twelve,
-                                      textColor: colorTurquois,
+                                      textColor: colorGreen4,
                                     ),
                                   ),
                                 ],

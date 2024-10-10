@@ -65,7 +65,7 @@ class PaymentErrorScreen extends StatelessWidget {
                         borderColor: colorGreen,
                         actionColor: colorGreen.withOpacity(0.5),
                         action: () {
-                          logic.moveToHome();
+                          logic.moveToMassRequestHistory();
                         },
                       ),
                     ),

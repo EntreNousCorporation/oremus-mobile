@@ -88,10 +88,13 @@ IconData getIcon(String? code) {
     case 'REFUSED_PAYMENT':
     case 'NOT_PROCESSED':
     case 'REQUEST_REFUSED':
+    case 'REJECTED':
       return Icons.close_rounded;
     case 'BEING_PROCESSED':
     case 'REQUEST_INITIATED':
     case 'REQUEST_ASSUMED':
+    case 'CLAIM_INITIATED':
+    case 'IN_PROGRESS':
       return Icons.autorenew_rounded;
     default:
       return Icons.check;
@@ -103,10 +106,14 @@ Color getColor(String? code) {
     case 'REFUSED_PAYMENT':
     case 'NOT_PROCESSED':
     case 'REQUEST_REFUSED':
+    case 'REJECTED':
       return colorRed;
+    case 'IN_PROGRESS':
+      return colorOrange;
     case 'BEING_PROCESSED':
     case 'REQUEST_INITIATED':
     case 'REQUEST_ASSUMED':
+    case 'CLAIM_INITIATED':
       return colorBlue2;
     default:
       return colorGreen;
@@ -230,10 +237,10 @@ List<PriceData> transformWorshipRecurrentHours(
 }
 
 // Fonction pour obtenir les dates des jours spécifiques
-List<DateTime> getNextDatesForDays(List<int> daysOfWeek) {
+/*List<DateTime> getNextDatesForDays(List<int> daysOfWeek) {
   List<DateTime> upcomingDates = [];
   DateTime today = DateTime.now();
-  int daysInMonth = AppConstants.END_DATE_LIMIT;
+  int daysInMonth = 365; //AppConstants.END_DATE_LIMIT;
 
   for (int i = 0; i < daysInMonth; i++) {
     DateTime futureDate = today.add(Duration(days: i));
@@ -243,7 +250,67 @@ List<DateTime> getNextDatesForDays(List<int> daysOfWeek) {
     }
   }
   return upcomingDates;
+}*/
+
+List<DateTime> getNextDatesForDays(List<int> daysOfWeek) {
+  List<DateTime> upcomingDates = [];
+  DateTime now = DateTime.now();
+  int daysInMonth = AppConstants.END_DATE_LIMIT;
+
+  // Determine the start date based on the current time
+  DateTime startDate;
+
+  // Between 00h01 and 09h00, requests are valid for the same day from 12h
+  if (now.hour >= 0 && now.hour <= 9) {
+    startDate = DateTime(now.year, now.month, now.day, 12); // Set time to 12h00 today
+  }
+  // Between 09h01 and 15h00, requests are valid for the same day from 18h
+  else if (now.hour > 9 && now.hour <= 15) {
+    startDate = DateTime(now.year, now.month, now.day, 18); // Set time to 18h00 today
+  }
+  // Between 15h01 and 00h00, requests are valid for the next day from 12h
+  else {
+    startDate = DateTime(now.year, now.month, now.day + 1, 12); // Set time to 12h00 next day
+  }
+
+  // Generate future dates based on the start date and the daysOfWeek
+  for (int i = 0; i < daysInMonth; i++) {
+    DateTime futureDate = startDate.add(Duration(days: i));
+    if (daysOfWeek.contains(futureDate.weekday % 7)) {
+      upcomingDates.add(DateTime(futureDate.year, futureDate.month,
+          futureDate.day)); // Ignorer les heures pour comparaison
+    }
+  }
+
+  return upcomingDates;
 }
+
+// Fonction pour analyser l'heure au format hh:mm:ss
+TimeOfDay parseTime(String timeString) {
+  final parts = timeString.split(':');
+  final int hour = int.parse(parts[0]);
+  final int minute = int.parse(parts[1]);
+  return TimeOfDay(hour: hour, minute: minute);
+}
+
+// Fonction pour comparer deux TimeOfDay (renvoie -1, 0 ou 1)
+int compareTimes(TimeOfDay timeA, TimeOfDay timeB) {
+  if (timeA.hour < timeB.hour) {
+    return -1;  // timeA est plus petit
+  } else if (timeA.hour > timeB.hour) {
+    return 1;   // timeA est plus grand
+  } else {
+    // Si les heures sont identiques, comparer les minutes
+    if (timeA.minute < timeB.minute) {
+      return -1;
+    } else if (timeA.minute > timeB.minute) {
+      return 1;
+    } else {
+      return 0;  // Les heures et minutes sont identiques
+    }
+  }
+}
+
 
 List<PriceData> duplicateAllowedDaysBasedOnRepeat(List<PriceData> allowedDays) {
   List<PriceData> duplicatedList = [];

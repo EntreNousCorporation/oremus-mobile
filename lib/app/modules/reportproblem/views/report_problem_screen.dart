@@ -121,7 +121,7 @@ class ReportProblemScreen extends StatelessWidget {
                           [
                             Separators.minimunVertical(),
                             Text(
-                              'Signaler cette paroisse',
+                              'Signaler un problème',
                               textAlign: TextAlign.center,
                               style: TextStyles.montserratBold(
                                 textSize: TextSizes.eighteen,

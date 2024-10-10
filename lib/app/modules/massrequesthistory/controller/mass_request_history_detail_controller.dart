@@ -48,6 +48,7 @@ class MassRequestHistoryDetailController extends GetxController {
     if (Get.arguments != null) {
       paroisseSelected.value = ContentPlace.fromJson(Get.arguments[0]);
       massRequestSelected.value = MassRequestResponse.fromJson(Get.arguments[1]);
+      log('massRequestSelected ::: ${jsonEncode(massRequestSelected.toJson())}');
     }
   }
 
@@ -91,7 +92,7 @@ class MassRequestHistoryDetailController extends GetxController {
   doGetMassRequestStatuses() {
     hideKeyboard();
     var request = SearchCriteria(
-      identifier: massRequestSelected.value.identifier.toString(),
+      traceId: massRequestSelected.value.traceId.toString(),
     );
     isDataProcessing(true);
     hasData(false);

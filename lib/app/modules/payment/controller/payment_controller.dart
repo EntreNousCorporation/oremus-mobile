@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:app_links/app_links.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
+import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
@@ -115,13 +116,15 @@ class PaymentController extends GetxController {
       webViewController.value.loadRequest(
           Uri.parse(massRequestResponseSelected.value.paymentUrl ?? ''));
     } else {
-      showCustomDialog(
-        Get.context!,
-        message: 'Une erreur interne est survenue',
-        positiveCallBack: () {
-          Get.back();
-        },
-      );
+      Timer(const Duration(seconds: 1), () {
+        showCustomDialog(
+          Get.context!,
+          message: 'Une erreur interne est survenue',
+          positiveCallBack: () {
+            Get.back();
+          },
+        );
+      });
     }
   }
 
@@ -161,6 +164,8 @@ class PaymentController extends GetxController {
       await completer.future;
     } catch (e) {
       // Gérer les erreurs (timeout, erreurs de liens profonds, etc.)
+      timeoutTimer?.cancel();
+      await subscription?.cancel();
       print('Erreur lors de l\'attente du retour de paiement: $e');
     } finally {
       timeoutTimer?.cancel();
@@ -201,35 +206,32 @@ class PaymentController extends GetxController {
   listenPaymentStatus() {
     log('request listenPaymentStatus');
     isTimerActive(true);
-    timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 10), (timer) {
       doGetPaymentStatus();
     });
   }
 
   //CHECK PAYMENT STATUS
   doGetPaymentStatus() {
-    if (checkingPaymentStatus.isTrue) {
+    if (checkingPaymentStatus.value == true) {
       return;
     }
 
     log('request doGetPaymentStatus :::');
 
     checkingPaymentStatus(true);
-    paymentRepository
-        .paymentStatus(
-            transactionId:
-                massRequestResponseSelected.value.transactionId ?? '')
-        .then((value) {
-      if (value.paymentStatus == 'REFUSED') {
+    paymentRepository.paymentStatus(transactionId: massRequestResponseSelected.value.transactionId ?? '').then((value) {
+      if (value.paymentStatus == PaymentStatus.REFUSED.name) {
         checkingPaymentStatus(true);
-        paymentStatusMessage.value = 'Le paiement a échoué. Veuillez-réessayer svp !';
+        paymentStatusMessage.value = 'Le paiement a échoué. Veuillez réessayer svp !';
         moveToError();
         return;
       }
-      if (value.paymentStatus == 'PENDING') {
+      if (value.paymentStatus == PaymentStatus.PENDING.name) {
         checkingPaymentStatus(false);
         return;
       }
+
       //ACCEPTED
       checkingPaymentStatus(true);
       paymentStatusMessage.value = 'Votre demande de messe a été effectué avec succès';

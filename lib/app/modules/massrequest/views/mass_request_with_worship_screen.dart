@@ -186,21 +186,22 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    'Date',
-                                    style: TextStyles.montserratMedium(
-                                      textColor: colorGrey1,
-                                      textSize: TextSizes.fourteen,
-                                    ),
-                                  ),
-                                  Separators.customSizeVertical(8),
-                                  Column(
+                                  Row(
                                     children: [
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            flex: 2,
-                                            child: GestureDetector(
+                                      Expanded(
+                                        flex: 2,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Date',
+                                              style: TextStyles.montserratMedium(
+                                                textColor: colorGrey1,
+                                                textSize: TextSizes.fourteen,
+                                              ),
+                                            ),
+                                            Separators.customSizeVertical(8),
+                                            GestureDetector(
                                               onTap: () {
                                                 if (_.selectedDate.value == null) return;
                                                 _.showPicker(context);
@@ -233,23 +234,36 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                          Separators.customSizeHorizontal(16),
-                                          Expanded(
-                                            child: Material(
+                                          ],
+                                        ),
+                                      ),
+                                      Separators.customSizeHorizontal(16),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Heure',
+                                              style: TextStyles.montserratMedium(
+                                                textColor: colorGrey1,
+                                                textSize: TextSizes.fourteen,
+                                              ),
+                                            ),
+                                            Separators.customSizeVertical(8),
+                                            Material(
                                               borderRadius: BorderRadius.circular(10.0),
                                               elevation: 10,
                                               color: colorWhite,
                                               shadowColor: colorGrey2.withOpacity(0.5),
                                               child: const MassWithoutWorshipHourFilter(),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                      Separators.maximumVertical(),
                                     ],
                                   ),
 
+                                  Separators.maximumVertical(),
                                   //NUMBER OF MASS
                                   Text(
                                     'Répétition',

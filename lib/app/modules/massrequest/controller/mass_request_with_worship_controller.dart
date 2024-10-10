@@ -50,13 +50,17 @@ class MassRequestWithWorshipController extends GetxController {
   RxList<LiturgicalCelebrationResponse> worshipHours =
       RxList<LiturgicalCelebrationResponse>([]);
 
-  RxList<MassTypeRepetitionData?> massRequestTypeRepetitions = RxList<MassTypeRepetitionData?>([]);
-  Rx<MassTypeRepetitionData?> massRequestTypeRepetitionSelected = Rx<MassTypeRepetitionData?>(null);
+  RxList<MassTypeRepetitionData?> massRequestTypeRepetitions =
+      RxList<MassTypeRepetitionData?>([]);
+  Rx<MassTypeRepetitionData?> massRequestTypeRepetitionSelected =
+      Rx<MassTypeRepetitionData?>(null);
 
-  RxList<LiturgicalCelebrationResponse> worshipRecurrentHoursTemp = RxList<LiturgicalCelebrationResponse>([]);
+  RxList<LiturgicalCelebrationResponse> worshipRecurrentHoursTemp =
+      RxList<LiturgicalCelebrationResponse>([]);
   RxList<PriceData> worshipRecurrentHours = RxList<PriceData>([]);
 
-  RxList<LiturgicalCelebrationResponse> worshipSpecialHoursTemp = RxList<LiturgicalCelebrationResponse>([]);
+  RxList<LiturgicalCelebrationResponse> worshipSpecialHoursTemp =
+      RxList<LiturgicalCelebrationResponse>([]);
   RxList<PriceData> worshipSpecialHours = RxList<PriceData>([]);
 
   var isValidForm = false.obs;
@@ -136,11 +140,12 @@ class MassRequestWithWorshipController extends GetxController {
       return;
     }
     datesChoosen.value = await Get.toNamed(
-        Routes.FILTER_MASS_REQUEST_CHOOSE_DATE,
+      Routes.FILTER_MASS_REQUEST_CHOOSE_DATE,
       arguments: [
         worshipHours,
         selectedDate.toJson(),
-      ],);
+      ],
+    );
     datesChoosen.refresh();
     if (datesChoosen.isNotEmpty) {
       doGetMassRequestPrice();
@@ -167,7 +172,10 @@ class MassRequestWithWorshipController extends GetxController {
   void checkForm() {
     isValidForm.value = massRequestTypeSelected.value != null &&
         massIntentionController.text.isNotEmpty &&
-        price.value != '-';
+        price.value != '-' && price.value != '0.0' && price.value != '0' &&
+        (massRequestTypeRepetitionSelected.value?.code == 'many'
+            ? datesChoosen.isNotEmpty
+            : selectedDate.value != null);
     update();
   }
 
@@ -216,7 +224,8 @@ class MassRequestWithWorshipController extends GetxController {
 
     // S'assurer que la première date dans _allowedDates est valide comme initialDate
     DateTime initialDate = allowedDatesNormalized.firstWhere(
-          (date) => date.isAfter(DateTime.now()) || date.isAtSameMomentAs(DateTime.now()),
+      (date) =>
+          date.isAfter(DateTime.now()) || date.isAtSameMomentAs(DateTime.now()),
       orElse: () => allowedDatesNormalized.first,
     );
 
@@ -224,7 +233,8 @@ class MassRequestWithWorshipController extends GetxController {
       context: context,
       initialDate: initialDate, // On utilise une date initiale valide
       firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: AppConstants.END_DATE_LIMIT)),
+      lastDate:
+          DateTime.now().add(const Duration(days: AppConstants.END_DATE_LIMIT)),
       selectableDayPredicate: (DateTime day) {
         // Comparer seulement année, mois et jour (ignorer les heures)
         DateTime normalizedDay = DateTime(day.year, day.month, day.day);
@@ -234,30 +244,14 @@ class MassRequestWithWorshipController extends GetxController {
     if (picked != null) {
       resetPrice();
       updateRepetitionFilter(picked, isFirst: false);
-
-      /*String day = picked.day.toString();
-      String month = picked.month.toString();
-      if (picked.day < 10) {
-        day = "0$day";
-      }
-      if (picked.month < 10) {
-        month = "0$month";
-      }
-      selectedDate.value = PriceData(
-        day: "${picked.year}-$month-$day",
-        dayOfWeek: picked.weekday.toString(),
-        isDaySelected: true,
-        dayToDisplay: "$day-$month-${picked.year}",
-      );
-      checkForm();*/
     }
   }
 
-
-  updateRepetitionFilter(DateTime datetime,
-      {bool? isFirst = true, Slot? selectHour}) {
+  updateRepetitionFilter(DateTime datetime, {bool? isFirst = true, Slot? selectHour}) {
     String day = datetime.day.toString();
     String month = datetime.month.toString();
+
+    // Formatage du jour et du mois
     if (datetime.day < 10) {
       day = "0$day";
     }
@@ -265,35 +259,88 @@ class MassRequestWithWorshipController extends GetxController {
       month = "0$month";
     }
 
-    for (var i in worshipRecurrentHours) {
-      log('worshipRecurrentHours ::: ${i.toJson()}\n');
-    }
-
-    List<Slot>? tempSlots = [];
+    // Récupérer les heures récurrentes pour le jour sélectionné
     var recurentHour = worshipRecurrentHours.value.firstWhereOrNull((element) {
-      log('element ::: ${element.dayOfWeek}');
-      log('datetime.weekday ::: ${datetime.weekday - 1}');
       return int.parse(element.dayOfWeek ?? '0') == (datetime.weekday - 1);
     });
-    log('tempSlotss ::: ${recurentHour?.toJson()}');
-    tempSlots = recurentHour?.slots ?? [];
-    log('tempSlots ::: ${tempSlots.length}');
+
+    // Vérifier s'il y a des créneaux horaires disponibles pour ce jour
+    List<Slot>? tempSlots = recurentHour?.slots ?? [];
     selectedHours.clear();
     for (var i in tempSlots) {
-      log('tempSlots i ::: ${i.toJson()}\n');
       selectedHours.add(i);
     }
-    log('selectedHours ::: ${selectedHours.length}\n');
-    for (var i in selectedHours) {
-      log('selectedHours ::: ${i?.toJson()}\n');
+
+    // Récupérer l'heure actuelle
+    DateTime now = DateTime.now();
+
+    // Calculer la date "logique" selon les règles du tableau (exemple avec 12h ou 18h)
+    DateTime logicalDate = now;
+    if (now.hour >= 0 && now.hour <= 9) {
+      logicalDate = DateTime(now.year, now.month, now.day, 12); // Même jour à 12h
+    } else if (now.hour > 9 && now.hour <= 15) {
+      logicalDate = DateTime(now.year, now.month, now.day, 18); // Même jour à 18h
+    } else {
+      logicalDate = DateTime(now.year, now.month, now.day + 1, 12); // Lendemain à 12h
+    }
+
+    // Si la date passée en paramètre est après la date logique, on ignore les restrictions
+    if (datetime.isAfter(logicalDate)) {
+      log('Date future détectée, afficher toutes les heures disponibles');
+      selectedHours.clear(); // Vider et réajouter toutes les heures disponibles
+      for (var i in tempSlots) {
+        selectedHours.add(i); // Ajouter tous les créneaux horaires disponibles
+      }
+    } else {
+      // Appliquer les restrictions du tableau si la date est "logique" (comme aujourd'hui)
+      if (now.hour >= 0 && now.hour <= 9) {
+        // Entre 00h01 et 09h00, afficher les créneaux à partir de 12h00
+        selectedHours.removeWhere((slot) {
+          TimeOfDay slotTime = parseTime(slot?.startTime ?? '');
+          return slotTime.hour < 12;
+        });
+      } else if (now.hour > 9 && now.hour <= 15) {
+        // Entre 09h01 et 15h00, afficher les créneaux à partir de 18h00
+        selectedHours.removeWhere((slot) {
+          TimeOfDay slotTime = parseTime(slot?.startTime ?? '');
+          return slotTime.hour < 18;
+        });
+      } else {
+        // Entre 15h01 et 00h00, afficher les créneaux à partir de 12h00 le lendemain
+        datetime = datetime.add(const Duration(days: 1)); // Passer au lendemain
+        recurentHour = worshipRecurrentHours.value.firstWhereOrNull((element) {
+          return int.parse(element.dayOfWeek ?? '0') == (datetime.weekday - 1);
+        });
+        tempSlots = recurentHour?.slots ?? [];
+        selectedHours.clear();
+        for (var i in tempSlots) {
+          TimeOfDay slotTime = parseTime(i.startTime ?? '');
+          if (slotTime.hour >= 12) {
+            selectedHours.add(i); // Ajouter seulement les créneaux après 12h
+          }
+        }
+      }
+    }
+
+    // Sélection du créneau horaire
+
+    // Trier les heures dans selectedHours pour obtenir la plus petite
+    if (selectedHours.isNotEmpty) {
+      selectedHours.sort((a, b) {
+        TimeOfDay timeA = parseTime(a?.startTime ?? '');  // Convertir le créneau A en TimeOfDay
+        TimeOfDay timeB = parseTime(b?.startTime ?? '');  // Convertir le créneau B en TimeOfDay
+        return compareTimes(timeA, timeB);         // Comparer les deux heures
+      });
     }
 
     if (isFirst == true) {
-      selectedHour.value = tempSlots.first;
+      // Sélectionner le créneau avec la plus petite heure
+      selectedHour.value = selectedHours.first;
     } else {
       selectedHour.value = selectHour;
     }
 
+    // Mise à jour des informations sélectionnées
     selectedDate.value = PriceData(
       day: "${datetime.year}-$month-$day",
       dayOfWeek: datetime.weekday.toString(),
@@ -301,14 +348,16 @@ class MassRequestWithWorshipController extends GetxController {
       dayToDisplay: "$day-$month-${datetime.year}",
       slots: [selectedHour.value ?? Slot()],
     );
+
     log('selectedDate ::: ${selectedDate.toJson()}');
+
+    // Vérifier si la sélection est valide
     checkForm();
     if (selectedDate.value != null && selectedHour.value != null) {
       datesChoosen.value = [selectedDate.value ?? PriceData()];
       doGetMassRequestPrice();
     }
   }
-
 
   updateMassTypeRepetitionFilter(
       MassTypeRepetitionData? massTypeRepetitionData) {
@@ -396,10 +445,10 @@ class MassRequestWithWorshipController extends GetxController {
             .toList();
         worshipSpecialHoursTemp.value = worshipHours
             .where((element) =>
-        element.isRecurrent == false &&
-            (Jiffy.parse(element.startDate ?? Jiffy.now().format(),
-                pattern: AppConstants.TIME_ZONE_FORMAT)
-                .isAfter(Jiffy.now().add(hours: 24))))
+                element.isRecurrent == false &&
+                (Jiffy.parse(element.startDate ?? Jiffy.now().format(),
+                        pattern: AppConstants.TIME_ZONE_FORMAT)
+                    .isAfter(Jiffy.now().add(hours: 24))))
             .toList();
 
         worshipRecurrentHours.value =
@@ -413,8 +462,8 @@ class MassRequestWithWorshipController extends GetxController {
             .toList();
         allowedDates.value = getNextDatesForDays(temp);
         DateTime datetime = allowedDates.value.firstWhere(
-                (date) =>
-            date.isAfter(DateTime.now()) ||
+            (date) =>
+                date.isAfter(DateTime.now()) ||
                 date.isAtSameMomentAs(DateTime.now()),
             orElse: () => allowedDates
                 .first); // Utiliser la première date valide de _allowedDates
@@ -443,7 +492,7 @@ class MassRequestWithWorshipController extends GetxController {
 
     isPricingProcessing(true);
     hasData(false);
-    log('request doGetMassRequestPrice');
+    log('request doGetMassRequestPrice ::: ${jsonEncode(datesChoosen)}');
     massRequestRepository
         .getMassRequestPrice(
             request: datesChoosen,
@@ -513,8 +562,9 @@ class MassRequestWithWorshipController extends GetxController {
         });
       } else {
         showNotification(
-            message: err.message.toString(),
-            duration: const Duration(seconds: 4));
+          message: err.message.toString(),
+          duration: const Duration(seconds: 4),
+        );
       }
     });
   }

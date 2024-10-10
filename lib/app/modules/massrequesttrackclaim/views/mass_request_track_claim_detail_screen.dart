@@ -157,6 +157,24 @@ class MassRequestTrackClaimDetailScreen extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     Text(
+                                      'Paroisse',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyles.montserratRegular(
+                                        textSize: TextSizes.fourteen,
+                                        textColor: colorBlack,
+                                      ),
+                                    ),
+                                    Separators.minimunVertical(),
+                                    Text(
+                                      _.claimSelected.value?.massRequest?.worshipPlace?.name ?? '-',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyles.montserratSemiBold(
+                                        textSize: TextSizes.sixteen,
+                                        textColor: colorBlack,
+                                      ),
+                                    ),
+                                    Separators.normalVertical(),
+                                    Text(
                                       'Type de réclamation',
                                       textAlign: TextAlign.center,
                                       style: TextStyles.montserratRegular(

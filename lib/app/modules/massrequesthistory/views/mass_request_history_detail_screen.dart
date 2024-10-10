@@ -244,6 +244,24 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                     ),
                                     Separators.normalVertical(),
                                     Text(
+                                      'Date',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyles.montserratRegular(
+                                        textSize: TextSizes.fourteen,
+                                        textColor: colorBlack,
+                                      ),
+                                    ),
+                                    Separators.minimunVertical(),
+                                    Text(
+                                      getCustomDate(_.massRequestSelected.value.createdAt ?? ''),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyles.montserratSemiBold(
+                                        textSize: TextSizes.sixteen,
+                                        textColor: colorBlack,
+                                      ),
+                                    ),
+                                    Separators.normalVertical(),
+                                    Text(
                                       'Montant',
                                       textAlign: TextAlign.center,
                                       style: TextStyles.montserratRegular(
@@ -360,8 +378,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                           visible: _.canClaimMassRequest(),
                                           child: GestureDetector(
                                             onTap: () {
-                                              _.moveToMassRequest(
-                                                  _.massRequestSelected.value);
+                                              _.moveToMassRequest(_.massRequestSelected.value);
                                             },
                                             child: Container(
                                               color: colorTransparent,
@@ -372,8 +389,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                                     color: colorTurquois,
                                                     size: Get.width / 10,
                                                   ),
-                                                  Separators.customSizeVertical(
-                                                      3),
+                                                  Separators.customSizeVertical(3),
                                                   Text(
                                                     'Répéter\n',
                                                     textAlign: TextAlign.center,

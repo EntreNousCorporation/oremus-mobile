@@ -44,7 +44,7 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                                   ? () {
                                       showNotification(
                                         message:
-                                            'Vous ne pouvez pas sélectionner cet horaire après la date de fin',
+                                            'Vous ne pouvez pas sélectionner cet horaire après la date de fin de répétition',
                                         bgColor: colorBlue2,
                                       );
                                     }

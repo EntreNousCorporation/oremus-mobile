@@ -10,3 +10,10 @@ enum EnvCredentials {
   dev,
   prod,
 }
+
+enum PaymentStatus {
+  REFUSED,
+  PENDING,
+  ACCEPTED,
+  NONE,
+}

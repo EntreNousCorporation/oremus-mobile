@@ -6,6 +6,7 @@ import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/massrequest/data/repository/interface_mass_request_repository.dart';
+import 'package:oremusapp/app/modules/payment/data/model/payment_status_data.dart';
 import 'package:oremusapp/app/remote/api_client.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
@@ -78,6 +79,23 @@ class MassRequestRepository implements IMassRequestRepository {
     log('resp sendMassRequest => ${response.statusCode}');
 
     if (response.statusCode! >= 200 && response.statusCode! <= 204) {
+      return MassRequestResponse.fromJson(json.decode(response.bodyString.toString()));
+    } else {
+      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      throw CustomException(e.debugMessage, e.status);
+    }
+  }
+
+  @override
+  Future<MassRequestResponse> retryPayment({required PaymentStatusData request}) async {
+    Response response = await _apiClient.doRequest(
+      endpoint: "/mass-requests/retry-payment",
+      method: HttpMethod.put,
+      body: request.toJson(),
+    );
+    log('resp sendMassRequest => ${response.statusCode}');
+
+    if (response.statusCode != null && response.statusCode! >= 200 && response.statusCode! <= 204) {
       return MassRequestResponse.fromJson(json.decode(response.bodyString.toString()));
     } else {
       var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
