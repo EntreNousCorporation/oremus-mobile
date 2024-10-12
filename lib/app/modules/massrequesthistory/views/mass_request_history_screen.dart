@@ -104,7 +104,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
                         title: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
-                            _.paroisseSelected.value.name ?? '',
+                            _.paroisseSelected.value.name ?? 'Mes demandes de messes',
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,

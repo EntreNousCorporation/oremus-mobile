@@ -46,7 +46,7 @@ class MassRequestController extends GetxController {
   RxList<PrayerIntentData?> prayerIntents = RxList<PrayerIntentData?>([]);
   Rx<PrayerIntentData?> prayerIntentSelected = Rx<PrayerIntentData?>(null);
 
-  RxList<PriceData> datesChoosen = RxList<PriceData>([]);
+  RxList<PriceData?> datesChoosen = RxList<PriceData?>([]);
 
   RxList<LiturgicalCelebrationResponse> worshipHours =
       RxList<LiturgicalCelebrationResponse>([]);
@@ -142,8 +142,9 @@ class MassRequestController extends GetxController {
         .toList();
 
     // S'assurer que la première date dans _allowedDates est valide comme initialDate
+    DateTime now = DateTime.now();
     DateTime initialDate = allowedDatesNormalized.firstWhere(
-          (date) => date.isAfter(DateTime.now()) || date.isAtSameMomentAs(DateTime.now()),
+          (date) => date.isAfter(DateTime(now.year, now.month, now.day)) || date.isAtSameMomentAs(DateTime(now.year, now.month, now.day)),
       orElse: () => allowedDatesNormalized.first,
     );
 
@@ -171,19 +172,20 @@ class MassRequestController extends GetxController {
 
   goToDatesChoice() async {
     if (worshipHours.isEmpty) {
-      showNotification(
-          message:
-              'Aucun horaire disponible.\nVeuillez choisir une autre paroisse svp');
+      showNotification(message: 'Aucun horaire disponible.\nVeuillez choisir une autre paroisse svp');
       return;
     }
-    datesChoosen.value = await Get.toNamed(
+    var dc = await Get.toNamed(
       Routes.FILTER_MASS_REQUEST_CHOOSE_DATE,
       arguments: [
         worshipHours,
         selectedDate.toJson(),
       ],
     );
+    datesChoosen.value = dc ?? [];
     datesChoosen.refresh();
+    log('datesChoosen ::: ${jsonEncode(datesChoosen)}');
+    log('worshipHours ::: ${jsonEncode(worshipHours)}');
     if (datesChoosen.isNotEmpty) {
       doGetMassRequestPrice();
     } else {
@@ -444,12 +446,13 @@ class MassRequestController extends GetxController {
             .toList();
         allowedDates.value = getNextDatesForDays(temp);
 
-        DateTime datetime = allowedDates.value.firstWhere(
-            (date) =>
-                date.isAfter(DateTime.now()) ||
-                date.isAtSameMomentAs(DateTime.now()),
-            orElse: () => allowedDates
-                .first); // Utiliser la première date valide de _allowedDates
+        DateTime now = DateTime.now();
+        DateTime today = DateTime(now.year, now.month, now.day); // Ignorer les heures
+
+        DateTime datetime = allowedDates.value.firstWhere((date) =>
+          date.isAfter(today) || date.isAtSameMomentAs(today),
+          orElse: () => allowedDates.first,
+        ); // Utiliser la première date valide de _allowedDates
 
 
         log('datetime ::: ${datetime.toIso8601String()}');

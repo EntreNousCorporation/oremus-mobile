@@ -253,6 +253,7 @@ List<PriceData> transformWorshipRecurrentHours(
 }*/
 
 List<DateTime> getNextDatesForDays(List<int> daysOfWeek) {
+  log('getNextDatesForDays ::: ${daysOfWeek}');
   List<DateTime> upcomingDates = [];
   DateTime now = DateTime.now();
   int daysInMonth = AppConstants.END_DATE_LIMIT;
@@ -276,7 +277,7 @@ List<DateTime> getNextDatesForDays(List<int> daysOfWeek) {
   // Generate future dates based on the start date and the daysOfWeek
   for (int i = 0; i < daysInMonth; i++) {
     DateTime futureDate = startDate.add(Duration(days: i));
-    if (daysOfWeek.contains(futureDate.weekday % 7)) {
+    if (daysOfWeek.contains(futureDate.weekday)) {
       upcomingDates.add(DateTime(futureDate.year, futureDate.month,
           futureDate.day)); // Ignorer les heures pour comparaison
     }
@@ -385,6 +386,72 @@ bool isDayOfWeekInDateRange(int dayOfWeek, DateTime startDate, DateTime endDate)
   }
   return false; // Pas trouvé, retourner faux
 }
+
+bool isDayOfWeekInDateRangeB(int dayOfWeek, DateTime startDate, DateTime endDate) {
+  // Vérifier que la date de début est avant ou égale à la date de fin
+  if (startDate.isAfter(endDate)) {
+    return false;
+  }
+
+  // Ajuster l'heure de début en fonction des contraintes horaires du tableau
+  DateTime adjustedStartDate = startDate;
+  if (startDate.hour >= 0 && startDate.hour < 9) {
+    // Demande entre 00h01 et 09h00 => début possible à 12h du même jour
+    adjustedStartDate = DateTime(startDate.year, startDate.month, startDate.day, 12);
+  } else if (startDate.hour >= 9 && startDate.hour < 15) {
+    // Demande entre 09h01 et 15h00 => début possible à 18h du même jour
+    adjustedStartDate = DateTime(startDate.year, startDate.month, startDate.day, 18);
+  } else if (startDate.hour >= 15 && startDate.hour < 24) {
+    // Demande entre 15h01 et 00h00 => début possible à 12h du lendemain
+    adjustedStartDate = DateTime(startDate.year, startDate.month, startDate.day + 1, 12);
+  }
+
+  // Parcourir chaque jour dans la plage de dates ajustée
+  for (DateTime currentDate = adjustedStartDate;
+  currentDate.isBefore(endDate) || currentDate.isAtSameMomentAs(endDate);
+  currentDate = currentDate.add(const Duration(days: 1))) {
+    log('dayOfWeek ::: $dayOfWeek');
+    log('dayOfWeek ::: ${(currentDate.weekday - 1)}');
+    // Vérifier si le jour de la semaine actuel correspond au jour recherché
+    if ((currentDate.weekday - 1) == dayOfWeek) {
+      return true; // Jour correspondant trouvé
+    }
+  }
+  return false; // Pas de correspondance trouvée
+}
+
+bool isDayOfWeekInDateRangeBB(
+    int dayOfWeek, DateTime startDate, DateTime endDate, DateTime requestTime) {
+  // Vérifier que la date de début est avant ou égale à la date de fin
+  if (startDate.isAfter(endDate)) {
+    return false;
+  }
+
+  // Calculer les contraintes basées sur l'heure de la demande
+  DateTime adjustedStartDate = startDate;
+  if (requestTime.hour >= 0 && requestTime.hour < 9) {
+    // Demande entre 00h01 et 09h00 => début possible à 12h du même jour
+    adjustedStartDate = DateTime(startDate.year, startDate.month, startDate.day, 12);
+  } else if (requestTime.hour >= 9 && requestTime.hour < 15) {
+    // Demande entre 09h01 et 15h00 => début possible à 18h du même jour
+    adjustedStartDate = DateTime(startDate.year, startDate.month, startDate.day, 18);
+  } else if (requestTime.hour >= 15 && requestTime.hour < 24) {
+    // Demande entre 15h01 et 00h00 => début possible à 12h du lendemain
+    adjustedStartDate = DateTime(startDate.year, startDate.month, startDate.day + 1, 12);
+  }
+
+  // Parcourir chaque jour dans la plage de dates ajustée
+  for (DateTime currentDate = adjustedStartDate;
+  currentDate.isBefore(endDate) || currentDate.isAtSameMomentAs(endDate);
+  currentDate = currentDate.add(const Duration(days: 1))) {
+    // Vérifier si le jour de la semaine actuel correspond au jour recherché
+    if ((currentDate.weekday - 1) == dayOfWeek) {
+      return true; // Jour correspondant trouvé
+    }
+  }
+  return false; // Pas de correspondance trouvée
+}
+
 
 // Fonction pour compter les occurrences des jours autorisés dans la plage de dates
 List<PriceData?> countOccurrencesAndAssignDates(

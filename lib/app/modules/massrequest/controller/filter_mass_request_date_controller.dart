@@ -140,7 +140,6 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
   }
 
   onWorshipRecurrentHoursSelected(PriceData? hour, bool isDateSelected, {String? hourSelected = ''}) {
-    //todo:- choisir les dates correspondantes pour chaque weekday à la plage selectionnée
     worshipRecurrentHours.refresh();
     if (isDateSelected) {
       var hasData = datesChoosenForWorshipRecurrentHours.firstWhereOrNull((element) => (element?.identifier == hour?.identifier) && (element?.dayOfWeek == hour?.dayOfWeek));
@@ -152,9 +151,7 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
     } else {
       worshipRecurrentHours.refresh();
     }
-    for (var i in datesChoosenForWorshipRecurrentHours) {
-      log('datesChoosenForWorshipRecurrentHours ::: ${i?.toJson()}');
-    }
+    log('datesChoosenForWorshipRecurrentHours ::: ${jsonEncode(datesChoosenForWorshipRecurrentHours)}');
     canDoApplyAction();
   }
 
@@ -181,12 +178,8 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
 
   selectDate(BuildContext context, PriceData? item) async {
     log('initialSelectedDate ::: ${initialSelectedDate.value?.dayToDisplay}');
-    final weekDay = int.parse(item?.dayOfWeek ?? '0');
     final DateTime now = DateTime.now();
     final DateTime today = DateTime(now.year, now.month, now.day);
-
-    // Trouver la prochaine date valide
-    DateTime initialDate = _findNextValidDate(today, (weekDay + 1));
 
     final DateTime? selected = await showDatePicker(
       //locale: Locale('fr', 'FR'),
@@ -237,14 +230,8 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
       endSelectedDate.value?.day = "${selected.year}-$month-$day";
       endSelectedDate.value?.dayToDisplay = "$day-$month-${selected.year}";
       endSelectedDate.refresh();
-      for (var i in datesChoosenForWorshipRecurrentHours) {
-        log('Before datesChoosenForWorshipRecurrentHours i ::: ${i?.toJson()}');
-      }
       doRefreshHoursAfterAction();
       datesChoosenForWorshipRecurrentHours.value = countOccurrencesAndAssignDates(Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime, selected, datesChoosenForWorshipRecurrentHours.value);
-      for (var i in datesChoosenForWorshipRecurrentHours) {
-        log('After datesChoosenForWorshipRecurrentHours i ::: ${i?.toJson()}');
-      }
     }
   }
 
@@ -390,17 +377,20 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
     enabledApplyButton.value = hasSelectedRecurrentHours || hasSelectedSpecialHours;
   }
 
+  setDatas() {
+  datesChoosen.clear();
+  var selectedRecurentHours = _filterSelectedSlots(datesChoosenForWorshipRecurrentHours);
+  //var selectedSpecialHours = _filterSelectedSlots(datesChoosenWorshipSpecialHours);
+  //datesChoosen.addAll(selectedRecurentHours);
+  log('Before datesChoosen ::: ${jsonEncode(selectedRecurentHours)}');
+  datesChoosen.value = duplicateEventsByRepeat(selectedRecurentHours).where((e) => e.slots?.isNotEmpty == true).toList();
+  //datesChoosen.value = _mergeDayLists(selectedRecurentHours, selectedSpecialHours);
+  log('After datesChoosen ::: ${jsonEncode(datesChoosen)}');
+}
+
   moveToRecap() {
     if (enabledApplyButton.value) {
-      datesChoosen.clear();
-      var selectedRecurentHours = _filterSelectedSlots(datesChoosenForWorshipRecurrentHours);
-      var selectedSpecialHours = _filterSelectedSlots(datesChoosenWorshipSpecialHours);
-      datesChoosen.addAll(selectedRecurentHours);
-      //log('Before datesChoosen ::: ${jsonEncode(datesChoosen)}');
-      datesChoosen.value = duplicateEventsByRepeat(datesChoosen.value);
-      //datesChoosen.value = _mergeDayLists(selectedRecurentHours, selectedSpecialHours);
-      log('After datesChoosen ::: ${jsonEncode(datesChoosen)}');
-
+      setDatas();
       recapDialog();
     }
   }
@@ -409,6 +399,7 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
     Get.back(result: datesChoosen);
   }
 
+  //todo:- do not delete for now
   List<PriceData> _mergeDayLists(List<PriceData> list1, List<PriceData> list2) {
     // Créer une map pour stocker les jours fusionnés
     Map<String, PriceData> mergedDays = {};

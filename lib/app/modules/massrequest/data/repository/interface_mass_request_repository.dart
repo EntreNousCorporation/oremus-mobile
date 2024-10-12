@@ -4,7 +4,7 @@ import 'package:oremusapp/app/modules/payment/data/model/payment_status_data.dar
 abstract class IMassRequestRepository {
   //For API
   Future<List<TypeData>> getMassRequestType({int? page = 0});
-  Future<PriceResponse> getMassRequestPrice({required List<PriceData> request, required String workshipId});
+  Future<PriceResponse> getMassRequestPrice({required List<PriceData?> request, required String workshipId});
   Future<List<PrayerIntentData>> getPrayerIntent({int? page = 0});
   Future<MassRequestResponse> sendMassRequest({required MassRequestData request});
   Future<MassRequestResponse> retryPayment({required PaymentStatusData request});

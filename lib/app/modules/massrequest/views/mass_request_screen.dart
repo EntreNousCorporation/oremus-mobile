@@ -231,10 +231,10 @@ class MassRequestScreen extends StatelessWidget {
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 Text(
-                                                  _.selectedDate.value?.dayToDisplay ?? 'Aucune date définie',
+                                                  _.selectedDate.value?.dayToDisplay ?? 'Aucun horaire de messe',
                                                   style: TextStyles.montserratBold(
-                                                    textColor: _.selectedDate.value != null ? colorBlack : colorGrey1,
-                                                    textSize: TextSizes.sixteen,
+                                                    textColor: _.selectedDate.value != null ? colorBlack : colorRed,
+                                                    textSize: _.selectedDate.value != null ? TextSizes.sixteen : TextSizes.fourteen,
                                                   ),
                                                 ),
                                                 Icon(

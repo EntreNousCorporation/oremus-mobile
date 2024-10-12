@@ -48,6 +48,7 @@ class MassRequestHistoryDetailController extends GetxController {
     if (Get.arguments != null) {
       paroisseSelected.value = ContentPlace.fromJson(Get.arguments[0]);
       massRequestSelected.value = MassRequestResponse.fromJson(Get.arguments[1]);
+      massRequestSelected.value.bookings?.sort((a, b) => b.day!.compareTo(a.day!));
       log('massRequestSelected ::: ${jsonEncode(massRequestSelected.toJson())}');
     }
   }

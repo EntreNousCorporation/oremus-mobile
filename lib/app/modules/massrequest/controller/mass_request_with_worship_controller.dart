@@ -223,9 +223,9 @@ class MassRequestWithWorshipController extends GetxController {
         .toList();
 
     // S'assurer que la première date dans _allowedDates est valide comme initialDate
+    DateTime now = DateTime.now();
     DateTime initialDate = allowedDatesNormalized.firstWhere(
-      (date) =>
-          date.isAfter(DateTime.now()) || date.isAtSameMomentAs(DateTime.now()),
+          (date) => date.isAfter(DateTime(now.year, now.month, now.day)) || date.isAtSameMomentAs(DateTime(now.year, now.month, now.day)),
       orElse: () => allowedDatesNormalized.first,
     );
 
@@ -233,8 +233,7 @@ class MassRequestWithWorshipController extends GetxController {
       context: context,
       initialDate: initialDate, // On utilise une date initiale valide
       firstDate: DateTime.now(),
-      lastDate:
-          DateTime.now().add(const Duration(days: AppConstants.END_DATE_LIMIT)),
+      lastDate: DateTime.now().add(const Duration(days: AppConstants.END_DATE_LIMIT)),
       selectableDayPredicate: (DateTime day) {
         // Comparer seulement année, mois et jour (ignorer les heures)
         DateTime normalizedDay = DateTime(day.year, day.month, day.day);
@@ -461,12 +460,14 @@ class MassRequestWithWorshipController extends GetxController {
             .map((element) => int.parse(element.dayOfWeek ?? '0') + 1)
             .toList();
         allowedDates.value = getNextDatesForDays(temp);
+        DateTime now = DateTime.now();
+        DateTime today = DateTime(now.year, now.month, now.day); // Ignorer les heures
+
         DateTime datetime = allowedDates.value.firstWhere(
-            (date) =>
-                date.isAfter(DateTime.now()) ||
-                date.isAtSameMomentAs(DateTime.now()),
-            orElse: () => allowedDates
-                .first); // Utiliser la première date valide de _allowedDates
+              (date) =>
+          date.isAfter(today) || date.isAtSameMomentAs(today),
+          orElse: () => allowedDates.first,
+        ); // Utiliser la première date valide de _allowedDates
 
         updateRepetitionFilter(datetime);
       }

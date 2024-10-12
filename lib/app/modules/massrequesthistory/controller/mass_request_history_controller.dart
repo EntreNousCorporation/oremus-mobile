@@ -82,7 +82,7 @@ class MassRequestHistoryController extends GetxController {
   }
 
   canRedoPayment(MassRequestResponse? massRequestSelected) {
-    return massRequestSelected?.status?.code != 'REQUEST_PAID' && massRequestSelected?.status?.code != 'REQUEST_ACCEPTED' && massRequestSelected?.status?.code != 'REQUEST_REFUSED';
+    return massRequestSelected?.status?.code == 'REQUEST_INITIATED';
   }
 
   initCriteria() {

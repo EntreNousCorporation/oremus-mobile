@@ -43,8 +43,7 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                               onTap: !isDayOfWeekInDateRange(int.parse(item.dayOfWeek ?? '0'), Jiffy.parse(_.initialSelectedDate.value?.day ?? '').dateTime, Jiffy.parse(_.endSelectedDate.value?.day ?? '').dateTime)
                                   ? () {
                                       showNotification(
-                                        message:
-                                            'Vous ne pouvez pas sélectionner cet horaire après la date de fin de répétition',
+                                        message: 'Vous ne pouvez pas sélectionner cet horaire après la date de fin de répétition',
                                         bgColor: colorBlue2,
                                       );
                                     }

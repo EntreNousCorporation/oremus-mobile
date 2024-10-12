@@ -120,7 +120,7 @@ class MassRequestData {
   String? prayerIntent;
   int? worshipPlace;
   String? typeOfMassRequest;
-  List<PriceData>? slots;
+  List<PriceData?>? slots;
 
   MassRequestData({
     this.prayerIntent,
@@ -147,7 +147,7 @@ class MassRequestData {
     data['worshipPlace'] = worshipPlace;
     data['typeOfMassRequest'] = typeOfMassRequest;
     if (slots != null) {
-      data['slots'] = slots?.map((v) => v.toJson()).toList();
+      data['slots'] = slots?.map((v) => v?.toJson()).toList();
     }
     return data;
   }
