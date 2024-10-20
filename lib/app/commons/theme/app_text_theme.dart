@@ -7,71 +7,105 @@ const TextStyle cardTextStyle =
     TextStyle(color: colorGreyHint, fontSize: 16, fontWeight: FontWeight.bold);
 
 class TextStyles {
-  static TextStyle montserratRegular(
-          {double textSize = TextSizes.sixteen,
-          Color textColor = colorGrey1}) =>
+  static TextStyle montserratRegular({
+    double textSize = TextSizes.sixteen,
+    Color textColor = colorGrey1,
+    TextDecoration textDecoration = TextDecoration.none,
+  }) =>
       const TextStyle().copyWith(
-          fontFamily: "montserrat_regular",
-          fontSize: textSize,
-          color: textColor);
+        fontFamily: "montserrat_regular",
+        fontSize: textSize,
+        color: textColor,
+        decoration: textDecoration,
+      );
 
-  static TextStyle montserratMedium(
-          {double textSize = TextSizes.sixteen,
-          Color textColor = colorGrey1}) =>
+  static TextStyle montserratMedium({
+    double textSize = TextSizes.sixteen,
+    Color textColor = colorGrey1,
+    TextDecoration textDecoration = TextDecoration.none,
+  }) =>
       const TextStyle().copyWith(
-          fontFamily: "montserrat_medium",
-          fontSize: textSize,
-          color: textColor);
+        fontFamily: "montserrat_medium",
+        fontSize: textSize,
+        color: textColor,
+        decoration: textDecoration,
+      );
 
   static TextStyle montserratBold({
     double textSize = TextSizes.twenty,
     Color textColor = colorBlack,
-  }) => const TextStyle().copyWith(
-          fontFamily: "montserrat_bold",
-          fontSize: textSize,
-          color: textColor,
-          fontWeight: FontWeight.bold,
-  );
-
-  static TextStyle montserratSemiBold(
-          {double textSize = TextSizes.sixteen, Color textColor = colorBlack}) =>
+    TextDecoration textDecoration = TextDecoration.none,
+  }) =>
       const TextStyle().copyWith(
-          fontFamily: "montserrat_semi_bold",
-          fontSize: textSize,
-          color: textColor,
-          fontWeight: FontWeight.bold);
+        fontFamily: "montserrat_bold",
+        fontSize: textSize,
+        color: textColor,
+        fontWeight: FontWeight.bold,
+        decoration: textDecoration,
+      );
 
-  static TextStyle montserratItalic(
-          {double textSize = TextSizes.sixteen,
-          Color textColor = colorGrey1}) =>
+  static TextStyle montserratSemiBold({
+    double textSize = TextSizes.sixteen,
+    Color textColor = colorBlack,
+    TextDecoration textDecoration = TextDecoration.none,
+  }) =>
       const TextStyle().copyWith(
-          fontFamily: "montserrat_italic",
-          fontSize: textSize,
-          color: textColor);
+        fontFamily: "montserrat_semi_bold",
+        fontSize: textSize,
+        color: textColor,
+        fontWeight: FontWeight.bold,
+        decoration: textDecoration,
+      );
 
-  static TextStyle montserratMediumItalic(
-          {double textSize = TextSizes.sixteen,
-          Color textColor = colorGrey1}) =>
+  static TextStyle montserratItalic({
+    double textSize = TextSizes.sixteen,
+    Color textColor = colorGrey1,
+    TextDecoration textDecoration = TextDecoration.none,
+  }) =>
       const TextStyle().copyWith(
-          fontFamily: "montserrat_medium_italic",
-          fontSize: textSize,
-          color: textColor);
+        fontFamily: "montserrat_italic",
+        fontSize: textSize,
+        color: textColor,
+        decoration: textDecoration,
+      );
 
-  static TextStyle montserratBoldItalic(
-          {double textSize = TextSizes.twenty, Color textColor = colorBlack}) =>
+  static TextStyle montserratMediumItalic({
+    double textSize = TextSizes.sixteen,
+    Color textColor = colorGrey1,
+    TextDecoration textDecoration = TextDecoration.none,
+  }) =>
       const TextStyle().copyWith(
-          fontFamily: "montserrat_bold_italic",
-          fontSize: textSize,
-          color: textColor,
-          fontWeight: FontWeight.bold);
+        fontFamily: "montserrat_medium_italic",
+        fontSize: textSize,
+        color: textColor,
+        decoration: textDecoration,
+      );
 
-  static TextStyle montserratSemiBoldItalic(
-          {double textSize = TextSizes.twelve, Color textColor = colorBlack}) =>
+  static TextStyle montserratBoldItalic({
+    double textSize = TextSizes.twenty,
+    Color textColor = colorBlack,
+    TextDecoration textDecoration = TextDecoration.none,
+  }) =>
       const TextStyle().copyWith(
-          fontFamily: "montserrat_semi_bold_italic",
-          fontSize: textSize,
-          color: textColor,
-          fontWeight: FontWeight.bold);
+        fontFamily: "montserrat_bold_italic",
+        fontSize: textSize,
+        color: textColor,
+        fontWeight: FontWeight.bold,
+        decoration: textDecoration,
+      );
+
+  static TextStyle montserratSemiBoldItalic({
+    double textSize = TextSizes.twelve,
+    Color textColor = colorBlack,
+    TextDecoration textDecoration = TextDecoration.none,
+  }) =>
+      const TextStyle().copyWith(
+        fontFamily: "montserrat_semi_bold_italic",
+        fontSize: textSize,
+        color: textColor,
+        fontWeight: FontWeight.bold,
+        decoration: textDecoration,
+      );
 }
 
 class Separators {

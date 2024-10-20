@@ -18,78 +18,75 @@ class FavoritesScreen extends StatelessWidget {
     return Container(
       color: colorGreen,
       child: SafeArea(
-        child: GetX<FavoriteController>(
-            builder: (_) {
-              return WillPopScope(
-                onWillPop: () async => false,
-                child: KeyboardDismisser(
-                  child: Scaffold(
-                    resizeToAvoidBottomInset: true,
-                    appBar: AppBar(
-                      elevation: applyElevation(),
-                      shadowColor: colorGrey2.withOpacity(0.8),
-                      leading: IconButton(
-                        onPressed: () {
-                          Get.back();
-                        },
-                        icon: const Icon(Icons.arrow_back_ios_rounded),
-                      ),
-                      title: Text(
-                        _.favorites.isNotEmpty
-                            ? 'Mes favoris (${_.favorites.length})'
-                            : 'Mes favoris',
-                        style: TextStyles.montserratBold(
-                            textSize: TextSizes.sixteen, textColor: colorWhite),
-                      ),
-                      centerTitle: true,
-                      backgroundColor: colorGreen,
-                    ),
-                    body: Container(
-                      color: colorGrey4,
-                      width: double.infinity,
-                      child: Column(
-                        children: [
-                          _.favorites.isNotEmpty
-                              ? Expanded(
-                                  child: FadeIn(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 0,
-                                          bottom: 0,
-                                          left: 16,
-                                          right: 16),
-                                      child: AnimatedList(
-                                          key: _.key,
-                                          physics: const BouncingScrollPhysics(),
-                                          initialItemCount: _.favorites.length,
-                                          itemBuilder:
-                                              (context, index, animation) {
-                                            var paroisse = _.favorites[index];
-                                            return SizeTransition(
-                                              key: UniqueKey(),
-                                              sizeFactor: animation,
-                                              child: ParoisseItem(
-                                                paroisse: paroisse,
-                                                index: index,
-                                                fromFavoriteUI: true,
-                                              ),
-                                            );
-                                          }),
+        child: GetX<FavoriteController>(builder: (_) {
+          return WillPopScope(
+            onWillPop: () async => false,
+            child: KeyboardDismisser(
+              child: Scaffold(
+                resizeToAvoidBottomInset: true,
+                appBar: AppBar(
+                  elevation: applyElevation(),
+                  shadowColor: colorGrey2.withOpacity(0.8),
+                  leading: IconButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    icon: const Icon(Icons.arrow_back_ios_rounded),
+                  ),
+                  title: Text(
+                    _.favorites.isNotEmpty
+                        ? 'Mes favoris (${_.favorites.length})'
+                        : 'Mes favoris',
+                    style: TextStyles.montserratBold(
+                        textSize: TextSizes.sixteen, textColor: colorWhite),
+                  ),
+                  centerTitle: true,
+                  backgroundColor: colorGreen,
+                ),
+                body: Container(
+                  color: colorGrey4,
+                  width: double.infinity,
+                  child: Column(
+                    children: [
+                      _.favorites.isNotEmpty
+                          ? Expanded(
+                              child: FadeIn(
+                                child: AnimatedList(
+                                    key: _.key,
+                                    padding: const EdgeInsets.only(
+                                      top: 16,
+                                      bottom: 16,
+                                      left: 16,
+                                      right: 16,
                                     ),
-                                  ),
-                                )
-                              : Expanded(
-                                  child: NotFoundScreen(
-                                    message: "Aucun favoris pour le moment",
-                                  ),
-                                ),
-                        ],
-                      ),
-                    ),
+                                    physics: const BouncingScrollPhysics(),
+                                    initialItemCount: _.favorites.length,
+                                    itemBuilder: (context, index, animation) {
+                                      var paroisse = _.favorites[index];
+                                      return SizeTransition(
+                                        key: UniqueKey(),
+                                        sizeFactor: animation,
+                                        child: ParoisseItem(
+                                          paroisse: paroisse,
+                                          index: index,
+                                          fromFavoriteUI: true,
+                                        ),
+                                      );
+                                    }),
+                              ),
+                            )
+                          : Expanded(
+                              child: NotFoundScreen(
+                                message: "Aucun favoris pour le moment",
+                              ),
+                            ),
+                    ],
                   ),
                 ),
-              );
-            }),
+              ),
+            ),
+          );
+        }),
       ),
     );
   }

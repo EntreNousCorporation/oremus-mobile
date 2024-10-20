@@ -172,9 +172,10 @@ class MassRequestController extends GetxController {
 
   goToDatesChoice() async {
     if (worshipHours.isEmpty) {
-      showNotification(message: 'Aucun horaire disponible.\nVeuillez choisir une autre paroisse svp');
+      showNotification(message: 'Aucun horaire de messe disponible.\nVeuillez choisir une autre paroisse svp');
       return;
     }
+    updateRepetitionFilter(DateTime.now());
     var dc = await Get.toNamed(
       Routes.FILTER_MASS_REQUEST_CHOOSE_DATE,
       arguments: [

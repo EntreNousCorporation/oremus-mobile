@@ -25,8 +25,9 @@ class CustomButton extends StatefulWidget {
   IconData? iconData;
   Function? action;
   bool? enabled;
+  TextDecoration? textDecoration;
 
-  CustomButton({
+  CustomButton({Key? key,
     this.text = "",
     this.textColor = colorWhite,
     this.textSize = TextSizes.fourteen,
@@ -45,7 +46,8 @@ class CustomButton extends StatefulWidget {
     this.borderRadius = 6,
     this.action,
     this.enabled = true,
-  });
+    this.textDecoration,
+  }) : super(key: key);
 
   @override
   _CustomButtonState createState() => _CustomButtonState();
@@ -83,6 +85,7 @@ class _CustomButtonState extends State<CustomButton> {
   get iconData => widget.iconData;
   get action => widget.action;
   get enabled => widget.enabled;
+  get textDecoration => widget.textDecoration;
 
   bool _isPressed = false;
 
@@ -119,18 +122,25 @@ class _CustomButtonState extends State<CustomButton> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              (text != null && text.isNotEmpty) ? Expanded(
-                child: Text(text,
-                    textAlign: textAlign,
-                    style: TextStyles.montserratMedium(
-                        textSize: textSize, textColor: textColor)),
-              ) : Container(),
+              (text != null && text.isNotEmpty)
+                  ? Expanded(
+                      child: Text(
+                        text,
+                        textAlign: textAlign,
+                        style: TextStyles.montserratMedium(
+                          textSize: textSize,
+                          textColor: textColor,
+                          textDecoration: textDecoration ?? TextDecoration.none,
+                        ),
+                      ),
+                    )
+                  : Container(),
               if (icon != null)
                 SvgPicture.asset(
-                        icon,
-                        height: iconHeight,
-                        width: iconWidth,
-                      ),
+                  icon,
+                  height: iconHeight,
+                  width: iconWidth,
+                ),
               if (iconData != null)
                 Icon(
                   iconData,

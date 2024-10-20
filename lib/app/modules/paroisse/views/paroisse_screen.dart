@@ -13,6 +13,7 @@ import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/customhome/views/widget/search_widget.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/paroisse_item.dart';
+import 'package:oremusapp/generated/assets.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ParoisseScreen extends StatefulWidget {
@@ -302,53 +303,8 @@ class _ParoisseScreenState extends State<ParoisseScreen> {
                         },
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
-                          width: _.isExtended.isTrue ? 250.0 : 70.0,
-                          height: 70,
-                          child: FloatingActionButton.extended(
-                            onPressed: () {
-                              _.doMoveRequestMass();
-                            },
-                            backgroundColor: colorGreen,
-                            enableFeedback: true,
-                            tooltip: 'Demande de messe ${fabSize}',
-                            foregroundColor: colorWhite,
-                            label: _.isExtended.isTrue
-                                ? Text(
-                              "Demande de messe",
-                              style: TextStyles.montserratSemiBold(
-                                textSize: TextSizes.fifteen,
-                                textColor: colorWhite,
-                              ),
-                            )
-                                : SvgPicture.asset(
-                              'assets/images/icon_pray.svg',
-                              height: 35,
-                            ),
-                            icon: _.isExtended.isTrue
-                                ? SvgPicture.asset(
-                              'assets/images/icon_pray.svg',
-                              height: 35,
-                            )
-                                : const SizedBox.shrink(),
-                          ),
-                        ),
-                      ),
-                    ),
-                    /*AnimatedPositioned(
-                      duration: const Duration(milliseconds: 100),  // Adjust for desired smoothness
-                      right: _.offset.value.dx,
-                      bottom: _.offset.value.dy,
-                      child: GestureDetector(
-                        onPanUpdate: (details) {
-                          _.offset.value = Offset(
-                            _.offset.value.dx - details.delta.dx,
-                            _.offset.value.dy - details.delta.dy,
-                          );
-                        },
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          width: _.isExtended.isTrue ? 250.0 : 70.0,
-                          height: 70,
+                          width: _.isExtended.isTrue ? 250.0 : 75.0,
+                          height: 75.0,
                           child: FloatingActionButton.extended(
                             onPressed: () {
                               _.doMoveRequestMass();
@@ -357,6 +313,8 @@ class _ParoisseScreenState extends State<ParoisseScreen> {
                             enableFeedback: true,
                             tooltip: 'Demande de messe',
                             foregroundColor: colorWhite,
+                            extendedIconLabelSpacing: 0,
+                            extendedPadding: EdgeInsets.zero,
                             label: _.isExtended.isTrue
                                 ? Text(
                               "Demande de messe",
@@ -365,20 +323,24 @@ class _ParoisseScreenState extends State<ParoisseScreen> {
                                 textColor: colorWhite,
                               ),
                             )
-                                : SvgPicture.asset(
-                              'assets/images/icon_pray.svg',
-                              height: 35,
+                                : Center(  // Centrer l'icône lorsque réduit
+                              child: SvgPicture.asset(
+                                Assets.imagesMesse,
+                                height: 35,
+                                colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),
+                              ),
                             ),
                             icon: _.isExtended.isTrue
                                 ? SvgPicture.asset(
-                              'assets/images/icon_pray.svg',
+                              Assets.imagesMesse,
                               height: 35,
+                              colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),
                             )
-                                : const SizedBox.shrink(),
+                                : const SizedBox.shrink(),  // Aucune icône supplémentaire si réduit
                           ),
                         ),
                       ),
-                    ),*/
+                    ),
                   ],
                 ),
               ),

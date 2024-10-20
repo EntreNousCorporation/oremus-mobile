@@ -38,6 +38,8 @@ class ProfileController extends GetxController {
 
   var isDataProcessing = false.obs;
   var hasData = false.obs;
+  var hasError = false.obs;
+  var errorMessage = ''.obs;
   var userInfo = Profile().obs;
   var isActive = true.obs;
 
@@ -85,6 +87,7 @@ class ProfileController extends GetxController {
       }
       isDataProcessing(false);
       hasData(true);
+      hasError(false);
       userInfo.value = value;
       updateUI(userInfo.value);
       profileRepository.saveUserProfile(value);
@@ -94,6 +97,7 @@ class ProfileController extends GetxController {
       }
       isDataProcessing(false);
       hasData(false);
+      hasError(true);
       var err = error as CustomException;
       if (err.code == 401) {
         showCustomDialog(
@@ -105,6 +109,7 @@ class ProfileController extends GetxController {
       } else if (err.code == 900) {
         showNotification(message: err.message.toString());
       }
+      errorMessage.value = err.message ?? 'Une erreur est survenue';
       debugPrint("error => ${error.toString()}");
     });
   }

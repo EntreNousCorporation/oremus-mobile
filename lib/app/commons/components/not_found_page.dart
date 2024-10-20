@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animator/widgets/fading_entrances/fade_in.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:oremusapp/app/commons/components/button.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
@@ -12,6 +13,10 @@ class NotFoundScreen extends StatelessWidget {
       {this.lottieIcon = Assets.imagesLottieEmptySearch,
       this.repeated = false,
       this.circled = true,
+        this.doAction,
+        this.buttonTitle,
+        this.textSize,
+        this.separatorWidget,
       required this.message,
       Key? key})
       : super(key: key);
@@ -19,6 +24,10 @@ class NotFoundScreen extends StatelessWidget {
   var repeated;
   var circled;
   var message = '';
+  String? buttonTitle = '';
+  Function? doAction;
+  Widget? separatorWidget;
+  double? textSize;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +55,26 @@ class NotFoundScreen extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyles.montserratMedium(
                   textSize: TextSizes.eighteen, textColor: colorBlack),
+            ),
+          ),
+          Visibility(
+            visible: doAction != null,
+            child: Column(
+              children: [
+                separatorWidget ?? Separators.normalVertical(),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Get.width / 10),
+                  child: CustomButton(
+                    text: buttonTitle ?? 'Réessayer',
+                    textSize: textSize ?? TextSizes.seventeen,
+                    textColor: colorGreen,
+                    borderColor: colorTransparent,
+                    bgcolor: colorWhite,
+                    textDecoration: TextDecoration.underline,
+                    action: doAction?.call,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

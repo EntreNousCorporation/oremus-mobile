@@ -9,6 +9,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/type_menu.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:oremusapp/generated/assets.dart';
 
 class ParoisseMenuController extends GetxController {
   final ParoisseRepository paroisseRepository;
@@ -43,7 +44,7 @@ class ParoisseMenuController extends GetxController {
       TypeMenu(
         code: 'HM',
         title: 'Horaires des messes',
-        icon: 'assets/images/messe.svg',
+        icon: Assets.imagesMesse,
         isPngImage: false,
         activeTint: colorGreenSemiLight,
         goToPage: () async {
@@ -64,7 +65,7 @@ class ParoisseMenuController extends GetxController {
       TypeMenu(
         code: 'HC',
         title: 'Horaires des confessions',
-        icon: 'assets/images/confession_icon.svg',
+        icon: Assets.imagesConfessionIcon,
         isPngImage: false,
         activeTint: colorGreenSemiLight,
         goToPage: () async {
@@ -85,7 +86,7 @@ class ParoisseMenuController extends GetxController {
       TypeMenu(
         code: 'HB',
         title: 'Horaires des bureaux',
-        icon: 'assets/images/calendar.svg',
+        icon: Assets.imagesCalendar,
         isPngImage: false,
         activeTint: colorGreenSemiLight,
         goToPage: () async {
@@ -105,7 +106,7 @@ class ParoisseMenuController extends GetxController {
       TypeMenu(
         code: 'AM',
         title: 'Activités & mouvements',
-        icon: 'assets/images/group.svg',
+        icon: Assets.imagesGroup,
         isPngImage: false,
         activeTint: colorGreenSemiLight,
         goToPage: () async {
@@ -126,7 +127,7 @@ class ParoisseMenuController extends GetxController {
       TypeMenu(
         code: 'EP',
         title: 'Equipe presbytérale',
-        icon: 'assets/images/priest_icon.svg',
+        icon: Assets.imagesPriestIcon,
         isPngImage: false,
         activeTint: colorGreenSemiLight,
         goToPage: () async {
@@ -147,7 +148,7 @@ class ParoisseMenuController extends GetxController {
       TypeMenu(
         code: 'CO',
         title: 'Contacts',
-        icon: 'assets/images/contacts.svg',
+        icon: Assets.imagesContacts,
         isPngImage: false,
         activeTint: colorGreenSemiLight,
         goToPage: () async {
@@ -168,7 +169,7 @@ class ParoisseMenuController extends GetxController {
       TypeMenu(
         code: 'IP',
         title: 'Infos paroissiales',
-        icon: 'assets/images/icon_infos_paroissiales.svg',
+        icon: Assets.imagesIconInfosParoissiales,
         isPngImage: false,
         activeTint: colorGreenSemiLight,
         goToPage: () async {
@@ -191,7 +192,7 @@ class ParoisseMenuController extends GetxController {
       TypeMenu(
         code: 'DM',
         title: 'Demandes de messe',
-        icon: 'assets/images/icon_demande_de_messe.svg',
+        icon: Assets.imagesIconDemandeDeMesse,
         isPngImage: false,
         activeTint: colorGreenSemiLight,
         goToPage: () async {

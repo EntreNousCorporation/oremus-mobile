@@ -241,16 +241,11 @@ class FilterMassRequestWorshipScreen extends StatelessWidget {
                                                       );
                                                     },
                                                   ),
-                                                  controller:
-                                                      _.refreshController,
-                                                  physics: GetPlatform.isAndroid
-                                                      ? const BouncingScrollPhysics()
-                                                      : null,
+                                                  controller: _.refreshController,
+                                                  physics: const BouncingScrollPhysics(),
                                                   child: ListView.separated(
-                                                    physics:
-                                                        const NeverScrollableScrollPhysics(),
-                                                    padding:
-                                                        const EdgeInsets.only(
+                                                    physics: const NeverScrollableScrollPhysics(),
+                                                    padding: const EdgeInsets.only(
                                                       top: 16,
                                                       right: 16,
                                                       left: 16,

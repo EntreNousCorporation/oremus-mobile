@@ -41,7 +41,7 @@ class MassRequestMenuController extends GetxController {
       TypeMenu(
         code: 'FDM',
         title: 'Faire une demande de messe',
-        icon: Assets.imagesIconPray,
+        icon: Assets.imagesMesse,
         isPngImage: false,
         activeTint: colorGreenSemiLight,
         bgColor: colorGreenLight,

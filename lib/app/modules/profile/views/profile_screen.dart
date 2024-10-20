@@ -357,9 +357,20 @@ class ProfileScreen extends StatelessWidget {
                                             ),
                                           ),
                                         )
-                                      : Expanded(
+                                      : _.hasError.isTrue ? Expanded(
+                                          child: NotFoundScreen(
+                                            message: _.errorMessage.value,
+                                            doAction: () {
+                                              _.getProfile();
+                                            },
+                                          ),
+                                        ) : Expanded(
                                           child: NotFoundScreen(
                                             message: "Aucune information trouvée !",
+                                            buttonTitle: 'Rafraîchir',
+                                            doAction: () {
+                                              _.getProfile();
+                                            },
                                           ),
                                         ),
                             ],

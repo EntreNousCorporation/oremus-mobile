@@ -180,11 +180,70 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                             ),
                             Separators.maximum1Vertical(),
 
+                            //NUMBER OF MASS
+                            Text(
+                              'Répétition',
+                              style: TextStyles.montserratMedium(
+                                textColor: colorGrey1,
+                                textSize: TextSizes.fourteen,
+                              ),
+                            ),
+                            Separators.customSizeVertical(8),
+                            Material(
+                              borderRadius: BorderRadius.circular(10.0),
+                              elevation: 10,
+                              color: colorWhite,
+                              shadowColor: colorGrey2.withOpacity(0.5),
+                              child: const MassTypeWithoutRepetitionFilter(),
+                            ),
+
+                            Separators.maximumVertical(),
+                            Visibility(
+                              visible: _.massRequestTypeRepetitionSelected.value?.code == 'many',
+                              child: Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      _.goToDatesChoice();
+                                    },
+                                    child: Material(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      elevation: 10,
+                                      color: colorWhite,
+                                      shadowColor: colorGrey2.withOpacity(0.5),
+                                      child: _.isDatesProcessing.isTrue ? const ShimmerPrice(height: 50) : Container(
+                                        padding: const EdgeInsets.all(12),
+                                        width: double.maxFinite,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment
+                                              .spaceBetween,
+                                          children: [
+                                            Text(
+                                              'Choisir les horaires de messe',
+                                              style: TextStyles.montserratMedium(
+                                                textColor: colorGrey1,
+                                                textSize: TextSizes.fourteen,
+                                              ),
+                                            ),
+                                            Icon(
+                                              (_.datesChoosen.length > 1 && _.massRequestTypeRepetitionSelected.value?.code == 'many') ? Icons.check_circle : Icons.arrow_drop_down_rounded,
+                                              size: 25,
+                                              color: _.worshipHours.isNotEmpty ? colorGreen : colorGrey1.withOpacity(0.5),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Separators.maximumVertical(),
+                                ],
+                              ),
+                            ),
+
                             //WORSHIP HOURS
                             Visibility(
-                              visible: _.paroisseSelected.value.identifier != null,
+                              visible: _.massRequestTypeRepetitionSelected.value?.code == 'once',
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
                                     children: [
@@ -221,7 +280,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                                                         _.selectedDate.value?.dayToDisplay ?? 'Aucun horaire de messe',
                                                         style: TextStyles.montserratBold(
                                                           textColor: _.selectedDate.value != null ? colorBlack : colorRed,
-                                                          textSize: _.selectedDate.value != null ? TextSizes.sixteen : TextSizes.thirteen,
+                                                          textSize: _.selectedDate.value != null ? TextSizes.sixteen : TextSizes.fourteen,
                                                         ),
                                                       ),
                                                       Icon(
@@ -262,67 +321,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-
                                   Separators.maximumVertical(),
-                                  //NUMBER OF MASS
-                                  Text(
-                                    'Répétition',
-                                    style: TextStyles.montserratMedium(
-                                      textColor: colorGrey1,
-                                      textSize: TextSizes.fourteen,
-                                    ),
-                                  ),
-                                  Separators.customSizeVertical(8),
-                                  Material(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    elevation: 10,
-                                    color: colorWhite,
-                                    shadowColor: colorGrey2.withOpacity(0.5),
-                                    child: const MassTypeWithoutRepetitionFilter(),
-                                  ),
-                                  Separators.maximumVertical(),
-                                  Visibility(
-                                    visible: _.massRequestTypeRepetitionSelected.value?.code == 'many',
-                                    child: Column(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            //showNotification(message: 'Bientôt disponible !');
-                                            _.goToDatesChoice();
-                                          },
-                                          child: Material(
-                                            borderRadius: BorderRadius.circular(10.0),
-                                            elevation: 10,
-                                            color: colorWhite,
-                                            shadowColor: colorGrey2.withOpacity(0.5),
-                                            child: _.isDatesProcessing.isTrue ? const ShimmerPrice(height: 50) : Container(
-                                              padding: const EdgeInsets.all(12),
-                                              width: double.maxFinite,
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment
-                                                    .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    'Choisir les horaires de messe',
-                                                    style: TextStyles.montserratMedium(
-                                                      textColor: colorGrey1,
-                                                      textSize: TextSizes.fourteen,
-                                                    ),
-                                                  ),
-                                                  Icon(
-                                                    (_.datesChoosen.length > 1 && _.massRequestTypeRepetitionSelected.value?.code == 'many') ? Icons.check_circle : Icons.arrow_drop_down_rounded,
-                                                    size: 25,
-                                                    color: _.worshipHours.isNotEmpty ? colorGreen : colorGrey1.withOpacity(0.5),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Separators.maximumVertical(),
-                                      ],
-                                    ),
-                                  ),
                                 ],
                               ),
                             ),
