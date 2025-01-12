@@ -266,6 +266,7 @@ class MassRequestController extends GetxController {
     var recurentHour = worshipRecurrentHours.value.firstWhereOrNull((element) {
       return int.parse(element.dayOfWeek ?? '0') == (datetime.weekday - 1);
     });
+    log('recurentHour ::: ${recurentHour?.toJson()}');
 
     // Vérifier s'il y a des créneaux horaires disponibles pour ce jour
     List<Slot>? tempSlots = recurentHour?.slots ?? [];
@@ -309,18 +310,36 @@ class MassRequestController extends GetxController {
           return slotTime.hour < 18;
         });
       } else {
+        for (var i in selectedHours) {
+          log('selectedHours 1 ::: ${i?.toJson()}');
+        }
         // Entre 15h01 et 00h00, afficher les créneaux à partir de 12h00 le lendemain
         datetime = datetime.add(const Duration(days: 1)); // Passer au lendemain
         recurentHour = worshipRecurrentHours.value.firstWhereOrNull((element) {
           return int.parse(element.dayOfWeek ?? '0') == (datetime.weekday - 1);
         });
-        tempSlots = recurentHour?.slots ?? [];
+        for (var i in selectedHours) {
+          log('selectedHours 2 ::: ${i?.toJson()}');
+        }
+        log('recurentHour ::: ${recurentHour?.toJson()}');
+        //tempSlots = recurentHour?.slots ?? [];
+        tempSlots.clear();
+        for (var i in selectedHours) {
+          if (i != null) {
+            tempSlots.add(i);
+          }
+        }
         selectedHours.clear();
         for (var i in tempSlots) {
           TimeOfDay slotTime = parseTime(i.startTime ?? '');
+          log('slotTime ::: ${slotTime.hour}');
+          log('i ::: ${i.startTime}');
           if (slotTime.hour >= 12) {
             selectedHours.add(i); // Ajouter seulement les créneaux après 12h
           }
+        }
+        for (var i in selectedHours) {
+          log('selectedHours ::: ${i?.toJson()}');
         }
       }
     }
