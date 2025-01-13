@@ -582,6 +582,7 @@ class MassRequestController extends GetxController {
           },
           negativeLabel: 'NON',
         );
+        return;
       }
       showNotification(
           message: 'Une erreur est survenue',
