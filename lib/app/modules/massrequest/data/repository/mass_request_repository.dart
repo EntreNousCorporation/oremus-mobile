@@ -54,10 +54,15 @@ class MassRequestRepository implements IMassRequestRepository {
 
   @override
   Future<PriceResponse> getMassRequestPrice({required List<PriceData?> request, required String workshipId}) async {
+    final requestData = request
+        .where((element) => element != null)
+        .map((e) => e!.toJson())
+        .toList();
+
     Response response = await _apiClient.doRequest(
       endpoint: "/mass-requests/$workshipId/quotation",
       method: HttpMethod.post,
-      body: jsonEncode(request),
+      body: requestData,
     );
     log('resp getMassRequestPrice => ${response.statusCode}');
 

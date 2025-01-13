@@ -530,7 +530,7 @@ class MassRequestController extends GetxController {
     });
   }
 
-  doSendMassRequest() {
+  doSendMassRequest({bool? forceDuplicateCreation}) {
     hideKeyboard();
     EasyLoading.show(
       status: 'Traitement en cours...',
@@ -547,6 +547,7 @@ class MassRequestController extends GetxController {
       typeOfMassRequest: massRequestTypeSelected.value?.code,
       slots: datesChoosen,
       worshipPlace: paroisseSelected.value.identifier,
+      forceDuplicateCreation: forceDuplicateCreation,
     );
 
     log('request doSendMassRequest => ${jsonEncode(request.toJson())}');
@@ -569,11 +570,22 @@ class MassRequestController extends GetxController {
         ).then((value) {
           doLogout();
         });
-      } else {
-        showNotification(
-            message: 'Une erreur est survenue',
-            duration: const Duration(seconds: 4));
+        return;
       }
+      if (err.code == 409) {
+        showCustomDialog(
+          Get.context!,
+          message: 'Vous venez de faire une demande de messe identique. Souhaitez-vous confirmer cette demande ?',
+          positiveLabel: 'OUI',
+          positiveCallBack: () {
+            doSendMassRequest(forceDuplicateCreation: true);
+          },
+          negativeLabel: 'NON',
+        );
+      }
+      showNotification(
+          message: 'Une erreur est survenue',
+          duration: const Duration(seconds: 4));
     });
   }
 

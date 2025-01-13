@@ -8,6 +8,7 @@ import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/commons/internet_checker/internet_connection_checker.dart';
+import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
 import 'package:oremusapp/main.dart';
@@ -50,19 +51,38 @@ class ApiClientImpl extends ApiClient {
     Response response;
     var resp;
 
+    dynamic processedBody = body;
+
+    // Process the body if it's not null
+    if (body != null) {
+      if (body is Map<String, dynamic>) {
+        processedBody = removeNullFields(body);
+      } else if (body is List) {
+        // Si c'est une liste d'objets
+        processedBody = body.map((item) {
+          if (item is Map<String, dynamic>) {
+            return removeNullFields(item);
+          }
+          return item;
+        }).toList();
+      }
+    }
+
+    log('request Body => $processedBody');
+
     try {
       switch (method) {
         case HttpMethod.get:
           response = await get(appUrl + endpoint, headers: headers);
           break;
         case HttpMethod.post:
-          response = await post(appUrl + endpoint, body, headers: headers);
+          response = await post(appUrl + endpoint, processedBody, headers: headers);
           break;
         case HttpMethod.patch:
-          response = await patch(appUrl + endpoint, body, headers: headers);
+          response = await patch(appUrl + endpoint, processedBody, headers: headers);
           break;
         case HttpMethod.put:
-          response = await put(appUrl + endpoint, body, headers: headers);
+          response = await put(appUrl + endpoint, processedBody, headers: headers);
           break;
         case HttpMethod.delete:
           response = await delete(appUrl + endpoint, headers: headers);

@@ -39,10 +39,9 @@ class SignupScreen extends StatelessWidget {
                     reverse: false,
                     child: SafeArea(
                       child: GetX<SignupController>(
-                        initState: (_) {},
                         builder: (_) {
-                          return WillPopScope(
-                            onWillPop: () async => _.unlockBackButton.value,
+                          return PopScope(
+                            canPop: _.unlockBackButton.value,
                             child: AbsorbPointer(
                               absorbing: _.lockScreen.value,
                               child: Container(
@@ -153,8 +152,7 @@ class SignupScreen extends StatelessWidget {
                                                 controller: _.phoneController,
                                                 hintText: '',
                                                 labelText: 'Téléphone',
-                                                prefixIcon:
-                                                    "assets/images/icon_phone.svg",
+                                                prefixIcon: Assets.imagesIconPhone,
                                                 //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
                                                 prefixIconColor: colorGrey1,
                                                 keyboardType:
@@ -163,6 +161,7 @@ class SignupScreen extends StatelessWidget {
                                                 maskInputs: [
                                                   ObjectSeparatorInputFormatter(
                                                       groupBy: 2),
+                                                  FilteringTextInputFormatter.deny('00'),
                                                   FilteringTextInputFormatter
                                                       .allow(RegExp(AppConstants
                                                           .INPUT_NUM_REGEX)),
@@ -179,8 +178,7 @@ class SignupScreen extends StatelessWidget {
                                                 controller: _.emailController,
                                                 hintText: '',
                                                 labelText: 'E-mail',
-                                                prefixIcon:
-                                                    "assets/images/icon_enveloppe.svg",
+                                                prefixIcon: Assets.imagesIconEnveloppe,
                                                 //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
                                                 prefixIconColor: colorGrey1,
                                                 keyboardType:
@@ -201,8 +199,7 @@ class SignupScreen extends StatelessWidget {
                                                 hintText: '',
                                                 labelText: 'Mot de passe',
                                                 isPassword: true,
-                                                prefixIcon:
-                                                    "assets/images/icon_password_profil.svg",
+                                                prefixIcon: Assets.imagesIconPasswordProfil,
                                                 prefixIconColor: colorGrey1,
                                                 onChanged: (value) {
                                                   _.checkForm();
@@ -220,8 +217,7 @@ class SignupScreen extends StatelessWidget {
                                                 labelText:
                                                     'Confirmer le mot de passe',
                                                 isPassword: true,
-                                                prefixIcon:
-                                                    "assets/images/icon_password_profil.svg",
+                                                prefixIcon: Assets.imagesIconPasswordProfil,
                                                 prefixIconColor: colorGrey1,
                                                 onChanged: (value) {
                                                   _.checkForm();
@@ -236,8 +232,7 @@ class SignupScreen extends StatelessWidget {
                                                 height: 40,
                                                 child: CustomButton(
                                                   paddingVertical: 5,
-                                                  icon:
-                                                      'assets/images/icon_arrow_right.svg',
+                                                  icon: Assets.imagesIconArrowRight,
                                                   bgcolor: _.isValidForm.isTrue
                                                       ? colorGreen
                                                       : colorGrey1
@@ -288,7 +283,7 @@ class SignupScreen extends StatelessWidget {
                                                           const EdgeInsets.only(
                                                               right: 12.0),
                                                       child: SvgPicture.asset(
-                                                        'assets/images/google_logo.svg',
+                                                        Assets.imagesGoogleLogo,
                                                         height: 35,
                                                       ),
                                                     ),
@@ -297,7 +292,7 @@ class SignupScreen extends StatelessWidget {
                                                           const EdgeInsets.only(
                                                               left: 12.0),
                                                       child: SvgPicture.asset(
-                                                        'assets/images/facebook_logo.svg',
+                                                        Assets.imagesFacebookLogo,
                                                         height: 35,
                                                       ),
                                                     ),
