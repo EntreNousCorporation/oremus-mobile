@@ -54,7 +54,7 @@ class MassRequestScreen extends StatelessWidget {
                         Get.back();
                         Get.delete<FilterMassRequestDateController>(force: true);
                       },
-                      icon: const Icon(Icons.arrow_back_ios_rounded),
+                      icon: const Icon(Icons.arrow_back_ios_rounded, color: colorWhite,),
                     ),
                     actions: [
                       Visibility(
@@ -100,7 +100,7 @@ class MassRequestScreen extends StatelessWidget {
                         onPressed: () {
                           _.goToMap();
                         },
-                        icon: const Icon(Icons.map_rounded),
+                        icon: const Icon(Icons.map_rounded, color: colorWhite,),
                       ),
                     ],
                     flexibleSpace: FlexibleSpaceBar(

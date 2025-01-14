@@ -111,22 +111,30 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                   runSpacing: 15,
                   spacing: 0,
                   direction: Axis.horizontal,
-                  children: (item.slots ?? []).map<Widget>((e) {
-                    bool isHourSelectable = isSelectable &&
-                        isHourAvailable(e.startTime, currentDayDate, ruleBasedDate);
+                  children: (item.slots ?? []).map<Widget>((slot) {
+                    final isHourSelectable = isSelectable &&
+                        isHourAvailable(slot.startTime, currentDayDate, ruleBasedDate);
+
+                    final isSelected = _.isSlotSelected(
+                        item.dayOfWeek ?? '0',
+                        slot.startTime ?? ''
+                    );
 
                     return GestureDetector(
                       onTap: !isHourSelectable
                           ? () {
                         showNotification(
                           message: isFirstDay
-                              ? 'Les horaires avant 12h ne sont pas disponibles pour la première date déterminée par les règles horaires'
+                              ? 'Les horaires avant 12h ne sont pas disponibles'
                               : 'Cette heure n\'est pas disponible',
                           bgColor: colorBlue2,
                         );
                       }
                           : () {
-                        e.isHourSelected = !e.isHourSelected!;
+                        _.toggleSlotSelection(
+                            item.dayOfWeek ?? '0',
+                            slot.startTime ?? ''
+                        );
                         _.onWorshipRecurrentHoursSelected(item, true);
                       },
                       child: Opacity(
@@ -138,31 +146,27 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                             Container(
                               margin: const EdgeInsets.symmetric(horizontal: 8.0),
                               decoration: BoxDecoration(
-                                color: e.isHourSelected == true
-                                    ? colorGreenSemiLight
-                                    : colorWhite,
+                                color: isSelected ? colorGreenSemiLight : colorWhite,
                                 border: Border.all(
-                                    color: isHourSelectable
-                                        ? colorGreenSemiLight
-                                        : colorGrey1
+                                    color: isHourSelectable ? colorGreenSemiLight : colorGrey1
                                 ),
                                 borderRadius: BorderRadius.circular(Get.width / 10),
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: Text(
-                                  '${e.startTime}',
+                                  '${slot.startTime}',
                                   textAlign: TextAlign.center,
                                   style: TextStyles.montserratSemiBold(
                                     textSize: TextSizes.fourteen,
-                                    textColor: e.isHourSelected == true
+                                    textColor: isSelected
                                         ? colorWhite
                                         : (isHourSelectable ? colorBlack : colorGrey1),
                                   ),
                                 ),
                               ),
                             ),
-                            if (e.isHourSelected == true)
+                            if (isSelected)
                               Positioned(
                                 top: -8,
                                 right: 3,

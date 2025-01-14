@@ -186,8 +186,8 @@ class MassRequestController extends GetxController {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: initialDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: AppConstants.END_DATE_LIMIT)),
+      firstDate: allowedDatesNormalized.reduce((a, b) => a.isBefore(b) ? a : b), // La plus petite date autorisée
+      lastDate: allowedDatesNormalized.reduce((a, b) => a.isAfter(b) ? a : b),   // La plus grande date autorisée
       selectableDayPredicate: (DateTime day) {
         DateTime normalizedDay = DateTime(day.year, day.month, day.day);
         return allowedDatesNormalized.contains(normalizedDay);

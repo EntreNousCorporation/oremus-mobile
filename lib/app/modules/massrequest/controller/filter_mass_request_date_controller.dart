@@ -16,6 +16,29 @@ import 'package:oremusapp/app/modules/massrequest/views/widget/recap_dialog.dart
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
 
+class SelectionState {
+  final String dayOfWeek;
+  final String startTime;
+  bool isSelected;
+
+  SelectionState({
+    required this.dayOfWeek,
+    required this.startTime,
+    this.isSelected = false,
+  });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is SelectionState &&
+              runtimeType == other.runtimeType &&
+              dayOfWeek == other.dayOfWeek &&
+              startTime == other.startTime;
+
+  @override
+  int get hashCode => dayOfWeek.hashCode ^ startTime.hashCode;
+}
+
 class FilterMassRequestDateController extends GetxController/* with WidgetsBindingObserver*/ {
   FilterMassRequestDateController();
 
@@ -53,10 +76,34 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
   var initialSelectedDate = Rx<PriceData?>(null);
   var endSelectedDate = Rx<PriceData?>(null);
 
+  //------------------------------------
+  // Gardons une trace explicite des slots sélectionnés
+  final RxSet<String> selectedSlotKeys = <String>{}.obs;
+
+  // Créer une clé unique pour chaque slot
+  String _createSlotKey(String dayOfWeek, String startTime) {
+    return '$dayOfWeek-$startTime';
+  }
+
+  void toggleSlotSelection(String dayOfWeek, String startTime) {
+    final slotKey = _createSlotKey(dayOfWeek, startTime);
+    if (selectedSlotKeys.contains(slotKey)) {
+      selectedSlotKeys.remove(slotKey);
+    } else {
+      selectedSlotKeys.add(slotKey);
+    }
+    update();
+  }
+
+  bool isSlotSelected(String dayOfWeek, String startTime) {
+    return selectedSlotKeys.contains(_createSlotKey(dayOfWeek, startTime));
+  }
+
   @override
   void onInit() {
     getArguments();
     super.onInit();
+    resetSelections();
   }
 
   getArguments() {
@@ -79,6 +126,24 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
       doRefreshHoursOnInit();
     }
   }
+
+  List<Slot> getSelectedHoursForDay(String dayOfWeek) {
+    final daySlots = worshipRecurrentHours
+        .firstWhere((hour) => hour.dayOfWeek == dayOfWeek,
+        orElse: () => PriceData())
+        .slots ?? [];
+
+    return daySlots.where((slot) =>
+        selectedSlotKeys.contains(_createSlotKey(dayOfWeek, slot.startTime ?? ''))
+    ).toList();
+  }
+
+  // Ajouter une méthode pour réinitialiser les sélections
+  void resetSelections() {
+    selectedSlotKeys.clear();
+    update();
+  }
+
 
   doRefreshHoursOnInit() {
     for (PriceData i in worshipRecurrentHours) {
@@ -241,18 +306,27 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
     );
 
     if (selected != null) {
+      // Réinitialiser toutes les sélections
+      resetSelections();  // Réinitialiser les slots
+      resetRecurrentHours();  // Réinitialiser les heures récurrentes
+      resetSpecialHours();  // Réinitialiser les heures spéciales
+
       String day = selected.day.toString().padLeft(2, '0');
       String month = selected.month.toString().padLeft(2, '0');
 
       endSelectedDate.value?.day = "${selected.year}-$month-$day";
       endSelectedDate.value?.dayToDisplay = "$day-$month-${selected.year}";
       endSelectedDate.refresh();
+
       doRefreshHoursAfterAction();
       datesChoosenForWorshipRecurrentHours.value = countOccurrencesAndAssignDates(
           Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime,
           selected,
           datesChoosenForWorshipRecurrentHours.value
       );
+
+      // Mettre à jour l'état du bouton de continuation
+      canDoApplyAction();
     }
   }
 
@@ -378,39 +452,114 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
   canDoApplyAction() {
     bool hasSelectedSpecialHours = false;
     bool hasSelectedRecurrentHours = false;
-    bool hasSelectedRecurrentDay = false;
+
+    // Vérifier les horaires spéciaux
     for (PriceData? item in datesChoosenWorshipSpecialHours) {
-      var slots =
-          item?.slots?.where((element) => element.isHourSelected == true);
+      var slots = item?.slots?.where((element) => element.isHourSelected == true);
       if (slots?.isNotEmpty == true) {
         hasSelectedSpecialHours = true;
         break;
       }
     }
+
+    // Vérifier les horaires récurrents
     for (PriceData? item in datesChoosenForWorshipRecurrentHours) {
-      hasSelectedRecurrentDay = item?.isDaySelected == true;
-      var slots = item?.slots?.where((element) => element.isHourSelected == true);
-      if (slots?.isNotEmpty == true) {
+      var selectedSlots = selectedSlotKeys.where((slotKey) =>
+          slotKey.startsWith('${item?.dayOfWeek}-')
+      );
+
+      if (selectedSlots.isNotEmpty) {
         hasSelectedRecurrentHours = true;
         break;
       }
     }
+
     enabledApplyButton.value = hasSelectedRecurrentHours || hasSelectedSpecialHours;
   }
 
-  setDatas() {
-  datesChoosen.clear();
-  var selectedRecurentHours = _filterSelectedSlots(datesChoosenForWorshipRecurrentHours);
-  //var selectedSpecialHours = _filterSelectedSlots(datesChoosenWorshipSpecialHours);
-  //datesChoosen.addAll(selectedRecurentHours);
-  log('Before datesChoosen ::: ${jsonEncode(selectedRecurentHours)}');
-  datesChoosen.value = duplicateEventsByRepeat(selectedRecurentHours).where((e) => e.slots?.isNotEmpty == true).toList();
-  //datesChoosen.value = _mergeDayLists(selectedRecurentHours, selectedSpecialHours);
-  log('After datesChoosen ::: ${jsonEncode(datesChoosen)}');
-}
+  void setDatas() {
+    datesChoosen.clear();
+    var selectedRecurentHours = _filterSelectedSlots(datesChoosenForWorshipRecurrentHours);
 
-  moveToRecap() {
+    log('selectedRecurentHours ::: ${jsonEncode(selectedRecurentHours)}');
+
+    datesChoosen.value = duplicateEventsByRepeat(selectedRecurentHours)
+        .where((e) => e.slots?.isNotEmpty == true)
+        .toList();
+
+    log('Before datesChoosen ::: ${jsonEncode(selectedRecurentHours)}');
+    log('After datesChoosen ::: ${jsonEncode(datesChoosen)}');
+  }
+
+  void prepareRecapData() {
+    datesChoosenForWorshipRecurrentHours.clear();
+
+    for (var day in worshipRecurrentHours) {
+      final dayOfWeek = day.dayOfWeek ?? '0';
+      final selectedHours = getSelectedHoursForDay(dayOfWeek);
+
+      if (selectedHours.isNotEmpty) {
+        // Marquer explicitement les slots sélectionnés
+        final selectedSlotsWithSelection = selectedHours.map((slot) {
+          return Slot(
+              identifier: slot.identifier,
+              createdAt: slot.createdAt,
+              updatedAt: slot.updatedAt,
+              createdBy: slot.createdBy,
+              modifiedBy: slot.modifiedBy,
+              startTime: slot.startTime,
+              endTime: slot.endTime,
+              isHourSelected: true  // Forcer à true ici
+          );
+        }).toList();
+
+        final dayData = PriceData(
+            dayOfWeek: dayOfWeek,
+            slots: selectedSlotsWithSelection,
+            repeat: day.repeat,
+            dates: day.dates,
+            day: day.day,
+            dayToDisplay: day.dayToDisplay,
+        );
+        datesChoosenForWorshipRecurrentHours.add(dayData);
+      }
+    }
+
+    update();
+  }
+
+  void prepareRecapDataBack() {
+    datesChoosenForWorshipRecurrentHours.clear();
+
+    for (var day in worshipRecurrentHours) {
+      final dayOfWeek = day.dayOfWeek ?? '0';
+      final selectedHours = getSelectedHoursForDay(dayOfWeek);
+
+      if (selectedHours.isNotEmpty) {
+        final dayData = PriceData(
+          dayOfWeek: dayOfWeek,
+          slots: selectedHours,
+          repeat: day.repeat,
+          dates: day.dates,
+          day: day.day,
+          dayToDisplay: day.dayToDisplay,
+        );
+        datesChoosenForWorshipRecurrentHours.add(dayData);
+      }
+    }
+
+    log('prepareRecapData datesChoosenForWorshipRecurrentHours ::: ${jsonEncode(datesChoosenForWorshipRecurrentHours)}');
+
+    update();
+  }
+
+  void moveToRecap() {
     if (enabledApplyButton.value) {
+      prepareRecapData();
+
+      // Ajoutez des logs de débogage
+      log('datesChoosenForWorshipRecurrentHours before setDatas: ${jsonEncode(datesChoosenForWorshipRecurrentHours)}');
+
       setDatas();
       recapDialog();
     }
