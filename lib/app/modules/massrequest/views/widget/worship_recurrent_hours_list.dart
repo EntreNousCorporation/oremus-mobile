@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
+import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
@@ -11,10 +12,35 @@ import 'package:oremusapp/app/modules/massrequest/controller/filter_mass_request
 class WorshipRecurrentHoursList extends StatelessWidget {
   const WorshipRecurrentHoursList({Key? key}) : super(key: key);
 
+  bool isFirstOccurrence(DateTime currentDayDate, DateTime ruleBasedDate) {
+    return currentDayDate.year == ruleBasedDate.year &&
+        currentDayDate.month == ruleBasedDate.month &&
+        currentDayDate.day == ruleBasedDate.day;
+  }
+
+  bool isHourAvailable(String? startTime, DateTime currentDayDate, DateTime ruleBasedDate) {
+    if (startTime == null) return false;
+    final slotTime = parseTime(startTime);
+
+    // Si c'est la première occurrence (déterminée par la règle du tableau)
+    if (isFirstOccurrence(currentDayDate, ruleBasedDate)) {
+      return slotTime.hour >= 12;  // Règle du tableau pour la première date valide
+    }
+
+    return true;  // Toutes les heures sont disponibles pour les occurrences suivantes
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetX<FilterMassRequestDateController>(
       builder: (_) {
+        final now = DateTime.now();
+        // Déterminer la date valide selon la règle du tableau
+        final timeRange = _determineTimeRange(now);
+        final ruleBasedDate = timeRange == TimeRange.evening
+            ? DateTime.now().add(const Duration(days: 1))  // Lendemain si 15h01-00h00
+            : DateTime.now();  // Même jour sinon
+
         // Trier les jours en fonction de leur sélectionnabilité
         final List<Map<String, dynamic>> sortedDays = _.worshipRecurrentHours.map((item) {
           bool isSelectable = isDayOfWeekInDateRange(
@@ -28,11 +54,9 @@ class WorshipRecurrentHoursList extends StatelessWidget {
           };
         }).toList();
 
-        // Trier : d'abord les jours sélectionnables, puis les autres
         sortedDays.sort((a, b) {
           if (a['isSelectable'] && !b['isSelectable']) return -1;
           if (!a['isSelectable'] && b['isSelectable']) return 1;
-          // En cas d'égalité, garder l'ordre des jours de la semaine
           return int.parse(a['item'].dayOfWeek ?? '0')
               .compareTo(int.parse(b['item'].dayOfWeek ?? '0'));
         });
@@ -44,6 +68,11 @@ class WorshipRecurrentHoursList extends StatelessWidget {
           itemBuilder: (context, index) {
             var item = sortedDays[index]['item'];
             bool isSelectable = sortedDays[index]['isSelectable'];
+
+            final dayOfWeek = int.parse(item.dayOfWeek ?? '0') + 1;
+            final currentDayDate = getDateForDayOfWeek(ruleBasedDate, dayOfWeek);
+            final isFirstDay = isFirstOccurrence(currentDayDate, ruleBasedDate);
+
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,73 +111,80 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                   runSpacing: 15,
                   spacing: 0,
                   direction: Axis.horizontal,
-                  children: (item.slots ?? []).map<Widget>((e) => GestureDetector(
-                    onTap: !isSelectable
-                        ? () {
-                      showNotification(
-                        message: 'Vous ne pouvez pas sélectionner cet horaire après la date de fin de répétition',
-                        bgColor: colorBlue2,
-                      );
-                    }
-                        : () {
-                      e.isHourSelected = !e.isHourSelected!;
-                      _.onWorshipRecurrentHoursSelected(item, true);
-                    },
-                    child: Opacity(
-                      opacity: isSelectable ? 1.0 : 0.5,
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        alignment: Alignment.topRight,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                            decoration: BoxDecoration(
-                              color: e.isHourSelected == true
-                                  ? colorGreenSemiLight
-                                  : colorWhite,
-                              border: Border.all(
-                                  color: isSelectable
-                                      ? colorGreenSemiLight
-                                      : colorGrey1
+                  children: (item.slots ?? []).map<Widget>((e) {
+                    bool isHourSelectable = isSelectable &&
+                        isHourAvailable(e.startTime, currentDayDate, ruleBasedDate);
+
+                    return GestureDetector(
+                      onTap: !isHourSelectable
+                          ? () {
+                        showNotification(
+                          message: isFirstDay
+                              ? 'Les horaires avant 12h ne sont pas disponibles pour la première date déterminée par les règles horaires'
+                              : 'Cette heure n\'est pas disponible',
+                          bgColor: colorBlue2,
+                        );
+                      }
+                          : () {
+                        e.isHourSelected = !e.isHourSelected!;
+                        _.onWorshipRecurrentHoursSelected(item, true);
+                      },
+                      child: Opacity(
+                        opacity: isHourSelectable ? 1.0 : 0.5,
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.topRight,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                              decoration: BoxDecoration(
+                                color: e.isHourSelected == true
+                                    ? colorGreenSemiLight
+                                    : colorWhite,
+                                border: Border.all(
+                                    color: isHourSelectable
+                                        ? colorGreenSemiLight
+                                        : colorGrey1
+                                ),
+                                borderRadius: BorderRadius.circular(Get.width / 10),
                               ),
-                              borderRadius: BorderRadius.circular(Get.width / 10),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text(
-                                '${e.startTime}',
-                                textAlign: TextAlign.center,
-                                style: TextStyles.montserratSemiBold(
-                                  textSize: TextSizes.fourteen,
-                                  textColor: e.isHourSelected == true
-                                      ? colorWhite
-                                      : (isSelectable ? colorBlack : colorGrey1),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Text(
+                                  '${e.startTime}',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyles.montserratSemiBold(
+                                    textSize: TextSizes.fourteen,
+                                    textColor: e.isHourSelected == true
+                                        ? colorWhite
+                                        : (isHourSelectable ? colorBlack : colorGrey1),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          if (e.isHourSelected == true)
-                            Positioned(
-                              top: -8,
-                              right: 3,
-                              child: Container(
-                                padding: const EdgeInsets.all(2),
-                                decoration: BoxDecoration(
-                                  color: colorWhite,
-                                  border: Border.all(color: colorGreenSemiLight),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: const Icon(
-                                  Icons.check,
-                                  color: colorGreenSemiLight,
-                                  size: 15,
+                            if (e.isHourSelected == true)
+                              Positioned(
+                                top: -8,
+                                right: 3,
+                                child: Container(
+                                  padding: const EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                    color: colorWhite,
+                                    border: Border.all(color: colorGreenSemiLight),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: const Icon(
+                                    Icons.check,
+                                    color: colorGreenSemiLight,
+                                    size: 15,
+                                  ),
                                 ),
                               ),
-                            ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  )).toList(),
+                    );
+                  }).toList(),
                 ),
               ],
             );
@@ -159,5 +195,29 @@ class WorshipRecurrentHoursList extends StatelessWidget {
         );
       },
     );
+  }
+
+  TimeRange _determineTimeRange(DateTime now) {
+    final currentTime = now.hour * 60 + now.minute;
+    if (currentTime >= 0 && currentTime <= 9 * 60) return TimeRange.morning;
+    if (currentTime > 9 * 60 && currentTime <= 15 * 60) return TimeRange.afternoon;
+    return TimeRange.evening;
+  }
+
+  DateTime getNextDateForDay(DateTime startDate, int targetDay) {
+    DateTime date = startDate;
+    while (date.weekday != targetDay) {
+      date = date.add(const Duration(days: 1));
+    }
+    return date;
+  }
+
+  // Fonction utilitaire pour obtenir la date pour un jour de la semaine donné
+  DateTime getDateForDayOfWeek(DateTime baseDate, int targetDayOfWeek) {
+    // Si le jour cible est avant le jour de base, on passe à la semaine suivante
+    while (baseDate.weekday != targetDayOfWeek) {
+      baseDate = baseDate.add(const Duration(days: 1));
+    }
+    return baseDate;
   }
 }
