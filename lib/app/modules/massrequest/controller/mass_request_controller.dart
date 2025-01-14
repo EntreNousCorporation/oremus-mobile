@@ -139,32 +139,61 @@ class MassRequestController extends GetxController {
 
   // Ouvrir un date picker qui ne permet que les dates calculées
   Future<void> showPicker(BuildContext context) async {
-    // Normaliser les dates de _allowedDates pour ne garder que l'année, le mois et le jour
+    // Normaliser les dates permises
     final allowedDatesNormalized = allowedDates
         .map((date) => DateTime(date.year, date.month, date.day))
         .toList();
 
-    // S'assurer que la première date dans _allowedDates est valide comme initialDate
+    // Obtenir la date actuelle
     DateTime now = DateTime.now();
-    DateTime initialDate = allowedDatesNormalized.firstWhere(
-      (date) =>
-          date.isAfter(DateTime(now.year, now.month, now.day)) ||
-          date.isAtSameMomentAs(DateTime(now.year, now.month, now.day)),
-      orElse: () => allowedDatesNormalized.first,
-    );
+
+    // Déterminer la date initiale du picker
+    DateTime initialDate;
+    if (selectedDate.value != null) {
+      // Si une date est déjà sélectionnée, on l'utilise comme date initiale
+      // On parse d'abord la date depuis le format "dd-MM-yyyy"
+      List<String> dateParts = selectedDate.value!.dayToDisplay?.split('-') ?? [];
+      DateTime selectedDateTime = DateTime(
+          int.parse(dateParts[2]),  // année
+          int.parse(dateParts[1]),  // mois
+          int.parse(dateParts[0])   // jour
+      );
+
+      // Vérifier si cette date est toujours valide
+      if (allowedDatesNormalized.contains(DateTime(
+          selectedDateTime.year,
+          selectedDateTime.month,
+          selectedDateTime.day
+      ))) {
+        initialDate = selectedDateTime;
+      } else {
+        // Si la date sélectionnée n'est plus valide, on prend la prochaine date disponible
+        initialDate = allowedDatesNormalized.firstWhere(
+                (date) => date.isAfter(DateTime(now.year, now.month, now.day)) ||
+                date.isAtSameMomentAs(DateTime(now.year, now.month, now.day)),
+            orElse: () => allowedDatesNormalized.first
+        );
+      }
+    } else {
+      // Si aucune date n'est sélectionnée, on prend la prochaine date disponible
+      initialDate = allowedDatesNormalized.firstWhere(
+              (date) => date.isAfter(DateTime(now.year, now.month, now.day)) ||
+              date.isAtSameMomentAs(DateTime(now.year, now.month, now.day)),
+          orElse: () => allowedDatesNormalized.first
+      );
+    }
 
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: initialDate, // On utilise une date initiale valide
+      initialDate: initialDate,
       firstDate: DateTime.now(),
-      lastDate:
-          DateTime.now().add(const Duration(days: AppConstants.END_DATE_LIMIT)),
+      lastDate: DateTime.now().add(const Duration(days: AppConstants.END_DATE_LIMIT)),
       selectableDayPredicate: (DateTime day) {
-        // Comparer seulement année, mois et jour (ignorer les heures)
         DateTime normalizedDay = DateTime(day.year, day.month, day.day);
         return allowedDatesNormalized.contains(normalizedDay);
       },
     );
+
     if (picked != null) {
       resetPrice();
       updateRepetitionFilter(picked, isFirst: false);
@@ -401,49 +430,79 @@ class MassRequestController extends GetxController {
   }*/
 
   void updateRepetitionFilter(DateTime datetime, {bool isFirst = true, Slot? selectHour}) {
-    // 1. Formatage de la date
-    final formattedDay = datetime.day.toString().padLeft(2, '0');
-    final formattedMonth = datetime.month.toString().padLeft(2, '0');
-
-    // 2. Récupération des horaires récurrents pour le jour sélectionné
-    final recurentHour = worshipRecurrentHours.firstWhereOrNull(
-            (element) => int.parse(element.dayOfWeek ?? '0') == (datetime.weekday - 1)
-    );
-
-    // 3. Détermination de la plage horaire logique selon l'heure actuelle
     final now = DateTime.now();
-    final TimeRange timeRange = _determineTimeRange(now);
+    print('=== DATE DEBUG START ===');
+    print('Current date/time: ${now.toString()}');
+    print('Input datetime parameter: ${datetime.toString()}');
 
-    // 4. Filtrage des créneaux selon les règles
-    final List<Slot> availableSlots = _filterAvailableSlots(
+    // 1. Déterminer la plage horaire
+    final timeRange = _determineTimeRange(now);
+    print('Time range: $timeRange');
+
+    // 2. Déterminer si nous devons passer au lendemain
+    final shouldUseNextDay = timeRange == TimeRange.evening;
+    print('Should use next day: $shouldUseNextDay');
+
+    // 3. Ajuster la date si nécessaire
+    DateTime targetDate;
+    if (shouldUseNextDay) {
+      // Si la date en paramètre est aujourd'hui, on ajoute un jour
+      if (datetime.year == now.year &&
+          datetime.month == now.month &&
+          datetime.day == now.day) {
+        targetDate = datetime.add(const Duration(days: 1));
+      } else {
+        // Sinon on utilise la date en paramètre
+        targetDate = datetime;
+      }
+    } else {
+      targetDate = datetime;
+    }
+
+    print('Target date after adjustment: ${targetDate.toString()}');
+
+    // 4. Formater la date pour l'affichage
+    final formattedDay = targetDate.day.toString().padLeft(2, '0');
+    final formattedMonth = targetDate.month.toString().padLeft(2, '0');
+
+    // 5. Récupérer les horaires disponibles pour ce jour
+    final recurentHour = worshipRecurrentHours.firstWhereOrNull(
+            (element) => int.parse(element.dayOfWeek ?? '0') == (targetDate.weekday - 1)
+    );
+    print('Found slots for weekday ${targetDate.weekday - 1}');
+
+    // 6. Filtrer et trier les créneaux disponibles
+    selectedHours.clear();
+    final filteredSlots = _filterAvailableSlots(
       slots: recurentHour?.slots ?? [],
-      selectedDateTime: datetime,
       timeRange: timeRange,
     );
+    selectedHours.addAll(filteredSlots);
+    print('Available slots: ${selectedHours.map((s) => s?.startTime).join(', ')}');
 
-    // 5. Mise à jour des heures disponibles
-    selectedHours.clear();
-    selectedHours.addAll(availableSlots);
-
-    // 6. Sélection de l'heure
+    // 7. Sélectionner l'horaire
     if (selectedHours.isNotEmpty) {
       if (isFirst) {
         selectedHour.value = selectedHours.first;
       } else {
         selectedHour.value = selectHour;
       }
+      print('Selected hour: ${selectedHour.value?.startTime}');
     }
 
-    // 7. Mise à jour de la date sélectionnée (variable observable)
+    // 8. Mettre à jour la date sélectionnée
     selectedDate.value = PriceData(
-      day: "${datetime.year}-$formattedMonth-$formattedDay",
-      dayOfWeek: datetime.weekday.toString(),
+      day: "${targetDate.year}-$formattedMonth-$formattedDay",
+      dayOfWeek: targetDate.weekday.toString(),
       isDaySelected: true,
-      dayToDisplay: "$formattedDay-$formattedMonth-${datetime.year}",
+      dayToDisplay: "$formattedDay-$formattedMonth-${targetDate.year}",
       slots: [selectedHour.value ?? Slot()],
     );
 
-    // 8. Mise à jour du formulaire et du prix si nécessaire
+    print('Final date to display: ${selectedDate.value?.dayToDisplay}');
+    print('=== DATE DEBUG END ===');
+
+    // 9. Mise à jour du formulaire et du prix
     checkForm();
     if (selectedDate.value != null && selectedHour.value != null) {
       datesChoosen.value = [selectedDate.value ?? PriceData()];
@@ -453,44 +512,40 @@ class MassRequestController extends GetxController {
 
   /// Détermine la plage horaire en fonction de l'heure actuelle
   TimeRange _determineTimeRange(DateTime now) {
-    final hour = now.hour;
-    if (hour >= 0 && hour <= 9) return TimeRange.morning;
-    if (hour > 9 && hour <= 15) return TimeRange.afternoon;
+    final currentTime = now.hour * 60 + now.minute;  // Convertir en minutes
+
+    if (currentTime >= 0 && currentTime <= 9 * 60) return TimeRange.morning;
+    if (currentTime > 9 * 60 && currentTime <= 15 * 60) return TimeRange.afternoon;
     return TimeRange.evening;
   }
 
   /// Filtre les créneaux disponibles selon les règles
   List<Slot> _filterAvailableSlots({
     required List<Slot> slots,
-    required DateTime selectedDateTime,
     required TimeRange timeRange,
   }) {
-    // Si la date sélectionnée est dans le futur, on affiche tous les créneaux
-    final now = DateTime.now();
-    final logicalDate = _getLogicalDate(now, timeRange);
-
-    if (selectedDateTime.isAfter(logicalDate)) {
-      return List<Slot>.from(slots);
+    int minHour;
+    switch (timeRange) {
+      case TimeRange.morning:
+        minHour = 12;
+        break;
+      case TimeRange.afternoon:
+        minHour = 18;
+        break;
+      case TimeRange.evening:
+        minHour = 12;
+        break;
     }
 
-    // Sinon on filtre selon la plage horaire
     return slots.where((slot) {
       final slotTime = parseTime(slot.startTime ?? '');
-      switch (timeRange) {
-        case TimeRange.morning:
-          return slotTime.hour >= 12;
-        case TimeRange.afternoon:
-          return slotTime.hour >= 18;
-        case TimeRange.evening:
-        // Si c'est le soir, on passe au lendemain
-          selectedDateTime = selectedDateTime.add(const Duration(days: 1));
-          return slotTime.hour >= 12;
-      }
-    }).toList()..sort((a, b) {
-      final timeA = parseTime(a.startTime ?? '');
-      final timeB = parseTime(b.startTime ?? '');
-      return compareTimes(timeA, timeB);
-    });
+      return slotTime.hour >= minHour;
+    }).toList()
+      ..sort((a, b) {
+        final timeA = parseTime(a.startTime ?? '');
+        final timeB = parseTime(b.startTime ?? '');
+        return compareTimes(timeA, timeB);
+      });
   }
 
   /// Calcule la date logique selon la plage horaire
