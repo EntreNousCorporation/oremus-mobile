@@ -29,8 +29,8 @@ class MassRequestScreen extends StatelessWidget {
       color: colorWhite,
       child: GetX<MassRequestController>(builder: (_) {
         return KeyboardDismisser(
-          child: WillPopScope(
-            onWillPop: () async => _.unlockBackButton.value,
+          child: PopScope(
+            canPop: _.unlockBackButton.value,
             child: Scaffold(
               resizeToAvoidBottomInset: true,
               body: NotificationListener<OverscrollIndicatorNotification>(
@@ -298,7 +298,7 @@ class MassRequestScreen extends StatelessWidget {
                                                         _.selectedDate.value?.dayToDisplay ?? 'Aucun horaire de messe',
                                                         style: TextStyles.montserratBold(
                                                           textColor: _.selectedDate.value != null ? colorBlack : colorRed,
-                                                          textSize: _.selectedDate.value != null ? TextSizes.sixteen : TextSizes.fourteen,
+                                                          textSize: _.selectedDate.value != null ? TextSizes.sixteen : TextSizes.twelve,
                                                         ),
                                                       ),
                                                       Icon(
