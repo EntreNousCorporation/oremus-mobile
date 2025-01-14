@@ -38,7 +38,6 @@ class CustomHomeScreen extends StatelessWidget {
             case AppConstants.HOME:
               logic.title.value = 'Oremus';
               screenCurrent = const ParoisseScreen();
-              //screenCurrent = HomeScreen();
               break;
             case AppConstants.PROFILE:
               logic.title.value = logic.menus[position].libelle ?? 'Mon Profil';
@@ -52,10 +51,6 @@ class CustomHomeScreen extends StatelessWidget {
               logic.title.value = logic.menus[position].libelle ?? 'Demande de messe';
               screenCurrent = const MassRequestMenuScreen();
               break;
-            /*case AppConstants.SHARE_APP:
-              logic.title.value = logic.menus[position].libelle ?? 'Partager l\'application';
-              screenCurrent = const ShareScreen();
-              break;*/
             case AppConstants.PROMO:
               logic.title.value = logic.menus[position].libelle ?? 'Codes promo';
               screenCurrent = const PromoScreen();

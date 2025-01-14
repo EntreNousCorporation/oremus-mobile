@@ -212,7 +212,7 @@ class MassRequestController extends GetxController {
               'Aucun horaire de messe disponible.\nVeuillez choisir une autre paroisse svp');
       return;
     }
-    updateRepetitionFilter(DateTime.now());
+    //updateRepetitionFilter(DateTime.now());
     var dc = await Get.toNamed(
       Routes.FILTER_MASS_REQUEST_CHOOSE_DATE,
       arguments: [
@@ -292,156 +292,19 @@ class MassRequestController extends GetxController {
     checkForm();
   }
 
-  /*updateRepetitionFilter(DateTime datetime,
-      {bool? isFirst = true, Slot? selectHour}) {
-    String day = datetime.day.toString();
-    String month = datetime.month.toString();
-
-    // Formatage du jour et du mois
-    if (datetime.day < 10) {
-      day = "0$day";
-    }
-    if (datetime.month < 10) {
-      month = "0$month";
-    }
-
-    // Récupérer les heures récurrentes pour le jour sélectionné
-    var recurentHour = worshipRecurrentHours.value.firstWhereOrNull((element) {
-      return int.parse(element.dayOfWeek ?? '0') == (datetime.weekday - 1);
-    });
-    log('recurentHour ::: ${recurentHour?.toJson()}');
-
-    // Vérifier s'il y a des créneaux horaires disponibles pour ce jour
-    List<Slot>? tempSlots = recurentHour?.slots ?? [];
-    selectedHours.clear();
-    for (var i in tempSlots) {
-      selectedHours.add(i);
-    }
-
-    // Récupérer l'heure actuelle
-    DateTime now = DateTime.now();
-
-    // Calculer la date "logique" selon les règles du tableau (exemple avec 12h ou 18h)
-    DateTime logicalDate = now;
-    if (now.hour >= 0 && now.hour <= 9) {
-      logicalDate =
-          DateTime(now.year, now.month, now.day, 12); // Même jour à 12h
-    } else if (now.hour > 9 && now.hour <= 15) {
-      logicalDate = DateTime(now.year, now.month, now.day, 18); // Même jour à 18h
-    } else {
-      logicalDate = DateTime(now.year, now.month, now.day + 1, 12); // Lendemain à 12h
-    }
-
-    // Si la date passée en paramètre est après la date logique, on ignore les restrictions
-    if (datetime.isAfter(logicalDate)) {
-      log('Date future détectée, afficher toutes les heures disponibles');
-      selectedHours.clear(); // Vider et réajouter toutes les heures disponibles
-      for (var i in tempSlots) {
-        selectedHours.add(i); // Ajouter tous les créneaux horaires disponibles
-      }
-    } else {
-      // Appliquer les restrictions du tableau si la date est "logique" (comme aujourd'hui)
-      if (now.hour >= 0 && now.hour <= 9) {
-        // Entre 00h01 et 09h00, afficher les créneaux à partir de 12h00
-        selectedHours.removeWhere((slot) {
-          TimeOfDay slotTime = parseTime(slot?.startTime ?? '');
-          return slotTime.hour < 12;
-        });
-      } else if (now.hour > 9 && now.hour <= 15) {
-        // Entre 09h01 et 15h00, afficher les créneaux à partir de 18h00
-        selectedHours.removeWhere((slot) {
-          TimeOfDay slotTime = parseTime(slot?.startTime ?? '');
-          return slotTime.hour < 18;
-        });
-      } else {
-        for (var i in selectedHours) {
-          log('selectedHours 1 ::: ${i?.toJson()}');
-        }
-        // Entre 15h01 et 00h00, afficher les créneaux à partir de 12h00 le lendemain
-        datetime = datetime.add(const Duration(days: 1)); // Passer au lendemain
-        recurentHour = worshipRecurrentHours.value.firstWhereOrNull((element) {
-          return int.parse(element.dayOfWeek ?? '0') == (datetime.weekday - 1);
-        });
-        for (var i in selectedHours) {
-          log('selectedHours 2 ::: ${i?.toJson()}');
-        }
-        log('recurentHour ::: ${recurentHour?.toJson()}');
-        //tempSlots = recurentHour?.slots ?? [];
-        tempSlots.clear();
-        for (var i in selectedHours) {
-          if (i != null) {
-            tempSlots.add(i);
-          }
-        }
-        selectedHours.clear();
-        for (var i in tempSlots) {
-          TimeOfDay slotTime = parseTime(i.startTime ?? '');
-          log('slotTime ::: ${slotTime.hour}');
-          log('i ::: ${i.startTime}');
-          if (slotTime.hour >= 12) {
-            selectedHours.add(i); // Ajouter seulement les créneaux après 12h
-          }
-        }
-        for (var i in selectedHours) {
-          log('selectedHours ::: ${i?.toJson()}');
-        }
-      }
-    }
-
-    // Sélection du créneau horaire
-
-    // Trier les heures dans selectedHours pour obtenir la plus petite
-    if (selectedHours.isNotEmpty) {
-      selectedHours.sort((a, b) {
-        TimeOfDay timeA = parseTime(
-            a?.startTime ?? ''); // Convertir le créneau A en TimeOfDay
-        TimeOfDay timeB = parseTime(
-            b?.startTime ?? ''); // Convertir le créneau B en TimeOfDay
-        return compareTimes(timeA, timeB); // Comparer les deux heures
-      });
-    }
-
-    if (isFirst == true) {
-      // Sélectionner le créneau avec la plus petite heure
-      if (selectedHours.isNotEmpty) {
-        selectedHour.value = selectedHours.first;
-      }
-    } else {
-      selectedHour.value = selectHour;
-    }
-
-    // Mise à jour des informations sélectionnées
-    selectedDate.value = PriceData(
-      day: "${datetime.year}-$month-$day",
-      dayOfWeek: datetime.weekday.toString(),
-      isDaySelected: true,
-      dayToDisplay: "$day-$month-${datetime.year}",
-      slots: [selectedHour.value ?? Slot()],
-    );
-
-    log('selectedDate ::: ${selectedDate.toJson()}');
-
-    // Vérifier si la sélection est valide
-    checkForm();
-    if (selectedDate.value != null && selectedHour.value != null) {
-      datesChoosen.value = [selectedDate.value ?? PriceData()];
-      doGetMassRequestPrice();
-    }
-  }*/
-
   void updateRepetitionFilter(DateTime datetime, {bool isFirst = true, Slot? selectHour}) {
     final now = DateTime.now();
-    print('=== DATE DEBUG START ===');
-    print('Current date/time: ${now.toString()}');
-    print('Input datetime parameter: ${datetime.toString()}');
+    log('=== DATE DEBUG START ===');
+    log('Current date/time: ${now.toString()}');
+    log('Input datetime parameter: ${datetime.toString()}');
 
     // 1. Déterminer la plage horaire
     final timeRange = _determineTimeRange(now);
-    print('Time range: $timeRange');
+    log('Time range: $timeRange');
 
     // 2. Déterminer si nous devons passer au lendemain
     final shouldUseNextDay = timeRange == TimeRange.evening;
-    print('Should use next day: $shouldUseNextDay');
+    log('Should use next day: $shouldUseNextDay');
 
     // 3. Ajuster la date si nécessaire
     DateTime targetDate;
@@ -459,7 +322,7 @@ class MassRequestController extends GetxController {
       targetDate = datetime;
     }
 
-    print('Target date after adjustment: ${targetDate.toString()}');
+    log('Target date after adjustment: ${targetDate.toString()}');
 
     // 4. Formater la date pour l'affichage
     final formattedDay = targetDate.day.toString().padLeft(2, '0');
@@ -469,7 +332,7 @@ class MassRequestController extends GetxController {
     final recurentHour = worshipRecurrentHours.firstWhereOrNull(
             (element) => int.parse(element.dayOfWeek ?? '0') == (targetDate.weekday - 1)
     );
-    print('Found slots for weekday ${targetDate.weekday - 1}');
+    log('Found slots for weekday ${targetDate.weekday - 1}');
 
     // 6. Filtrer et trier les créneaux disponibles
     selectedHours.clear();
@@ -478,7 +341,7 @@ class MassRequestController extends GetxController {
       timeRange: timeRange,
     );
     selectedHours.addAll(filteredSlots);
-    print('Available slots: ${selectedHours.map((s) => s?.startTime).join(', ')}');
+    log('Available slots: ${selectedHours.map((s) => s?.startTime).join(', ')}');
 
     // 7. Sélectionner l'horaire
     if (selectedHours.isNotEmpty) {
@@ -487,7 +350,7 @@ class MassRequestController extends GetxController {
       } else {
         selectedHour.value = selectHour;
       }
-      print('Selected hour: ${selectedHour.value?.startTime}');
+      log('Selected hour: ${selectedHour.value?.startTime}');
     }
 
     // 8. Mettre à jour la date sélectionnée
@@ -499,8 +362,8 @@ class MassRequestController extends GetxController {
       slots: [selectedHour.value ?? Slot()],
     );
 
-    print('Final date to display: ${selectedDate.value?.dayToDisplay}');
-    print('=== DATE DEBUG END ===');
+    log('Final date to display: ${selectedDate.value?.dayToDisplay}');
+    log('=== DATE DEBUG END ===');
 
     // 9. Mise à jour du formulaire et du prix
     checkForm();
@@ -546,18 +409,6 @@ class MassRequestController extends GetxController {
         final timeB = parseTime(b.startTime ?? '');
         return compareTimes(timeA, timeB);
       });
-  }
-
-  /// Calcule la date logique selon la plage horaire
-  DateTime _getLogicalDate(DateTime now, TimeRange range) {
-    switch (range) {
-      case TimeRange.morning:
-        return DateTime(now.year, now.month, now.day, 12);
-      case TimeRange.afternoon:
-        return DateTime(now.year, now.month, now.day, 18);
-      case TimeRange.evening:
-        return DateTime(now.year, now.month, now.day + 1, 12);
-    }
   }
 
   doGetMassRequestType() {

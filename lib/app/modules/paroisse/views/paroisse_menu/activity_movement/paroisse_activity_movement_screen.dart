@@ -46,7 +46,7 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
                           onPressed: () {
                             Get.back();
                           },
-                          icon: const Icon(Icons.arrow_back_ios_rounded),
+                          icon: const Icon(Icons.arrow_back_ios_rounded, color: colorWhite,),
                         ),
                         actions: [
                           IconButton(
@@ -92,7 +92,7 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
                             onPressed: () {
                               _.goToMap();
                             },
-                            icon: const Icon(Icons.map_rounded),
+                            icon: const Icon(Icons.map_rounded, color: colorWhite,),
                           ),
                         ],
                         flexibleSpace: FlexibleSpaceBar(

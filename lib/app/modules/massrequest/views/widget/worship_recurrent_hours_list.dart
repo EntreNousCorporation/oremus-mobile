@@ -124,9 +124,7 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                       onTap: !isHourSelectable
                           ? () {
                         showNotification(
-                          message: isFirstDay
-                              ? 'Les horaires avant 12h ne sont pas disponibles'
-                              : 'Cette heure n\'est pas disponible',
+                          message: 'Cette heure n\'est pas disponible',
                           bgColor: colorBlue2,
                         );
                       }

@@ -8,6 +8,7 @@ import 'package:like_button/like_button.dart';
 import 'package:oremusapp/app/commons/components/button.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
@@ -216,7 +217,7 @@ class MassRequestScreen extends StatelessWidget {
 
                           Separators.maximumVertical(),
                           Visibility(
-                            visible: _.massRequestTypeRepetitionSelected.value?.code == 'many',
+                            visible: _.massRequestTypeRepetitionSelected.value?.code == RepetitionType.many.name,
                             child: Column(
                               children: [
                                 GestureDetector(
@@ -243,7 +244,7 @@ class MassRequestScreen extends StatelessWidget {
                                             ),
                                           ),
                                           Icon(
-                                            (_.datesChoosen.length > 1 && _.massRequestTypeRepetitionSelected.value?.code == 'many') ? Icons.check_circle : Icons.arrow_drop_down_rounded,
+                                            (_.datesChoosen.isNotEmpty && _.massRequestTypeRepetitionSelected.value?.code == RepetitionType.many.name) ? Icons.check_circle : Icons.calendar_month,
                                             size: 25,
                                             color: _.worshipHours.isNotEmpty ? colorGreen : colorGrey1.withOpacity(0.5),
                                           ),
@@ -259,7 +260,7 @@ class MassRequestScreen extends StatelessWidget {
 
                           //WORSHIP HOURS
                           Visibility(
-                            visible: _.massRequestTypeRepetitionSelected.value?.code == 'once',
+                            visible: _.massRequestTypeRepetitionSelected.value?.code == RepetitionType.once.name,
                             child: Column(
                               children: [
                                 Row(
@@ -301,7 +302,7 @@ class MassRequestScreen extends StatelessWidget {
                                                       ),
                                                     ),
                                                     Icon(
-                                                      Icons.arrow_drop_down_rounded,
+                                                      Icons.calendar_month,
                                                       size: 25,
                                                       color: _.selectedDate.value != null ? colorGreen : colorGrey1,
                                                     ),

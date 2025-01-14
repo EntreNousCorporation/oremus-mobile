@@ -30,16 +30,17 @@ class SelectionState {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is SelectionState &&
-              runtimeType == other.runtimeType &&
-              dayOfWeek == other.dayOfWeek &&
-              startTime == other.startTime;
+      other is SelectionState &&
+          runtimeType == other.runtimeType &&
+          dayOfWeek == other.dayOfWeek &&
+          startTime == other.startTime;
 
   @override
   int get hashCode => dayOfWeek.hashCode ^ startTime.hashCode;
 }
 
-class FilterMassRequestDateController extends GetxController/* with WidgetsBindingObserver*/ {
+class FilterMassRequestDateController
+    extends GetxController /* with WidgetsBindingObserver*/ {
   FilterMassRequestDateController();
 
   RxList<TypeData> massRequestTypes = RxList<TypeData>([]);
@@ -109,11 +110,20 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
   getArguments() {
     if (Get.arguments != null) {
       worshipHours.value = Get.arguments[0];
-      worshipRecurrentHoursTemp.value = worshipHours.where((element) => element.isRecurrent == true).toList();
-      worshipSpecialHoursTemp.value = worshipHours.where((element) => element.isRecurrent == false && (Jiffy.parse(element.startDate ?? Jiffy.now().format(), pattern: AppConstants.TIME_ZONE_FORMAT).isAfter(Jiffy.now().add(hours: 24)))).toList();
+      worshipRecurrentHoursTemp.value =
+          worshipHours.where((element) => element.isRecurrent == true).toList();
+      worshipSpecialHoursTemp.value = worshipHours
+          .where((element) =>
+              element.isRecurrent == false &&
+              (Jiffy.parse(element.startDate ?? Jiffy.now().format(),
+                      pattern: AppConstants.TIME_ZONE_FORMAT)
+                  .isAfter(Jiffy.now().add(hours: 24))))
+          .toList();
 
-      worshipRecurrentHours.value = transformWorshipRecurrentHours(worshipRecurrentHoursTemp);
-      worshipSpecialHours.value = transformWorshipSpecialHours(worshipSpecialHoursTemp);
+      worshipRecurrentHours.value =
+          transformWorshipRecurrentHours(worshipRecurrentHoursTemp);
+      worshipSpecialHours.value =
+          transformWorshipSpecialHours(worshipSpecialHoursTemp);
       initialSelectedDate.value = PriceData.fromJson(Get.arguments[1]);
       endSelectedDate.value = PriceData.fromJson(Get.arguments[1]);
 
@@ -129,13 +139,15 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
 
   List<Slot> getSelectedHoursForDay(String dayOfWeek) {
     final daySlots = worshipRecurrentHours
-        .firstWhere((hour) => hour.dayOfWeek == dayOfWeek,
-        orElse: () => PriceData())
-        .slots ?? [];
+            .firstWhere((hour) => hour.dayOfWeek == dayOfWeek,
+                orElse: () => PriceData())
+            .slots ??
+        [];
 
-    return daySlots.where((slot) =>
-        selectedSlotKeys.contains(_createSlotKey(dayOfWeek, slot.startTime ?? ''))
-    ).toList();
+    return daySlots
+        .where((slot) => selectedSlotKeys
+            .contains(_createSlotKey(dayOfWeek, slot.startTime ?? '')))
+        .toList();
   }
 
   // Ajouter une méthode pour réinitialiser les sélections
@@ -144,12 +156,14 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
     update();
   }
 
-
   doRefreshHoursOnInit() {
     for (PriceData i in worshipRecurrentHours) {
-      if (int.parse(i.dayOfWeek ?? '0') == (int.parse(initialSelectedDate.value?.dayOfWeek.toString() ?? '1') - 1)) {
+      if (int.parse(i.dayOfWeek ?? '0') ==
+          (int.parse(initialSelectedDate.value?.dayOfWeek.toString() ?? '1') -
+              1)) {
         for (Slot l in i.slots ?? []) {
-          if (l.identifier == initialSelectedDate.value?.slots?.first.identifier) {
+          if (l.identifier ==
+              initialSelectedDate.value?.slots?.first.identifier) {
             l.isHourSelected = true;
             //i.day = initialSelectedDate.value?.day;
             //i.dayToDisplay = initialSelectedDate.value?.dayToDisplay;
@@ -166,7 +180,10 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
   doRefreshHoursAfterAction() {
     for (PriceData? i in worshipRecurrentHours) {
       for (Slot l in i?.slots ?? []) {
-        if (isDayOfWeekInDateRange(int.parse(i?.dayOfWeek ?? '0'), Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime, Jiffy.parse(endSelectedDate.value?.day ?? '').dateTime)) {
+        if (isDayOfWeekInDateRange(
+            int.parse(i?.dayOfWeek ?? '0'),
+            Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime,
+            Jiffy.parse(endSelectedDate.value?.day ?? '').dateTime)) {
           if (l.isHourSelected == true) {
             l.isHourSelected = true;
             onWorshipRecurrentHoursSelected(i, true);
@@ -204,14 +221,22 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
     canDoApplyAction();
   }
 
-  onWorshipRecurrentHoursSelected(PriceData? hour, bool isDateSelected, {String? hourSelected = ''}) {
+  onWorshipRecurrentHoursSelected(PriceData? hour, bool isDateSelected,
+      {String? hourSelected = ''}) {
     worshipRecurrentHours.refresh();
     if (isDateSelected) {
-      var hasData = datesChoosenForWorshipRecurrentHours.firstWhereOrNull((element) => (element?.identifier == hour?.identifier) && (element?.dayOfWeek == hour?.dayOfWeek));
+      var hasData = datesChoosenForWorshipRecurrentHours.firstWhereOrNull(
+          (element) =>
+              (element?.identifier == hour?.identifier) &&
+              (element?.dayOfWeek == hour?.dayOfWeek));
       if (hasData == null) {
         worshipRecurrentHours.refresh();
         datesChoosenForWorshipRecurrentHours.add(hour);
-        datesChoosenForWorshipRecurrentHours.value = countOccurrencesAndAssignDates(Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime, Jiffy.parse(endSelectedDate.value?.day ?? '').dateTime, datesChoosenForWorshipRecurrentHours.value);
+        datesChoosenForWorshipRecurrentHours.value =
+            countOccurrencesAndAssignDates(
+                Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime,
+                Jiffy.parse(endSelectedDate.value?.day ?? '').dateTime,
+                datesChoosenForWorshipRecurrentHours.value);
       } else {}
     } else {
       worshipRecurrentHours.refresh();
@@ -247,21 +272,25 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
 
     // Déterminer la date initiale du picker
     DateTime initialDate;
-    if (endSelectedDate.value?.dayToDisplay != null && endSelectedDate.value?.dayToDisplay != '-') {
+    if (endSelectedDate.value?.dayToDisplay != null &&
+        endSelectedDate.value?.dayToDisplay != '-') {
       // Si une date de fin est déjà sélectionnée, on l'utilise comme date initiale
       List<String> dateParts = endSelectedDate.value!.dayToDisplay!.split('-');
       DateTime selectedDateTime = DateTime(
-          int.parse(dateParts[2]),  // année
-          int.parse(dateParts[1]),  // mois
-          int.parse(dateParts[0])   // jour
-      );
+          int.parse(dateParts[2]), // année
+          int.parse(dateParts[1]), // mois
+          int.parse(dateParts[0]) // jour
+          );
 
       // Vérifier si la date sélectionnée est valide (après la date de début)
-      if (selectedDateTime.isAfter(Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime) ||
-          selectedDateTime.isAtSameMomentAs(Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime)) {
+      if (selectedDateTime.isAfter(
+              Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime) ||
+          selectedDateTime.isAtSameMomentAs(
+              Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime)) {
         initialDate = selectedDateTime;
       } else {
-        initialDate = Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime;
+        initialDate =
+            Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime;
       }
     } else {
       initialDate = Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime;
@@ -281,20 +310,19 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
             colorScheme: const ColorScheme.light(
                 onPrimary: colorWhite,
                 onSurface: colorBlack,
-                primary: colorPurpleLight
-            ),
+                primary: colorPurpleLight),
             dialogBackgroundColor: Colors.white,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                 foregroundColor: colorWhite,
-                textStyle: TextStyles.montserratRegular(textSize: TextSizes.fourteen),
+                textStyle:
+                    TextStyles.montserratRegular(textSize: TextSizes.fourteen),
                 backgroundColor: colorPurpleLight,
                 shape: RoundedRectangleBorder(
                   side: const BorderSide(
                       color: Colors.transparent,
                       width: 1,
-                      style: BorderStyle.solid
-                  ),
+                      style: BorderStyle.solid),
                   borderRadius: BorderRadius.circular(50),
                 ),
               ),
@@ -307,9 +335,9 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
 
     if (selected != null) {
       // Réinitialiser toutes les sélections
-      resetSelections();  // Réinitialiser les slots
-      resetRecurrentHours();  // Réinitialiser les heures récurrentes
-      resetSpecialHours();  // Réinitialiser les heures spéciales
+      resetSelections(); // Réinitialiser les slots
+      resetRecurrentHours(); // Réinitialiser les heures récurrentes
+      resetSpecialHours(); // Réinitialiser les heures spéciales
 
       String day = selected.day.toString().padLeft(2, '0');
       String month = selected.month.toString().padLeft(2, '0');
@@ -319,11 +347,11 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
       endSelectedDate.refresh();
 
       doRefreshHoursAfterAction();
-      datesChoosenForWorshipRecurrentHours.value = countOccurrencesAndAssignDates(
-          Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime,
-          selected,
-          datesChoosenForWorshipRecurrentHours.value
-      );
+      datesChoosenForWorshipRecurrentHours.value =
+          countOccurrencesAndAssignDates(
+              Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime,
+              selected,
+              datesChoosenForWorshipRecurrentHours.value);
 
       // Mettre à jour l'état du bouton de continuation
       canDoApplyAction();
@@ -383,8 +411,7 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
                 child: Text(
                   'Fermer',
                   textAlign: TextAlign.center,
-                  style: TextStyles
-                      .montserratMedium(
+                  style: TextStyles.montserratMedium(
                     textSize: TextSizes.fifteen,
                     textColor: colorBlack,
                   ),
@@ -408,7 +435,8 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
         isDaySelected: day?.isDaySelected,
         repeat: day?.repeat,
         dates: day?.dates,
-        slots: day?.slots?.where((slot) => slot.isHourSelected == true).toList(),
+        slots:
+            day?.slots?.where((slot) => slot.isHourSelected == true).toList(),
       );
     }).toList();
   }
@@ -439,8 +467,27 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
   doResetFilter() {
     resetRecurrentHours();
     resetSpecialHours();
+    selectedSlotKeys.clear();
+    datesChoosenForWorshipRecurrentHours.clear();
+    datesChoosenWorshipSpecialHours.clear();
+
+    // Réinitialiser manuellement tous les slots pour être sûr
+    for (var priceData in worshipRecurrentHours) {
+      for (var slot in priceData.slots ?? []) {
+        slot.isHourSelected = false;
+      }
+    }
+
+    for (var priceData in worshipSpecialHours) {
+      for (var slot in priceData.slots ?? []) {
+        slot.isHourSelected = false;
+      }
+    }
+
+    // Rafraîchir les listes réactives
+    worshipRecurrentHours.refresh();
+    worshipSpecialHours.refresh();
     canDoApplyAction();
-    hideKeyboard();
   }
 
   doResetAndCloseFilter() {
@@ -449,13 +496,30 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
     goBackToMassRequest();
   }
 
+  doBack() {
+    if (enabledApplyButton.isFalse) {
+      Get.back();
+      return;
+    }
+    showCustomDialog(
+      Get.context!,
+      message: 'Attention !\nVous êtes sur le point de quitter cette page. Toutes les horaires sélectionnées seront perdues.\n\nVoulez-vous vraiment continuer ?\n',
+      negativeLabel: 'NON',
+      positiveLabel: 'OUI',
+      positiveCallBack: () {
+        doResetAndCloseFilter();
+      },
+    );
+  }
+
   canDoApplyAction() {
     bool hasSelectedSpecialHours = false;
     bool hasSelectedRecurrentHours = false;
 
     // Vérifier les horaires spéciaux
     for (PriceData? item in datesChoosenWorshipSpecialHours) {
-      var slots = item?.slots?.where((element) => element.isHourSelected == true);
+      var slots =
+          item?.slots?.where((element) => element.isHourSelected == true);
       if (slots?.isNotEmpty == true) {
         hasSelectedSpecialHours = true;
         break;
@@ -464,9 +528,8 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
 
     // Vérifier les horaires récurrents
     for (PriceData? item in datesChoosenForWorshipRecurrentHours) {
-      var selectedSlots = selectedSlotKeys.where((slotKey) =>
-          slotKey.startsWith('${item?.dayOfWeek}-')
-      );
+      var selectedSlots = selectedSlotKeys
+          .where((slotKey) => slotKey.startsWith('${item?.dayOfWeek}-'));
 
       if (selectedSlots.isNotEmpty) {
         hasSelectedRecurrentHours = true;
@@ -474,12 +537,14 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
       }
     }
 
-    enabledApplyButton.value = hasSelectedRecurrentHours || hasSelectedSpecialHours;
+    enabledApplyButton.value =
+        hasSelectedRecurrentHours || hasSelectedSpecialHours;
   }
 
   void setDatas() {
     datesChoosen.clear();
-    var selectedRecurentHours = _filterSelectedSlots(datesChoosenForWorshipRecurrentHours);
+    var selectedRecurentHours =
+        _filterSelectedSlots(datesChoosenForWorshipRecurrentHours);
 
     log('selectedRecurentHours ::: ${jsonEncode(selectedRecurentHours)}');
 
@@ -509,36 +574,13 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
               modifiedBy: slot.modifiedBy,
               startTime: slot.startTime,
               endTime: slot.endTime,
-              isHourSelected: true  // Forcer à true ici
-          );
+              isHourSelected: true // Forcer à true ici
+              );
         }).toList();
 
         final dayData = PriceData(
-            dayOfWeek: dayOfWeek,
-            slots: selectedSlotsWithSelection,
-            repeat: day.repeat,
-            dates: day.dates,
-            day: day.day,
-            dayToDisplay: day.dayToDisplay,
-        );
-        datesChoosenForWorshipRecurrentHours.add(dayData);
-      }
-    }
-
-    update();
-  }
-
-  void prepareRecapDataBack() {
-    datesChoosenForWorshipRecurrentHours.clear();
-
-    for (var day in worshipRecurrentHours) {
-      final dayOfWeek = day.dayOfWeek ?? '0';
-      final selectedHours = getSelectedHoursForDay(dayOfWeek);
-
-      if (selectedHours.isNotEmpty) {
-        final dayData = PriceData(
           dayOfWeek: dayOfWeek,
-          slots: selectedHours,
+          slots: selectedSlotsWithSelection,
           repeat: day.repeat,
           dates: day.dates,
           day: day.day,
@@ -547,8 +589,6 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
         datesChoosenForWorshipRecurrentHours.add(dayData);
       }
     }
-
-    log('prepareRecapData datesChoosenForWorshipRecurrentHours ::: ${jsonEncode(datesChoosenForWorshipRecurrentHours)}');
 
     update();
   }
@@ -567,33 +607,5 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
 
   goBackToMassRequest() {
     Get.back(result: datesChoosen);
-  }
-
-  //todo:- do not delete for now
-  List<PriceData> _mergeDayLists(List<PriceData> list1, List<PriceData> list2) {
-    // Créer une map pour stocker les jours fusionnés
-    Map<String, PriceData> mergedDays = {};
-
-    // Fusionner les jours de la première liste
-    for (var day in list1) {
-      mergedDays[day.day ?? ''] = day;
-    }
-
-    // Fusionner les jours de la deuxième liste
-    for (var day in list2) {
-      if (mergedDays.containsKey(day.day)) {
-        // Si le jour existe déjà, fusionner les slots
-        mergedDays[day.day]?.slots?.addAll(day.slots ?? []);
-      } else {
-        // Sinon, ajouter le nouveau jour
-        mergedDays[day.day ?? ''] = day;
-      }
-    }
-
-    // Convertir la map en liste et la trier par date
-    List<PriceData> result = mergedDays.values.toList();
-    result.sort((a, b) => b.day?.compareTo(a.day ?? '') ?? -1);
-
-    return result;
   }
 }
