@@ -15,21 +15,66 @@ class WorshipRecurrentHoursList extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetX<FilterMassRequestDateController>(
       builder: (_) {
+        // Trier les jours en fonction de leur sélectionnabilité
+        final List<Map<String, dynamic>> sortedDays = _.worshipRecurrentHours.map((item) {
+          bool isSelectable = isDayOfWeekInDateRange(
+              int.parse(item.dayOfWeek ?? '0'),
+              Jiffy.parse(_.initialSelectedDate.value?.day ?? '').dateTime,
+              Jiffy.parse(_.endSelectedDate.value?.day ?? '').dateTime
+          );
+          return {
+            'item': item,
+            'isSelectable': isSelectable
+          };
+        }).toList();
+
+        // Trier : d'abord les jours sélectionnables, puis les autres
+        sortedDays.sort((a, b) {
+          if (a['isSelectable'] && !b['isSelectable']) return -1;
+          if (!a['isSelectable'] && b['isSelectable']) return 1;
+          // En cas d'égalité, garder l'ordre des jours de la semaine
+          return int.parse(a['item'].dayOfWeek ?? '0')
+              .compareTo(int.parse(b['item'].dayOfWeek ?? '0'));
+        });
+
         return ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: _.worshipRecurrentHours.length,
+          itemCount: sortedDays.length,
           itemBuilder: (context, index) {
-            var item = _.worshipRecurrentHours[index];
+            var item = sortedDays[index]['item'];
+            bool isSelectable = sortedDays[index]['isSelectable'];
+
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  getDay(int.parse(item.dayOfWeek ?? '')),
-                  style: TextStyles.montserratSemiBold(
-                    textColor: colorPurpleLight,
-                    textSize: TextSizes.twenty,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      getDay(int.parse(item.dayOfWeek ?? '')),
+                      style: TextStyles.montserratSemiBold(
+                        textColor: isSelectable ? colorPurpleLight : colorGrey1,
+                        textSize: TextSizes.twenty,
+                      ),
+                    ),
+                    if (!isSelectable) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: colorGrey1.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          'Non disponible',
+                          style: TextStyles.montserratRegular(
+                            textColor: colorGrey1,
+                            textSize: TextSizes.twelve,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
                 Separators.normalVertical(),
                 Wrap(
@@ -37,79 +82,73 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                   runSpacing: 15,
                   spacing: 0,
                   direction: Axis.horizontal,
-                  children: item.slots
-                          ?.map(
-                            (e) => GestureDetector(
-                              onTap: !isDayOfWeekInDateRange(int.parse(item.dayOfWeek ?? '0'), Jiffy.parse(_.initialSelectedDate.value?.day ?? '').dateTime, Jiffy.parse(_.endSelectedDate.value?.day ?? '').dateTime)
-                                  ? () {
-                                      showNotification(
-                                        message: 'Vous ne pouvez pas sélectionner cet horaire après la date de fin de répétition',
-                                        bgColor: colorBlue2,
-                                      );
-                                    }
-                                  : () {
-                                      e.isHourSelected = !e.isHourSelected!;
-                                      _.onWorshipRecurrentHoursSelected(
-                                          item, true);
-                                    },
-                              child: Stack(
-                                clipBehavior: Clip.none,
-                                alignment: Alignment.topRight,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                      horizontal: 8.0,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: e.isHourSelected == true
-                                          ? colorGreenSemiLight
-                                          : colorWhite,
-                                      border: Border.all(
-                                          color: colorGreenSemiLight),
-                                      borderRadius:
-                                          BorderRadius.circular(Get.width / 10),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Text(
-                                        '${e.startTime}',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyles.montserratSemiBold(
-                                          textSize: TextSizes.fourteen,
-                                          textColor: e.isHourSelected == true
-                                              ? colorWhite
-                                              : colorBlack,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  e.isHourSelected == true
-                                      ? Positioned(
-                                          top: -8,
-                                    right: 3,
-                                          child: Container(
-                                            padding: const EdgeInsets.all(2),
-                                            decoration: BoxDecoration(
-                                              color: colorWhite,
-                                              border: Border.all(
-                                                  color: colorGreenSemiLight),
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                            ),
-                                            child: const Icon(
-                                              Icons.check,
-                                              color: colorGreenSemiLight,
-                                              size: 15,
-                                            ),
-                                          ),
-                                        )
-                                      : const SizedBox.shrink(),
-                                ],
+                  children: (item.slots ?? []).map<Widget>((e) => GestureDetector(
+                    onTap: !isSelectable
+                        ? () {
+                      showNotification(
+                        message: 'Vous ne pouvez pas sélectionner cet horaire après la date de fin de répétition',
+                        bgColor: colorBlue2,
+                      );
+                    }
+                        : () {
+                      e.isHourSelected = !e.isHourSelected!;
+                      _.onWorshipRecurrentHoursSelected(item, true);
+                    },
+                    child: Opacity(
+                      opacity: isSelectable ? 1.0 : 0.5,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        alignment: Alignment.topRight,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                            decoration: BoxDecoration(
+                              color: e.isHourSelected == true
+                                  ? colorGreenSemiLight
+                                  : colorWhite,
+                              border: Border.all(
+                                  color: isSelectable
+                                      ? colorGreenSemiLight
+                                      : colorGrey1
+                              ),
+                              borderRadius: BorderRadius.circular(Get.width / 10),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text(
+                                '${e.startTime}',
+                                textAlign: TextAlign.center,
+                                style: TextStyles.montserratSemiBold(
+                                  textSize: TextSizes.fourteen,
+                                  textColor: e.isHourSelected == true
+                                      ? colorWhite
+                                      : (isSelectable ? colorBlack : colorGrey1),
+                                ),
                               ),
                             ),
-                          )
-                          .toList() ??
-                      [],
+                          ),
+                          if (e.isHourSelected == true)
+                            Positioned(
+                              top: -8,
+                              right: 3,
+                              child: Container(
+                                padding: const EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  color: colorWhite,
+                                  border: Border.all(color: colorGreenSemiLight),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: const Icon(
+                                  Icons.check,
+                                  color: colorGreenSemiLight,
+                                  size: 15,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  )).toList(),
                 ),
               ],
             );

@@ -177,15 +177,35 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
   }
 
   selectDate(BuildContext context, PriceData? item) async {
-    log('initialSelectedDate ::: ${initialSelectedDate.value?.dayToDisplay}');
-    final DateTime now = DateTime.now();
-    final DateTime today = DateTime(now.year, now.month, now.day);
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    // Déterminer la date initiale du picker
+    DateTime initialDate;
+    if (endSelectedDate.value?.dayToDisplay != null && endSelectedDate.value?.dayToDisplay != '-') {
+      // Si une date de fin est déjà sélectionnée, on l'utilise comme date initiale
+      List<String> dateParts = endSelectedDate.value!.dayToDisplay!.split('-');
+      DateTime selectedDateTime = DateTime(
+          int.parse(dateParts[2]),  // année
+          int.parse(dateParts[1]),  // mois
+          int.parse(dateParts[0])   // jour
+      );
+
+      // Vérifier si la date sélectionnée est valide (après la date de début)
+      if (selectedDateTime.isAfter(Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime) ||
+          selectedDateTime.isAtSameMomentAs(Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime)) {
+        initialDate = selectedDateTime;
+      } else {
+        initialDate = Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime;
+      }
+    } else {
+      initialDate = Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime;
+    }
 
     final DateTime? selected = await showDatePicker(
-      //locale: Locale('fr', 'FR'),
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       context: context,
-      initialDate: Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime,
+      initialDate: initialDate,
       firstDate: Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime,
       lastDate: DateTime(today.year + 5),
       cancelText: 'cancel'.tr,
@@ -194,21 +214,22 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
         return Theme(
           data: ThemeData.light().copyWith(
             colorScheme: const ColorScheme.light(
-                onPrimary: colorWhite, // selected text color
-                onSurface: colorBlack, // default text color
-                primary: colorPurpleLight // circle color
-                ),
+                onPrimary: colorWhite,
+                onSurface: colorBlack,
+                primary: colorPurpleLight
+            ),
             dialogBackgroundColor: Colors.white,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor: colorWhite, textStyle:
-                    TextStyles.montserratRegular(textSize: TextSizes.fourteen), // color of button's letters
-                backgroundColor: colorPurpleLight, // Background color
+                foregroundColor: colorWhite,
+                textStyle: TextStyles.montserratRegular(textSize: TextSizes.fourteen),
+                backgroundColor: colorPurpleLight,
                 shape: RoundedRectangleBorder(
                   side: const BorderSide(
                       color: Colors.transparent,
                       width: 1,
-                      style: BorderStyle.solid),
+                      style: BorderStyle.solid
+                  ),
                   borderRadius: BorderRadius.circular(50),
                 ),
               ),
@@ -218,20 +239,20 @@ class FilterMassRequestDateController extends GetxController/* with WidgetsBindi
         );
       },
     );
+
     if (selected != null) {
-      String day = selected.day.toString();
-      String month = selected.month.toString();
-      if (selected.day < 10) {
-        day = "0$day";
-      }
-      if (selected.month < 10) {
-        month = "0$month";
-      }
+      String day = selected.day.toString().padLeft(2, '0');
+      String month = selected.month.toString().padLeft(2, '0');
+
       endSelectedDate.value?.day = "${selected.year}-$month-$day";
       endSelectedDate.value?.dayToDisplay = "$day-$month-${selected.year}";
       endSelectedDate.refresh();
       doRefreshHoursAfterAction();
-      datesChoosenForWorshipRecurrentHours.value = countOccurrencesAndAssignDates(Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime, selected, datesChoosenForWorshipRecurrentHours.value);
+      datesChoosenForWorshipRecurrentHours.value = countOccurrencesAndAssignDates(
+          Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime,
+          selected,
+          datesChoosenForWorshipRecurrentHours.value
+      );
     }
   }
 

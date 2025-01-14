@@ -18,11 +18,12 @@ class FilterMassRequestDateScreen extends StatelessWidget {
       color: colorGreen,
       child: SafeArea(
         child: GetX<FilterMassRequestDateController>(builder: (_) {
-          return WillPopScope(
-            onWillPop: () async => false,
+          return PopScope(
+            canPop: false,
             child: KeyboardDismisser(
               child: Scaffold(
                 resizeToAvoidBottomInset: true,
+                backgroundColor: colorWhite,
                 body: Container(
                   margin: const EdgeInsets.only(
                     top: 16,
