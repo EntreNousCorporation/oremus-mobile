@@ -10,6 +10,7 @@ import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
+import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/filter_mass_request_date_controller.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
@@ -99,11 +100,11 @@ class MassRequestWithWorshipController extends GetxController {
   initMassTypeRepetitions() {
     massRequestTypeRepetitions.value = [
       MassTypeRepetitionData(
-        code: 'once',
+        code: RepetitionType.once.name,
         name: 'Une seule messe',
       ),
       MassTypeRepetitionData(
-        code: 'many',
+        code: RepetitionType.many.name,
         name: 'Plusieurs messes',
       ),
     ];
@@ -160,7 +161,6 @@ class MassRequestWithWorshipController extends GetxController {
       Routes.FILTER_MASS_REQUEST_CHOOSE_WORSHIP,
       arguments: 'Demande de messe',
     );
-    log('goToWorshipChoice ::: ${paroisseSelected.value.identifier}');
     if (paroisseSelected.value.identifier != null) {
       paroisseSelected.refresh();
       resetChooseDate();
@@ -217,146 +217,186 @@ class MassRequestWithWorshipController extends GetxController {
 
   // Ouvrir un date picker qui ne permet que les dates calculées
   Future<void> showPicker(BuildContext context) async {
-    // Normaliser les dates de _allowedDates pour ne garder que l'année, le mois et le jour
+    // Normaliser les dates permises
     final allowedDatesNormalized = allowedDates
         .map((date) => DateTime(date.year, date.month, date.day))
         .toList();
 
-    // S'assurer que la première date dans _allowedDates est valide comme initialDate
+    // Obtenir la date actuelle
     DateTime now = DateTime.now();
-    DateTime initialDate = allowedDatesNormalized.firstWhere(
-          (date) => date.isAfter(DateTime(now.year, now.month, now.day)) || date.isAtSameMomentAs(DateTime(now.year, now.month, now.day)),
-      orElse: () => allowedDatesNormalized.first,
-    );
+
+    // Déterminer la date initiale du picker
+    DateTime initialDate;
+    if (selectedDate.value != null) {
+      // Si une date est déjà sélectionnée, on l'utilise comme date initiale
+      // On parse d'abord la date depuis le format "dd-MM-yyyy"
+      List<String> dateParts = selectedDate.value!.dayToDisplay?.split('-') ?? [];
+      DateTime selectedDateTime = DateTime(
+          int.parse(dateParts[2]),  // année
+          int.parse(dateParts[1]),  // mois
+          int.parse(dateParts[0])   // jour
+      );
+
+      // Vérifier si cette date est toujours valide
+      if (allowedDatesNormalized.contains(DateTime(
+          selectedDateTime.year,
+          selectedDateTime.month,
+          selectedDateTime.day
+      ))) {
+        initialDate = selectedDateTime;
+      } else {
+        // Si la date sélectionnée n'est plus valide, on prend la prochaine date disponible
+        initialDate = allowedDatesNormalized.firstWhere(
+                (date) => date.isAfter(DateTime(now.year, now.month, now.day)) ||
+                date.isAtSameMomentAs(DateTime(now.year, now.month, now.day)),
+            orElse: () => allowedDatesNormalized.first
+        );
+      }
+    } else {
+      // Si aucune date n'est sélectionnée, on prend la prochaine date disponible
+      initialDate = allowedDatesNormalized.firstWhere(
+              (date) => date.isAfter(DateTime(now.year, now.month, now.day)) ||
+              date.isAtSameMomentAs(DateTime(now.year, now.month, now.day)),
+          orElse: () => allowedDatesNormalized.first
+      );
+    }
 
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: initialDate, // On utilise une date initiale valide
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: AppConstants.END_DATE_LIMIT)),
+      initialDate: initialDate,
+      firstDate: allowedDatesNormalized.reduce((a, b) => a.isBefore(b) ? a : b), // La plus petite date autorisée
+      lastDate: allowedDatesNormalized.reduce((a, b) => a.isAfter(b) ? a : b),   // La plus grande date autorisée
       selectableDayPredicate: (DateTime day) {
-        // Comparer seulement année, mois et jour (ignorer les heures)
         DateTime normalizedDay = DateTime(day.year, day.month, day.day);
         return allowedDatesNormalized.contains(normalizedDay);
       },
     );
+
     if (picked != null) {
       resetPrice();
       updateRepetitionFilter(picked, isFirst: false);
     }
   }
 
-  updateRepetitionFilter(DateTime datetime, {bool? isFirst = true, Slot? selectHour}) {
-    String day = datetime.day.toString();
-    String month = datetime.month.toString();
+  void updateRepetitionFilter(DateTime datetime, {bool isFirst = true, Slot? selectHour}) {
+    final now = DateTime.now();
+    log('=== DATE DEBUG START ===');
+    log('Current date/time: ${now.toString()}');
+    log('Input datetime parameter: ${datetime.toString()}');
 
-    // Formatage du jour et du mois
-    if (datetime.day < 10) {
-      day = "0$day";
-    }
-    if (datetime.month < 10) {
-      month = "0$month";
-    }
+    // 1. Déterminer la plage horaire
+    final timeRange = _determineTimeRange(now);
+    log('Time range: $timeRange');
 
-    // Récupérer les heures récurrentes pour le jour sélectionné
-    var recurentHour = worshipRecurrentHours.value.firstWhereOrNull((element) {
-      return int.parse(element.dayOfWeek ?? '0') == (datetime.weekday - 1);
-    });
+    // 2. Déterminer si nous devons passer au lendemain
+    final shouldUseNextDay = timeRange == TimeRange.evening;
+    log('Should use next day: $shouldUseNextDay');
 
-    // Vérifier s'il y a des créneaux horaires disponibles pour ce jour
-    List<Slot>? tempSlots = recurentHour?.slots ?? [];
-    selectedHours.clear();
-    for (var i in tempSlots) {
-      selectedHours.add(i);
-    }
-
-    // Récupérer l'heure actuelle
-    DateTime now = DateTime.now();
-
-    // Calculer la date "logique" selon les règles du tableau (exemple avec 12h ou 18h)
-    DateTime logicalDate = now;
-    if (now.hour >= 0 && now.hour <= 9) {
-      logicalDate = DateTime(now.year, now.month, now.day, 12); // Même jour à 12h
-    } else if (now.hour > 9 && now.hour <= 15) {
-      logicalDate = DateTime(now.year, now.month, now.day, 18); // Même jour à 18h
-    } else {
-      logicalDate = DateTime(now.year, now.month, now.day + 1, 12); // Lendemain à 12h
-    }
-
-    // Si la date passée en paramètre est après la date logique, on ignore les restrictions
-    if (datetime.isAfter(logicalDate)) {
-      log('Date future détectée, afficher toutes les heures disponibles');
-      selectedHours.clear(); // Vider et réajouter toutes les heures disponibles
-      for (var i in tempSlots) {
-        selectedHours.add(i); // Ajouter tous les créneaux horaires disponibles
-      }
-    } else {
-      // Appliquer les restrictions du tableau si la date est "logique" (comme aujourd'hui)
-      if (now.hour >= 0 && now.hour <= 9) {
-        // Entre 00h01 et 09h00, afficher les créneaux à partir de 12h00
-        selectedHours.removeWhere((slot) {
-          TimeOfDay slotTime = parseTime(slot?.startTime ?? '');
-          return slotTime.hour < 12;
-        });
-      } else if (now.hour > 9 && now.hour <= 15) {
-        // Entre 09h01 et 15h00, afficher les créneaux à partir de 18h00
-        selectedHours.removeWhere((slot) {
-          TimeOfDay slotTime = parseTime(slot?.startTime ?? '');
-          return slotTime.hour < 18;
-        });
+    // 3. Ajuster la date si nécessaire
+    DateTime targetDate;
+    if (shouldUseNextDay) {
+      // Si la date en paramètre est aujourd'hui, on ajoute un jour
+      if (datetime.year == now.year &&
+          datetime.month == now.month &&
+          datetime.day == now.day) {
+        targetDate = datetime.add(const Duration(days: 1));
       } else {
-        // Entre 15h01 et 00h00, afficher les créneaux à partir de 12h00 le lendemain
-        datetime = datetime.add(const Duration(days: 1)); // Passer au lendemain
-        recurentHour = worshipRecurrentHours.value.firstWhereOrNull((element) {
-          return int.parse(element.dayOfWeek ?? '0') == (datetime.weekday - 1);
-        });
-        tempSlots = recurentHour?.slots ?? [];
-        selectedHours.clear();
-        for (var i in tempSlots) {
-          TimeOfDay slotTime = parseTime(i.startTime ?? '');
-          if (slotTime.hour >= 12) {
-            selectedHours.add(i); // Ajouter seulement les créneaux après 12h
-          }
-        }
+        // Sinon on utilise la date en paramètre
+        targetDate = datetime;
       }
-    }
-
-    // Sélection du créneau horaire
-
-    // Trier les heures dans selectedHours pour obtenir la plus petite
-    if (selectedHours.isNotEmpty) {
-      selectedHours.sort((a, b) {
-        TimeOfDay timeA = parseTime(a?.startTime ?? '');  // Convertir le créneau A en TimeOfDay
-        TimeOfDay timeB = parseTime(b?.startTime ?? '');  // Convertir le créneau B en TimeOfDay
-        return compareTimes(timeA, timeB);         // Comparer les deux heures
-      });
-    }
-
-    if (isFirst == true) {
-      // Sélectionner le créneau avec la plus petite heure
-      selectedHour.value = selectedHours.first;
     } else {
-      selectedHour.value = selectHour;
+      targetDate = datetime;
     }
 
-    // Mise à jour des informations sélectionnées
+    log('Target date after adjustment: ${targetDate.toString()}');
+
+    // 4. Formater la date pour l'affichage
+    final formattedDay = targetDate.day.toString().padLeft(2, '0');
+    final formattedMonth = targetDate.month.toString().padLeft(2, '0');
+
+    // 5. Récupérer les horaires disponibles pour ce jour
+    final recurentHour = worshipRecurrentHours.firstWhereOrNull(
+            (element) => int.parse(element.dayOfWeek ?? '0') == (targetDate.weekday - 1)
+    );
+    log('Found slots for weekday ${targetDate.weekday - 1}');
+
+    // 6. Filtrer et trier les créneaux disponibles
+    selectedHours.clear();
+    final filteredSlots = _filterAvailableSlots(
+      slots: recurentHour?.slots ?? [],
+      timeRange: timeRange,
+    );
+    selectedHours.addAll(filteredSlots);
+    log('Available slots: ${selectedHours.map((s) => s?.startTime).join(', ')}');
+
+    // 7. Sélectionner l'horaire
+    if (selectedHours.isNotEmpty) {
+      if (isFirst) {
+        selectedHour.value = selectedHours.first;
+      } else {
+        selectedHour.value = selectHour;
+      }
+      log('Selected hour: ${selectedHour.value?.startTime}');
+    }
+
+    // 8. Mettre à jour la date sélectionnée
     selectedDate.value = PriceData(
-      day: "${datetime.year}-$month-$day",
-      dayOfWeek: datetime.weekday.toString(),
+      day: "${targetDate.year}-$formattedMonth-$formattedDay",
+      dayOfWeek: targetDate.weekday.toString(),
       isDaySelected: true,
-      dayToDisplay: "$day-$month-${datetime.year}",
+      dayToDisplay: "$formattedDay-$formattedMonth-${targetDate.year}",
       slots: [selectedHour.value ?? Slot()],
     );
 
-    log('selectedDate ::: ${selectedDate.toJson()}');
+    log('Final date to display: ${selectedDate.value?.dayToDisplay}');
+    log('=== DATE DEBUG END ===');
 
-    // Vérifier si la sélection est valide
+    // 9. Mise à jour du formulaire et du prix
     checkForm();
     if (selectedDate.value != null && selectedHour.value != null) {
       datesChoosen.value = [selectedDate.value ?? PriceData()];
       doGetMassRequestPrice();
     }
   }
+
+  /// Détermine la plage horaire en fonction de l'heure actuelle
+  TimeRange _determineTimeRange(DateTime now) {
+    final currentTime = now.hour * 60 + now.minute;  // Convertir en minutes
+
+    if (currentTime >= 0 && currentTime <= 9 * 60) return TimeRange.morning;
+    if (currentTime > 9 * 60 && currentTime <= 15 * 60) return TimeRange.afternoon;
+    return TimeRange.evening;
+  }
+
+  /// Filtre les créneaux disponibles selon les règles
+  List<Slot> _filterAvailableSlots({
+    required List<Slot> slots,
+    required TimeRange timeRange,
+  }) {
+    int minHour;
+    switch (timeRange) {
+      case TimeRange.morning:
+        minHour = 12;
+        break;
+      case TimeRange.afternoon:
+        minHour = 18;
+        break;
+      case TimeRange.evening:
+        minHour = 12;
+        break;
+    }
+
+    return slots.where((slot) {
+      final slotTime = parseTime(slot.startTime ?? '');
+      return slotTime.hour >= minHour;
+    }).toList()
+      ..sort((a, b) {
+        final timeA = parseTime(a.startTime ?? '');
+        final timeB = parseTime(b.startTime ?? '');
+        return compareTimes(timeA, timeB);
+      });
+  }
+
 
   updateMassTypeRepetitionFilter(
       MassTypeRepetitionData? massTypeRepetitionData) {
@@ -366,7 +406,7 @@ class MassRequestWithWorshipController extends GetxController {
     checkForm();
     if (selectedDate.value != null &&
         selectedHour.value != null &&
-        massRequestTypeRepetitionSelected.value?.code == 'once') {
+        massRequestTypeRepetitionSelected.value?.code == RepetitionType.once.name) {
       selectedDate.value?.slots = [selectedHour.value ?? Slot()];
       datesChoosen.value = [selectedDate.value ?? PriceData()];
       doGetMassRequestPrice();
@@ -494,10 +534,11 @@ class MassRequestWithWorshipController extends GetxController {
     isPricingProcessing(true);
     hasData(false);
     log('request doGetMassRequestPrice ::: ${jsonEncode(datesChoosen)}');
+
     massRequestRepository
         .getMassRequestPrice(
-            request: datesChoosen,
-            workshipId: paroisseSelected.value.identifier.toString())
+        request: datesChoosen,
+        workshipId: paroisseSelected.value.identifier.toString())
         .then((value) {
       isPricingProcessing(false);
       hasData(true);
@@ -522,7 +563,7 @@ class MassRequestWithWorshipController extends GetxController {
     });
   }
 
-  doSendMassRequest() {
+  doSendMassRequest({bool? forceDuplicateCreation}) {
     hideKeyboard();
     EasyLoading.show(
       status: 'Traitement en cours...',
@@ -539,35 +580,51 @@ class MassRequestWithWorshipController extends GetxController {
       typeOfMassRequest: massRequestTypeSelected.value?.code,
       slots: datesChoosen,
       worshipPlace: paroisseSelected.value.identifier,
+      forceDuplicateCreation: forceDuplicateCreation,
     );
 
     log('request doSendMassRequest => ${jsonEncode(request.toJson())}');
 
-    massRequestRepository.sendMassRequest(request: request).then((value) {
-      EasyLoading.dismiss(animation: true).then((v) {
-        unlockBackButton.value = true;
-      });
-      moveToPayment(value);
-    }, onError: (error) {
-      EasyLoading.dismiss(animation: true).then((v) {
-        unlockBackButton.value = true;
-      });
-      debugPrint("error => ${error.toString()}");
-      var err = error as CustomException;
-      if (err.code == 401) {
-        showCustomDialog(
-          Get.context!,
-          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-        ).then((value) {
-          doLogout();
+    massRequestRepository.sendMassRequest(request: request).then(
+          (value) {
+        EasyLoading.dismiss(animation: true).then((v) {
+          unlockBackButton.value = true;
         });
-      } else {
+        moveToPayment(value);
+      },
+      onError: (error) {
+        EasyLoading.dismiss(animation: true).then((v) {
+          unlockBackButton.value = true;
+        });
+        debugPrint("error => ${error.toString()}");
+        var err = error as CustomException;
+        if (err.code == 401) {
+          showCustomDialog(
+            Get.context!,
+            message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+          ).then((value) {
+            doLogout();
+          });
+          return;
+        }
+        if (err.code == 409) {
+          showCustomDialog(
+            Get.context!,
+            message:
+            'Vous venez de faire une demande de messe identique. Souhaitez-vous confirmer cette demande ?',
+            positiveLabel: 'OUI',
+            positiveCallBack: () {
+              doSendMassRequest(forceDuplicateCreation: true);
+            },
+            negativeLabel: 'NON',
+          );
+          return;
+        }
         showNotification(
-          message: err.message.toString(),
-          duration: const Duration(seconds: 4),
-        );
-      }
-    });
+            message: 'Une erreur est survenue',
+            duration: const Duration(seconds: 4));
+      },
+    );
   }
 
   doLogout() {

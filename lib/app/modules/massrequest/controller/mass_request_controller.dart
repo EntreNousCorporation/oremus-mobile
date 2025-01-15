@@ -113,11 +113,11 @@ class MassRequestController extends GetxController {
   initMassTypeRepetitions() {
     massRequestTypeRepetitions.value = [
       MassTypeRepetitionData(
-        code: 'once',
+        code: RepetitionType.once.name,
         name: 'Une seule messe',
       ),
       MassTypeRepetitionData(
-        code: 'many',
+        code: RepetitionType.many.name,
         name: 'Plusieurs messes',
       ),
     ];
@@ -212,7 +212,6 @@ class MassRequestController extends GetxController {
               'Aucun horaire de messe disponible.\nVeuillez choisir une autre paroisse svp');
       return;
     }
-    //updateRepetitionFilter(DateTime.now());
     var dc = await Get.toNamed(
       Routes.FILTER_MASS_REQUEST_CHOOSE_DATE,
       arguments: [
@@ -222,8 +221,6 @@ class MassRequestController extends GetxController {
     );
     datesChoosen.value = dc ?? [];
     datesChoosen.refresh();
-    log('datesChoosen ::: ${jsonEncode(datesChoosen)}');
-    log('worshipHours ::: ${jsonEncode(worshipHours)}');
     if (datesChoosen.isNotEmpty) {
       doGetMassRequestPrice();
     } else {
@@ -242,7 +239,7 @@ class MassRequestController extends GetxController {
         price.value != '-' &&
         price.value != '0.0' &&
         price.value != '0' &&
-        (massRequestTypeRepetitionSelected.value?.code == 'many'
+        (massRequestTypeRepetitionSelected.value?.code == RepetitionType.once.name
             ? datesChoosen.isNotEmpty
             : selectedDate.value != null);
     update();
@@ -261,13 +258,12 @@ class MassRequestController extends GetxController {
 
   updateMassTypeRepetitionFilter(
       MassTypeRepetitionData? massTypeRepetitionData) {
-    //selectedHour.value = null;
     datesChoosen.clear();
     massRequestTypeRepetitionSelected.value = massTypeRepetitionData;
     checkForm();
     if (selectedDate.value != null &&
         selectedHour.value != null &&
-        massRequestTypeRepetitionSelected.value?.code == 'once') {
+        massRequestTypeRepetitionSelected.value?.code == RepetitionType.once.name) {
       selectedDate.value?.slots = [selectedHour.value ?? Slot()];
       datesChoosen.value = [selectedDate.value ?? PriceData()];
       doGetMassRequestPrice();
