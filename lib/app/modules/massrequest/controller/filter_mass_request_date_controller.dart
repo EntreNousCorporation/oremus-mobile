@@ -39,8 +39,7 @@ class SelectionState {
   int get hashCode => dayOfWeek.hashCode ^ startTime.hashCode;
 }
 
-class FilterMassRequestDateController
-    extends GetxController /* with WidgetsBindingObserver*/ {
+class FilterMassRequestDateController extends GetxController {
   FilterMassRequestDateController();
 
   RxList<TypeData> massRequestTypes = RxList<TypeData>([]);
@@ -503,7 +502,7 @@ class FilterMassRequestDateController
     }
     showCustomDialog(
       Get.context!,
-      message: 'Attention !\nVous êtes sur le point de quitter cette page. Toutes les horaires sélectionnées seront perdues.\n\nVoulez-vous vraiment continuer ?\n',
+      message: 'Attention !\nVous êtes sur le point de quitter cette page. Tous les horaires sélectionnés seront perdus.\n\nVoulez-vous vraiment continuer ?\n',
       negativeLabel: 'NON',
       positiveLabel: 'OUI',
       positiveCallBack: () {
