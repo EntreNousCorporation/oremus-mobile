@@ -13,14 +13,11 @@ class FilterMassRequestDateScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) async {
-        if (!didPop) {
-          await Future.delayed(Duration.zero);
-          final _ = Get.find<FilterMassRequestDateController>();
-          _.doBack();
-        }
+    return WillPopScope( //todo:- bien que déprecié, marche sur iPhones. Une solution sera trouvée plus tard
+      onWillPop: () async {
+        final _ = Get.find<FilterMassRequestDateController>();
+        _.doBack();
+        return false; // Empêche la navigation par défaut
       },
       child: Scaffold(
         backgroundColor: colorWhite,
