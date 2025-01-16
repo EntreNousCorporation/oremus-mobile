@@ -500,6 +500,7 @@ class PriceData {
   String? day;
   String? dayToDisplay;
   bool? isDaySelected;
+  bool? isSpecial;
   int? repeat;
   int? identifier;
   List<Slot>? slots;
@@ -512,6 +513,7 @@ class PriceData {
     this.repeat,
     this.identifier,
     this.isDaySelected = false,
+    this.isSpecial,
     this.slots,
     List<DateTime>? dates,
   }) : dates = dates ?? [];
@@ -534,6 +536,7 @@ class PriceData {
     dayToDisplay = json['dayToDisplay'];
     dayOfWeek = json['dayOfWeek'];
     isDaySelected = json['isDaySelected'];
+    isSpecial = json['isSpecial'];
     repeat = json['repeat'];
     identifier = json['identifier'];
     if (json['slots'] != null) {

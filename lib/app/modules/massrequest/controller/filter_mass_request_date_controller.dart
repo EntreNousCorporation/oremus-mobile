@@ -39,8 +39,10 @@ class SelectionState {
   int get hashCode => dayOfWeek.hashCode ^ startTime.hashCode;
 }
 
-class FilterMassRequestDateController extends GetxController {
+class FilterMassRequestDateController extends GetxController with GetSingleTickerProviderStateMixin {
   FilterMassRequestDateController();
+
+  late TabController tabController;
 
   RxList<TypeData> massRequestTypes = RxList<TypeData>([]);
   RxList<TypeData> massRequestTypesTemp = RxList<TypeData>([]);
@@ -85,25 +87,87 @@ class FilterMassRequestDateController extends GetxController {
     return '$dayOfWeek-$startTime';
   }
 
-  void toggleSlotSelection(String dayOfWeek, String startTime) {
-    final slotKey = _createSlotKey(dayOfWeek, startTime);
-    if (selectedSlotKeys.contains(slotKey)) {
-      selectedSlotKeys.remove(slotKey);
-    } else {
-      selectedSlotKeys.add(slotKey);
-    }
-    update();
+  // Créer une clé unique pour les messes spéciales
+  String _createSpecialSlotKey(String date, String startTime) {
+    return 'special-$date-$startTime';
   }
 
-  bool isSlotSelected(String dayOfWeek, String startTime) {
-    return selectedSlotKeys.contains(_createSlotKey(dayOfWeek, startTime));
+  void toggleSlotSelection(String identifier, String startTime, {bool isSpecial = false}) {
+    if (isSpecial) {
+      final slotKey = _createSpecialSlotKey(identifier, startTime);
+      if (selectedSlotKeys.contains(slotKey)) {
+        selectedSlotKeys.remove(slotKey);
+      } else {
+        selectedSlotKeys.add(slotKey);
+      }
+      // Mettre à jour l'état de la messe spéciale
+      var specialMass = worshipSpecialHours.firstWhere(
+            (mass) => mass.day == identifier,
+        orElse: () => PriceData(),
+      );
+      var slot = specialMass.slots?.firstWhere(
+            (s) => s.startTime == startTime,
+        orElse: () => Slot(),
+      );
+      if (slot != null) {
+        slot.isHourSelected = selectedSlotKeys.contains(slotKey);
+        onWorshipSpecialHoursSelected(specialMass);
+      }
+    } else {
+      // Logique existante pour les messes récurrentes
+      var recurrentMass = worshipRecurrentHours.firstWhere(
+            (mass) => mass.dayOfWeek == identifier,
+        orElse: () => PriceData(),
+      );
+
+      var slot = recurrentMass.slots?.firstWhere(
+            (s) => s.startTime == startTime,
+        orElse: () => Slot(),
+      );
+
+      if (slot != null) {
+        slot.isHourSelected = !(slot.isHourSelected ?? false);
+        onWorshipRecurrentHoursSelected(recurrentMass, slot.isHourSelected ?? false);
+      }
+    }
+
+    worshipRecurrentHours.refresh();
+    worshipSpecialHours.refresh();
+    canDoApplyAction();
+  }
+
+  bool isSlotSelected(String identifier, String startTime, {bool isSpecial = false}) {
+    if (isSpecial) {
+      return selectedSlotKeys.contains(_createSpecialSlotKey(identifier, startTime));
+    } else {
+      // Logique existante pour les messes récurrentes
+      return worshipRecurrentHours
+          .firstWhere(
+            (mass) => mass.dayOfWeek == identifier,
+        orElse: () => PriceData(),
+      )
+          .slots
+          ?.firstWhere(
+            (s) => s.startTime == startTime,
+        orElse: () => Slot(),
+      )
+          .isHourSelected ??
+          false;
+    }
   }
 
   @override
   void onInit() {
-    getArguments();
     super.onInit();
+    tabController = TabController(length: 2, vsync: this);
+    getArguments();
     resetSelections();
+  }
+
+  @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
   }
 
   getArguments() {
@@ -511,33 +575,14 @@ class FilterMassRequestDateController extends GetxController {
     );
   }
 
-  canDoApplyAction() {
-    bool hasSelectedSpecialHours = false;
-    bool hasSelectedRecurrentHours = false;
+  void canDoApplyAction() {
+    bool hasSelectedRecurrentSlots = worshipRecurrentHours.any((mass) =>
+    mass.slots?.any((slot) => slot.isHourSelected ?? false) ?? false);
 
-    // Vérifier les horaires spéciaux
-    for (PriceData? item in datesChoosenWorshipSpecialHours) {
-      var slots =
-          item?.slots?.where((element) => element.isHourSelected == true);
-      if (slots?.isNotEmpty == true) {
-        hasSelectedSpecialHours = true;
-        break;
-      }
-    }
+    bool hasSelectedSpecialSlots = worshipSpecialHours.any((mass) =>
+    mass.slots?.any((slot) => slot.isHourSelected ?? false) ?? false);
 
-    // Vérifier les horaires récurrents
-    for (PriceData? item in datesChoosenForWorshipRecurrentHours) {
-      var selectedSlots = selectedSlotKeys
-          .where((slotKey) => slotKey.startsWith('${item?.dayOfWeek}-'));
-
-      if (selectedSlots.isNotEmpty) {
-        hasSelectedRecurrentHours = true;
-        break;
-      }
-    }
-
-    enabledApplyButton.value =
-        hasSelectedRecurrentHours || hasSelectedSpecialHours;
+    enabledApplyButton.value = hasSelectedRecurrentSlots || hasSelectedSpecialSlots;
   }
 
   void setDatas() {
@@ -557,37 +602,54 @@ class FilterMassRequestDateController extends GetxController {
 
   void prepareRecapData() {
     datesChoosenForWorshipRecurrentHours.clear();
+    datesChoosenWorshipSpecialHours.clear();
 
+    // Traitement des messes récurrentes
     for (var day in worshipRecurrentHours) {
-      final dayOfWeek = day.dayOfWeek ?? '0';
-      final selectedHours = getSelectedHoursForDay(dayOfWeek);
-
-      if (selectedHours.isNotEmpty) {
-        // Marquer explicitement les slots sélectionnés
-        final selectedSlotsWithSelection = selectedHours.map((slot) {
-          return Slot(
-              identifier: slot.identifier,
-              createdAt: slot.createdAt,
-              updatedAt: slot.updatedAt,
-              createdBy: slot.createdBy,
-              modifiedBy: slot.modifiedBy,
-              startTime: slot.startTime,
-              endTime: slot.endTime,
-              isHourSelected: true // Forcer à true ici
-              );
-        }).toList();
-
-        final dayData = PriceData(
-          dayOfWeek: dayOfWeek,
-          slots: selectedSlotsWithSelection,
+      var selectedSlots = day.slots?.where((slot) => slot.isHourSelected == true).toList() ?? [];
+      if (selectedSlots.isNotEmpty) {
+        datesChoosenForWorshipRecurrentHours.add(PriceData(
+          dayOfWeek: day.dayOfWeek,
+          slots: selectedSlots,
           repeat: day.repeat,
           dates: day.dates,
           day: day.day,
           dayToDisplay: day.dayToDisplay,
-        );
-        datesChoosenForWorshipRecurrentHours.add(dayData);
+          isDaySelected: true,
+        ));
       }
     }
+
+    // Traitement des messes spéciales
+    for (var day in worshipSpecialHours) {
+      var selectedSlots = day.slots?.where((slot) => slot.isHourSelected == true).toList() ?? [];
+      if (selectedSlots.isNotEmpty) {
+        datesChoosenWorshipSpecialHours.add(PriceData(
+          dayOfWeek: day.dayOfWeek,
+          slots: selectedSlots,
+          day: day.day,
+          dayToDisplay: day.dayToDisplay,
+          isDaySelected: true,
+          isSpecial: true,
+        ));
+      }
+    }
+
+    // Conversion en liste non-nullable et combinaison
+    List<PriceData> recurrentDates = datesChoosenForWorshipRecurrentHours
+        .where((date) => date != null)
+        .map((date) => date!)
+        .toList();
+
+    List<PriceData> specialDates = datesChoosenWorshipSpecialHours
+        .where((date) => date != null)
+        .map((date) => date!)
+        .toList();
+
+    datesChoosen.value = [
+      ...recurrentDates,
+      ...specialDates,
+    ];
 
     update();
   }
