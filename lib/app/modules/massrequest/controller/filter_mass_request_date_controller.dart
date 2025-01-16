@@ -94,13 +94,22 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
 
   void toggleSlotSelection(String identifier, String startTime, {bool isSpecial = false}) {
     if (isSpecial) {
+      // Vérifier si la messe spéciale est sélectionnable
+      if (!isSpecialMassSelectable(identifier)) {
+        showNotification(
+          message: 'Cette messe spéciale n\'est pas disponible pour la période sélectionnée',
+          bgColor: colorRed,
+        );
+        return;
+      }
+
       final slotKey = _createSpecialSlotKey(identifier, startTime);
       if (selectedSlotKeys.contains(slotKey)) {
         selectedSlotKeys.remove(slotKey);
       } else {
         selectedSlotKeys.add(slotKey);
       }
-      // Mettre à jour l'état de la messe spéciale
+
       var specialMass = worshipSpecialHours.firstWhere(
             (mass) => mass.day == identifier,
         orElse: () => PriceData(),
@@ -198,6 +207,20 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
       //on marque la date selectionnée
       doRefreshHoursOnInit();
     }
+  }
+
+  // Vérifie si une messe spéciale est sélectionnable en fonction de la période
+  bool isSpecialMassSelectable(String specialMassDate) {
+    if (initialSelectedDate.value == null || endSelectedDate.value == null) {
+      return false;
+    }
+
+    DateTime specialDate = Jiffy.parse(specialMassDate).dateTime;
+    DateTime startDate = Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime;
+    DateTime endDate = Jiffy.parse(endSelectedDate.value?.day ?? '').dateTime;
+
+    // La messe spéciale doit être dans la période sélectionnée
+    return !specialDate.isBefore(startDate) && !specialDate.isAfter(endDate);
   }
 
   List<Slot> getSelectedHoursForDay(String dayOfWeek) {
@@ -587,17 +610,21 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
 
   void setDatas() {
     datesChoosen.clear();
-    var selectedRecurentHours =
-        _filterSelectedSlots(datesChoosenForWorshipRecurrentHours);
 
-    log('selectedRecurentHours ::: ${jsonEncode(selectedRecurentHours)}');
-
-    datesChoosen.value = duplicateEventsByRepeat(selectedRecurentHours)
+    // Traiter les messes récurrentes
+    var selectedRecurrentHours = _filterSelectedSlots(datesChoosenForWorshipRecurrentHours);
+    var recurrentDates = duplicateEventsByRepeat(selectedRecurrentHours)
         .where((e) => e.slots?.isNotEmpty == true)
         .toList();
 
-    log('Before datesChoosen ::: ${jsonEncode(selectedRecurentHours)}');
-    log('After datesChoosen ::: ${jsonEncode(datesChoosen)}');
+    // Traiter les messes spéciales
+    var selectedSpecialHours = _filterSelectedSlots(datesChoosenWorshipSpecialHours);
+
+    // Combiner les deux types de messes
+    datesChoosen.value = [
+      ...recurrentDates,
+      ...selectedSpecialHours,
+    ];
   }
 
   void prepareRecapData() {
@@ -622,33 +649,26 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
 
     // Traitement des messes spéciales
     for (var day in worshipSpecialHours) {
-      var selectedSlots = day.slots?.where((slot) => slot.isHourSelected == true).toList() ?? [];
-      if (selectedSlots.isNotEmpty) {
-        datesChoosenWorshipSpecialHours.add(PriceData(
-          dayOfWeek: day.dayOfWeek,
-          slots: selectedSlots,
-          day: day.day,
-          dayToDisplay: day.dayToDisplay,
-          isDaySelected: true,
-          isSpecial: true,
-        ));
+      // Vérifier si la messe spéciale est dans la période valide
+      if (isSpecialMassSelectable(day.day ?? '')) {
+        var selectedSlots = day.slots?.where((slot) => slot.isHourSelected == true).toList() ?? [];
+        if (selectedSlots.isNotEmpty) {
+          datesChoosenWorshipSpecialHours.add(PriceData(
+            dayOfWeek: day.dayOfWeek,
+            slots: selectedSlots,
+            day: day.day,
+            dayToDisplay: day.dayToDisplay,
+            isDaySelected: true,
+            isSpecial: true,
+          ));
+        }
       }
     }
 
-    // Conversion en liste non-nullable et combinaison
-    List<PriceData> recurrentDates = datesChoosenForWorshipRecurrentHours
-        .where((date) => date != null)
-        .map((date) => date!)
-        .toList();
-
-    List<PriceData> specialDates = datesChoosenWorshipSpecialHours
-        .where((date) => date != null)
-        .map((date) => date!)
-        .toList();
-
+    // Combinaison des deux types de messes
     datesChoosen.value = [
-      ...recurrentDates,
-      ...specialDates,
+      ...datesChoosenForWorshipRecurrentHours.where((date) => date != null).map((date) => date!).toList(),
+      ...datesChoosenWorshipSpecialHours.where((date) => date != null).map((date) => date!).toList(),
     ];
 
     update();
