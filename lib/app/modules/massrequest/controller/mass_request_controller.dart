@@ -12,6 +12,7 @@ import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/commons/utils.dart';
+import 'package:oremusapp/app/modules/massrequest/controller/filter_mass_request_date_controller.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/massrequest/data/repository/mass_request_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
@@ -72,6 +73,14 @@ class MassRequestController extends GetxController {
   var paroisseSelected = ContentPlace().obs;
   var massRequestSelected = MassRequestResponse().obs;
   var price = '-'.obs;
+
+  // Ajout d'une propriété pour stocker l'état des sélections
+  final RxSet<String> savedSelectedSlotKeys = <String>{}.obs;
+  final RxList<PriceData> savedWorshipRecurrentHours = RxList<PriceData>([]);
+  final RxList<PriceData> savedWorshipSpecialHours = RxList<PriceData>([]);
+
+  Rx<PriceData?> savedEndDate = Rx<PriceData?>(null);
+  var savedSpecialMasses;
 
   @override
   void onInit() {
@@ -208,25 +217,44 @@ class MassRequestController extends GetxController {
   goToDatesChoice() async {
     if (worshipHours.isEmpty) {
       showNotification(
-          message:
-              'Aucun horaire de messe disponible.\nVeuillez choisir une autre paroisse svp');
+          message: 'Aucun horaire de messe disponible.\nVeuillez choisir une autre paroisse svp');
       return;
     }
-    var dc = await Get.toNamed(
+
+    // Préparer les arguments avec l'état sauvegardé
+    final arguments = [
+      worshipHours,
+      selectedDate.toJson(),
+      {
+        'selectedSlotKeys': savedSelectedSlotKeys.toList(),
+        'endDate': savedEndDate?.toJson(),
+        'specialMasses': savedSpecialMasses,  // Ajouter cette ligne
+      }
+    ];
+
+    final result = await Get.toNamed(
       Routes.FILTER_MASS_REQUEST_CHOOSE_DATE,
-      arguments: [
-        worshipHours,
-        selectedDate.toJson(),
-      ],
+      arguments: arguments,
     );
-    datesChoosen.value = dc ?? [];
-    datesChoosen.refresh();
-    if (datesChoosen.isNotEmpty) {
-      doGetMassRequestPrice();
-    } else {
-      resetPrice();
+
+    if (result != null && result is Map) {
+      // Mettre à jour avec le nouveau format de résultat
+      datesChoosen.value = result['dates'] ?? [];
+      savedEndDate.value = result['endDate'] != null
+          ? PriceData.fromJson(result['endDate'])
+          : null;
+      savedSelectedSlotKeys.clear();
+      savedSelectedSlotKeys.addAll(Set<String>.from(result['selectedSlotKeys'] ?? []));
+      savedSpecialMasses = result['specialMasses'];
+
+      datesChoosen.refresh();
+      if (datesChoosen.isNotEmpty) {
+        doGetMassRequestPrice();
+      } else {
+        resetPrice();
+      }
+      checkForm();
     }
-    checkForm();
   }
 
   void resetPrice() {
@@ -421,7 +449,6 @@ class MassRequestController extends GetxController {
         minHour = 12;
         break;
     }
-
     return slots.where((slot) {
       final slotTime = parseTime(slot.startTime ?? '');
       return slotTime.hour >= minHour;
