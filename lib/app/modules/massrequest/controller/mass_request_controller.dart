@@ -12,7 +12,6 @@ import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/commons/utils.dart';
-import 'package:oremusapp/app/modules/massrequest/controller/filter_mass_request_date_controller.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/massrequest/data/repository/mass_request_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
@@ -101,7 +100,7 @@ class MassRequestController extends GetxController {
 
   initControllers() {
     massIntentionController = TextEditingController();
-    // Attendre 2 secondes avant de donner le focus au TextField
+    // Attendre 500 millisecondes avant de donner le focus au TextField
     Timer(const Duration(milliseconds: 500), () {
       FocusScope.of(Get.context!).requestFocus(massIntentionFocusNode);
     });
@@ -318,43 +317,44 @@ class MassRequestController extends GetxController {
 
   void updateRepetitionFilter(DateTime datetime, {bool isFirst = true, Slot? selectHour}) {
     final now = DateTime.now();
-    log('=== DATE DEBUG START ===');
-    log('Current date/time: ${now.toString()}');
-    log('Input datetime parameter: ${datetime.toString()}');
-
-    // 1. Déterminer la plage horaire
     final timeRange = _determineTimeRange(now);
-    log('Time range: $timeRange');
 
-    // 2. Déterminer si nous devons passer au lendemain
-    final shouldUseNextDay = timeRange == TimeRange.evening;
-    log('Should use next day: $shouldUseNextDay');
+    // Normaliser les dates pour la comparaison
+    final todayNormalized = DateTime(now.year, now.month, now.day);
+    final tomorrowNormalized = todayNormalized.add(const Duration(days: 1));
+    final selectedDateNormalized = DateTime(datetime.year, datetime.month, datetime.day);
 
-    // 3. Ajuster la date si nécessaire
-    DateTime targetDate;
-    if (shouldUseNextDay) {
-      if (datetime.year == now.year &&
-          datetime.month == now.month &&
-          datetime.day == now.day) {
-        targetDate = datetime.add(const Duration(days: 1));
-      } else {
-        targetDate = datetime;
+    // Déterminer la date cible selon les règles
+    DateTime targetDate = datetime;
+
+    // Vérifier si nous devons appliquer les règles de filtrage
+    bool shouldApplyRules = false;
+
+    if (selectedDateNormalized.isAtSameMomentAs(todayNormalized)) {
+      // Pour aujourd'hui, on applique toujours les règles
+      shouldApplyRules = true;
+
+      // Si on est le soir, forcer le passage à demain
+      if (timeRange == TimeRange.evening) {
+        targetDate = tomorrowNormalized;
       }
-    } else {
-      targetDate = datetime;
+    }
+    // Pour demain, on applique les règles uniquement si on vient de basculer depuis le soir
+    else if (selectedDateNormalized.isAtSameMomentAs(tomorrowNormalized) &&
+        timeRange == TimeRange.evening &&
+        !selectedDateNormalized.isAfter(tomorrowNormalized)) {
+      shouldApplyRules = true;
     }
 
-    log('Target date after adjustment: ${targetDate.toString()}');
-
-    // 4. Formater la date pour l'affichage
+    // Formater la date pour l'affichage
     final formattedDay = targetDate.day.toString().padLeft(2, '0');
     final formattedMonth = targetDate.month.toString().padLeft(2, '0');
     final formattedTargetDate = "${targetDate.year}-$formattedMonth-$formattedDay";
 
-    // 5. Récupérer les horaires disponibles pour ce jour
-    final List<Slot> allSlots = [];
+    // Récupérer tous les slots disponibles pour cette date
+    List<Slot> allSlots = [];
 
-    // 5.1 Ajouter les horaires récurrents
+    // Ajouter les horaires récurrents
     final recurentHour = worshipRecurrentHours.firstWhereOrNull(
             (element) => int.parse(element.dayOfWeek ?? '0') == (targetDate.weekday - 1)
     );
@@ -362,7 +362,7 @@ class MassRequestController extends GetxController {
       allSlots.addAll(recurentHour.slots ?? []);
     }
 
-    // 5.2 Ajouter les horaires spéciaux pour cette date
+    // Ajouter les horaires spéciaux
     final specialHour = worshipSpecialHours.firstWhereOrNull(
             (element) => element.day == formattedTargetDate
     );
@@ -370,101 +370,102 @@ class MassRequestController extends GetxController {
       allSlots.addAll(specialHour.slots ?? []);
     }
 
-    log('Total slots found: ${allSlots.length}');
+    // Filtrer les slots selon les règles
+    List<Slot> filteredSlots = List.from(allSlots);
 
-    // 6. Filtrer et trier les créneaux disponibles
-    selectedHours.clear();
-    final filteredSlots = _filterAvailableSlots(
-      slots: allSlots,
-      timeRange: timeRange,
-      targetDate: targetDate,
-    );
-    selectedHours.addAll(filteredSlots);
-    log('Available slots after filtering: ${selectedHours.map((s) => s?.startTime).join(', ')}');
+    if (shouldApplyRules) {
+      switch (timeRange) {
+        case TimeRange.morning:
+        // Entre 00h01 et 09h00 : messes à partir de 12h le même jour
+          filteredSlots = allSlots.where((slot) {
+            final slotTime = parseTime(slot.startTime ?? '');
+            return slotTime.hour >= 12;
+          }).toList();
+          break;
 
-    // 7. Sélectionner l'horaire
-    if (selectedHours.isNotEmpty) {
-      if (isFirst) {
-        selectedHour.value = selectedHours.first;
-      } else {
-        selectedHour.value = selectHour ?? selectedHours.first;
+        case TimeRange.afternoon:
+        // Entre 09h01 et 15h00 : messes à partir de 18h le même jour
+          filteredSlots = allSlots.where((slot) {
+            final slotTime = parseTime(slot.startTime ?? '');
+            return slotTime.hour >= 18;
+          }).toList();
+          break;
+
+        case TimeRange.evening:
+        // Entre 15h01 et 00h00 : messes à partir de 12h le lendemain
+          filteredSlots = allSlots.where((slot) {
+            final slotTime = parseTime(slot.startTime ?? '');
+            return slotTime.hour >= 12;
+          }).toList();
+          break;
       }
-      log('Selected hour: ${selectedHour.value?.startTime}');
     }
 
-    // 8. Mettre à jour la date sélectionnée
+    // Trier les slots
+    filteredSlots.sort((a, b) {
+      final timeA = parseTime(a.startTime ?? '');
+      final timeB = parseTime(b.startTime ?? '');
+      return compareTimes(timeA, timeB);
+    });
+
+    // Mettre à jour les heures disponibles
+    selectedHours.clear();
+    selectedHours.addAll(filteredSlots);
+    selectedHours.refresh();
+
+    // Sélectionner l'heure
+    if (selectedHours.isNotEmpty) {
+      if (isFirst || selectedHour.value == null) {
+        selectedHour.value = selectedHours.first;
+      } else if (selectHour != null) {
+        selectedHour.value = selectHour;
+      } else if (!selectedHours.contains(selectedHour.value)) {
+        selectedHour.value = selectedHours.first;
+      }
+      selectedHour.refresh();
+    } else {
+      selectedHour.value = null;
+    }
+
+    // Mettre à jour la date sélectionnée
     selectedDate.value = PriceData(
       day: formattedTargetDate,
       dayOfWeek: targetDate.weekday.toString(),
       isDaySelected: true,
       dayToDisplay: "$formattedDay-$formattedMonth-${targetDate.year}",
-      slots: [selectedHour.value ?? Slot()],
+      slots: selectedHour.value != null ? [selectedHour.value!] : [],
     );
-
-    log('Final date to display: ${selectedDate.value?.dayToDisplay}');
-    log('=== DATE DEBUG END ===');
-
-    // 9. Mise à jour du formulaire et du prix
-    checkForm();
-    if (selectedDate.value != null && selectedHour.value != null) {
+    selectedDate.refresh();
+    // Après avoir mis à jour la date et l'heure sélectionnées
+    if (selectedHour.value != null && selectedDate.value != null) {
+      // Mettre à jour datesChoosen avec une seule date
       datesChoosen.value = [selectedDate.value ?? PriceData()];
+      // Appeler le service de prix
       doGetMassRequestPrice();
     }
+    update();
+
+    // Logs de debug
+    print('Current time range: $timeRange');
+    print('Now normalized: ${todayNormalized.toString()}');
+    print('Tomorrow normalized: ${tomorrowNormalized.toString()}');
+    print('Selected date normalized: ${selectedDateNormalized.toString()}');
+    print('Target date: ${targetDate.toString()}');
+    print('Should apply rules: $shouldApplyRules');
+    print('Available slots: ${filteredSlots.map((s) => s.startTime).join(", ")}');
   }
 
   /// Détermine la plage horaire en fonction de l'heure actuelle
   TimeRange _determineTimeRange(DateTime now) {
     final currentTime = now.hour * 60 + now.minute;  // Convertir en minutes
 
-    if (currentTime >= 0 && currentTime <= 9 * 60) return TimeRange.morning;
-    if (currentTime > 9 * 60 && currentTime <= 15 * 60) return TimeRange.afternoon;
-    return TimeRange.evening;
-  }
-
-  /// Filtre les créneaux disponibles selon les règles
-  List<Slot> _filterAvailableSlots({
-    required List<Slot> slots,
-    required TimeRange timeRange,
-    required DateTime targetDate,
-  }) {
-    // Si la date est dans le futur (pas aujourd'hui), retourner tous les slots
-    if (!_isToday(targetDate)) {
-      return slots..sort((a, b) {
-        final timeA = parseTime(a.startTime ?? '');
-        final timeB = parseTime(b.startTime ?? '');
-        return compareTimes(timeA, timeB);
-      });
+    if (currentTime > 0 && currentTime <= 9 * 60) {
+      return TimeRange.morning;     // 00:01-09:00
     }
-
-    // Sinon appliquer les règles du tableau pour aujourd'hui
-    int minHour;
-    switch (timeRange) {
-      case TimeRange.morning:
-        minHour = 12;
-        break;
-      case TimeRange.afternoon:
-        minHour = 18;
-        break;
-      case TimeRange.evening:
-        minHour = 12;
-        break;
+    if (currentTime > 9 * 60 && currentTime <= 15 * 60) {
+      return TimeRange.afternoon;   // 09:01-15:00
     }
-    return slots.where((slot) {
-      final slotTime = parseTime(slot.startTime ?? '');
-      return slotTime.hour >= minHour;
-    }).toList()
-      ..sort((a, b) {
-        final timeA = parseTime(a.startTime ?? '');
-        final timeB = parseTime(b.startTime ?? '');
-        return compareTimes(timeA, timeB);
-      });
-  }
-
-  bool _isToday(DateTime date) {
-    final now = DateTime.now();
-    return date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day;
+    return TimeRange.evening;       // 15:01-00:00
   }
 
   doGetMassRequestType() {
@@ -545,7 +546,6 @@ class MassRequestController extends GetxController {
         worshipRecurrentHours.value = transformWorshipRecurrentHours(worshipRecurrentHoursTemp);
         worshipSpecialHours.value = transformWorshipSpecialHours(worshipSpecialHoursTemp);
         log('worshipSpecialHours ::: ${jsonEncode(worshipSpecialHours)}');
-
         List<int> temp = [];
         temp = worshipRecurrentHours.value
             .map((element) => int.parse(element.dayOfWeek ?? '0') + 1)

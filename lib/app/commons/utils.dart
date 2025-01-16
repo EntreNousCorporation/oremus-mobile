@@ -185,24 +185,67 @@ shareApp(String message,
 
 List<PriceData> transformWorshipSpecialHours(
     List<LiturgicalCelebrationResponse> worshipDataList) {
-  Map<String, List<Slot>> groupedSlots = {};
 
+  // Map pour stocker les célébrations par date
+  Map<String, List<LiturgicalCelebrationResponse>> celebrationsByDate = {};
+
+  // Première passe : formater les dates et grouper les célébrations
   for (var event in worshipDataList) {
+    // Formater la date (garder seulement la partie date)
     String formattedDate = event.startDate?.split('T')[0] ?? '';
     event.startDateFormatted = formattedDate;
-  }
 
-  for (var event in worshipDataList) {
-    String day = event.startDateFormatted ?? '';
-    if (!groupedSlots.containsKey(day)) {
-      groupedSlots[day] = [];
+    // Ne prendre que les messes spéciales
+    if (event.type?.code == 'SPECIAL_MASS') {
+      String day = event.startDateFormatted ?? '';
+      if (!celebrationsByDate.containsKey(day)) {
+        celebrationsByDate[day] = [];
+      }
+      celebrationsByDate[day]?.add(event);
     }
-    groupedSlots[day]?.addAll(event.slots ?? []);
   }
 
-  return groupedSlots.entries.map((entry) {
-    return PriceData(day: entry.key, slots: entry.value);
+  // Transformer en liste de PriceData
+  return celebrationsByDate.entries.map((entry) {
+    String day = entry.key;
+    List<LiturgicalCelebrationResponse> celebrations = entry.value;
+
+    // Collecter tous les slots de toutes les messes spéciales pour cette date
+    List<Slot> allSlots = [];
+    for (var celebration in celebrations) {
+      if (celebration.slots != null) {
+        allSlots.addAll(celebration.slots!);
+      }
+    }
+
+    // Trier les slots par heure
+    allSlots.sort((a, b) {
+      final timeA = parseTime(a.startTime ?? '');
+      final timeB = parseTime(b.startTime ?? '');
+      return compareTimes(timeA, timeB);
+    });
+
+    // Créer le PriceData avec tous les slots et les informations des célébrations
+    return PriceData(
+        day: day,
+        slots: allSlots,
+        celebrationType: 'SPECIAL_MASS'  // Pour indiquer que ce sont des messes spéciales
+    );
   }).toList();
+}
+
+// Function utilitaire pour parser et comparer les heures
+TimeOfDay parseTime(String time) {
+  final parts = time.split(':');
+  return TimeOfDay(
+      hour: int.parse(parts[0]),
+      minute: int.parse(parts[1])
+  );
+}
+
+int compareTimes(TimeOfDay a, TimeOfDay b) {
+  if (a.hour != b.hour) return a.hour.compareTo(b.hour);
+  return a.minute.compareTo(b.minute);
 }
 
 List<PriceData> transformWorshipRecurrentHours(
@@ -210,29 +253,45 @@ List<PriceData> transformWorshipRecurrentHours(
 
   // Dictionnaire pour regrouper les créneaux par jour de la semaine
   Map<String, List<Slot>> groupedByDay = {};
-  Map<String, int> identifierByDay = {}; // Pour garder la correspondance avec l'identifiant
+  Map<String, int> identifierByDay = {};
+  Map<String, LiturgicalCelebrationResponse> celebrationByDay = {};
 
   // Parcourir chaque célébration liturgique
   for (var worshipData in worshipDataList) {
     // Parcourir les heures d'ouverture, si elles existent
     for (var openingTime in worshipData.openingTime ?? []) {
-      String dayOfWeek = openingTime.dayOfWeek.toString(); // Jour en string
+      String dayOfWeek = openingTime.dayOfWeek.toString();
 
-      // Ajouter les créneaux horaires au bon jour de la semaine
-      groupedByDay.putIfAbsent(dayOfWeek, () => []).addAll(openingTime.slots);
+      // Si nous n'avons pas encore de célébration pour ce jour
+      // ou si la célébration existante n'est pas une messe
+      // ou si c'est une messe et que la nouvelle célébration est aussi une messe
+      bool shouldUpdate = !celebrationByDay.containsKey(dayOfWeek) ||
+          celebrationByDay[dayOfWeek]?.type?.code != 'MASS' ||
+          (celebrationByDay[dayOfWeek]?.type?.code == 'MASS' && worshipData.type?.code == 'MASS');
 
-      // Associer l'identifiant de la célébration avec le jour correspondant
-      identifierByDay[dayOfWeek] = worshipData.identifier;
+      if (shouldUpdate) {
+        // Mettre à jour ou ajouter les créneaux pour ce jour
+        groupedByDay[dayOfWeek] = openingTime.slots;
+        identifierByDay[dayOfWeek] = worshipData.identifier;
+        celebrationByDay[dayOfWeek] = worshipData;
+      }
     }
   }
 
-  // Transformer le dictionnaire en une liste de PriceData avec l'identifiant
+  // Transformer le dictionnaire en une liste de PriceData
   return groupedByDay.entries.map((entry) {
     String dayOfWeek = entry.key;
     List<Slot> slots = entry.value;
     int identifier = identifierByDay[dayOfWeek]!;
+    LiturgicalCelebrationResponse celebration = celebrationByDay[dayOfWeek]!;
 
-    return PriceData(dayOfWeek: dayOfWeek, slots: slots, identifier: identifier);
+    return PriceData(
+        dayOfWeek: dayOfWeek,
+        slots: slots,
+        identifier: identifier,
+        celebrationType: celebration.type?.code,
+        name: celebration.name
+    );
   }).toList();
 }
 
@@ -285,33 +344,6 @@ List<DateTime> getNextDatesForDays(List<int> daysOfWeek) {
 
   return upcomingDates;
 }
-
-// Fonction pour analyser l'heure au format hh:mm:ss
-TimeOfDay parseTime(String timeString) {
-  final parts = timeString.split(':');
-  final int hour = int.parse(parts[0]);
-  final int minute = int.parse(parts[1]);
-  return TimeOfDay(hour: hour, minute: minute);
-}
-
-// Fonction pour comparer deux TimeOfDay (renvoie -1, 0 ou 1)
-int compareTimes(TimeOfDay timeA, TimeOfDay timeB) {
-  if (timeA.hour < timeB.hour) {
-    return -1;  // timeA est plus petit
-  } else if (timeA.hour > timeB.hour) {
-    return 1;   // timeA est plus grand
-  } else {
-    // Si les heures sont identiques, comparer les minutes
-    if (timeA.minute < timeB.minute) {
-      return -1;
-    } else if (timeA.minute > timeB.minute) {
-      return 1;
-    } else {
-      return 0;  // Les heures et minutes sont identiques
-    }
-  }
-}
-
 
 List<PriceData> duplicateAllowedDaysBasedOnRepeat(List<PriceData> allowedDays) {
   List<PriceData> duplicatedList = [];

@@ -499,6 +499,8 @@ class PriceData {
   String? dayOfWeek;
   String? day;
   String? dayToDisplay;
+  String? celebrationType;
+  String? name;
   bool? isDaySelected;
   bool? isSpecial;
   int? repeat;
@@ -510,11 +512,13 @@ class PriceData {
     this.dayOfWeek,
     this.day,
     this.dayToDisplay,
+    this.celebrationType,
     this.repeat,
     this.identifier,
     this.isDaySelected = false,
     this.isSpecial,
     this.slots,
+    this.name,
     List<DateTime>? dates,
   }) : dates = dates ?? [];
 
@@ -524,8 +528,10 @@ class PriceData {
       dayOfWeek: dayOfWeek,
       repeat: repeat,
       slots: slots,
+      name: name,
       day: day,
       dayToDisplay: dayToDisplay,
+      celebrationType: celebrationType,
       identifier: identifier,
       dates: [date],
     );
@@ -537,7 +543,9 @@ class PriceData {
     dayOfWeek = json['dayOfWeek'];
     isDaySelected = json['isDaySelected'];
     isSpecial = json['isSpecial'];
+    celebrationType = json['celebrationType'];
     repeat = json['repeat'];
+    name = json['name'];
     identifier = json['identifier'];
     if (json['slots'] != null) {
       slots = <Slot>[];
@@ -562,7 +570,9 @@ class PriceData {
     data['dayToDisplay'] = dayToDisplay;
     data['dayOfWeek'] = dayOfWeek;
     data['isDaySelected'] = isDaySelected;
+    data['celebrationType'] = celebrationType;
     data['repeat'] = repeat;
+    data['name'] = name;
     data['identifier'] = identifier;
     if (slots != null) {
       data['slots'] = slots?.map((v) => v.toJson()).toList();
