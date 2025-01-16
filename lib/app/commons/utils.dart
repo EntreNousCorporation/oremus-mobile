@@ -212,10 +212,14 @@ List<PriceData> transformWorshipSpecialHours(
 
     // Collecter tous les slots de toutes les messes spéciales pour cette date
     List<Slot> allSlots = [];
+    String? celebrationName;  // Pour stocker le nom de la célébration
+
     for (var celebration in celebrations) {
       if (celebration.slots != null) {
         allSlots.addAll(celebration.slots!);
       }
+      // Prendre le nom de la première célébration comme nom représentatif
+      celebrationName ??= celebration.name;
     }
 
     // Trier les slots par heure
@@ -229,10 +233,12 @@ List<PriceData> transformWorshipSpecialHours(
     return PriceData(
         day: day,
         slots: allSlots,
-        celebrationType: 'SPECIAL_MASS'  // Pour indiquer que ce sont des messes spéciales
+        celebrationType: 'SPECIAL_MASS',
+        name: celebrationName  // Ajouter le nom de la célébration ici
     );
   }).toList();
 }
+
 
 // Function utilitaire pour parser et comparer les heures
 TimeOfDay parseTime(String time) {

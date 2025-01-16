@@ -108,8 +108,8 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                 Separators.normalVertical(),
                 Wrap(
                   alignment: WrapAlignment.start,
-                  runSpacing: 15,
-                  spacing: 0,
+                  runSpacing: 5,
+                  spacing: 10,
                   direction: Axis.horizontal,
                   children: (item.slots ?? []).map<Widget>((slot) {
                     final isHourSelectable = isSelectable &&
@@ -120,69 +120,38 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                         slot.startTime ?? ''
                     );
 
-                    return GestureDetector(
-                      onTap: !isHourSelectable
-                          ? () {
+                    return FilterChip(
+                      selected: isSelected,
+                      onSelected: !isHourSelectable
+                          ? (_) {
                         showNotification(
                           message: 'Cette heure n\'est pas disponible',
                           bgColor: colorBlue2,
                         );
                       }
-                          : () {
+                          : (bool selected) {
                         _.toggleSlotSelection(
                             item.dayOfWeek ?? '0',
                             slot.startTime ?? ''
                         );
                         _.onWorshipRecurrentHoursSelected(item, true);
                       },
-                      child: Opacity(
-                        opacity: isHourSelectable ? 1.0 : 0.5,
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          alignment: Alignment.topRight,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                              decoration: BoxDecoration(
-                                color: isSelected ? colorGreenSemiLight : colorWhite,
-                                border: Border.all(
-                                    color: isHourSelectable ? colorGreenSemiLight : colorGrey1
-                                ),
-                                borderRadius: BorderRadius.circular(Get.width / 10),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Text(
-                                  '${slot.startTime}',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyles.montserratSemiBold(
-                                    textSize: TextSizes.fourteen,
-                                    textColor: isSelected
-                                        ? colorWhite
-                                        : (isHourSelectable ? colorBlack : colorGrey1),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            if (isSelected)
-                              Positioned(
-                                top: -8,
-                                right: 3,
-                                child: Container(
-                                  padding: const EdgeInsets.all(2),
-                                  decoration: BoxDecoration(
-                                    color: colorWhite,
-                                    border: Border.all(color: colorGreenSemiLight),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: const Icon(
-                                    Icons.check,
-                                    color: colorGreenSemiLight,
-                                    size: 15,
-                                  ),
-                                ),
-                              ),
-                          ],
+                      label: Text(slot.startTime ?? ''),
+                      backgroundColor: colorWhite,
+                      selectedColor: colorGreenSemiLight.withOpacity(0.2),
+                      checkmarkColor: colorGreenSemiLight,
+                      labelStyle: TextStyles.montserratSemiBold(
+                        textSize: TextSizes.fourteen,
+                        textColor: isSelected
+                            ? colorGreenSemiLight
+                            : (isHourSelectable ? colorBlack : colorGrey1),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        side: BorderSide(
+                          color: isHourSelectable
+                              ? (isSelected ? colorGreenSemiLight : colorGrey1.withOpacity(0.3))
+                              : colorGrey1,
                         ),
                       ),
                     );

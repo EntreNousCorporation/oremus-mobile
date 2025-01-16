@@ -9,6 +9,7 @@ import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/filter_mass_request_date_controller.dart';
 import 'package:oremusapp/app/modules/massrequest/views/widget/worship_recurrent_hours_list.dart';
+import 'package:oremusapp/app/modules/massrequest/views/widget/worship_special_hours_list.dart';
 
 class FilterMassRequestDateScreen extends StatelessWidget {
   const FilterMassRequestDateScreen({Key? key}) : super(key: key);
@@ -24,10 +25,10 @@ class FilterMassRequestDateScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: colorWhite,
         appBar: AppBar(
-          backgroundColor: colorWhite,
+          backgroundColor: colorGreen,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: colorBlack),
+            icon: const Icon(Icons.arrow_back_ios, color: colorWhite),
             onPressed: () {
               final _ = Get.find<FilterMassRequestDateController>();
               _.doBack();
@@ -42,7 +43,7 @@ class FilterMassRequestDateScreen extends StatelessWidget {
               child: Text(
                 'Réinitialiser',
                 style: TextStyles.montserratRegular(
-                  textColor: colorBlack,
+                  textColor: colorWhite,
                 ),
               ),
             ),
@@ -50,8 +51,8 @@ class FilterMassRequestDateScreen extends StatelessWidget {
           title: Text(
             'Plusieurs messes',
             style: TextStyles.montserratBold(
-              textColor: colorBlack,
-              textSize: TextSizes.seventeen,
+              textColor: colorWhite,
+              textSize: TextSizes.eighteen,
             ),
           ),
         ),
@@ -77,12 +78,12 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                             height: 45,
                             padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color: colorGrey1.withOpacity(0.1),
+                              color: colorGrey1.withOpacity(0.2),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: TabBar(
                               indicator: BoxDecoration(
-                                color: colorGreenSemiLight,
+                                color: colorGreen,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               labelColor: colorWhite,
@@ -92,12 +93,13 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      const Icon(Icons.repeat, size: 18),
+                                      const Icon(Icons.repeat, size: 18, color: colorBlack,),
                                       const SizedBox(width: 8),
                                       Text(
                                         'Régulières',
                                         style: TextStyles.montserratMedium(
                                           textSize: TextSizes.fourteen,
+                                          textColor: colorBlack,
                                         ),
                                       ),
                                     ],
@@ -107,12 +109,13 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      const Icon(Icons.event_note, size: 18),
+                                      const Icon(Icons.event_note, size: 18, color: colorBlack,),
                                       const SizedBox(width: 8),
                                       Text(
                                         'Spéciales',
                                         style: TextStyles.montserratMedium(
                                           textSize: TextSizes.fourteen,
+                                          textColor: colorBlack,
                                         ),
                                       ),
                                     ],
@@ -124,19 +127,19 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                         ),
 
                         // Contenu des tabs
-                        Expanded(
+                        const Expanded(
                           child: TabBarView(
                             children: [
                               // Tab des messes régulières
                               SingleChildScrollView(
-                                padding: const EdgeInsets.all(16),
-                                child: const WorshipRecurrentHoursList(),
+                                padding: EdgeInsets.all(16),
+                                child: WorshipRecurrentHoursList(),
                               ),
 
                               // Tab des messes spéciales
                               SingleChildScrollView(
-                                padding: const EdgeInsets.all(16),
-                                child: _buildSpecialMassesList(_),
+                                padding: EdgeInsets.all(16),
+                                child: WorshipSpecialHoursList(),
                               ),
                             ],
                           ),
@@ -259,165 +262,6 @@ class FilterMassRequestDateScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildSpecialMassesList(FilterMassRequestDateController _) {
-    if (_.worshipSpecialHours.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.event_busy,
-              size: 48,
-              color: colorGrey1.withOpacity(0.5),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Aucune messe spéciale disponible\npour le moment',
-              textAlign: TextAlign.center,
-              style: TextStyles.montserratRegular(
-                textColor: colorGrey1,
-                textSize: TextSizes.fourteen,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return ListView.separated(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: _.worshipSpecialHours.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 16),
-      itemBuilder: (context, index) {
-        final specialMass = _.worshipSpecialHours[index];
-        return Container(
-          decoration: BoxDecoration(
-            color: colorWhite,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 1,
-                blurRadius: 5,
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // En-tête
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: const BoxDecoration(
-                  color: colorGreenSemiLight,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.event_note,
-                      color: colorWhite,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            /*specialMass.title ?? */'Messe spéciale',
-                            style: TextStyles.montserratBold(
-                              textColor: colorWhite,
-                              textSize: TextSizes.fourteen,
-                            ),
-                          ),
-                          Text(
-                            getCustomDate(specialMass.day, pattern: AppConstants.TIME_SIMPLE_FORMAT2),
-                            style: TextStyles.montserratRegular(
-                              textColor: colorWhite.withOpacity(0.9),
-                              textSize: TextSizes.twelve,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Liste des horaires
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Horaires disponibles',
-                      style: TextStyles.montserratMedium(
-                        textColor: colorGrey1,
-                        textSize: TextSizes.twelve,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: specialMass.slots?.map((slot) {
-                        return FilterChip(
-                          selected: _.isSlotSelected(
-                            specialMass.day ?? '',
-                            slot.startTime ?? '',
-                              isSpecial: true
-                          ),
-                          onSelected: (selected) {
-                            _.toggleSlotSelection(
-                              specialMass.day ?? '',
-                              slot.startTime ?? '',
-                                isSpecial: true
-                            );
-                          },
-                          label: Text(slot.startTime ?? ''),
-                          backgroundColor: colorWhite,
-                          selectedColor: colorGreenSemiLight.withOpacity(0.2),
-                          checkmarkColor: colorGreenSemiLight,
-                          labelStyle: TextStyles.montserratMedium(
-                            textSize: TextSizes.fourteen,
-                            textColor: _.isSlotSelected(
-                              specialMass.dayOfWeek ?? '0',
-                              slot.startTime ?? '',
-                            )
-                                ? colorGreenSemiLight
-                                : colorBlack,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            side: BorderSide(
-                              color: _.isSlotSelected(
-                                specialMass.dayOfWeek ?? '0',
-                                slot.startTime ?? '',
-                              )
-                                  ? colorGreenSemiLight
-                                  : colorGrey1.withOpacity(0.3),
-                            ),
-                          ),
-                        );
-                      }).toList() ??
-                          [],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

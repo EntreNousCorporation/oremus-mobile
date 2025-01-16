@@ -99,7 +99,7 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
       if (!isSpecialMassSelectable(identifier)) {
         showNotification(
           message: 'Cette messe spéciale n\'est pas disponible pour la période sélectionnée',
-          bgColor: colorRed,
+          bgColor: colorBlue2,
         );
         return;
       }
