@@ -335,6 +335,7 @@ class MassRequestController extends GetxController {
     final filteredSlots = _filterAvailableSlots(
       slots: recurentHour?.slots ?? [],
       timeRange: timeRange,
+      targetDate: targetDate,
     );
     selectedHours.addAll(filteredSlots);
     log('Available slots: ${selectedHours.map((s) => s?.startTime).join(', ')}');
@@ -382,7 +383,18 @@ class MassRequestController extends GetxController {
   List<Slot> _filterAvailableSlots({
     required List<Slot> slots,
     required TimeRange timeRange,
+    required DateTime targetDate,
   }) {
+    // Si la date est dans le futur (pas aujourd'hui), retourner tous les slots
+    if (!_isToday(targetDate)) {
+      return slots..sort((a, b) {
+        final timeA = parseTime(a.startTime ?? '');
+        final timeB = parseTime(b.startTime ?? '');
+        return compareTimes(timeA, timeB);
+      });
+    }
+
+    // Sinon appliquer les règles du tableau pour aujourd'hui
     int minHour;
     switch (timeRange) {
       case TimeRange.morning:
@@ -405,6 +417,13 @@ class MassRequestController extends GetxController {
         final timeB = parseTime(b.startTime ?? '');
         return compareTimes(timeA, timeB);
       });
+  }
+
+  bool _isToday(DateTime date) {
+    final now = DateTime.now();
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
   }
 
   doGetMassRequestType() {

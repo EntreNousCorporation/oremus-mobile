@@ -49,7 +49,7 @@ class FilterMassRequestDateScreen extends StatelessWidget {
             'Plusieurs messes',
             style: TextStyles.montserratBold(
               textColor: colorBlack,
-              textSize: TextSizes.twenty,
+              textSize: TextSizes.seventeen,
             ),
           ),
         ),
