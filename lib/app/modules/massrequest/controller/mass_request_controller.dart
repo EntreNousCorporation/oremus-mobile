@@ -11,6 +11,9 @@ import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
+import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/theme/app_dimension.dart';
+import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/massrequest/data/repository/mass_request_repository.dart';
@@ -158,16 +161,13 @@ class MassRequestController extends GetxController {
     // Déterminer la date initiale du picker
     DateTime initialDate;
     if (selectedDate.value != null) {
-      // Si une date est déjà sélectionnée, on l'utilise comme date initiale
-      // On parse d'abord la date depuis le format "dd-MM-yyyy"
       List<String> dateParts = selectedDate.value!.dayToDisplay?.split('-') ?? [];
       DateTime selectedDateTime = DateTime(
-          int.parse(dateParts[2]),  // année
-          int.parse(dateParts[1]),  // mois
-          int.parse(dateParts[0])   // jour
+          int.parse(dateParts[2]),
+          int.parse(dateParts[1]),
+          int.parse(dateParts[0])
       );
 
-      // Vérifier si cette date est toujours valide
       if (allowedDatesNormalized.contains(DateTime(
           selectedDateTime.year,
           selectedDateTime.month,
@@ -175,7 +175,6 @@ class MassRequestController extends GetxController {
       ))) {
         initialDate = selectedDateTime;
       } else {
-        // Si la date sélectionnée n'est plus valide, on prend la prochaine date disponible
         initialDate = allowedDatesNormalized.firstWhere(
                 (date) => date.isAfter(DateTime(now.year, now.month, now.day)) ||
                 date.isAtSameMomentAs(DateTime(now.year, now.month, now.day)),
@@ -183,7 +182,6 @@ class MassRequestController extends GetxController {
         );
       }
     } else {
-      // Si aucune date n'est sélectionnée, on prend la prochaine date disponible
       initialDate = allowedDatesNormalized.firstWhere(
               (date) => date.isAfter(DateTime(now.year, now.month, now.day)) ||
               date.isAtSameMomentAs(DateTime(now.year, now.month, now.day)),
@@ -192,13 +190,60 @@ class MassRequestController extends GetxController {
     }
 
     final DateTime? picked = await showDatePicker(
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
       context: context,
       initialDate: initialDate,
-      firstDate: allowedDatesNormalized.reduce((a, b) => a.isBefore(b) ? a : b), // La plus petite date autorisée
-      lastDate: allowedDatesNormalized.reduce((a, b) => a.isAfter(b) ? a : b),   // La plus grande date autorisée
+      firstDate: allowedDatesNormalized.reduce((a, b) => a.isBefore(b) ? a : b),
+      lastDate: allowedDatesNormalized.reduce((a, b) => a.isAfter(b) ? a : b),
       selectableDayPredicate: (DateTime day) {
         DateTime normalizedDay = DateTime(day.year, day.month, day.day);
         return allowedDatesNormalized.contains(normalizedDay);
+      },
+      cancelText: 'cancel'.tr,
+      confirmText: 'confirm'.tr,
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: const ColorScheme.light(
+                onPrimary: colorWhite,
+                onSurface: colorBlack,
+                primary: colorGreen
+            ),
+            dialogBackgroundColor: Colors.white,
+            // Personnaliser les boutons du Dialog
+            textButtonTheme: TextButtonThemeData(
+              style: ButtonStyle(
+                foregroundColor: WidgetStateProperty.resolveWith<Color>(
+                        (Set<WidgetState> states) => colorWhite
+                ),
+                backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                      (Set<WidgetState> states) {
+                    // Si le bouton est le bouton "Annuler"
+                    if (states.contains(WidgetState.selected)) {
+                      return colorBlack;
+                    }
+                    // Pour le bouton "Confirmer"
+                    return colorGreen;
+                  },
+                ),
+                textStyle: WidgetStateProperty.all(
+                    TextStyles.montserratRegular(textSize: TextSizes.fourteen)
+                ),
+                shape: WidgetStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                    side: const BorderSide(
+                        color: Colors.transparent,
+                        width: 1,
+                        style: BorderStyle.solid
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          child: child!,
+        );
       },
     );
 
@@ -226,7 +271,7 @@ class MassRequestController extends GetxController {
       selectedDate.toJson(),
       {
         'selectedSlotKeys': savedSelectedSlotKeys.toList(),
-        'endDate': savedEndDate?.toJson(),
+        'endDate': savedEndDate.toJson(),
         'specialMasses': savedSpecialMasses,  // Ajouter cette ligne
       }
     ];
@@ -444,15 +489,6 @@ class MassRequestController extends GetxController {
       doGetMassRequestPrice();
     }
     update();
-
-    // Logs de debug
-    print('Current time range: $timeRange');
-    print('Now normalized: ${todayNormalized.toString()}');
-    print('Tomorrow normalized: ${tomorrowNormalized.toString()}');
-    print('Selected date normalized: ${selectedDateNormalized.toString()}');
-    print('Target date: ${targetDate.toString()}');
-    print('Should apply rules: $shouldApplyRules');
-    print('Available slots: ${filteredSlots.map((s) => s.startTime).join(", ")}');
   }
 
   /// Détermine la plage horaire en fonction de l'heure actuelle

@@ -34,6 +34,30 @@ class WorshipRecurrentHoursList extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetX<FilterMassRequestDateController>(
       builder: (_) {
+        if (_.worshipRecurrentHours.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.repeat,
+                  size: 48,
+                  color: colorGrey1.withOpacity(0.5),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Aucune messe régulière disponible\npour le moment',
+                  textAlign: TextAlign.center,
+                  style: TextStyles.montserratRegular(
+                    textColor: colorGrey1,
+                    textSize: TextSizes.fourteen,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
         final now = DateTime.now();
         // Déterminer la date valide selon la règle du tableau
         final timeRange = _determineTimeRange(now);

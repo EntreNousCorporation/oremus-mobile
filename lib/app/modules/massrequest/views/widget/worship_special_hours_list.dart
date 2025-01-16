@@ -15,26 +15,24 @@ class WorshipSpecialHoursList extends StatelessWidget {
     return GetX<FilterMassRequestDateController>(
       builder: (_) {
         if (_.worshipSpecialHours.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.event_busy,
-                  size: 48,
-                  color: colorGrey1.withOpacity(0.5),
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.event_busy,
+                size: 48,
+                color: colorGrey1.withOpacity(0.5),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Aucune messe spéciale disponible\npour le moment',
+                textAlign: TextAlign.center,
+                style: TextStyles.montserratRegular(
+                  textColor: colorGrey1,
+                  textSize: TextSizes.fourteen,
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  'Aucune messe spéciale disponible\npour le moment',
-                  textAlign: TextAlign.center,
-                  style: TextStyles.montserratRegular(
-                    textColor: colorGrey1,
-                    textSize: TextSizes.fourteen,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           );
         }
 
