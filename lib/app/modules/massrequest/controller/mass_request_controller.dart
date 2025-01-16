@@ -305,13 +305,11 @@ class MassRequestController extends GetxController {
     // 3. Ajuster la date si nécessaire
     DateTime targetDate;
     if (shouldUseNextDay) {
-      // Si la date en paramètre est aujourd'hui, on ajoute un jour
       if (datetime.year == now.year &&
           datetime.month == now.month &&
           datetime.day == now.day) {
         targetDate = datetime.add(const Duration(days: 1));
       } else {
-        // Sinon on utilise la date en paramètre
         targetDate = datetime;
       }
     } else {
@@ -323,36 +321,52 @@ class MassRequestController extends GetxController {
     // 4. Formater la date pour l'affichage
     final formattedDay = targetDate.day.toString().padLeft(2, '0');
     final formattedMonth = targetDate.month.toString().padLeft(2, '0');
+    final formattedTargetDate = "${targetDate.year}-$formattedMonth-$formattedDay";
 
     // 5. Récupérer les horaires disponibles pour ce jour
+    final List<Slot> allSlots = [];
+
+    // 5.1 Ajouter les horaires récurrents
     final recurentHour = worshipRecurrentHours.firstWhereOrNull(
             (element) => int.parse(element.dayOfWeek ?? '0') == (targetDate.weekday - 1)
     );
-    log('Found slots for weekday ${targetDate.weekday - 1}');
+    if (recurentHour != null) {
+      allSlots.addAll(recurentHour.slots ?? []);
+    }
+
+    // 5.2 Ajouter les horaires spéciaux pour cette date
+    final specialHour = worshipSpecialHours.firstWhereOrNull(
+            (element) => element.day == formattedTargetDate
+    );
+    if (specialHour != null) {
+      allSlots.addAll(specialHour.slots ?? []);
+    }
+
+    log('Total slots found: ${allSlots.length}');
 
     // 6. Filtrer et trier les créneaux disponibles
     selectedHours.clear();
     final filteredSlots = _filterAvailableSlots(
-      slots: recurentHour?.slots ?? [],
+      slots: allSlots,
       timeRange: timeRange,
       targetDate: targetDate,
     );
     selectedHours.addAll(filteredSlots);
-    log('Available slots: ${selectedHours.map((s) => s?.startTime).join(', ')}');
+    log('Available slots after filtering: ${selectedHours.map((s) => s?.startTime).join(', ')}');
 
     // 7. Sélectionner l'horaire
     if (selectedHours.isNotEmpty) {
       if (isFirst) {
         selectedHour.value = selectedHours.first;
       } else {
-        selectedHour.value = selectHour;
+        selectedHour.value = selectHour ?? selectedHours.first;
       }
       log('Selected hour: ${selectedHour.value?.startTime}');
     }
 
     // 8. Mettre à jour la date sélectionnée
     selectedDate.value = PriceData(
-      day: "${targetDate.year}-$formattedMonth-$formattedDay",
+      day: formattedTargetDate,
       dayOfWeek: targetDate.weekday.toString(),
       isDaySelected: true,
       dayToDisplay: "$formattedDay-$formattedMonth-${targetDate.year}",
@@ -501,10 +515,9 @@ class MassRequestController extends GetxController {
                     .isAfter(Jiffy.now().add(hours: 24))))
             .toList();
 
-        worshipRecurrentHours.value =
-            transformWorshipRecurrentHours(worshipRecurrentHoursTemp);
-        worshipSpecialHours.value =
-            transformWorshipSpecialHours(worshipSpecialHoursTemp);
+        worshipRecurrentHours.value = transformWorshipRecurrentHours(worshipRecurrentHoursTemp);
+        worshipSpecialHours.value = transformWorshipSpecialHours(worshipSpecialHoursTemp);
+        log('worshipSpecialHours ::: ${jsonEncode(worshipSpecialHours)}');
 
         List<int> temp = [];
         temp = worshipRecurrentHours.value
