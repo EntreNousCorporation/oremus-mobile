@@ -49,7 +49,7 @@ class WorshipSpecialHoursList extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
+                    color: colorGrey1.withOpacity(0.4),
                     spreadRadius: 1,
                     blurRadius: 5,
                   ),
@@ -60,7 +60,7 @@ class WorshipSpecialHoursList extends StatelessWidget {
                 children: [
                   // En-tête
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(12),
                     decoration: const BoxDecoration(
                       color: colorGreenSemiLight,
                       borderRadius: BorderRadius.only(
@@ -82,16 +82,18 @@ class WorshipSpecialHoursList extends StatelessWidget {
                             children: [
                               Text(
                                 specialMass.name ?? 'Messe spéciale',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                                 style: TextStyles.montserratBold(
                                   textColor: colorWhite,
-                                  textSize: TextSizes.fourteen,
+                                  textSize: TextSizes.fifteen,
                                 ),
                               ),
                               Text(
                                 getCustomDate(specialMass.day, pattern: AppConstants.TIME_SIMPLE_FORMAT2),
                                 style: TextStyles.montserratRegular(
                                   textColor: colorWhite.withOpacity(0.9),
-                                  textSize: TextSizes.twelve,
+                                  textSize: TextSizes.fourteen,
                                 ),
                               ),
                             ],
@@ -114,9 +116,9 @@ class WorshipSpecialHoursList extends StatelessWidget {
                             textSize: TextSizes.twelve,
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 5),
                         Wrap(
-                          spacing: 10,
+                          spacing: 8,
                           runSpacing: 5,
                           children: specialMass.slots?.map((slot) {
                             return FilterChip(

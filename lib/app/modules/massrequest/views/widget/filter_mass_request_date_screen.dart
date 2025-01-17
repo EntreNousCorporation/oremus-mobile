@@ -93,11 +93,13 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                                     children: [
                                       const Icon(Icons.repeat, size: 18, color: colorBlack,),
                                       const SizedBox(width: 8),
-                                      Text(
-                                        'Régulières',
-                                        style: TextStyles.montserratMedium(
-                                          textSize: TextSizes.fourteen,
-                                          textColor: colorBlack,
+                                      Expanded(
+                                        child: Text(
+                                          'Messes régulières',
+                                          style: TextStyles.montserratMedium(
+                                            textSize: TextSizes.fourteen,
+                                            textColor: colorBlack,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -109,11 +111,13 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                                     children: [
                                       const Icon(Icons.event_note, size: 18, color: colorBlack,),
                                       const SizedBox(width: 8),
-                                      Text(
-                                        'Spéciales',
-                                        style: TextStyles.montserratMedium(
-                                          textSize: TextSizes.fourteen,
-                                          textColor: colorBlack,
+                                      Expanded(
+                                        child: Text(
+                                          'Messes spéciales',
+                                          style: TextStyles.montserratMedium(
+                                            textSize: TextSizes.fourteen,
+                                            textColor: colorBlack,
+                                          ),
                                         ),
                                       ),
                                     ],

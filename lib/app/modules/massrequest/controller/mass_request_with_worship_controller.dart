@@ -74,6 +74,13 @@ class MassRequestWithWorshipController extends GetxController {
   var massRequestSelected = MassRequestResponse().obs;
   var price = '-'.obs;
 
+  // Ajout d'une propriété pour stocker l'état des sélections
+  final RxSet<String> savedSelectedSlotKeys = <String>{}.obs;
+  final RxList<PriceData> savedWorshipRecurrentHours = RxList<PriceData>([]);
+  final RxList<PriceData> savedWorshipSpecialHours = RxList<PriceData>([]);
+  Rx<PriceData?> savedEndDate = Rx<PriceData?>(null);
+  var savedSpecialMasses;
+
   @override
   void onInit() {
     initControllers();
@@ -131,29 +138,51 @@ class MassRequestWithWorshipController extends GetxController {
   }
 
   goToDatesChoice() async {
-    if (paroisseSelected.value.identifier == null) {
-      return;
-    }
     if (worshipHours.isEmpty) {
       showNotification(
-          message:
-              'Aucun horaire disponible.\nVeuillez choisir une autre paroisse svp');
+          message: 'Aucun horaire de messe disponible.\nVeuillez choisir une autre paroisse svp');
       return;
     }
-    datesChoosen.value = await Get.toNamed(
+
+    // Préparer les arguments avec l'état sauvegardé
+    final arguments = [
+      worshipHours,
+      selectedDate.toJson(),
+      {
+        'selectedSlotKeys': savedSelectedSlotKeys.toList(),
+        'endDate': savedEndDate.toJson(),
+        'specialMasses': savedSpecialMasses,
+      }
+    ];
+
+    final result = await Get.toNamed(
       Routes.FILTER_MASS_REQUEST_CHOOSE_DATE,
-      arguments: [
-        worshipHours,
-        selectedDate.toJson(),
-      ],
+      arguments: arguments,
     );
-    datesChoosen.refresh();
-    if (datesChoosen.isNotEmpty) {
-      doGetMassRequestPrice();
+
+    if (result != null && result is Map) {
+      // Mettre à jour avec le nouveau format de résultat
+      datesChoosen.value = result['dates'] ?? [];
+      savedEndDate.value = result['endDate'] != null
+          ? PriceData.fromJson(result['endDate'])
+          : null;
+      savedSelectedSlotKeys.clear();
+      savedSelectedSlotKeys.addAll(Set<String>.from(result['selectedSlotKeys'] ?? []));
+      savedSpecialMasses = result['specialMasses'];
+
+      datesChoosen.refresh();
+      if (datesChoosen.isNotEmpty) {
+        doGetMassRequestPrice();
+      } else {
+        resetPrice();
+      }
+      checkForm();
     } else {
+      // Si on revient sans résultat (back button), réinitialiser le prix
       resetPrice();
+      datesChoosen.clear();
+      checkForm();
     }
-    checkForm();
   }
 
   goToWorshipChoice() async {

@@ -741,14 +741,25 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
     worshipSpecialHours.refresh();
   }
 
-  doResetFilter() {
+  void doResetFilter() {
+    // Réinitialiser la date de fin avec la date initiale
+    endSelectedDate.value = PriceData.fromJson(Get.arguments[1]);
+    endSelectedDate.refresh();
+
+    // Réinitialiser les heures récurrentes
     resetRecurrentHours();
+
+    // Réinitialiser les heures spéciales
     resetSpecialHours();
+
+    // Réinitialiser les clés de slots
     selectedSlotKeys.clear();
+
+    // Réinitialiser les dates choisies
     datesChoosenForWorshipRecurrentHours.clear();
     datesChoosenWorshipSpecialHours.clear();
 
-    // Réinitialiser manuellement tous les slots pour être sûr
+    // Réinitialiser manuellement tous les slots
     for (var priceData in worshipRecurrentHours) {
       for (var slot in priceData.slots ?? []) {
         slot.isHourSelected = false;
@@ -761,9 +772,14 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
       }
     }
 
-    // Rafraîchir les listes réactives
+    // Rafraîchir toutes les listes réactives
     worshipRecurrentHours.refresh();
     worshipSpecialHours.refresh();
+
+    // Recharger les données des horaires
+    doRefreshHoursAfterAction();
+
+    // Vérifier l'état du bouton Continuer
     canDoApplyAction();
   }
 

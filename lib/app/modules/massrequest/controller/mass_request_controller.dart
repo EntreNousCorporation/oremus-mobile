@@ -253,6 +253,121 @@ class MassRequestController extends GetxController {
     }
   }
 
+  Future<void> showPickerBack(BuildContext context) async {
+    // Normaliser les dates permises
+    final allowedDatesNormalized = allowedDates
+        .map((date) => DateTime(date.year, date.month, date.day))
+        .toList();
+
+    // Obtenir la date actuelle
+    DateTime now = DateTime.now();
+
+    // Déterminer la date initiale du picker
+    DateTime initialDate;
+    if (selectedDate.value != null) {
+      List<String> dateParts = selectedDate.value!.dayToDisplay?.split('-') ?? [];
+      DateTime selectedDateTime = DateTime(
+          int.parse(dateParts[2]),
+          int.parse(dateParts[1]),
+          int.parse(dateParts[0])
+      );
+
+      if (allowedDatesNormalized.contains(DateTime(
+          selectedDateTime.year,
+          selectedDateTime.month,
+          selectedDateTime.day
+      ))) {
+        initialDate = selectedDateTime;
+      } else {
+        initialDate = allowedDatesNormalized.firstWhere(
+                (date) => date.isAfter(DateTime(now.year, now.month, now.day)) ||
+                date.isAtSameMomentAs(DateTime(now.year, now.month, now.day)),
+            orElse: () => allowedDatesNormalized.first
+        );
+      }
+    } else {
+      initialDate = allowedDatesNormalized.firstWhere(
+              (date) => date.isAfter(DateTime(now.year, now.month, now.day)) ||
+              date.isAtSameMomentAs(DateTime(now.year, now.month, now.day)),
+          orElse: () => allowedDatesNormalized.first
+      );
+    }
+
+    DateTime? selectedPickedDate = initialDate;  // Variable pour stocker la date sélectionnée
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: const ColorScheme.light(
+                onPrimary: colorWhite,
+                onSurface: colorBlack,
+                primary: colorGreen
+            ),
+            dialogBackgroundColor: Colors.white,
+          ),
+          child: Dialog(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CalendarDatePicker(
+                  initialDate: initialDate,
+                  firstDate: allowedDatesNormalized.reduce((a, b) => a.isBefore(b) ? a : b),
+                  lastDate: allowedDatesNormalized.reduce((a, b) => a.isAfter(b) ? a : b),
+                  onDateChanged: (DateTime date) {
+                    selectedPickedDate = date;  // Mettre à jour la date sélectionnée
+                  },
+                  selectableDayPredicate: (DateTime day) {
+                    DateTime normalizedDay = DateTime(day.year, day.month, day.day);
+                    return allowedDatesNormalized.contains(normalizedDay);
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          foregroundColor: colorWhite,
+                          backgroundColor: colorBlack,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        child: Text('cancel'.tr),
+                      ),
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          foregroundColor: colorWhite,
+                          backgroundColor: colorGreen,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context, selectedPickedDate);
+                        },
+                        child: Text('confirm'.tr),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    ).then((value) {
+      if (value != null) {
+        resetPrice();
+        updateRepetitionFilter(value, isFirst: false);
+      }
+    });
+  }
+
   String getTime(String value) {
     if (value.isEmpty) return '-';
     return '${value.split(':').first}:${value.split(':')[1]}';
@@ -272,7 +387,7 @@ class MassRequestController extends GetxController {
       {
         'selectedSlotKeys': savedSelectedSlotKeys.toList(),
         'endDate': savedEndDate.toJson(),
-        'specialMasses': savedSpecialMasses,  // Ajouter cette ligne
+        'specialMasses': savedSpecialMasses,
       }
     ];
 
@@ -297,6 +412,11 @@ class MassRequestController extends GetxController {
       } else {
         resetPrice();
       }
+      checkForm();
+    } else {
+      // Si on revient sans résultat (back button), réinitialiser le prix
+      resetPrice();
+      datesChoosen.clear();
       checkForm();
     }
   }
@@ -330,18 +450,34 @@ class MassRequestController extends GetxController {
 
   updateMassTypeRepetitionFilter(
       MassTypeRepetitionData? massTypeRepetitionData) {
-    datesChoosen.clear();
-    massRequestTypeRepetitionSelected.value = massTypeRepetitionData;
-    checkForm();
-    if (selectedDate.value != null &&
-        selectedHour.value != null &&
-        massRequestTypeRepetitionSelected.value?.code == RepetitionType.once.name) {
-      selectedDate.value?.slots = [selectedHour.value ?? Slot()];
-      datesChoosen.value = [selectedDate.value ?? PriceData()];
-      doGetMassRequestPrice();
-    } else {
+    // Sauvegarder l'état précédent
+    PriceData? previousSelectedDate = selectedDate.value;
+    Slot? previousSelectedHour = selectedHour.value;
+    String? previousPrice = price.value;
+    List<PriceData?> previousDatesChoosen = List.from(datesChoosen);
+
+    // Réinitialiser les données pour plusieurs messes
+    if (massTypeRepetitionData?.code == RepetitionType.many.name) {
+      datesChoosen.clear();
       resetPrice();
     }
+
+    // Mettre à jour le type de répétition
+    massRequestTypeRepetitionSelected.value = massTypeRepetitionData;
+
+    // Restaurer l'état pour une seule messe ou réinitialiser pour plusieurs messes
+    if (massTypeRepetitionData?.code == RepetitionType.once.name) {
+      selectedDate.value = previousSelectedDate;
+      selectedHour.value = previousSelectedHour;
+      if (selectedDate.value != null && selectedHour.value != null) {
+        selectedDate.value?.slots = [selectedHour.value ?? Slot()];
+        datesChoosen.value = [selectedDate.value ?? PriceData()];
+        price.value = previousPrice;
+      }
+    }
+
+    // Vérifier le formulaire après avoir tout mis à jour
+    checkForm();
   }
 
   updateMassTypeRepetitionHourFilter(Slot? slot) {
