@@ -52,7 +52,7 @@ class ParoisseMapController extends GetxController {
 
   getArguments() {
     if (Get.arguments != null) {
-      paroisseSelected.value = ContentPlace.fromJson(jsonDecode(Get.arguments));
+      paroisseSelected.value = ContentPlace.fromJson(Get.arguments);
       log('==> ${paroisseSelected.value.identifier}');
     }
   }

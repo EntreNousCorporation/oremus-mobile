@@ -320,7 +320,7 @@ class ParoisseMassRequestMenuController extends GetxController {
   goToMap() {
     Get.toNamed(
       Routes.PAROISSE_MAP,
-      arguments: jsonEncode(paroisseSelected.value.toJson()),
+      arguments: paroisseSelected.toJson(),
     );
   }
 

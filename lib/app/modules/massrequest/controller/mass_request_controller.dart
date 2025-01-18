@@ -704,34 +704,48 @@ class MassRequestController extends GetxController {
       isDatesProcessing(false);
       if (value.isNotEmpty == true) {
         worshipHours.value = value;
+
+        // Filtrer les messes récurrentes
         worshipRecurrentHoursTemp.value = worshipHours
             .where((element) => element.isRecurrent == true)
             .toList();
+
+        // Filtrer les messes spéciales non expirées (24h à l'avance)
         worshipSpecialHoursTemp.value = worshipHours
             .where((element) =>
-                element.isRecurrent == false &&
-                (Jiffy.parse(element.startDate ?? Jiffy.now().format(),
-                        pattern: AppConstants.TIME_ZONE_FORMAT)
-                    .isAfter(Jiffy.now().add(hours: 24))))
+        element.isRecurrent == false &&
+            (Jiffy.parse(element.startDate ?? Jiffy.now().format(),
+                pattern: AppConstants.TIME_ZONE_FORMAT)
+                .isAfter(Jiffy.now().add(hours: 24))))
             .toList();
 
         worshipRecurrentHours.value = transformWorshipRecurrentHours(worshipRecurrentHoursTemp);
         worshipSpecialHours.value = transformWorshipSpecialHours(worshipSpecialHoursTemp);
-        log('worshipSpecialHours ::: ${jsonEncode(worshipSpecialHours)}');
-        List<int> temp = [];
-        temp = worshipRecurrentHours.value
+
+        // Obtenir les dates autorisées pour les messes récurrentes
+        List<int> recurringDays = worshipRecurrentHours
             .map((element) => int.parse(element.dayOfWeek ?? '0') + 1)
             .toList();
-        allowedDates.value = getNextDatesForDays(temp);
+        List<DateTime> recurringDates = getNextDatesForDays(recurringDays);
+
+        // Obtenir les dates pour les messes spéciales
+        List<DateTime> specialDates = worshipSpecialHours
+            .map((element) => Jiffy.parse(element.day ?? '', pattern: "yyyy-MM-dd").dateTime)
+            .toList();
+
+        // Combiner les dates récurrentes et spéciales
+        Set<DateTime> allDates = {...recurringDates, ...specialDates};
+
+        // Trier les dates
+        allowedDates.value = allDates.toList()..sort();
 
         DateTime now = DateTime.now();
-        DateTime today =
-            DateTime(now.year, now.month, now.day); // Ignorer les heures
+        DateTime today = DateTime(now.year, now.month, now.day);
 
         DateTime datetime = allowedDates.value.firstWhere(
-          (date) => date.isAfter(today) || date.isAtSameMomentAs(today),
+              (date) => date.isAfter(today) || date.isAtSameMomentAs(today),
           orElse: () => allowedDates.first,
-        ); // Utiliser la première date valide de _allowedDates
+        );
 
         log('datetime ::: ${datetime.toIso8601String()}');
         updateRepetitionFilter(datetime);
@@ -874,7 +888,7 @@ class MassRequestController extends GetxController {
   goToMap() {
     Get.toNamed(
       Routes.PAROISSE_MAP,
-      arguments: jsonEncode(paroisseSelected.value.toJson()),
+      arguments: jsonEncode(paroisseSelected.toJson()),
     );
   }
 

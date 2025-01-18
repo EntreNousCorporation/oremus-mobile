@@ -104,7 +104,7 @@ class MassRequestHistoryController extends GetxController {
     getMassRequests();
   }
 
-  showRangeDatePicker() async {
+  showRangeDatePickerBack() async {
     final DateTimeRange? selected = await showDateRangePicker(
       context: Get.context!,
       initialDateRange: selectedDate.value,
@@ -117,7 +117,7 @@ class MassRequestHistoryController extends GetxController {
       confirmText: 'Valider',
       builder: (context, child) {
         return Theme(
-          data: ThemeData.light().copyWith(
+          data: ThemeData.light(useMaterial3: false).copyWith(
             colorScheme: const ColorScheme.light(
               onPrimary: colorWhite, // selected text color
               onSurface: colorBlack, // default text color
@@ -177,6 +177,166 @@ class MassRequestHistoryController extends GetxController {
       startDate.value =
           "$startDay/$startMonth/${selectedDate.value.start.year}";
       endDate.value = "$endDay/$endMonth/${selectedDate.value.end.year}";
+      datesRange.value = '${startDate.value} - ${endDate.value}';
+      searchController.text = datesRange.value;
+      getMassRequests();
+    }
+  }
+
+  showRangeDatePicker() async {
+    const primaryColor = colorGreen;
+
+    final DateTimeRange? selected = await showDateRangePicker(
+      context: Get.context!,
+      initialDateRange: selectedDate.value,
+      saveText: 'Valider',
+      locale: const Locale('fr'),
+      currentDate: selectedDate.value.start,
+      firstDate: DateTime(2023),
+      lastDate: DateTime.now(),
+      cancelText: 'Annuler',
+      confirmText: 'Valider',
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData(
+            // Désactiver explicitement Material 3
+            useMaterial3: false,
+            // Couleurs principales
+            primaryColor: primaryColor,
+            primarySwatch: MaterialColor(primaryColor.value, {
+              50: primaryColor.withOpacity(0.1),
+              100: primaryColor.withOpacity(0.2),
+              200: primaryColor.withOpacity(0.3),
+              300: primaryColor.withOpacity(0.4),
+              400: primaryColor.withOpacity(0.5),
+              500: primaryColor.withOpacity(0.6),
+              600: primaryColor.withOpacity(0.7),
+              700: primaryColor.withOpacity(0.8),
+              800: primaryColor.withOpacity(0.9),
+              900: primaryColor,
+            }),
+            scaffoldBackgroundColor: Colors.white,
+
+            // Style des boutons
+            textButtonTheme: TextButtonThemeData(
+              style: ButtonStyle(
+                animationDuration: const Duration(milliseconds: 300),
+                foregroundColor: WidgetStateProperty.all(Colors.white),
+                backgroundColor: WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.pressed)) {
+                    return primaryColor.withOpacity(0.8);
+                  }
+                  if (states.contains(WidgetState.hovered)) {
+                    return primaryColor.withOpacity(0.9);
+                  }
+                  return primaryColor;
+                }),
+                textStyle: WidgetStateProperty.all(TextStyles.montserratMedium(
+                  textColor: colorGrey1,
+                  textSize: TextSizes.fifteen,
+                ),),
+                iconColor: WidgetStateProperty.all(colorWhite),
+                overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(0.1)),
+                padding: WidgetStateProperty.all(
+                  const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                shape: WidgetStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                elevation: WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.pressed)) {
+                    return 0;
+                  }
+                  if (states.contains(WidgetState.hovered)) {
+                    return 2;
+                  }
+                  return 0;
+                }),
+              ),
+            ),
+
+            // Animations fluides par défaut
+            pageTransitionsTheme: const PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+              },
+            ),
+          ).copyWith(
+            datePickerTheme: DatePickerThemeData(
+              backgroundColor: Colors.white,
+              headerBackgroundColor: primaryColor,
+              headerForegroundColor: Colors.white,
+              headerHeadlineStyle: TextStyles.montserratMedium(
+                textColor: colorGrey1,
+                textSize: TextSizes.twenty,
+              ),
+              headerHelpStyle: TextStyles.montserratMedium(
+                textSize: TextSizes.fourteen,
+              ),
+              dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) return primaryColor;
+                if (states.contains(WidgetState.hovered)) return primaryColor.withOpacity(0.1);
+                return null;
+              }),
+              dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) return Colors.white;
+                if (states.contains(WidgetState.disabled)) return Colors.grey[400];
+                return Colors.black87;
+              }),
+              todayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) return primaryColor;
+                return primaryColor.withOpacity(0.1);
+              }),
+              todayForegroundColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) return Colors.white;
+                return primaryColor;
+              }),
+              rangePickerHeaderHeadlineStyle: TextStyles.montserratMedium(
+                textSize: TextSizes.seventeen,
+              ),
+              rangePickerHeaderHelpStyle: TextStyles.montserratMedium(
+                textSize: TextSizes.fourteen,
+              ),
+              rangePickerHeaderForegroundColor: colorWhite,
+              rangeSelectionBackgroundColor: primaryColor.withOpacity(0.1),
+              rangeSelectionOverlayColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) return primaryColor.withOpacity(0.2);
+                if (states.contains(WidgetState.hovered)) return primaryColor.withOpacity(0.15);
+                return primaryColor.withOpacity(0.1);
+              }),
+            ),
+
+            dialogTheme: DialogTheme(
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+            child: child!,
+          ),
+        );
+      },
+    );
+
+    if (selected != null) {
+      selectedDate.value = selected;
+
+      String startDay = selected.start.day.toString().padLeft(2, '0');
+      String startMonth = selected.start.month.toString().padLeft(2, '0');
+      String endDay = selected.end.day.toString().padLeft(2, '0');
+      String endMonth = selected.end.month.toString().padLeft(2, '0');
+
+      startDateApi.value = "${selected.start.year}-$startMonth-$startDay${'T00:00:00.988Z'}";
+      endDateApi.value = "${selected.end.year}-$endMonth-$endDay${'T23:59:59.988Z'}";
+      startDate.value = "$startDay/$startMonth/${selected.start.year}";
+      endDate.value = "$endDay/$endMonth/${selected.end.year}";
       datesRange.value = '${startDate.value} - ${endDate.value}';
       searchController.text = datesRange.value;
       getMassRequests();
@@ -426,7 +586,7 @@ class MassRequestHistoryController extends GetxController {
   goToMap() {
     Get.toNamed(
       Routes.PAROISSE_MAP,
-      arguments: paroisseSelected.value.toJson(),
+      arguments: paroisseSelected.toJson(),
     );
   }
 
