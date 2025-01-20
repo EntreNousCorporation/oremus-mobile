@@ -601,6 +601,174 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
     }
   }
 
+  Future<void> selectStartDate(BuildContext context) async {
+    // Obtenir la date actuelle
+    final now = DateTime.now();
+    final timeRange = _determineTimeRange(now);
+
+    // Déterminer la première date autorisée
+    DateTime minimumAllowedDate = now;
+    if (timeRange == TimeRange.evening) {
+      minimumAllowedDate = now.add(const Duration(days: 1));
+    }
+
+    final DateTime? picked = await showDatePicker(
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+      context: context,
+      initialDate: Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime,
+      firstDate: minimumAllowedDate,
+      lastDate: DateTime(now.year + 5),
+      cancelText: 'cancel'.tr,
+      confirmText: 'confirm'.tr,
+      selectableDayPredicate: (date) {
+        // Si ce n'est pas aujourd'hui, la date est sélectionnable
+        if (date.year != now.year || date.month != now.month || date.day != now.day) {
+          return true;
+        }
+        // Pour aujourd'hui, vérifier selon la plage horaire
+        return timeRange != TimeRange.evening;
+      },
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: const ColorScheme.light(
+              onPrimary: colorWhite,
+              onSurface: colorBlack,
+              primary: colorGreen,
+            ),
+            dialogBackgroundColor: Colors.white,
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: colorWhite,
+                textStyle: TextStyles.montserratRegular(textSize: TextSizes.fourteen),
+                backgroundColor: colorGreen,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      // Si la date sélectionnée est aujourd'hui, afficher le message approprié
+      if (picked.year == now.year && picked.month == now.month && picked.day == now.day) {
+        String message = '';
+        switch (timeRange) {
+          case TimeRange.morning:
+            message = 'Les messes ne sont disponibles qu\'à partir de 12h aujourd\'hui';
+            break;
+          case TimeRange.afternoon:
+            message = 'Les messes ne sont disponibles qu\'à partir de 18h aujourd\'hui';
+            break;
+        }
+        if (message.isNotEmpty) {
+          showNotification(
+            message: message,
+            bgColor: colorBlue2,
+          );
+        }
+      }
+
+      // Réinitialiser toutes les sélections
+      resetSelections();
+      resetRecurrentHours();
+      resetSpecialHours();
+
+      // Mettre à jour la date de début
+      String day = picked.day.toString().padLeft(2, '0');
+      String month = picked.month.toString().padLeft(2, '0');
+
+      initialSelectedDate.value = PriceData(
+          day: "${picked.year}-$month-$day",
+          dayToDisplay: "$day-$month-${picked.year}",
+          dayOfWeek: picked.weekday.toString(),
+          isDaySelected: true
+      );
+
+      // Ajuster la date de fin si nécessaire
+      final endDate = endSelectedDate.value != null
+          ? Jiffy.parse(endSelectedDate.value!.day!).dateTime
+          : null;
+
+      if (endDate == null || endDate.isBefore(picked)) {
+        endSelectedDate.value = PriceData.fromJson(initialSelectedDate.value!.toJson());
+      }
+
+      // Rafraîchir l'interface
+      doRefreshHoursAfterAction();
+      canDoApplyAction();
+    }
+  }
+
+  bool isStartDateSelectable(DateTime date) {
+    final now = DateTime.now();
+    final timeRange = _determineTimeRange(now);
+
+    // Si ce n'est pas aujourd'hui, la date est sélectionnable
+    if (date.year != now.year || date.month != now.month || date.day != now.day) {
+      return true;
+    }
+
+    // Pour aujourd'hui, vérifier selon la plage horaire
+    return timeRange != TimeRange.evening;
+  }
+
+  void showStartDateRestrictionMessage() {
+    final now = DateTime.now();
+    final timeRange = _determineTimeRange(now);
+
+    String message = '';
+    switch (timeRange) {
+      case TimeRange.morning:
+        message = 'Les messes ne sont disponibles qu\'à partir de 12h aujourd\'hui';
+        break;
+      case TimeRange.afternoon:
+        message = 'Les messes ne sont disponibles qu\'à partir de 18h aujourd\'hui';
+        break;
+      case TimeRange.evening:
+        message = 'Les messes ne sont disponibles qu\'à partir de demain';
+        break;
+    }
+
+    showNotification(
+      message: message,
+      bgColor: colorBlue2,
+    );
+  }
+
+  bool isTimeAllowedForStartDate(DateTime startDate, String startTime) {
+    final now = DateTime.now();
+
+    // Si la date n'est pas aujourd'hui, tout est permis
+    if (!isSameDay(startDate, now)) {
+      return true;
+    }
+
+    final timeRange = _determineTimeRange(now);
+    final slotTime = parseTime(startTime);
+
+    switch (timeRange) {
+      case TimeRange.morning:     // 00h01 - 09h00
+        return slotTime.hour >= 12;
+      case TimeRange.afternoon:   // 09h01 - 15h00
+        return slotTime.hour >= 18;
+      case TimeRange.evening:     // 15h01 - 00h00
+        return false;
+      default:
+        return true;
+    }
+  }
+
+  bool isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
+  }
+
   void showCustomDatePicker(BuildContext context, PriceData item) {
     final weekDay = int.parse(item.dayOfWeek ?? '0');
     final DateTime now = DateTime.now();

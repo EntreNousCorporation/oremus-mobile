@@ -202,8 +202,7 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                 child: _buildDateBox(
                   'Du',
                   _.initialSelectedDate.value?.dayToDisplay ?? '-',
-                  onTap: null, // Date de début non modifiable
-                  enabled: false,
+                  onTap: () => _.selectStartDate(Get.context!),
                 ),
               ),
               const SizedBox(width: 12),
@@ -221,16 +220,16 @@ class FilterMassRequestDateScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDateBox(String label, String date, {VoidCallback? onTap, bool enabled = true}) {
+  Widget _buildDateBox(String label, String date, {VoidCallback? onTap}) {
     return InkWell(
-      onTap: enabled ? onTap : null,
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: enabled ? colorWhite : colorGrey1.withOpacity(0.1),
+          color: colorWhite,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: enabled ? colorGreenSemiLight : colorGrey1.withOpacity(0.2),
+            color: colorGreenSemiLight,
           ),
         ),
         child: Column(
@@ -250,14 +249,14 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                 Text(
                   date,
                   style: TextStyles.montserratBold(
-                    textColor: enabled ? colorBlack : colorGrey1,
+                    textColor: colorBlack,
                     textSize: TextSizes.fourteen,
                   ),
                 ),
                 Icon(
                   Icons.calendar_today,
                   size: 16,
-                  color: enabled ? colorGreenSemiLight : colorGrey1,
+                  color: colorGreenSemiLight,
                 ),
               ],
             ),
