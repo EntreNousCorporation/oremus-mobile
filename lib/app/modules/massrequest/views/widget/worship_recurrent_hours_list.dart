@@ -18,11 +18,37 @@ class WorshipRecurrentHoursList extends StatelessWidget {
         currentDayDate.day == ruleBasedDate.day;
   }
 
-  bool isHourAvailable(String? startTime, DateTime currentDayDate, DateTime ruleBasedDate) {
+  bool isHourAvailable_(String? startTime, DateTime currentDayDate, DateTime ruleBasedDate) {
     if (startTime == null) return false;
     final slotTime = parseTime(startTime);
 
     // Si c'est la première occurrence (déterminée par la règle du tableau)
+    if (isFirstOccurrence(currentDayDate, ruleBasedDate)) {
+      return slotTime.hour >= 12;  // Règle du tableau pour la première date valide
+    }
+
+    return true;  // Toutes les heures sont disponibles pour les occurrences suivantes
+  }
+
+  bool isHourAvailable(String? startTime, DateTime currentDayDate, DateTime ruleBasedDate) {
+    if (startTime == null) return false;
+    late FilterMassRequestDateController controller;
+
+    if (Get.isRegistered<FilterMassRequestDateController>()) {
+      controller = Get.find<FilterMassRequestDateController>();
+    } else {
+      Get.lazyPut(()=>FilterMassRequestDateController());
+      controller = Get.find<FilterMassRequestDateController>();
+    }
+    // Si une date de fin a été sélectionnée, on ignore les règles du tableau
+    if (controller.endSelectedDate.value?.dayToDisplay != null &&
+        controller.endSelectedDate.value?.dayToDisplay != '-') {
+      return true;
+    }
+
+    final slotTime = parseTime(startTime);
+
+    // Si c'est la première occurrence, on applique les règles du tableau
     if (isFirstOccurrence(currentDayDate, ruleBasedDate)) {
       return slotTime.hour >= 12;  // Règle du tableau pour la première date valide
     }

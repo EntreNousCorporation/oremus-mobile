@@ -83,6 +83,154 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
   // Gardons une trace explicite des slots sélectionnés
   final RxSet<String> selectedSlotKeys = <String>{}.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+    tabController = TabController(length: 2, vsync: this);
+    getArguments();
+    // Ne pas réinitialiser les sélections par défaut
+    //resetSelections();
+  }
+
+  @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
+  }
+
+  void getArguments_() {
+    if (Get.arguments != null) {
+      worshipHours.value = Get.arguments[0];
+      worshipRecurrentHoursTemp.value =
+          worshipHours.where((element) => element.isRecurrent == true).toList();
+      worshipSpecialHoursTemp.value = worshipHours
+          .where((element) =>
+      element.isRecurrent == false &&
+          (Jiffy.parse(element.startDate ?? Jiffy.now().format(),
+              pattern: AppConstants.TIME_ZONE_FORMAT)
+              .isAfter(Jiffy.now().add(hours: 24))))
+          .toList();
+
+      worshipRecurrentHours.value =
+          transformWorshipRecurrentHours(worshipRecurrentHoursTemp);
+      worshipSpecialHours.value =
+          transformWorshipSpecialHours(worshipSpecialHoursTemp);
+
+      // Restaurer les dates initiale et finale
+      initialSelectedDate.value = PriceData.fromJson(Get.arguments[1]);
+
+      // Restaurer l'état sauvegardé si disponible
+      if (Get.arguments.length > 2 && Get.arguments[2] != null) {
+        final savedState = Get.arguments[2];
+
+        // Restaurer la date de fin
+        if (savedState['endDate'] != null) {
+          endSelectedDate.value = PriceData.fromJson(savedState['endDate']);
+        } else {
+          endSelectedDate.value = PriceData.fromJson(Get.arguments[1]);
+        }
+
+        // Restaurer les selectedSlotKeys
+        if (savedState['specialMasses'] != null) {
+          final savedSpecialMasses = List<Map<String, dynamic>>.from(savedState['specialMasses']);
+          _restoreSpecialMasses(savedSpecialMasses);
+        }
+
+        if (savedState['selectedSlotKeys'] != null) {
+          selectedSlotKeys.clear();
+          selectedSlotKeys.addAll(List<String>.from(savedState['selectedSlotKeys']));
+        }
+      } else {
+        endSelectedDate.value = PriceData.fromJson(Get.arguments[1]);
+      }
+
+      doRefreshHoursAfterAction();
+      canDoApplyAction();
+    }
+  }
+
+  void getArguments() {
+    if (Get.arguments != null) {
+      worshipHours.value = Get.arguments[0];
+      worshipRecurrentHoursTemp.value =
+          worshipHours.where((element) => element.isRecurrent == true).toList();
+      worshipSpecialHoursTemp.value = worshipHours
+          .where((element) =>
+      element.isRecurrent == false &&
+          (Jiffy.parse(element.startDate ?? Jiffy.now().format(),
+              pattern: AppConstants.TIME_ZONE_FORMAT)
+              .isAfter(Jiffy.now().add(hours: 24))))
+          .toList();
+
+      worshipRecurrentHours.value =
+          transformWorshipRecurrentHours(worshipRecurrentHoursTemp);
+      worshipSpecialHours.value =
+          transformWorshipSpecialHours(worshipSpecialHoursTemp);
+
+      // Déterminer la première date autorisée selon les règles
+      final now = DateTime.now();
+      final timeRange = _determineTimeRange(now);
+      DateTime firstAllowedDate;
+
+      switch (timeRange) {
+        case TimeRange.morning:     // 00h01 - 09h00
+        // La même journée est possible, première messe à 12h
+          firstAllowedDate = now;
+          break;
+        case TimeRange.afternoon:   // 09h01 - 15h00
+        // La même journée est possible, première messe à 18h
+          firstAllowedDate = now;
+          break;
+        case TimeRange.evening:     // 15h01 - 00h00
+        // Il faut passer au lendemain
+          firstAllowedDate = now.add(const Duration(days: 1));
+          break;
+        default:
+          firstAllowedDate = now;
+      }
+
+      firstAllowedDate = firstAllowedDate.add(const Duration(days: 1));
+
+      // Formater la date pour l'initialSelectedDate
+      String formattedDay = firstAllowedDate.day.toString().padLeft(2, '0');
+      String formattedMonth = firstAllowedDate.month.toString().padLeft(2, '0');
+      String formattedDate = "${firstAllowedDate.year}-$formattedMonth-$formattedDay";
+
+      // Initialiser les dates
+      initialSelectedDate.value = PriceData(
+          day: formattedDate,
+          dayToDisplay: "$formattedDay-$formattedMonth-${firstAllowedDate.year}",
+          dayOfWeek: firstAllowedDate.weekday.toString(),
+          isDaySelected: true
+      );
+
+      // Si l'état sauvegardé existe
+      if (Get.arguments.length > 2 && Get.arguments[2] != null) {
+        final savedState = Get.arguments[2];
+        if (savedState['endDate'] != null) {
+          endSelectedDate.value = PriceData.fromJson(savedState['endDate']);
+        } else {
+          endSelectedDate.value = PriceData.fromJson(initialSelectedDate.value!.toJson());
+        }
+
+        if (savedState['specialMasses'] != null) {
+          final savedSpecialMasses = List<Map<String, dynamic>>.from(savedState['specialMasses']);
+          _restoreSpecialMasses(savedSpecialMasses);
+        }
+
+        if (savedState['selectedSlotKeys'] != null) {
+          selectedSlotKeys.clear();
+          selectedSlotKeys.addAll(List<String>.from(savedState['selectedSlotKeys']));
+        }
+      } else {
+        endSelectedDate.value = PriceData.fromJson(initialSelectedDate.value!.toJson());
+      }
+
+      doRefreshHoursAfterAction();
+      canDoApplyAction();
+    }
+  }
+
   // Créer une clé unique pour chaque slot
   String _createSlotKey(String dayOfWeek, String startTime) {
     return '$dayOfWeek-$startTime';
@@ -171,72 +319,6 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
     }
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-    tabController = TabController(length: 2, vsync: this);
-    getArguments();
-    // Ne pas réinitialiser les sélections par défaut
-    //resetSelections();
-  }
-
-  @override
-  void dispose() {
-    tabController.dispose();
-    super.dispose();
-  }
-
-  void getArguments() {
-    if (Get.arguments != null) {
-      worshipHours.value = Get.arguments[0];
-      worshipRecurrentHoursTemp.value =
-          worshipHours.where((element) => element.isRecurrent == true).toList();
-      worshipSpecialHoursTemp.value = worshipHours
-          .where((element) =>
-      element.isRecurrent == false &&
-          (Jiffy.parse(element.startDate ?? Jiffy.now().format(),
-              pattern: AppConstants.TIME_ZONE_FORMAT)
-              .isAfter(Jiffy.now().add(hours: 24))))
-          .toList();
-
-      worshipRecurrentHours.value =
-          transformWorshipRecurrentHours(worshipRecurrentHoursTemp);
-      worshipSpecialHours.value =
-          transformWorshipSpecialHours(worshipSpecialHoursTemp);
-
-      // Restaurer les dates initiale et finale
-      initialSelectedDate.value = PriceData.fromJson(Get.arguments[1]);
-
-      // Restaurer l'état sauvegardé si disponible
-      if (Get.arguments.length > 2 && Get.arguments[2] != null) {
-        final savedState = Get.arguments[2];
-
-        // Restaurer la date de fin
-        if (savedState['endDate'] != null) {
-          endSelectedDate.value = PriceData.fromJson(savedState['endDate']);
-        } else {
-          endSelectedDate.value = PriceData.fromJson(Get.arguments[1]);
-        }
-
-        // Restaurer les selectedSlotKeys
-        if (savedState['specialMasses'] != null) {
-          final savedSpecialMasses = List<Map<String, dynamic>>.from(savedState['specialMasses']);
-          _restoreSpecialMasses(savedSpecialMasses);
-        }
-
-        if (savedState['selectedSlotKeys'] != null) {
-          selectedSlotKeys.clear();
-          selectedSlotKeys.addAll(List<String>.from(savedState['selectedSlotKeys']));
-        }
-      } else {
-        endSelectedDate.value = PriceData.fromJson(Get.arguments[1]);
-      }
-
-      doRefreshHoursAfterAction();
-      canDoApplyAction();
-    }
-  }
-
   void _restoreSpecialMasses(List<Map<String, dynamic>> savedSpecialMasses) {
     for (var savedMass in savedSpecialMasses) {
       var mass = worshipSpecialHours.firstWhereOrNull(
@@ -271,50 +353,6 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
     worshipSpecialHours.refresh();
   }
 
-  // Mettre à jour l'état d'une messe spéciale
-  void _updateSpecialMassState(String slotKey) {
-    final parts = slotKey.split('-');
-    if (parts.length >= 4) {
-      final date = parts[2];
-      final startTime = parts[3];
-
-      var specialMass = worshipSpecialHours.firstWhere(
-            (mass) => mass.day == date,
-        orElse: () => PriceData(),
-      );
-
-      var slot = specialMass.slots?.firstWhere(
-            (s) => s.startTime == startTime,
-        orElse: () => Slot(),
-      );
-
-      if (slot != null) {
-        slot.isHourSelected = true;
-      }
-    }
-  }
-
-  // Restaurer l'état des messes spéciales
-  void _restoreSpecialMassesState() {
-    for (var mass in worshipSpecialHours) {
-      if (mass.slots != null) {
-        for (var slot in mass.slots!) {
-          final slotKey = _createSpecialSlotKey(mass.day ?? '', slot.startTime ?? '');
-          slot.isHourSelected = selectedSlotKeys.contains(slotKey);
-        }
-      }
-    }
-    worshipSpecialHours.refresh();
-  }
-
-  // Vérifier si une date donnée est aujourd'hui
-  bool _isToday(DateTime date) {
-    final now = DateTime.now();
-    return date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day;
-  }
-
   // Déterminer la plage horaire en fonction de l'heure actuelle
   TimeRange _determineTimeRange(DateTime now) {
     final currentTime = now.hour * 60 + now.minute;  // Convertir en minutes
@@ -326,78 +364,6 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
     } else {
       return TimeRange.evening;    // 15h01 - 00h00
     }
-  }
-
-  // Vérifier si un slot respecte les règles
-  bool _isSlotSelectableByRules(String slotKey) {
-    // Pour les messes spéciales
-    if (slotKey.startsWith('special-')) {
-      final parts = slotKey.split('-');
-      if (parts.length >= 4) {
-        final date = parts[2];
-        return isSpecialMassSelectable(date);
-      }
-      return false;
-    }
-
-    // Pour les messes récurrentes
-    final parts = slotKey.split('-');
-    if (parts.length >= 2) {
-      final currentTime = DateTime.now();
-      final dayOfWeek = parts[0];
-      final startTime = parts[1];
-
-      // Convertir l'heure du slot
-      final slotTime = parseTime(startTime);
-
-      // Appliquer les règles du tableau
-      if (_isToday(currentTime) && int.parse(dayOfWeek) == currentTime.weekday - 1) {
-        final timeRange = _determineTimeRange(currentTime);
-
-        switch (timeRange) {
-          case TimeRange.morning: // 00h01 - 09h00
-            return slotTime.hour >= 12;
-          case TimeRange.afternoon: // 09h01 - 15h00
-            return slotTime.hour >= 18;
-          case TimeRange.evening: // 15h01 - 00h00
-          // La sélection doit être pour le lendemain
-            return false;
-          default:
-            return true;
-        }
-      }
-
-      return true;
-    }
-
-    return false;
-  }
-
-  // Méthode d'aide pour restaurer les sélections des messes
-  void _restoreWorshipHours(RxList<PriceData> target, List<Map<String, dynamic>> savedData) {
-    for (var savedMass in savedData) {
-      var mass = target.firstWhereOrNull(
-              (m) => m.day == savedMass['day'] && m.dayOfWeek == savedMass['dayOfWeek']
-      );
-      if (mass != null) {
-        // Restaurer les propriétés de la messe
-        mass.isDaySelected = savedMass['isDaySelected'] ?? false;
-        mass.repeat = savedMass['repeat'];
-        mass.dayToDisplay = savedMass['dayToDisplay'];
-
-        // Restaurer l'état des slots
-        final savedSlots = List<Map<String, dynamic>>.from(savedMass['slots'] ?? []);
-        for (var savedSlot in savedSlots) {
-          var slot = mass.slots?.firstWhereOrNull(
-                  (s) => s.startTime == savedSlot['startTime']
-          );
-          if (slot != null) {
-            slot.isHourSelected = savedSlot['isHourSelected'] ?? false;
-          }
-        }
-      }
-    }
-    target.refresh();
   }
 
   // Vérifie si une messe spéciale est sélectionnable en fonction de la période
@@ -743,7 +709,7 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
 
   void doResetFilter() {
     // Réinitialiser la date de fin avec la date initiale
-    endSelectedDate.value = PriceData.fromJson(Get.arguments[1]);
+    endSelectedDate.value = PriceData.fromJson(initialSelectedDate.value!.toJson());
     endSelectedDate.refresh();
 
     // Réinitialiser les heures récurrentes
@@ -785,8 +751,8 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
 
   doResetAndCloseFilter() {
     doResetFilter();
-    Get.delete<FilterMassRequestDateController>(force: true);
-    goBackToMassRequest();
+    //Get.delete<FilterMassRequestDateController>(force: true);
+    Get.back();
   }
 
   doBack() {
