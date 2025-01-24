@@ -7,7 +7,7 @@ import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DB {
-  static var encryptedBox;
+  static Box? encryptedBox;
   static initDatabase() async {
     Hive.initFlutter();
 
@@ -26,11 +26,11 @@ class DB {
   }
 
   static _save(String key, String? value) {
-    encryptedBox.put(key, value);
+    encryptedBox?.put(key, value);
   }
 
   static getData(String key) {
-    return encryptedBox.get(key) ;
+    return encryptedBox?.get(key) ;
   }
 
   static void saveData(String key, String? value) {
