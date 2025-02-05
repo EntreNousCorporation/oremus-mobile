@@ -153,18 +153,14 @@ class SignupScreen extends StatelessWidget {
                                                 hintText: '',
                                                 labelText: 'Téléphone',
                                                 prefixIcon: Assets.imagesIconPhone,
-                                                //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
                                                 prefixIconColor: colorGrey1,
                                                 keyboardType:
                                                     TextInputType.phone,
                                                 maxLength: 14,
                                                 maskInputs: [
-                                                  ObjectSeparatorInputFormatter(
-                                                      groupBy: 2),
-                                                  FilteringTextInputFormatter.deny('00'),
-                                                  FilteringTextInputFormatter
-                                                      .allow(RegExp(AppConstants
-                                                          .INPUT_NUM_REGEX)),
+                                                  ObjectSeparatorInputFormatter(groupBy: 2),
+                                                  FilteringTextInputFormatter.deny(RegExp(r'^00')),
+                                                  FilteringTextInputFormatter.allow(RegExp(AppConstants.INPUT_NUM_REGEX)),
                                                 ],
                                                 onChanged: (value) {
                                                   _.checkForm();
