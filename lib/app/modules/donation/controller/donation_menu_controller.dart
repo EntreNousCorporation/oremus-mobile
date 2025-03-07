@@ -41,7 +41,7 @@ class DonationMenuController extends GetxController {
       TypeMenu(
         code: 'FD',
         title: 'Faire un don',
-        icon: Assets.imagesMesse,
+        icon: Assets.imagesVolunteer,
         isPngImage: false,
         activeTint: colorGreenSemiLight,
         bgColor: colorGreenLight,

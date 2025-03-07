@@ -473,10 +473,10 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                                 ),
                                                 child: Row(
                                                   children: [
-                                                    const Icon(
-                                                      Icons.volunteer_activism,
-                                                      color: colorWhite,
-                                                      size: 24,
+                                                    SvgPicture.asset(
+                                                      Assets.imagesVolunteer,
+                                                      height: 24,
+                                                      colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),
                                                     ),
                                                     const SizedBox(width: 12),
                                                     Text(

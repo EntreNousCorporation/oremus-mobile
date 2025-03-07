@@ -207,8 +207,8 @@ class ParoisseMenuController extends GetxController {
       ),
       TypeMenu(
         code: 'FD',
-        title: 'Faire un don',
-        icon: Assets.imagesIconDemandeDeMesse,
+        title: 'Don',
+        icon: Assets.imagesVolunteer,
         isPngImage: false,
         activeTint: colorGreenSemiLight,
         goToPage: () async {

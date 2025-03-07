@@ -71,7 +71,7 @@ class CustomHomeController extends GetxController {
       MenusItem(
         code: AppConstants.DONATION_WITHOUT_WORSHIP,
         libelle: "Faire un don",
-        icon: Assets.imagesMesse,
+        icon: Assets.imagesVolunteer,
       ),
       MenusItem(
         code: AppConstants.PROMO,
