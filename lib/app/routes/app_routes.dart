@@ -18,6 +18,7 @@ abstract class Routes {
   static const PAROISSE_MENU = '/paroisse-menu';
   static const PAROISSE_MESSE = '/paroisse-messe';
   static const PAROISSE_MASS_REQUEST_MENU = '/paroisse-mass-request-menu';
+  static const PAROISSE_DONATION_MENU = '/paroisse-donation-menu';
   static const PAROISSE_CONFESSION = '/paroisse-confession';
   static const PAROISSE_OFFICE = '/paroisse-office';
   static const PAROISSE_MAP = '/paroisse-map';
@@ -48,6 +49,16 @@ abstract class Routes {
   static const MASS_REQUEST_TRACK_CLAIM_DETAILS = '/mass-request-track-claim-details';
   static const MASS_REQUEST_WITHOUT_WORSHIP = '/mass-request-without-worship';
   static const MASS_REQUEST_MENU = '/mass-request-menu';
+
+  //DONATION
+  static const DONATION = '/donation';
+  static const DONATION_HISTORY = '/donation-history';
+  static const DONATION_HISTORY_DETAIL = '/donation-history-detail';
+  static const FILTER_DONATION_HISTORY = '/filter-donation-history';
+  static const FILTER_DONATION_CHOOSE_DATE = '/filter-donation-choose-date';
+  static const FILTER_DONATION_CHOOSE_WORSHIP = '/filter-donation-choose-worship';
+  static const DONATION_WITHOUT_WORSHIP = '/donation-without-worship';
+  static const DONATION_MENU = '/donation-menu';
 
   //PAYMENT
   static const PAYMENT = '/payment';

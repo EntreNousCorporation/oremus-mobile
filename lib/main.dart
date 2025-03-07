@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -21,12 +22,12 @@ import 'package:oremusapp/app/configs/flavor_settings.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:platform_device_id/platform_device_id.dart';
 
 var appUrl;
 //var byPassAuth;
 var isUserConnected = false.obs;
 var requestMassWithoutWorship = false.obs;
+var donationWithoutWorship = false.obs;
 var flavor;
 var versionName;
 var versionCode;
@@ -99,13 +100,15 @@ class MyApp extends StatelessWidget {
 
 Future<void> getDeviceInfos() async {
   log('====== getDeviceInfos ======');
+  final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
   try {
     if (Platform.isIOS) {
-      phoneId = await PlatformDeviceId
-          .getDeviceId; //'${iosDeviceInfo.name}:${iosDeviceInfo.identifierForVendor}'; // unique ID on iOS
+      final IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      phoneId = iosInfo.identifierForVendor ?? '';
       log('getUniqueDeviceId => $phoneId');
     } else if (Platform.isAndroid) {
-      phoneId = await PlatformDeviceId.getDeviceId; //androidDeviceInfo.id;
+      final AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      phoneId = androidInfo.id;
       log('getUniqueDeviceId => $phoneId');
     }
   } catch (ex) {

@@ -30,7 +30,7 @@ class DB {
   }
 
   static getData(String key) {
-    return encryptedBox?.get(key) ;
+    return encryptedBox?.get(key);
   }
 
   static void saveData(String key, String? value) {

@@ -67,7 +67,11 @@ class CustomHomeController extends GetxController {
         code: AppConstants.REQUEST_MASS_WITHOUT_WORSHIP,
         libelle: "Demande de messe",
         icon: Assets.imagesMesse,
-        isVisible: true,
+      ),
+      MenusItem(
+        code: AppConstants.DONATION_WITHOUT_WORSHIP,
+        libelle: "Faire un don",
+        icon: Assets.imagesMesse,
       ),
       MenusItem(
         code: AppConstants.PROMO,
@@ -132,12 +136,15 @@ class CustomHomeController extends GetxController {
     } else {
       if (menuCode == AppConstants.SHARE_APP) {
         requestMassWithoutWorship.value = false;
+        donationWithoutWorship.value = false;
         doShareApp();
-      } else if (menuCode == AppConstants.REQUEST_MASS_WITHOUT_WORSHIP) {
+      } else if (menuCode == AppConstants.REQUEST_MASS_WITHOUT_WORSHIP || menuCode == AppConstants.DONATION_WITHOUT_WORSHIP) {
         requestMassWithoutWorship.value = true;
+        donationWithoutWorship.value = true;
         controller.setSelectedMenuPosition(index);
       } else {
         requestMassWithoutWorship.value = false;
+        donationWithoutWorship.value = false;
         controller.setSelectedMenuPosition(index);
       }
       update();

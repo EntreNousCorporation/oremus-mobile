@@ -23,19 +23,108 @@ class ParoisseScreen extends StatefulWidget {
   State<ParoisseScreen> createState() => _ParoisseScreenState();
 }
 
-class _ParoisseScreenState extends State<ParoisseScreen> {
+class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStateMixin {
   Offset? _fabPosition; // Position du FAB
   double fabSize = 250.0; // Taille par défaut du FAB
+  bool _isSubMenuOpen = false;
+
+  // Animation pour le sous-menu
+  late AnimationController _animationController;
+  late Animation<double> _expandAnimation;
+
+  // Animation pour la transition entre compact et étendu
+  late AnimationController _sizeAnimationController;
+  late Animation<double> _widthAnimation;
+  late Animation<double> _opacityAnimation;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialisation de l'animation pour le sous-menu
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 250),
+    );
+    _expandAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
+
+    // Initialisation des animations pour la transition entre compact et étendu
+    _sizeAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+
+    _widthAnimation = Tween<double>(begin: 75.0, end: 250.0).animate(
+      CurvedAnimation(
+        parent: _sizeAnimationController,
+        curve: Curves.easeOutCubic,
+      ),
+    );
+
+    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _sizeAnimationController,
+        curve: const Interval(0.5, 1.0, curve: Curves.easeInOut),
+      ),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _sizeAnimationController,
+        curve: Curves.elasticOut,
+      ),
+    );
+
+    // Initialiser l'écouteur après un court délai pour s'assurer que le contrôleur est prêt
+    Future.delayed(Duration.zero, () {
+      final controller = Get.find<ParoisseController>();
+      ever(controller.isExtended, (value) {
+        if (value == true) {
+          _sizeAnimationController.forward();
+        } else {
+          _sizeAnimationController.reverse();
+        }
+      });
+
+      // Initialiser l'état de l'animation en fonction de l'état actuel
+      if (controller.isExtended.isTrue) {
+        _sizeAnimationController.value = 1.0;
+      } else {
+        _sizeAnimationController.value = 0.0;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    _sizeAnimationController.dispose();
+    super.dispose();
+  }
+
+  void _toggleSubMenu() {
+    setState(() {
+      _isSubMenuOpen = !_isSubMenuOpen;
+      if (_isSubMenuOpen) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    //final Size screenSize = MediaQuery.of(context).size;
-
     // Si la position initiale n'est pas encore définie, la définir en bas à droite
     _fabPosition ??= Offset(
-        Get.width - fabSize - 16.0, // 16.0 pour une petite marge du bord
-        Get.height - 150 - 16.0 - kToolbarHeight - MediaQuery.of(context).padding.top, // Compense la AppBar et la barre de statut
-      );
+      Get.width - fabSize - 16.0, // 16.0 pour une petite marge du bord
+      Get.height - 150 - 16.0 - kToolbarHeight - MediaQuery.of(context).padding.top, // Compense la AppBar et la barre de statut
+    );
+
     return Container(
       color: colorGreen,
       child: SafeArea(
@@ -61,6 +150,7 @@ class _ParoisseScreenState extends State<ParoisseScreen> {
                             ),
                             child: Row(
                               children: [
+                                // Reste du code inchangé...
                                 GestureDetector(
                                   onTap: () {
                                     _.doLaunchSimpleSearch();
@@ -248,20 +338,14 @@ class _ParoisseScreenState extends State<ParoisseScreen> {
                                       physics: const NeverScrollableScrollPhysics(),
                                       padding: const EdgeInsets.only(top: 16),
                                       shrinkWrap: false,
-                                      //itemCount: 20,
                                       itemCount: _.paroisses.length,
                                       itemBuilder: (builder, index) {
                                         var paroisse = _.paroisses[index];
-                                        /*return Container(
-                                          height: 50,
-                                          width: 200,
-                                          color: colorGreen,
-                                        );*/
                                         return ParoisseItem(
-                                                    paroisse: paroisse,
-                                                    index: index,
-                                                    key: ValueKey(paroisse?.identifier),
-                                                  );
+                                          paroisse: paroisse,
+                                          index: index,
+                                          key: ValueKey(paroisse?.identifier),
+                                        );
                                       },
                                       separatorBuilder: (builder, index) {
                                         return Separators.maximum1Vertical();
@@ -280,63 +364,234 @@ class _ParoisseScreenState extends State<ParoisseScreen> {
                         ],
                       ),
                     ),
+                    // Widget de menu flottant avec sous-menu
                     Positioned(
                       left: _fabPosition!.dx,
                       top: _fabPosition!.dy,
                       child: GestureDetector(
                         onPanUpdate: (details) {
-                          setState(() {
-                            double newX = _fabPosition!.dx + details.delta.dx;
-                            double newY = _fabPosition!.dy + details.delta.dy;
+                          // Si le sous-menu est ouvert, on ne déplace pas le bouton
+                          if (!_isSubMenuOpen) {
+                            setState(() {
+                              double newX = _fabPosition!.dx + details.delta.dx;
+                              double newY = _fabPosition!.dy + details.delta.dy;
 
-                            // Limiter la position à l'intérieur des bords de l'écran
-                            if (_.isExtended.isTrue) {
-                              newX = newX.clamp(0.0, Get.width - 250);
-                              newY = newY.clamp(0.0, Get.height - 150 - kToolbarHeight - MediaQuery.of(context).padding.top);
-                            } else {
-                              newX = newX.clamp(0.0, Get.width - 70);
-                              newY = newY.clamp(0.0, Get.height - 150 - kToolbarHeight - MediaQuery.of(context).padding.top);
-                            }
+                              // Limiter la position à l'intérieur des bords de l'écran
+                              if (_.isExtended.isTrue) {
+                                newX = newX.clamp(0.0, Get.width - 250);
+                                newY = newY.clamp(0.0, Get.height - 150 - kToolbarHeight - MediaQuery.of(context).padding.top);
+                              } else {
+                                newX = newX.clamp(0.0, Get.width - 70);
+                                newY = newY.clamp(0.0, Get.height - 150 - kToolbarHeight - MediaQuery.of(context).padding.top);
+                              }
 
-                            _fabPosition = Offset(newX, newY);
-                          });
+                              _fabPosition = Offset(newX, newY);
+                            });
+                          }
                         },
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          width: _.isExtended.isTrue ? 250.0 : 75.0,
-                          height: 75.0,
-                          child: FloatingActionButton.extended(
-                            onPressed: () {
-                              _.doMoveRequestMass();
-                            },
-                            backgroundColor: colorGreen,
-                            enableFeedback: true,
-                            tooltip: 'Demande de messe',
-                            foregroundColor: colorWhite,
-                            extendedIconLabelSpacing: 0,
-                            extendedPadding: EdgeInsets.zero,
-                            label: _.isExtended.isTrue
-                                ? Text(
-                              "Demande de messe",
-                              style: TextStyles.montserratSemiBold(
-                                textSize: TextSizes.fifteen,
-                                textColor: colorWhite,
+                        child: Material(
+                          color: Colors.transparent,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              // Sous-menu
+                              SizeTransition(
+                                sizeFactor: _expandAnimation,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Material(
+                                      color: Colors.transparent,
+                                      elevation: 4,
+                                      shadowColor: Colors.black26,
+                                      borderRadius: BorderRadius.circular(16),
+                                      child: Container(
+                                        width: 250.0,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(16),
+                                          color: colorGreen.withOpacity(0.9),
+                                        ),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            // Option Demande de messe
+                                            InkWell(
+                                              onTap: () {
+                                                _toggleSubMenu(); // Ferme le sous-menu
+                                                _.doMoveRequestMass(); // Fonction existante
+                                              },
+                                              borderRadius: const BorderRadius.only(
+                                                topLeft: Radius.circular(16),
+                                                topRight: Radius.circular(16),
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(
+                                                  vertical: 12.0,
+                                                  horizontal: 16.0,
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      Assets.imagesMesse,
+                                                      height: 24,
+                                                      colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),
+                                                    ),
+                                                    const SizedBox(width: 12),
+                                                    Text(
+                                                      "Demande de messe",
+                                                      style: TextStyles.montserratSemiBold(
+                                                        textSize: TextSizes.fifteen,
+                                                        textColor: colorWhite,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            // Séparateur
+                                            Container(
+                                              height: 1,
+                                              color: Colors.white.withOpacity(0.3),
+                                              margin: const EdgeInsets.symmetric(horizontal: 8),
+                                            ),
+                                            // Option Faire un don
+                                            InkWell(
+                                              onTap: () {
+                                                _toggleSubMenu(); // Ferme le sous-menu
+                                                _.doMakeDonation();
+                                              },
+                                              borderRadius: const BorderRadius.only(
+                                                bottomLeft: Radius.circular(16),
+                                                bottomRight: Radius.circular(16),
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(
+                                                  vertical: 12.0,
+                                                  horizontal: 16.0,
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    const Icon(
+                                                      Icons.volunteer_activism,
+                                                      color: colorWhite,
+                                                      size: 24,
+                                                    ),
+                                                    const SizedBox(width: 12),
+                                                    Text(
+                                                      "Faire un don",
+                                                      style: TextStyles.montserratSemiBold(
+                                                        textSize: TextSizes.fifteen,
+                                                        textColor: colorWhite,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                  ],
+                                ),
                               ),
-                            )
-                                : Center(  // Centrer l'icône lorsque réduit
-                              child: SvgPicture.asset(
-                                Assets.imagesMesse,
-                                height: 35,
-                                colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),
+                              // Bouton principal avec animation fluide
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 400),
+                                curve: Curves.easeOutBack,
+                                width: _.isExtended.isTrue ? 250.0 : 75.0,
+                                height: 75.0,
+                                child: Material(
+                                  color: _isSubMenuOpen ? colorGreen.withOpacity(0.8) : colorGreen,
+                                  elevation: 6.0,
+                                  shadowColor: colorGreen,
+                                  shape: const StadiumBorder(),
+                                  child: InkWell(
+                                    onTap: _toggleSubMenu,
+                                    customBorder: const StadiumBorder(),
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: _.isExtended.isTrue ? 16.0 : 0.0),
+                                      child: AnimatedSwitcher(
+                                        duration: const Duration(milliseconds: 300),
+                                        transitionBuilder: (Widget child, Animation<double> animation) {
+                                          return FadeTransition(
+                                            opacity: animation,
+                                            child: ScaleTransition(
+                                              scale: animation,
+                                              child: child,
+                                            ),
+                                          );
+                                        },
+                                        child: _.isExtended.isTrue
+                                            ? Row(
+                                          key: const ValueKey('extended'),
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            SvgPicture.asset(
+                                              Assets.imagesMesse,
+                                              height: 35,
+                                              colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Text(
+                                                "Menu paroissial",
+                                                style: TextStyles.montserratSemiBold(
+                                                  textSize: TextSizes.fifteen,
+                                                  textColor: colorWhite,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            AnimatedRotation(
+                                              turns: _isSubMenuOpen ? 0.5 : 0.0,
+                                              duration: const Duration(milliseconds: 200),
+                                              child: const Icon(
+                                                Icons.keyboard_arrow_down,
+                                                color: colorWhite,
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                            : Stack(
+                                          key: const ValueKey('compact'),
+                                          clipBehavior: Clip.none,
+                                          children: [
+                                            SvgPicture.asset(
+                                              Assets.imagesMesse,
+                                              height: 35,
+                                              colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),
+                                            ),
+                                            Positioned(
+                                              right: -10,
+                                              bottom: -5,
+                                              child: AnimatedRotation(
+                                                turns: _isSubMenuOpen ? 0.5 : 0.0,
+                                                duration: const Duration(milliseconds: 200),
+                                                child: Container(
+                                                  decoration: const BoxDecoration(
+                                                    color: colorGreen,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: const Icon(
+                                                    Icons.keyboard_arrow_down,
+                                                    color: colorWhite,
+                                                    size: 20,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                            icon: _.isExtended.isTrue
-                                ? SvgPicture.asset(
-                              Assets.imagesMesse,
-                              height: 35,
-                              colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),
-                            )
-                                : const SizedBox.shrink(),  // Aucune icône supplémentaire si réduit
+                            ],
                           ),
                         ),
                       ),

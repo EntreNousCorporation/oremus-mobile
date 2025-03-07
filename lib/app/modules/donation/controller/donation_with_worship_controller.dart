@@ -1,0 +1,158 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
+import 'package:oremusapp/app/commons/components/dialogs.dart';
+import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
+import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/db/db.dart';
+import 'package:oremusapp/app/commons/utils.dart';
+import 'package:oremusapp/app/modules/donation/data/model/donation_response.dart';
+import 'package:oremusapp/app/modules/donation/data/repository/donation_repository.dart';
+import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
+import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
+import 'package:oremusapp/app/remote/custom_exception.dart';
+import 'package:oremusapp/app/routes/app_pages.dart';
+
+class DonationWithWorshipController extends GetxController {
+  final DonationRepository donationRepository;
+  final ParoisseRepository paroisseRepository;
+
+  DonationWithWorshipController({
+    required this.donationRepository,
+    required this.paroisseRepository,
+  });
+
+  var unlockBackButton = true.obs;
+
+  var isPricingProcessing = false.obs;
+  var isDatesProcessing = false.obs;
+  var hasData = false.obs;
+  var isLiked = false.obs;
+
+  late TextEditingController amountController;
+  var amountFocusNode = FocusNode();
+
+  var isValidForm = false.obs;
+  var paroisseSelected = ContentPlace().obs;
+  var massRequestSelected = MassRequestResponse().obs;
+
+  @override
+  void onInit() {
+    initControllers();
+    super.onInit();
+  }
+
+  @override
+  void dispose() {
+    amountController.dispose();
+    amountFocusNode.dispose();
+    super.dispose();
+  }
+
+  initControllers() {
+    amountController = TextEditingController();
+    // Attendre 2 secondes avant de donner le focus au TextField
+    Timer(const Duration(milliseconds: 500), () {
+      FocusScope.of(Get.context!).requestFocus(amountFocusNode);
+    });
+  }
+
+  moveToPayment(DonationResponse donationResponse) {
+    Get.toNamed(
+      Routes.PAYMENT,
+      arguments: donationResponse.toJson(),
+    );
+  }
+
+  moveToHome() {
+    Get.deleteAll(force: true);
+    Get.offAllNamed(Routes.CUSTOM_HOME);
+  }
+
+  goToWorshipChoice() async {
+    paroisseSelected = await Get.toNamed(
+      Routes.FILTER_MASS_REQUEST_CHOOSE_WORSHIP,
+      arguments: 'Faire un don',
+    );
+    if (paroisseSelected.value.identifier != null) {
+      paroisseSelected.refresh();
+    }
+    checkForm();
+  }
+
+  void checkForm() {
+    isValidForm.value = amountController.text.isNotEmpty;
+    update();
+  }
+
+  doSendDonation({bool? forceDuplicateCreation}) {
+    hideKeyboard();
+    EasyLoading.show(
+      status: 'Traitement en cours...',
+      maskType: EasyLoadingMaskType.black,
+      indicator: LottieLoadingView(),
+    ).then((v) {
+      unlockBackButton.value = false;
+    });
+
+    var request = DonationData(
+      amount: amountController.text.replaceAll(RegExp(r'\s'), ''),
+      worshipPlace: paroisseSelected.value.identifier,
+      forceDuplicateCreation: forceDuplicateCreation,
+    );
+
+    log('request doSendDonation => ${jsonEncode(request.toJson())}');
+
+    donationRepository.sendDonation(request: request).then(
+          (value) {
+        EasyLoading.dismiss(animation: true).then((v) {
+          unlockBackButton.value = true;
+        });
+        moveToPayment(value);
+      },
+      onError: (error) {
+        EasyLoading.dismiss(animation: true).then((v) {
+          unlockBackButton.value = true;
+        });
+        debugPrint("error => ${error.toString()}");
+        var err = error as CustomException;
+        if (err.code == 401) {
+          showCustomDialog(
+            Get.context!,
+            message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+          ).then((value) {
+            doLogout();
+          });
+          return;
+        }
+        if (err.code == 409) {
+          showCustomDialog(
+            Get.context!,
+            message:
+            'Vous venez de faire un don identique. Souhaitez-vous confirmer ce don ?',
+            positiveLabel: 'OUI',
+            positiveCallBack: () {
+              doSendDonation(forceDuplicateCreation: true);
+            },
+            negativeLabel: 'NON',
+          );
+          return;
+        }
+        showNotification(
+            message: 'Une erreur est survenue',
+            duration: const Duration(seconds: 4));
+      },
+    );
+  }
+
+  doLogout() {
+    DB.saveData(AppConstants.KEY_USER_LOG_INFOS, null);
+    Get.deleteAll(force: true);
+    Get.offAllNamed(Routes.SIGNIN);
+  }
+}

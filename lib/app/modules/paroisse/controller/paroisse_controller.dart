@@ -107,6 +107,9 @@ class ParoisseController extends GetxController {
         case 'FDM':
           moveToRequestMass();
           break;
+        case 'FD':
+          doMakeDonation();
+          break;
       }
     }
   }
@@ -223,8 +226,20 @@ class ParoisseController extends GetxController {
     moveToRequestMass();
   }
 
+  doMakeDonation() {
+    if (isUserConnected.value == false) {
+      checkIfUserIsconnected('FD');
+      return;
+    }
+    moveToDonation();
+  }
+
   moveToRequestMass() {
     Get.toNamed(Routes.MASS_REQUEST_WITHOUT_WORSHIP);
+  }
+
+  moveToDonation() {
+    Get.toNamed(Routes.DONATION_WITHOUT_WORSHIP);
   }
 
   ///Chargement initial des paroisses

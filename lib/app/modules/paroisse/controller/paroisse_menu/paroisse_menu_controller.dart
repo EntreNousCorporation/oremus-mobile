@@ -205,6 +205,22 @@ class ParoisseMenuController extends GetxController {
           paroisseSelected.refresh();
         },
       ),
+      TypeMenu(
+        code: 'FD',
+        title: 'Faire un don',
+        icon: Assets.imagesIconDemandeDeMesse,
+        isPngImage: false,
+        activeTint: colorGreenSemiLight,
+        goToPage: () async {
+          await Get.toNamed(
+            Routes.PAROISSE_DONATION_MENU,
+            arguments: paroisseSelected.toJson(),
+          );
+          //on met à jour la liste au cas où favoris mis à jour
+          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+          paroisseSelected.refresh();
+        },
+      ),
     ];
   }
 
