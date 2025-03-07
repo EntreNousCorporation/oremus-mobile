@@ -62,9 +62,7 @@ class DonationWithWorshipController extends GetxController {
     amountController = TextEditingController();
     // Attendre un court délai avant de donner le focus au TextField
     Timer(const Duration(milliseconds: 500), () {
-      // Nous ne donnons pas automatiquement le focus puisque l'utilisateur
-      // doit d'abord choisir entre Oremus et Paroisse
-      // FocusScope.of(Get.context!).requestFocus(amountFocusNode);
+      FocusScope.of(Get.context!).requestFocus(amountFocusNode);
     });
   }
 
@@ -109,10 +107,12 @@ class DonationWithWorshipController extends GetxController {
   void checkForm() {
     // For Oremus, only amount is needed
     // For Paroisse, both amount and parish selection are needed
+    if (amountController.text.isEmpty) return;
+    int amount = int.parse(amountController.text.replaceAll(RegExp(r'\s'), ''));
     if (selectedEntityType.value == EntityType.oremus.name) {
-      isValidForm.value = amountController.text.isNotEmpty;
+      isValidForm.value = amountController.text.isNotEmpty && amount >= AppConstants.MIN_AMOUNT;
     } else {
-      isValidForm.value = amountController.text.isNotEmpty &&
+      isValidForm.value = amountController.text.isNotEmpty && amount >= AppConstants.MIN_AMOUNT &&
           paroisseSelected.value.identifier != null;
     }
     update();

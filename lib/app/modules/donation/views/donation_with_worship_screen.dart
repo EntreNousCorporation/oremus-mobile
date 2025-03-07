@@ -1,7 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:oremusapp/app/commons/components/button.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
@@ -306,7 +306,22 @@ class DonationWithWorshipScreen extends StatelessWidget {
                               shadowColor: colorGrey2.withValues(alpha: 0.5),
                               child: const AmountWithoutWorshipWidget(),
                             ),
+                            Separators.minimunVertical(),
+                            Row(
+                              children: [
+                                const Icon(Icons.info_outline, size: 20, color: colorGreen),
+                                Separators.customSizeHorizontal(4),
+                                Text(
+                                  'Le montant minimum est de 100 FCFA',
+                                  style: TextStyles.montserratRegular(
+                                    textColor: colorGrey1,
+                                    textSize: TextSizes.fourteen,
+                                  ),
+                                ),
+                              ],
+                            ),
                             Separators.maximum1Vertical(),
+                            Separators.normalVertical(),
 
                             // Submit button
                             Material(

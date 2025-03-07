@@ -58,6 +58,8 @@ abstract class AppConstants {
   static const REQUEST_MASS_WITHOUT_WORSHIP = 9;
   static const DONATION_WITHOUT_WORSHIP = 10;
 
+  static const MIN_AMOUNT = 100;
+
   //LITURGICAL CELEBRATION
   static const SPECIAL_MASS = 'SPECIAL_MASS';
   static const MASS = 'MASS'; //Messe

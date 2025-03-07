@@ -191,6 +191,20 @@ class DonationScreen extends StatelessWidget {
                             shadowColor: colorGrey2.withValues(alpha: 0.5),
                             child: const AmountWidget(),
                           ),
+                          Separators.minimunVertical(),
+                          Row(
+                            children: [
+                              const Icon(Icons.info_outline, size: 20, color: colorGreen),
+                              Separators.customSizeHorizontal(4),
+                              Text(
+                                'Le montant minimum est de 100 FCFA',
+                                style: TextStyles.montserratRegular(
+                                  textColor: colorGrey1,
+                                  textSize: TextSizes.fourteen,
+                                ),
+                              ),
+                            ],
+                          ),
                           Separators.maximumVertical(),
 
                           Material(

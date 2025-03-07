@@ -6,8 +6,6 @@ import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/modules/donation/data/model/donation_response.dart';
 import 'package:oremusapp/app/modules/donationhistory/data/repository/donation_history_repository.dart';
-import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
-import 'package:oremusapp/app/modules/massrequesthistory/views/widget/history_mass_date_dialog.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';

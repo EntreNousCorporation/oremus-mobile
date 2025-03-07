@@ -70,8 +70,7 @@ class DonationController extends GetxController {
       log('arguments ::: ${jsonEncode(Get.arguments[0])}');
       log('paroisseSelected :::${jsonEncode(paroisseSelected.value)}');
       if (Get.arguments[1] != null) {
-        donationSelected.value =
-            DonationResponse.fromJson(Get.arguments[1]);
+        donationSelected.value = DonationResponse.fromJson(Get.arguments[1]);
       }
     }
   }
@@ -92,8 +91,9 @@ class DonationController extends GetxController {
   }
 
   void checkForm() {
-    isValidForm.value = donationSelected.value != null &&
-        amountController.text.isNotEmpty;
+    if (amountController.text.isEmpty) return;
+    int amount = int.parse(amountController.text.replaceAll(RegExp(r'\s'), ''));
+    isValidForm.value = amountController.text.isNotEmpty && amount >= AppConstants.MIN_AMOUNT;
     update();
   }
 
