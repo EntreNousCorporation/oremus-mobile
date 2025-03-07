@@ -1,10 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:oremusapp/app/commons/components/button.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
@@ -41,11 +42,10 @@ class DonationWithWorshipScreen extends StatelessWidget {
                       pinned: true,
                       backgroundColor: colorGreen,
                       elevation: 10,
-                      shadowColor: colorGrey2.withOpacity(0.8),
+                      shadowColor: colorGrey2.withValues(alpha: 0.8),
                       leading: IconButton(
                         onPressed: () {
                           Get.back();
-                          //Get.delete<FilterMassRequestDateController>(force: true);
                         },
                         icon: const Icon(Icons.arrow_back_ios_rounded),
                       ),
@@ -64,35 +64,22 @@ class DonationWithWorshipScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        background: (_.paroisseSelected.value.coverImage?.link
-                            ?.isNotEmpty ==
-                            true)
-                            ? Stack(
+                        background: Stack(
                           children: [
-                            CachedNetworkImage(
+                            // Use either the parish image or default background
+                            _.selectedEntityType.value == EntityType.worship.name &&
+                                _.paroisseSelected.value.coverImage?.link?.isNotEmpty == true
+                                ? CachedNetworkImage(
                               width: Get.width,
                               height: Get.width,
-                              imageUrl: _.paroisseSelected.value
-                                  .coverImage?.link ??
-                                  '',
+                              imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
                               fit: BoxFit.cover,
                               placeholder: (context, url) =>
                                   LottieLoadingView(size: Get.width / 6),
                               errorWidget: (context, url, error) =>
                               const Icon(Icons.error),
-                            ),
-                            Container(
-                              height: Get.width,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: Colors.black54.withOpacity(0.3),
-                              ),
-                            ),
-                          ],
-                        )
-                            : Stack(
-                          children: [
-                            Image.asset(
+                            )
+                                : Image.asset(
                               Assets.imagesBgLogin,
                               width: Get.width,
                               height: Get.width,
@@ -102,7 +89,7 @@ class DonationWithWorshipScreen extends StatelessWidget {
                               height: Get.width,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
-                                color: Colors.black54.withOpacity(0.3),
+                                color: Colors.black54.withValues(alpha: 0.3),
                               ),
                             ),
                           ],
@@ -110,88 +97,234 @@ class DonationWithWorshipScreen extends StatelessWidget {
                       ),
                     ),
                     SliverPadding(
-                      padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
                       sliver: SliverList(
                         delegate: SliverChildListDelegate(
                           [
                             Separators.minimunVertical(),
 
-                            //WORSHIP
-                            GestureDetector(
-                              onTap: () {
-                                _.goToWorshipChoice();
-                              },
-                              child: Material(
-                                borderRadius: BorderRadius.circular(10.0),
-                                elevation: 10,
-                                color: colorWhite,
-                                shadowColor: colorGrey2.withOpacity(0.5),
-                                child: Container(
-                                  padding: const EdgeInsets.all(12),
-                                  width: double.maxFinite,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .spaceBetween,
-                                    children: [
-                                      _.paroisseSelected.value.identifier == null ? Text(
-                                        'Choisir une paroisse',
-                                        style: TextStyles.montserratMedium(
-                                          textColor: colorGrey1,
-                                          textSize: TextSizes.fourteen,
-                                        ),
-                                      ) : Text(
-                                        '${_.paroisseSelected.value.name}',
-                                        style: TextStyles.montserratBold(
-                                          textColor: colorBlack,
-                                          textSize: TextSizes.fourteen,
-                                        ),
-                                      ),
-                                      Icon(
-                                        _.paroisseSelected.value.identifier != null ? Icons.edit : Icons.arrow_drop_down_rounded,
-                                        size: 25,
-                                        color: colorGreen,
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                            // Entity selection section
+                            Text(
+                              'À qui souhaitez-vous faire un don ?',
+                              style: TextStyles.montserratMedium(
+                                textColor: colorGrey1,
+                                textSize: TextSizes.sixteen,
                               ),
                             ),
-                            Separators.maximum1Vertical(),
+                            Separators.customSizeVertical(16),
 
+                            // Entity selection cards
+                            Row(
+                              children: [
+                                // Oremus card
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _.selectEntityType(EntityType.oremus.name);
+                                    },
+                                    child: AnimatedContainer(
+                                      duration: const Duration(milliseconds: 200),
+                                      padding: const EdgeInsets.symmetric(vertical: 20),
+                                      decoration: BoxDecoration(
+                                        color: _.selectedEntityType.value == EntityType.oremus.name
+                                            ? colorGreen.withValues(alpha: 0.1)
+                                            : colorWhite,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: _.selectedEntityType.value == EntityType.oremus.name
+                                              ? colorGreen
+                                              : colorGrey2,
+                                          width: _.selectedEntityType.value == EntityType.oremus.name ? 2 : 1,
+                                        ),
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: _.selectedEntityType.value == EntityType.oremus.name
+                                                  ? colorGreen
+                                                  : colorGrey2.withValues(alpha: 0.2),
+                                            ),
+                                            child: Icon(
+                                              Icons.home_work_outlined,
+                                              color: _.selectedEntityType.value == EntityType.oremus.name
+                                                  ? colorWhite
+                                                  : colorGrey1,
+                                              size: 28,
+                                            ),
+                                          ),
+                                          Separators.customSizeVertical(8),
+                                          Text(
+                                            'OREMUS',
+                                            style: TextStyles.montserratBold(
+                                              textColor: _.selectedEntityType.value == EntityType.oremus.name
+                                                  ? colorGreen
+                                                  : colorGrey1,
+                                              textSize: TextSizes.fourteen,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                // Paroisse card
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _.selectEntityType(EntityType.worship.name);
+                                    },
+                                    child: AnimatedContainer(
+                                      duration: const Duration(milliseconds: 200),
+                                      padding: const EdgeInsets.symmetric(vertical: 20),
+                                      decoration: BoxDecoration(
+                                        color: _.selectedEntityType.value == EntityType.worship.name
+                                            ? colorGreen.withValues(alpha: 0.1)
+                                            : colorWhite,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: _.selectedEntityType.value == EntityType.worship.name
+                                              ? colorGreen
+                                              : colorGrey2,
+                                          width: _.selectedEntityType.value == EntityType.worship.name ? 2 : 1,
+                                        ),
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: _.selectedEntityType.value == EntityType.worship.name
+                                                  ? colorGreen
+                                                  : colorGrey2.withValues(alpha: 0.2),
+                                            ),
+                                            child: Icon(
+                                              Icons.church_outlined,
+                                              color: _.selectedEntityType.value == EntityType.worship.name
+                                                  ? colorWhite
+                                                  : colorGrey1,
+                                              size: 28,
+                                            ),
+                                          ),
+                                          Separators.customSizeVertical(8),
+                                          Text(
+                                            'PAROISSE',
+                                            style: TextStyles.montserratBold(
+                                              textColor: _.selectedEntityType.value == EntityType.worship.name
+                                                  ? colorGreen
+                                                  : colorGrey1,
+                                              textSize: TextSizes.fourteen,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Separators.customSizeVertical(25),
+
+                            // Parish selection section (visible only if paroisse is selected)
+                            if (_.selectedEntityType.value == EntityType.worship.name)
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Choisir une paroisse',
+                                    style: TextStyles.montserratMedium(
+                                      textColor: colorGrey1,
+                                      textSize: TextSizes.sixteen,
+                                    ),
+                                  ),
+                                  Separators.customSizeVertical(8),
+                                  GestureDetector(
+                                    onTap: () {
+                                      _.goToWorshipChoice();
+                                    },
+                                    child: Material(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      elevation: 4,
+                                      color: colorWhite,
+                                      shadowColor: colorGrey2.withValues(alpha: 0.5),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(15),
+                                        width: double.maxFinite,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            _.paroisseSelected.value.identifier == null
+                                                ? Text(
+                                              'Sélectionner une paroisse',
+                                              style: TextStyles.montserratMedium(
+                                                textColor: colorGrey1,
+                                                textSize: TextSizes.fourteen,
+                                              ),
+                                            )
+                                                : Text(
+                                              '${_.paroisseSelected.value.name}',
+                                              style: TextStyles.montserratBold(
+                                                textColor: colorBlack,
+                                                textSize: TextSizes.fourteen,
+                                              ),
+                                            ),
+                                            Icon(
+                                              _.paroisseSelected.value.identifier != null
+                                                  ? Icons.edit
+                                                  : Icons.arrow_drop_down_rounded,
+                                              size: 25,
+                                              color: colorGreen,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Separators.customSizeVertical(25),
+                                ],
+                              ),
+
+                            // Amount section
                             Text(
                               'Montant (FCFA)',
                               style: TextStyles.montserratMedium(
                                 textColor: colorGrey1,
-                                textSize: TextSizes.fourteen,
+                                textSize: TextSizes.sixteen,
                               ),
                             ),
                             Separators.customSizeVertical(8),
                             Material(
                               borderRadius: BorderRadius.circular(10.0),
-                              elevation: 10,
+                              elevation: 4,
                               color: colorWhite,
-                              shadowColor: colorGrey2.withOpacity(0.5),
+                              shadowColor: colorGrey2.withValues(alpha: 0.5),
                               child: const AmountWithoutWorshipWidget(),
                             ),
                             Separators.maximum1Vertical(),
 
+                            // Submit button
                             Material(
                               borderRadius: BorderRadius.circular(10.0),
-                              elevation: 10,
+                              elevation: 4,
                               color: colorWhite,
-                              shadowColor: colorGrey2.withOpacity(0.5),
+                              shadowColor: colorGrey2.withValues(alpha: 0.5),
                               child: CustomButton(
                                 text: 'Continuer',
                                 borderRadius: 10,
                                 textSize: TextSizes.sixteen,
                                 bgcolor: _.isValidForm.isTrue
                                     ? colorGreen
-                                    : colorGrey1.withOpacity(0.5),
+                                    : colorGrey1.withValues(alpha: 0.5),
                                 borderColor: _.isValidForm.isTrue
                                     ? colorGreen
-                                    : colorGreen.withOpacity(0),
-                                actionColor: colorGreen.withOpacity(0.5),
+                                    : colorGreen.withValues(alpha: 0),
+                                actionColor: colorGreen.withValues(alpha: 0.5),
                                 enabled: _.isValidForm.value,
                                 action: () {
                                   _.doSendDonation();

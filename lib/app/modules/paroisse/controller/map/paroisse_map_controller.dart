@@ -83,7 +83,7 @@ class ParoisseMapController extends GetxController {
                     borderRadius: BorderRadius.circular(10.0),
                     elevation: 10,
                     color: colorWhite,
-                    shadowColor: colorGrey2.withOpacity(0.5),
+                    shadowColor: colorGrey2.withValues(alpha: 0.5),
                     child: Column(
                       children: [
                         Separators.normalVertical(),
@@ -97,7 +97,7 @@ class ParoisseMapController extends GetxController {
                                 borderRadius: BorderRadius.circular(10.0),
                                 elevation: 10,
                                 color: colorWhite,
-                                shadowColor: colorGrey2.withOpacity(0.8),
+                                shadowColor: colorGrey2.withValues(alpha: 0.8),
                                 child: ClipRRect(
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(10.0)),
@@ -221,7 +221,7 @@ class ParoisseMapController extends GetxController {
           borderRadius: BorderRadius.circular(10.0),
           elevation: 10,
           color: colorWhite,
-          shadowColor: colorGrey2.withOpacity(0.5),
+          shadowColor: colorGrey2.withValues(alpha: 0.5),
           child: Column(
             children: [
               Separators.normalVertical(),
@@ -235,7 +235,7 @@ class ParoisseMapController extends GetxController {
                       borderRadius: BorderRadius.circular(10.0),
                       elevation: 10,
                       color: colorWhite,
-                      shadowColor: colorGrey2.withOpacity(0.8),
+                      shadowColor: colorGrey2.withValues(alpha: 0.8),
                       child: ClipRRect(
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10.0)),

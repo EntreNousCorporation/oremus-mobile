@@ -37,7 +37,7 @@ class ParoisseItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(10.0),
             elevation: 0,
             color: colorWhite,
-            shadowColor: colorGrey2.withOpacity(0.5),
+            shadowColor: colorGrey2.withValues(alpha: 0.5),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +95,7 @@ class ParoisseItem extends StatelessWidget {
                         height: Get.width / 2.2,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                            color: Colors.black54.withOpacity(0.3),
+                            color: Colors.black54.withValues(alpha: 0.3),
                             borderRadius: BorderRadius.circular(10)),
                         child: Padding(
                           padding:

@@ -47,7 +47,7 @@ class DayOfficeItem extends StatelessWidget {
                               textColor: getCurrentDay() ==
                                   getDay(openingTime?.dayOfWeek)
                                   ? colorGreenSemiLight
-                                  .withOpacity(0.5)
+                                  .withValues(alpha: 0.5)
                                   : colorGrey1),
                         ),
                       );

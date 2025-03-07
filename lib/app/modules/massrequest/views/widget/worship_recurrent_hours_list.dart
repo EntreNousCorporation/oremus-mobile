@@ -68,7 +68,7 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                 Icon(
                   Icons.repeat,
                   size: 48,
-                  color: colorGrey1.withOpacity(0.5),
+                  color: colorGrey1.withValues(alpha: 0.5),
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -141,7 +141,7 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: colorGrey1.withOpacity(0.2),
+                          color: colorGrey1.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
@@ -188,7 +188,7 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                       },
                       label: Text(slot.startTime ?? ''),
                       backgroundColor: colorWhite,
-                      selectedColor: colorGreenSemiLight.withOpacity(0.2),
+                      selectedColor: colorGreenSemiLight.withValues(alpha: 0.2),
                       checkmarkColor: colorGreenSemiLight,
                       labelStyle: TextStyles.montserratSemiBold(
                         textSize: TextSizes.fourteen,
@@ -200,7 +200,7 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                         side: BorderSide(
                           color: isHourSelectable
-                              ? (isSelected ? colorGreenSemiLight : colorGrey1.withOpacity(0.3))
+                              ? (isSelected ? colorGreenSemiLight : colorGrey1.withValues(alpha: 0.3))
                               : colorGrey1,
                         ),
                       ),

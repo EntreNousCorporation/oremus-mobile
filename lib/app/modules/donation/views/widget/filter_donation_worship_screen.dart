@@ -104,7 +104,7 @@ class FilterDonationWorshipScreen extends StatelessWidget {
                                           elevation: 10,
                                           color: colorWhite,
                                           shadowColor:
-                                              colorGrey2.withOpacity(0.5),
+                                              colorGrey2.withValues(alpha: 0.5),
                                           child: SizedBox(
                                             height: (Get.width / 9),
                                             width: (Get.width / 9),
@@ -274,7 +274,7 @@ class FilterDonationWorshipScreen extends StatelessWidget {
                                                           color: colorWhite,
                                                           shadowColor:
                                                               colorGrey2
-                                                                  .withOpacity(
+                                                                  .withValues(alpha: 
                                                                       0.5),
                                                           child: Row(
                                                             children: [

@@ -83,7 +83,7 @@ class CustomHomeScreen extends StatelessWidget {
                     resizeToAvoidBottomInset: false,
                     appBar: AppBar(
                       elevation: applyElevation(),
-                      shadowColor: colorGrey2.withOpacity(0.8),
+                      shadowColor: colorGrey2.withValues(alpha: 0.8),
                       backgroundColor: colorGreen,
                       centerTitle: true,
                       leading: IconButton(

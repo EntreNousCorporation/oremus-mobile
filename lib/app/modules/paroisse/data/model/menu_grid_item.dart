@@ -47,8 +47,8 @@ class _MenuGridItemState extends State<MenuGridItem> {
         child: Material(
           borderRadius: BorderRadius.circular(10.0),
           elevation: 10,
-          color: _isPressed ? item.bgColor.withOpacity(0.5) : item.bgColor,
-          shadowColor: colorGrey2.withOpacity(0.5),
+          color: _isPressed ? item.bgColor.withValues(alpha: 0.5) : item.bgColor,
+          shadowColor: colorGrey2.withValues(alpha: 0.5),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

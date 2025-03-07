@@ -38,7 +38,7 @@ class ParoisseMapScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10.0),
                     elevation: 10,
                     color: colorWhite,
-                    shadowColor: colorGrey2.withOpacity(0.5),
+                    shadowColor: colorGrey2.withValues(alpha: 0.5),
                     child: SizedBox(
                       height: (Get.width / 9),
                       width: (Get.width / 9),
@@ -54,7 +54,7 @@ class ParoisseMapScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10.0),
                   elevation: 10,
                   color: colorWhite,
-                  shadowColor: colorGrey2.withOpacity(0.5),
+                  shadowColor: colorGrey2.withValues(alpha: 0.5),
                   child: const MapTypeChoice(),
                 ),
               ],

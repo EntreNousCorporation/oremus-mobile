@@ -164,14 +164,14 @@ class SigninScreen extends StatelessWidget {
                                                             .isTrue
                                                             ? colorGreen
                                                             : colorGrey1
-                                                            .withOpacity(0.5),
+                                                            .withValues(alpha: 0.5),
                                                         borderColor: _
                                                             .isValidForm.isTrue
                                                             ? colorGreen
                                                             : colorGreen
-                                                            .withOpacity(0),
+                                                            .withValues(alpha: 0),
                                                         actionColor: colorGreen
-                                                            .withOpacity(0.5),
+                                                            .withValues(alpha: 0.5),
                                                         enabled: _.isValidForm.value,
                                                         action: () {
                                                           _.connectUser();
@@ -247,7 +247,7 @@ class SigninScreen extends StatelessWidget {
                                                   bgcolor: colorGreen,
                                                   borderColor: colorGreen,
                                                   actionColor: colorGreen
-                                                      .withOpacity(0.5),
+                                                      .withValues(alpha: 0.5),
                                                   action: () {
                                                     _.goToSignup();
                                                   },
@@ -285,7 +285,7 @@ class SigninScreen extends StatelessWidget {
                               color: colorWhite,
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
-                                  color: Colors.grey.withOpacity(0)),
+                                  color: Colors.grey.withValues(alpha: 0)),
                             ),
                             child: const Icon(
                                 Icons.home_filled, color: colorGreen),
@@ -314,7 +314,7 @@ class SigninScreen extends StatelessWidget {
                               color: colorWhite,
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
-                                  color: Colors.grey.withOpacity(0)),
+                                  color: Colors.grey.withValues(alpha: 0)),
                             ),
                             child: const Icon(
                                 Icons.arrow_back_rounded, color: colorGreen),

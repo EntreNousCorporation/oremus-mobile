@@ -41,7 +41,7 @@ class DonationHistoryDetailScreen extends StatelessWidget {
                     pinned: true,
                     backgroundColor: colorGreen,
                     elevation: 10,
-                    shadowColor: colorGrey2.withOpacity(0.8),
+                    shadowColor: colorGrey2.withValues(alpha: 0.8),
                     leading: IconButton(
                       onPressed: () {
                         Get.back();
@@ -138,7 +138,7 @@ class DonationHistoryDetailScreen extends StatelessWidget {
                                     height: Get.width,
                                     alignment: Alignment.center,
                                     decoration: BoxDecoration(
-                                      color: Colors.black54.withOpacity(0.3),
+                                      color: Colors.black54.withValues(alpha: 0.3),
                                     ),
                                   ),
                                 ],
@@ -155,7 +155,7 @@ class DonationHistoryDetailScreen extends StatelessWidget {
                                     height: Get.width,
                                     alignment: Alignment.center,
                                     decoration: BoxDecoration(
-                                      color: Colors.black54.withOpacity(0.3),
+                                      color: Colors.black54.withValues(alpha: 0.3),
                                     ),
                                   ),
                                 ],
@@ -199,7 +199,7 @@ class DonationHistoryDetailScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10.0),
                               elevation: 10,
                               color: colorWhite,
-                              shadowColor: colorGrey2.withOpacity(0.5),
+                              shadowColor: colorGrey2.withValues(alpha: 0.5),
                               child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
@@ -237,6 +237,38 @@ class DonationHistoryDetailScreen extends StatelessWidget {
                                       style: TextStyles.montserratSemiBold(
                                         textSize: TextSizes.sixteen,
                                         textColor: colorBlack,
+                                      ),
+                                    ),
+                                    Separators.maximumVertical(),
+                                    Visibility(
+                                      visible: _.canRedoDonation(),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          _.moveToDonation(_.donationSelected.value);
+                                        },
+                                        child: Container(
+                                          color: colorTransparent,
+                                          child: Column(
+                                            children: [
+                                              Icon(
+                                                Icons.history_rounded,
+                                                color: colorTurquois,
+                                                size: Get.width / 10,
+                                              ),
+                                              Separators.customSizeVertical(3),
+                                              Text(
+                                                'Répéter\n',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyles
+                                                    .montserratMedium(
+                                                  textSize:
+                                                  TextSizes.fifteen,
+                                                  textColor: colorTurquois,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
                                     ),
                                     Separators.minimunVertical(),

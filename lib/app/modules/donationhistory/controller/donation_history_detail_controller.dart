@@ -50,22 +50,12 @@ class DonationHistoryDetailController extends GetxController {
     }
   }
 
-  moveToMassRequest(MassRequestResponse massRequestData) {
+  moveToDonation(DonationResponse? donationData) {
     Get.toNamed(
-      Routes.MASS_REQUEST,
+      Routes.DONATION,
       arguments: [
         paroisseSelected.toJson(),
-        massRequestData.toJson(),
-      ],
-    );
-  }
-
-  moveToMassRequestClaims(MassRequestResponse massRequestData) {
-    Get.toNamed(
-      Routes.MASS_REQUEST_CLAIM,
-      arguments: [
-        paroisseSelected.toJson(),
-        massRequestData.toJson(),
+        donationData?.toJson(),
       ],
     );
   }
@@ -75,15 +65,7 @@ class DonationHistoryDetailController extends GetxController {
     Get.offAllNamed(Routes.CUSTOM_HOME);
   }
 
-  double getDialogHoursHeight() {
-    return donationSelected.value.bookings != null && donationSelected.value.bookings!.length > 3 ? Get.height * 0.65 : Get.height * 0.55;
-  }
-
-  showMassHours() {
-    historyMassDateDialog();
-  }
-
-  canClaimMassRequest() {
+  canRedoDonation() {
     return donationSelected.value.status?.code == 'REQUEST_ACCEPTED' || donationSelected.value.status?.code == 'ACCEPTED_PAYMENT' || donationSelected.value.status?.code == 'REQUEST_REFUSED' || donationSelected.value.status?.code == 'REFUSED_PAYMENT';
   }
 

@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:badges/badges.dart' as b;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animator/flutter_animator.dart';
@@ -14,7 +13,7 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/donationhistory/controller/donation_history_controller.dart';
-import 'package:oremusapp/app/modules/donationhistory/views/widget/history_item.dart';
+import 'package:oremusapp/app/modules/donationhistory/views/widget/donation_history_item.dart';
 import 'package:oremusapp/app/modules/donationhistory/views/widget/search_widget.dart';
 import 'package:oremusapp/generated/assets.dart';
 import 'package:oremusapp/main.dart';
@@ -45,7 +44,7 @@ class DonationHistoryScreen extends StatelessWidget {
                     pinned: true,
                     backgroundColor: colorGreen,
                     elevation: 10,
-                    shadowColor: colorGrey2.withOpacity(0.8),
+                    shadowColor: colorGrey2.withValues(alpha: 0.8),
                     leading: IconButton(
                       onPressed: () {
                         Get.back();
@@ -134,7 +133,7 @@ class DonationHistoryScreen extends StatelessWidget {
                                     height: Get.width,
                                     alignment: Alignment.center,
                                     decoration: BoxDecoration(
-                                      color: Colors.black54.withOpacity(0.3),
+                                      color: Colors.black54.withValues(alpha: 0.3),
                                     ),
                                   ),
                                 ],
@@ -151,7 +150,7 @@ class DonationHistoryScreen extends StatelessWidget {
                                     height: Get.width,
                                     alignment: Alignment.center,
                                     decoration: BoxDecoration(
-                                      color: Colors.black54.withOpacity(0.3),
+                                      color: Colors.black54.withValues(alpha: 0.3),
                                     ),
                                   ),
                                 ],
@@ -187,7 +186,7 @@ class DonationHistoryScreen extends StatelessWidget {
                                     child: const SearchWidget() ,
                                   ),
                                 ),
-                                Separators.normalHorizontal(),
+                                /*Separators.normalHorizontal(),
                                 GestureDetector(
                                   onTap: () {
                                     _.goToAdvancedSearch();
@@ -196,7 +195,7 @@ class DonationHistoryScreen extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(10.0),
                                     elevation: 10,
                                     color: colorWhite,
-                                    shadowColor: colorGrey2.withOpacity(0.5),
+                                    shadowColor: colorGrey2.withValues(alpha: 0.5),
                                     child: b.Badge(
                                       showBadge: (_.searchCriteria.value
                                                   .isMassRequestCriteriaEmpty ==
@@ -222,7 +221,7 @@ class DonationHistoryScreen extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                ),
+                                ),*/
                               ],
                             ),
                           ),
@@ -255,7 +254,7 @@ class DonationHistoryScreen extends StatelessWidget {
                                                   const NeverScrollableScrollPhysics(),
                                               itemBuilder: (context, index) {
                                                 var massRequest = _.donations[index];
-                                                return HistoryItem(donation: massRequest);
+                                                return DonationHistoryItem(donation: massRequest);
                                               },
                                               separatorBuilder:
                                                   (context, index) {

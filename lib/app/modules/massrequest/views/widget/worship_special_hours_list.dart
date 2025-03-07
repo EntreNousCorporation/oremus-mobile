@@ -21,7 +21,7 @@ class WorshipSpecialHoursList extends StatelessWidget {
               Icon(
                 Icons.event_busy,
                 size: 48,
-                color: colorGrey1.withOpacity(0.5),
+                color: colorGrey1.withValues(alpha: 0.5),
               ),
               const SizedBox(height: 16),
               Text(
@@ -49,7 +49,7 @@ class WorshipSpecialHoursList extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: colorGrey1.withOpacity(0.4),
+                    color: colorGrey1.withValues(alpha: 0.4),
                     spreadRadius: 1,
                     blurRadius: 5,
                   ),
@@ -92,7 +92,7 @@ class WorshipSpecialHoursList extends StatelessWidget {
                               Text(
                                 getCustomDate(specialMass.day, pattern: AppConstants.TIME_SIMPLE_FORMAT2),
                                 style: TextStyles.montserratRegular(
-                                  textColor: colorWhite.withOpacity(0.9),
+                                  textColor: colorWhite.withValues(alpha: 0.9),
                                   textSize: TextSizes.fourteen,
                                 ),
                               ),
@@ -136,7 +136,7 @@ class WorshipSpecialHoursList extends StatelessWidget {
                               },
                               label: Text(slot.startTime ?? ''),
                               backgroundColor: colorWhite,
-                              selectedColor: colorGreenSemiLight.withOpacity(0.2),
+                              selectedColor: colorGreenSemiLight.withValues(alpha: 0.2),
                               checkmarkColor: colorGreenSemiLight,
                               labelStyle: TextStyles.montserratSemiBold(
                                 textSize: TextSizes.fourteen,
@@ -155,7 +155,7 @@ class WorshipSpecialHoursList extends StatelessWidget {
                                     slot.startTime ?? '',
                                   )
                                       ? colorGreenSemiLight
-                                      : colorGrey1.withOpacity(0.3),
+                                      : colorGrey1.withValues(alpha: 0.3),
                                 ),
                               ),
                             );

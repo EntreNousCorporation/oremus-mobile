@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/modules/donation/data/model/donation_response.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/payment/data/repository/payment_repository.dart';
@@ -29,10 +30,12 @@ class PaymentController extends GetxController {
 
   var paroisseSelected = ContentPlace().obs;
 
+  var donationSelected = DonationResponse().obs;
   var massRequestResponseSelected = MassRequestResponse().obs;
   var webViewController = Rx<WebViewController>(WebViewController());
   var paymentProcessing = false.obs;
   var paymentStatusMessage = ''.obs;
+  var paymentType = PaymentType.none.obs;
 
   var checkingPaymentStatus = false.obs;
   var isTimerActive = false.obs;
@@ -45,9 +48,22 @@ class PaymentController extends GetxController {
   }
 
   getArguments() {
-    if (Get.arguments != null) {
-      massRequestResponseSelected.value = MassRequestResponse.fromJson(Get.arguments);
-      initWebview();
+    if (Get.arguments == null) return;
+    Map<String, dynamic> arguments = Get.arguments;
+    if (arguments.containsKey('payment_type')) {
+      paymentType.value = Get.arguments['payment_type'];
+      if (paymentType.value == PaymentType.donation) {
+        if (arguments.containsKey('payment_response')) {
+          donationSelected.value = DonationResponse.fromJson(Get.arguments['payment_response']);
+          initWebview();
+        }
+      }
+      if (paymentType.value == PaymentType.massRequest) {
+        if (arguments.containsKey('payment_response')) {
+          massRequestResponseSelected.value = MassRequestResponse.fromJson(Get.arguments['payment_response']);
+          initWebview();
+        }
+      }
     }
   }
 
@@ -234,7 +250,17 @@ class PaymentController extends GetxController {
 
       //ACCEPTED
       checkingPaymentStatus(true);
-      paymentStatusMessage.value = 'Votre demande de messe a été effectué avec succès';
+      switch (paymentType.value) {
+        case PaymentType.massRequest:
+          paymentStatusMessage.value = 'Votre demande de messe a été effectué avec succès';
+          break;
+        case PaymentType.donation:
+          paymentStatusMessage.value = 'Votre don a été effectué avec succès';
+          break;
+        case PaymentType.none:
+          paymentStatusMessage.value = 'Payment effectué avec succès';
+          break;
+      }
       moveToSuccess();
     }, onError: (error) {
       checkingPaymentStatus(false);

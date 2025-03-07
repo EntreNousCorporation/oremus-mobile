@@ -142,7 +142,7 @@ Widget _buildMassSection(String title, List<PriceData?> masses, {bool isRecurren
       Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
-          color: isRecurrent ? colorPurpleLight.withOpacity(0.1) : colorGreenSemiLight.withOpacity(0.1),
+          color: isRecurrent ? colorPurpleLight.withValues(alpha: 0.1) : colorGreenSemiLight.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
@@ -205,8 +205,8 @@ Widget _buildMassSection(String title, List<PriceData?> masses, {bool isRecurren
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       color: isRecurrent
-                          ? colorPurpleLight.withOpacity(0.1)
-                          : colorGreenSemiLight.withOpacity(0.1),
+                          ? colorPurpleLight.withValues(alpha: 0.1)
+                          : colorGreenSemiLight.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: isRecurrent ? colorPurpleLight : colorGreenSemiLight,

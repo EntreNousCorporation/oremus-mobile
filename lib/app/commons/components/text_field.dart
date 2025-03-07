@@ -197,7 +197,7 @@ class _MyTextFieldState extends State<MyTextField> {
                   },
                   child: Icon(
                     _obscureText ? Icons.visibility : Icons.visibility_off,
-                    color: colorGreen.withOpacity(0.5),
+                    color: colorGreen.withValues(alpha: 0.5),
                   ),
                 ),
         ),

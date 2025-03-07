@@ -158,18 +158,18 @@ class ResetPasswordScreen extends StatelessWidget {
                                                                   .isTrue
                                                               ? colorGreen
                                                               : colorGrey1
-                                                                  .withOpacity(
+                                                                  .withValues(alpha: 
                                                                       0.5),
                                                           borderColor: _
                                                                   .isValidForm
                                                                   .isTrue
                                                               ? colorGreen
                                                               : colorGreen
-                                                                  .withOpacity(
+                                                                  .withValues(alpha: 
                                                                       0),
                                                           actionColor:
                                                               colorGreen
-                                                                  .withOpacity(
+                                                                  .withValues(alpha: 
                                                                       0.5),
                                                           enabled: _.isValidForm
                                                               .value,

@@ -17,8 +17,8 @@ class MovementItem extends StatelessWidget {
       child: Material(
         borderRadius: BorderRadius.circular(10.0),
         elevation: 10,
-        //color: _isPressed ? colorGreen.withOpacity(0.5) : colorWhite,
-        shadowColor: colorGrey2.withOpacity(0.5),
+        //color: _isPressed ? colorGreen.withValues(alpha: 0.5) : colorWhite,
+        shadowColor: colorGrey2.withValues(alpha: 0.5),
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Row(
@@ -41,7 +41,7 @@ class MovementItem extends StatelessWidget {
                       '${movement.description}',
                       style: TextStyles.montserratRegular(
                         textSize: TextSizes.fourteen,
-                        textColor: colorBlack.withOpacity(0.5),
+                        textColor: colorBlack.withValues(alpha: 0.5),
                       ),
                     ),
                     Separators.minimunVertical(),
@@ -51,14 +51,14 @@ class MovementItem extends StatelessWidget {
                         SvgPicture.asset(
                           'assets/images/admin.svg',
                           height: 20,
-                          color: colorBlack.withOpacity(0.8),
+                          color: colorBlack.withValues(alpha: 0.8),
                         ),
                         Separators.minimunHorizontal(),
                         Text(
                           '${movement.leader}',
                           style: TextStyles.montserratMediumItalic(
                             textSize: TextSizes.fourteen,
-                            textColor: colorBlack.withOpacity(0.8),
+                            textColor: colorBlack.withValues(alpha: 0.8),
                           ),
                         ),
                       ],

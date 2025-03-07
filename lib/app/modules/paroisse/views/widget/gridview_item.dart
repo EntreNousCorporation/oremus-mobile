@@ -20,7 +20,7 @@ class GridviewItem extends StatelessWidget {
         elevation: 10,
         color: colorWhite,
         shadowColor:
-        colorGrey2.withOpacity(0.5),
+        colorGrey2.withValues(alpha: 0.5),
         child: Column(
           mainAxisAlignment:
           MainAxisAlignment.start,

@@ -14,10 +14,8 @@ import 'package:oremusapp/app/modules/donation/views/donation_with_worship_scree
 import 'package:oremusapp/app/modules/donation/views/widget/filter_donation_worship_screen.dart';
 import 'package:oremusapp/app/modules/donationhistory/binding/donation_history_binding.dart';
 import 'package:oremusapp/app/modules/donationhistory/binding/donation_history_detail_binding.dart';
-import 'package:oremusapp/app/modules/donationhistory/binding/filter_donation_history_binding.dart';
 import 'package:oremusapp/app/modules/donationhistory/views/donation_history_detail_screen.dart';
 import 'package:oremusapp/app/modules/donationhistory/views/donation_history_screen.dart';
-import 'package:oremusapp/app/modules/donationhistory/views/widget/filter_donation_history_screen.dart';
 import 'package:oremusapp/app/modules/editpassword/binding/edit_password_binding.dart';
 import 'package:oremusapp/app/modules/editpassword/views/edit_password_screen.dart';
 import 'package:oremusapp/app/modules/favorite/binding/favorite_binding.dart';
@@ -344,13 +342,6 @@ class AppPages {
       name: Routes.DONATION_HISTORY_DETAIL,
       page: () => const DonationHistoryDetailScreen(),
       binding: DonationHistoryDetailBinding(),
-      transition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 500),
-    ),
-    GetPage(
-      name: Routes.FILTER_DONATION_HISTORY,
-      page: () => const FilterDonationHistoryScreen(),
-      binding: FilterDonationHistoryBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

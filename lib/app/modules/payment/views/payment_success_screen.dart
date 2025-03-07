@@ -54,14 +54,14 @@ class PaymentSuccessScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.0),
                       elevation: 10,
                       color: colorWhite,
-                      shadowColor: colorGrey2.withOpacity(0.5),
+                      shadowColor: colorGrey2.withValues(alpha: 0.5),
                       child: CustomButton(
                         text: 'Terminer',
                         borderRadius: 10,
                         textSize: TextSizes.sixteen,
                         bgcolor: colorGreen,
                         borderColor: colorGreen,
-                        actionColor: colorGreen.withOpacity(0.5),
+                        actionColor: colorGreen.withValues(alpha: 0.5),
                         action: () {
                           logic.moveToMassRequestHistory();
                         },

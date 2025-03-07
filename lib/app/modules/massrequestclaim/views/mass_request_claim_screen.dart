@@ -43,7 +43,7 @@ class MassRequestClaimScreen extends StatelessWidget {
                     pinned: true,
                     backgroundColor: colorGreen,
                     elevation: 10,
-                    shadowColor: colorGrey2.withOpacity(0.8),
+                    shadowColor: colorGrey2.withValues(alpha: 0.8),
                     leading: IconButton(
                       onPressed: () {
                         Get.back();
@@ -126,7 +126,7 @@ class MassRequestClaimScreen extends StatelessWidget {
                                   height: Get.width,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
-                                    color: Colors.black54.withOpacity(0.3),
+                                    color: Colors.black54.withValues(alpha: 0.3),
                                   ),
                                 ),
                               ],
@@ -147,7 +147,7 @@ class MassRequestClaimScreen extends StatelessWidget {
                                   height: Get.width,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
-                                    color: Colors.black54.withOpacity(0.3),
+                                    color: Colors.black54.withValues(alpha: 0.3),
                                   ),
                                 ),
                               ],
@@ -183,7 +183,7 @@ class MassRequestClaimScreen extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(10.0),
                                     elevation: 10,
                                     color: colorWhite,
-                                    shadowColor: colorGrey2.withOpacity(0.5),
+                                    shadowColor: colorGrey2.withValues(alpha: 0.5),
                                     child: Container(
                                       padding: const EdgeInsets.all(12),
                                       width: double.maxFinite,
@@ -231,7 +231,7 @@ class MassRequestClaimScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10.0),
                             elevation: 10,
                             color: colorWhite,
-                            shadowColor: colorGrey2.withOpacity(0.5),
+                            shadowColor: colorGrey2.withValues(alpha: 0.5),
                             child: const ClaimTypeFilter(),
                           ),
                           Separators.maximum1Vertical(),
@@ -249,7 +249,7 @@ class MassRequestClaimScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10.0),
                             elevation: 10,
                             color: colorWhite,
-                            shadowColor: colorGrey2.withOpacity(0.5),
+                            shadowColor: colorGrey2.withValues(alpha: 0.5),
                             child: CustomButton(
                               text: 'Soumettre',
                               borderRadius: 10,
@@ -258,14 +258,14 @@ class MassRequestClaimScreen extends StatelessWidget {
                                   .isTrue
                                   ? colorGreen
                                   : colorGrey1
-                                  .withOpacity(0.5),
+                                  .withValues(alpha: 0.5),
                               borderColor: _
                                   .isValidForm.isTrue
                                   ? colorGreen
                                   : colorGreen
-                                  .withOpacity(0),
+                                  .withValues(alpha: 0),
                               actionColor: colorGreen
-                                  .withOpacity(0.5),
+                                  .withValues(alpha: 0.5),
                               enabled: _.isValidForm.value,
                               action: () {
                                 _.doSendClaim();

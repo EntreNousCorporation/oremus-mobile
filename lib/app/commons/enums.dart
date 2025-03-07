@@ -29,3 +29,15 @@ enum RepetitionType {
   many,
   none,
 }
+
+enum EntityType {
+  worship,
+  oremus,
+  none,
+}
+
+enum PaymentType {
+  massRequest,
+  donation,
+  none,
+}

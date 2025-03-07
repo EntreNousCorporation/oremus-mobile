@@ -76,7 +76,7 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                             height: 45,
                             padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color: colorGrey1.withOpacity(0.2),
+                              color: colorGrey1.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: TabBar(
@@ -179,7 +179,7 @@ class FilterMassRequestDateScreen extends StatelessWidget {
         color: colorWhite,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             spreadRadius: 1,
             blurRadius: 5,
           ),

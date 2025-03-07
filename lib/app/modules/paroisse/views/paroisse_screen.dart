@@ -159,7 +159,7 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                     borderRadius: BorderRadius.circular(10.0),
                                     elevation: 10,
                                     color: colorWhite,
-                                    shadowColor: colorGrey2.withOpacity(0.5),
+                                    shadowColor: colorGrey2.withValues(alpha: 0.5),
                                     child: SizedBox(
                                       height: (Get.width / 9),
                                       width: (Get.width / 9),
@@ -186,7 +186,7 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                       borderRadius: BorderRadius.circular(10.0),
                                       elevation: 10,
                                       color: colorWhite,
-                                      shadowColor: colorGrey2.withOpacity(0.5),
+                                      shadowColor: colorGrey2.withValues(alpha: 0.5),
                                       child: b.Badge(
                                         showBadge: (_.searchCriteria.value
                                             .isCriteriaEmpty ==
@@ -411,7 +411,7 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                         width: 250.0,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(16),
-                                          color: colorGreen.withOpacity(0.9),
+                                          color: colorGreen.withValues(alpha: 0.9),
                                         ),
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,
@@ -453,7 +453,7 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                             // Séparateur
                                             Container(
                                               height: 1,
-                                              color: Colors.white.withOpacity(0.3),
+                                              color: Colors.white.withValues(alpha: 0.3),
                                               margin: const EdgeInsets.symmetric(horizontal: 8),
                                             ),
                                             // Option Faire un don
@@ -505,7 +505,7 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                 width: _.isExtended.isTrue ? 250.0 : 75.0,
                                 height: 75.0,
                                 child: Material(
-                                  color: _isSubMenuOpen ? colorGreen.withOpacity(0.8) : colorGreen,
+                                  color: _isSubMenuOpen ? colorGreen.withValues(alpha: 0.8) : colorGreen,
                                   elevation: 6.0,
                                   shadowColor: colorGreen,
                                   shape: const StadiumBorder(),

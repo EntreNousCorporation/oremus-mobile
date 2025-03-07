@@ -31,7 +31,7 @@ class EditProfileScreen extends StatelessWidget {
                   resizeToAvoidBottomInset: true,
                   appBar: AppBar(
                     elevation: applyElevation(),
-                    shadowColor: colorGrey2.withOpacity(0.8),
+                    shadowColor: colorGrey2.withValues(alpha: 0.8),
                     leading: IconButton(
                       onPressed: () {
                         Get.back();
@@ -70,7 +70,7 @@ class EditProfileScreen extends StatelessWidget {
                                         elevation: 6,
                                         color: colorWhite,
                                         shadowColor:
-                                            colorGrey2.withOpacity(0.5),
+                                            colorGrey2.withValues(alpha: 0.5),
                                         child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(110),
@@ -94,7 +94,7 @@ class EditProfileScreen extends StatelessWidget {
                                         elevation: 10,
                                         color: colorWhite,
                                         shadowColor:
-                                            colorGrey2.withOpacity(0.5),
+                                            colorGrey2.withValues(alpha: 0.5),
                                         child: const Icon(
                                           Icons.add_circle,
                                           color: colorPurpleLight,
@@ -116,7 +116,7 @@ class EditProfileScreen extends StatelessWidget {
                               Material(
                                 elevation: 6,
                                 color: colorGrey2,
-                                shadowColor: colorGrey2.withOpacity(0.5),
+                                shadowColor: colorGrey2.withValues(alpha: 0.5),
                                 borderRadius: BorderRadius.circular(12),
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -238,12 +238,12 @@ class EditProfileScreen extends StatelessWidget {
                                               text: 'Mettre à jour',
                                               bgcolor: _.isValidForm.isTrue
                                                   ? colorGreen
-                                                  : colorGrey1.withOpacity(0.5),
+                                                  : colorGrey1.withValues(alpha: 0.5),
                                               borderColor: _.isValidForm.isTrue
                                                   ? colorGreen
-                                                  : colorGreen.withOpacity(0),
+                                                  : colorGreen.withValues(alpha: 0),
                                               actionColor:
-                                                  colorGreen.withOpacity(0.5),
+                                                  colorGreen.withValues(alpha: 0.5),
                                               enabled: _.isValidForm.value,
                                               action: () {
                                                 _.updateProfile();

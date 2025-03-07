@@ -112,11 +112,11 @@ class OtpScreen extends StatelessWidget {
                                                         icon: 'assets/images/icon_arrow_right.svg',
                                                         bgcolor: _.isValidForm.isTrue
                                                             ? colorGreen
-                                                            : colorGrey1.withOpacity(0.5),
+                                                            : colorGrey1.withValues(alpha: 0.5),
                                                         borderColor: _.isValidForm.isTrue
                                                             ? colorGreen
-                                                            : colorGreen.withOpacity(0),
-                                                        actionColor: colorGreen.withOpacity(0.5),
+                                                            : colorGreen.withValues(alpha: 0),
+                                                        actionColor: colorGreen.withValues(alpha: 0.5),
                                                         enabled: _.isValidForm.value,
                                                         action: () {
                                                           _.doCheckOtp();

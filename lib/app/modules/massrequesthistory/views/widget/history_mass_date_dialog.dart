@@ -81,7 +81,7 @@ Future historyMassDateDialog() {
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                       decoration: BoxDecoration(
-                                        color: colorGreenSemiLight.withOpacity(0.1),
+                                        color: colorGreenSemiLight.withValues(alpha: 0.1),
                                         borderRadius: BorderRadius.circular(20),
                                         border: Border.all(color: colorGreenSemiLight, width: 1),
                                       ),

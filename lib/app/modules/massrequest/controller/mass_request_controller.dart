@@ -139,7 +139,10 @@ class MassRequestController extends GetxController {
   moveToPayment(MassRequestResponse massRequestResponse) {
     Get.toNamed(
       Routes.PAYMENT,
-      arguments: massRequestResponse.toJson(),
+      arguments: {
+        'payment_response': massRequestResponse.toJson(),
+        'payment_type': PaymentType.donation,
+      },
     );
   }
 

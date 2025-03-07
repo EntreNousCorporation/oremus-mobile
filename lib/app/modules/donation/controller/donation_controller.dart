@@ -9,6 +9,7 @@ import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
+import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/donation/data/model/donation_response.dart';
 import 'package:oremusapp/app/modules/donation/data/repository/donation_repository.dart';
@@ -78,7 +79,10 @@ class DonationController extends GetxController {
   moveToPayment(DonationResponse donationResponse) {
     Get.toNamed(
       Routes.PAYMENT,
-      arguments: donationResponse.toJson(),
+      arguments: {
+        'payment_response': donationResponse.toJson(),
+        'payment_type': PaymentType.donation,
+      },
     );
   }
 

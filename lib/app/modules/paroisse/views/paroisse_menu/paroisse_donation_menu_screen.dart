@@ -43,7 +43,7 @@ class ParoisseDonationMenuScreen extends StatelessWidget {
                     pinned: true,
                     backgroundColor: colorGreen,
                     elevation: 10,
-                    shadowColor: colorGrey2.withOpacity(0.8),
+                    shadowColor: colorGrey2.withValues(alpha: 0.8),
                     leading: IconButton(
                       onPressed: () {
                         Get.back();
@@ -133,7 +133,7 @@ class ParoisseDonationMenuScreen extends StatelessWidget {
                                     height: Get.width,
                                     alignment: Alignment.center,
                                     decoration: BoxDecoration(
-                                      color: Colors.black54.withOpacity(0.3),
+                                      color: Colors.black54.withValues(alpha: 0.3),
                                     ),
                                   ),
                                 ],
@@ -154,7 +154,7 @@ class ParoisseDonationMenuScreen extends StatelessWidget {
                                     height: Get.width,
                                     alignment: Alignment.center,
                                     decoration: BoxDecoration(
-                                      color: Colors.black54.withOpacity(0.3),
+                                      color: Colors.black54.withValues(alpha: 0.3),
                                     ),
                                   ),
                                 ],

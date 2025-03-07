@@ -46,7 +46,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                       pinned: true,
                       backgroundColor: colorGreen,
                       elevation: 10,
-                      shadowColor: colorGrey2.withOpacity(0.8),
+                      shadowColor: colorGrey2.withValues(alpha: 0.8),
                       leading: IconButton(
                         onPressed: () {
                           Get.back();
@@ -90,7 +90,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                               height: Get.width,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
-                                color: Colors.black54.withOpacity(0.3),
+                                color: Colors.black54.withValues(alpha: 0.3),
                               ),
                             ),
                           ],
@@ -107,7 +107,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                               height: Get.width,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
-                                color: Colors.black54.withOpacity(0.3),
+                                color: Colors.black54.withValues(alpha: 0.3),
                               ),
                             ),
                           ],
@@ -131,7 +131,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10.0),
                                 elevation: 10,
                                 color: colorWhite,
-                                shadowColor: colorGrey2.withOpacity(0.5),
+                                shadowColor: colorGrey2.withValues(alpha: 0.5),
                                 child: Container(
                                   padding: const EdgeInsets.all(12),
                                   width: double.maxFinite,
@@ -176,7 +176,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10.0),
                               elevation: 10,
                               color: colorWhite,
-                              shadowColor: colorGrey2.withOpacity(0.5),
+                              shadowColor: colorGrey2.withValues(alpha: 0.5),
                               child: const MassTypeWithWorshipFilter(),
                             ),
                             Separators.maximum1Vertical(),
@@ -194,7 +194,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10.0),
                               elevation: 10,
                               color: colorWhite,
-                              shadowColor: colorGrey2.withOpacity(0.5),
+                              shadowColor: colorGrey2.withValues(alpha: 0.5),
                               child: const MassTypeWithoutRepetitionFilter(),
                             ),
 
@@ -211,7 +211,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(10.0),
                                       elevation: 10,
                                       color: colorWhite,
-                                      shadowColor: colorGrey2.withOpacity(0.5),
+                                      shadowColor: colorGrey2.withValues(alpha: 0.5),
                                       child: _.isDatesProcessing.isTrue ? const ShimmerPrice(height: 50) : Container(
                                         padding: const EdgeInsets.all(12),
                                         width: double.maxFinite,
@@ -229,7 +229,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                                             Icon(
                                               (_.datesChoosen.length > 1 && _.massRequestTypeRepetitionSelected.value?.code == RepetitionType.many.name) ? Icons.check_circle : Icons.calendar_month,
                                               size: 25,
-                                              color: _.worshipHours.isNotEmpty ? colorGreen : colorGrey1.withOpacity(0.5),
+                                              color: _.worshipHours.isNotEmpty ? colorGreen : colorGrey1.withValues(alpha: 0.5),
                                             ),
                                           ],
                                         ),
@@ -270,7 +270,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                                                 borderRadius: BorderRadius.circular(10.0),
                                                 elevation: 10,
                                                 color: colorWhite,
-                                                shadowColor: colorGrey2.withOpacity(0.5),
+                                                shadowColor: colorGrey2.withValues(alpha: 0.5),
                                                 child: _.isDatesProcessing.isTrue ? const ShimmerPrice(height: 50) : Container(
                                                   padding: const EdgeInsets.all(12),
                                                   width: double.maxFinite,
@@ -314,7 +314,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                                               borderRadius: BorderRadius.circular(10.0),
                                               elevation: 10,
                                               color: colorWhite,
-                                              shadowColor: colorGrey2.withOpacity(0.5),
+                                              shadowColor: colorGrey2.withValues(alpha: 0.5),
                                               child: const MassWithoutWorshipHourFilter(),
                                             ),
                                           ],
@@ -339,7 +339,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10.0),
                               elevation: 10,
                               color: colorWhite,
-                              shadowColor: colorGrey2.withOpacity(0.5),
+                              shadowColor: colorGrey2.withValues(alpha: 0.5),
                               child: const IntentTypeDescriptionWithWorshipWidget(),
                             ),
                             Separators.maximumVertical(),
@@ -349,7 +349,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10.0),
                               elevation: 10,
                               color: colorWhite,
-                              shadowColor: colorGrey2.withOpacity(0.5),
+                              shadowColor: colorGrey2.withValues(alpha: 0.5),
                               child: _.isPricingProcessing.isTrue ? const ShimmerPrice(height: 70) :  Container(
                                 padding: const EdgeInsets.all(24),
                                 width: double.maxFinite,
@@ -384,18 +384,18 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10.0),
                               elevation: 10,
                               color: colorWhite,
-                              shadowColor: colorGrey2.withOpacity(0.5),
+                              shadowColor: colorGrey2.withValues(alpha: 0.5),
                               child: CustomButton(
                                 text: 'Continuer',
                                 borderRadius: 10,
                                 textSize: TextSizes.sixteen,
                                 bgcolor: _.isValidForm.isTrue
                                     ? colorGreen
-                                    : colorGrey1.withOpacity(0.5),
+                                    : colorGrey1.withValues(alpha: 0.5),
                                 borderColor: _.isValidForm.isTrue
                                     ? colorGreen
-                                    : colorGreen.withOpacity(0),
-                                actionColor: colorGreen.withOpacity(0.5),
+                                    : colorGreen.withValues(alpha: 0),
+                                actionColor: colorGreen.withValues(alpha: 0.5),
                                 enabled: _.isValidForm.value,
                                 action: () {
                                   _.doSendMassRequest();

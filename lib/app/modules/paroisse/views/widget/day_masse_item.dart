@@ -47,7 +47,7 @@ class DayMassItem extends StatelessWidget {
                                       textSize: TextSizes.fourteen,
                                       textColor: getCurrentDay() ==
                                               getDay(openingTime?.dayOfWeek)
-                                          ? colorGreenSemiLight.withOpacity(0.5)
+                                          ? colorGreenSemiLight.withValues(alpha: 0.5)
                                           : colorGrey1),
                                 ),
                               );

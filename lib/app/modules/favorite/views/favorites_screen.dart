@@ -26,7 +26,7 @@ class FavoritesScreen extends StatelessWidget {
                 resizeToAvoidBottomInset: true,
                 appBar: AppBar(
                   elevation: applyElevation(),
-                  shadowColor: colorGrey2.withOpacity(0.8),
+                  shadowColor: colorGrey2.withValues(alpha: 0.8),
                   leading: IconButton(
                     onPressed: () {
                       Get.back();

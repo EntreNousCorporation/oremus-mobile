@@ -25,7 +25,7 @@ class ContactItem extends StatelessWidget {
             child: Material(
               borderRadius: BorderRadius.circular(10.0),
               elevation: 10,
-              shadowColor: colorGrey2.withOpacity(0.5),
+              shadowColor: colorGrey2.withValues(alpha: 0.5),
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
@@ -67,7 +67,7 @@ class ContactItem extends StatelessWidget {
                                         children: [
                                           Icon(
                                             Icons.phone_android_rounded,
-                                            color: colorBlack.withOpacity(0.5),
+                                            color: colorBlack.withValues(alpha: 0.5),
                                             size: 15,
                                           ),
                                           Separators.minimunHorizontal(),
@@ -76,7 +76,7 @@ class ContactItem extends StatelessWidget {
                                             style: TextStyles.montserratRegular(
                                               textSize: TextSizes.fourteen,
                                               textColor:
-                                                  colorBlack.withOpacity(0.5),
+                                                  colorBlack.withValues(alpha: 0.5),
                                             ),
                                           ),
                                         ],
@@ -102,7 +102,7 @@ class ContactItem extends StatelessWidget {
                                       children: [
                                         Icon(
                                           Icons.email_rounded,
-                                          color: colorBlack.withOpacity(0.5),
+                                          color: colorBlack.withValues(alpha: 0.5),
                                           size: 15,
                                         ),
                                         Separators.minimunHorizontal(),
@@ -110,7 +110,7 @@ class ContactItem extends StatelessWidget {
                                           contact.emails?.first ?? '',
                                           style: TextStyles.montserratRegular(
                                             textSize: TextSizes.fourteen,
-                                            textColor: colorBlack.withOpacity(0.5),
+                                            textColor: colorBlack.withValues(alpha: 0.5),
                                           ),
                                         ),
                                       ],

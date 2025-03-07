@@ -9,6 +9,7 @@ import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
+import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
@@ -204,15 +205,15 @@ class MassRequestHistoryController extends GetxController {
             // Couleurs principales
             primaryColor: primaryColor,
             primarySwatch: MaterialColor(primaryColor.value, {
-              50: primaryColor.withOpacity(0.1),
-              100: primaryColor.withOpacity(0.2),
-              200: primaryColor.withOpacity(0.3),
-              300: primaryColor.withOpacity(0.4),
-              400: primaryColor.withOpacity(0.5),
-              500: primaryColor.withOpacity(0.6),
-              600: primaryColor.withOpacity(0.7),
-              700: primaryColor.withOpacity(0.8),
-              800: primaryColor.withOpacity(0.9),
+              50: primaryColor.withValues(alpha: 0.1),
+              100: primaryColor.withValues(alpha: 0.2),
+              200: primaryColor.withValues(alpha: 0.3),
+              300: primaryColor.withValues(alpha: 0.4),
+              400: primaryColor.withValues(alpha: 0.5),
+              500: primaryColor.withValues(alpha: 0.6),
+              600: primaryColor.withValues(alpha: 0.7),
+              700: primaryColor.withValues(alpha: 0.8),
+              800: primaryColor.withValues(alpha: 0.9),
               900: primaryColor,
             }),
             scaffoldBackgroundColor: Colors.white,
@@ -224,10 +225,10 @@ class MassRequestHistoryController extends GetxController {
                 foregroundColor: WidgetStateProperty.all(Colors.white),
                 backgroundColor: WidgetStateProperty.resolveWith((states) {
                   if (states.contains(WidgetState.pressed)) {
-                    return primaryColor.withOpacity(0.8);
+                    return primaryColor.withValues(alpha: 0.8);
                   }
                   if (states.contains(WidgetState.hovered)) {
-                    return primaryColor.withOpacity(0.9);
+                    return primaryColor.withValues(alpha: 0.9);
                   }
                   return primaryColor;
                 }),
@@ -236,7 +237,7 @@ class MassRequestHistoryController extends GetxController {
                   textSize: TextSizes.fifteen,
                 ),),
                 iconColor: WidgetStateProperty.all(colorWhite),
-                overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(0.1)),
+                overlayColor: WidgetStateProperty.all(Colors.white.withValues(alpha: 0.1)),
                 padding: WidgetStateProperty.all(
                   const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
@@ -278,7 +279,7 @@ class MassRequestHistoryController extends GetxController {
               ),
               dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) return primaryColor;
-                if (states.contains(WidgetState.hovered)) return primaryColor.withOpacity(0.1);
+                if (states.contains(WidgetState.hovered)) return primaryColor.withValues(alpha: 0.1);
                 return null;
               }),
               dayForegroundColor: WidgetStateProperty.resolveWith((states) {
@@ -288,7 +289,7 @@ class MassRequestHistoryController extends GetxController {
               }),
               todayBackgroundColor: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) return primaryColor;
-                return primaryColor.withOpacity(0.1);
+                return primaryColor.withValues(alpha: 0.1);
               }),
               todayForegroundColor: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) return Colors.white;
@@ -301,11 +302,11 @@ class MassRequestHistoryController extends GetxController {
                 textSize: TextSizes.fourteen,
               ),
               rangePickerHeaderForegroundColor: colorWhite,
-              rangeSelectionBackgroundColor: primaryColor.withOpacity(0.1),
+              rangeSelectionBackgroundColor: primaryColor.withValues(alpha: 0.1),
               rangeSelectionOverlayColor: WidgetStateProperty.resolveWith((states) {
-                if (states.contains(WidgetState.selected)) return primaryColor.withOpacity(0.2);
-                if (states.contains(WidgetState.hovered)) return primaryColor.withOpacity(0.15);
-                return primaryColor.withOpacity(0.1);
+                if (states.contains(WidgetState.selected)) return primaryColor.withValues(alpha: 0.2);
+                if (states.contains(WidgetState.hovered)) return primaryColor.withValues(alpha: 0.15);
+                return primaryColor.withValues(alpha: 0.1);
               }),
             ),
 
@@ -346,7 +347,10 @@ class MassRequestHistoryController extends GetxController {
   moveToPayment(MassRequestResponse? massRequestResponse) {
     Get.toNamed(
       Routes.PAYMENT,
-      arguments: massRequestResponse?.toJson(),
+      arguments: {
+        'payment_response': massRequestResponse?.toJson(),
+        'payment_type': PaymentType.donation,
+      },
     );
   }
 

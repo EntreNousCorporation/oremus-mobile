@@ -9,6 +9,7 @@ import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
+import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/donation/data/model/donation_response.dart';
 import 'package:oremusapp/app/modules/donation/data/repository/donation_repository.dart';
@@ -41,6 +42,9 @@ class DonationWithWorshipController extends GetxController {
   var paroisseSelected = ContentPlace().obs;
   var massRequestSelected = MassRequestResponse().obs;
 
+  var selectedEntityType = EntityType.worship.name.obs; // default to paroisse
+  var isOremusSelected = false.obs;
+
   @override
   void onInit() {
     initControllers();
@@ -56,16 +60,33 @@ class DonationWithWorshipController extends GetxController {
 
   initControllers() {
     amountController = TextEditingController();
-    // Attendre 2 secondes avant de donner le focus au TextField
+    // Attendre un court délai avant de donner le focus au TextField
     Timer(const Duration(milliseconds: 500), () {
-      FocusScope.of(Get.context!).requestFocus(amountFocusNode);
+      // Nous ne donnons pas automatiquement le focus puisque l'utilisateur
+      // doit d'abord choisir entre Oremus et Paroisse
+      // FocusScope.of(Get.context!).requestFocus(amountFocusNode);
     });
+  }
+
+  // New method to handle entity selection
+  void selectEntityType(String entityType) {
+    selectedEntityType.value = entityType;
+
+    // If switching to Oremus, clear parish selection
+    if (entityType == EntityType.oremus.name) {
+      paroisseSelected.value = ContentPlace();
+    }
+
+    checkForm();
   }
 
   moveToPayment(DonationResponse donationResponse) {
     Get.toNamed(
       Routes.PAYMENT,
-      arguments: donationResponse.toJson(),
+      arguments: {
+        'payment_response': donationResponse.toJson(),
+        'payment_type': PaymentType.donation,
+      },
     );
   }
 
@@ -86,7 +107,14 @@ class DonationWithWorshipController extends GetxController {
   }
 
   void checkForm() {
-    isValidForm.value = amountController.text.isNotEmpty;
+    // For Oremus, only amount is needed
+    // For Paroisse, both amount and parish selection are needed
+    if (selectedEntityType.value == EntityType.oremus.name) {
+      isValidForm.value = amountController.text.isNotEmpty;
+    } else {
+      isValidForm.value = amountController.text.isNotEmpty &&
+          paroisseSelected.value.identifier != null;
+    }
     update();
   }
 
@@ -102,7 +130,10 @@ class DonationWithWorshipController extends GetxController {
 
     var request = DonationData(
       amount: amountController.text.replaceAll(RegExp(r'\s'), ''),
-      worshipPlace: paroisseSelected.value.identifier,
+      // Only set worship place if paroisse is selected
+      worshipPlace: selectedEntityType.value == EntityType.worship.name ?
+      paroisseSelected.value.identifier : null,
+      isOremus: selectedEntityType.value == EntityType.oremus.name, //variable do not go to backend
       forceDuplicateCreation: forceDuplicateCreation,
     );
 

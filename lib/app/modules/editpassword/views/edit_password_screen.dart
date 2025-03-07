@@ -23,7 +23,7 @@ class EditPasswordScreen extends StatelessWidget {
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
               elevation: applyElevation(),
-              shadowColor: colorGrey2.withOpacity(0.8),
+              shadowColor: colorGrey2.withValues(alpha: 0.8),
               leading: IconButton(
                 onPressed: () {
                   Get.back();
@@ -64,7 +64,7 @@ class EditPasswordScreen extends StatelessWidget {
                               Material(
                                 elevation: 6,
                                 color: colorGrey2,
-                                shadowColor: colorGrey2.withOpacity(0.5),
+                                shadowColor: colorGrey2.withValues(alpha: 0.5),
                                 borderRadius: BorderRadius.circular(12),
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -152,13 +152,13 @@ class EditPasswordScreen extends StatelessWidget {
                                               bgcolor: _.isValidForm.isTrue
                                                   ? colorGreen
                                                   : colorGrey1
-                                                      .withOpacity(0.5),
+                                                      .withValues(alpha: 0.5),
                                               borderColor: _
                                                       .isValidForm.isTrue
                                                   ? colorGreen
-                                                  : colorGreen.withOpacity(0),
+                                                  : colorGreen.withValues(alpha: 0),
                                               actionColor:
-                                                  colorGreen.withOpacity(0.5),
+                                                  colorGreen.withValues(alpha: 0.5),
                                               enabled: _.isValidForm.value,
                                               action: () {
                                                 _.updatePassword();
@@ -228,11 +228,11 @@ class EditPasswordScreen extends StatelessWidget {
                         icon: 'assets/images/icon_arrow_right.svg',
                         bgcolor: _.isValidForm.isTrue
                             ? colorGreen
-                            : colorGrey1.withOpacity(0.5),
+                            : colorGrey1.withValues(alpha: 0.5),
                         borderColor: _.isValidForm.isTrue
                             ? colorGreen
-                            : colorGreen.withOpacity(0),
-                        actionColor: colorGreen.withOpacity(0.5),
+                            : colorGreen.withValues(alpha: 0),
+                        actionColor: colorGreen.withValues(alpha: 0.5),
                         enabled: _.isValidForm.value,
                         action: () {
                           //_.connectUser();

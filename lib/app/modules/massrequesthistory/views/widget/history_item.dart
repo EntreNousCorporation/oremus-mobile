@@ -25,7 +25,7 @@ class HistoryItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(10.0),
           elevation: 10,
           color: colorWhite,
-          shadowColor: colorGrey2.withOpacity(0.5),
+          shadowColor: colorGrey2.withValues(alpha: 0.5),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(

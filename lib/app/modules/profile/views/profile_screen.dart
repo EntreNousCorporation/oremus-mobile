@@ -94,7 +94,7 @@ class ProfileScreen extends StatelessWidget {
                                                                 color: colorWhite,
                                                                 shadowColor:
                                                                     colorGrey2
-                                                                        .withOpacity(
+                                                                        .withValues(alpha: 
                                                                             0.5),
                                                                 child: ClipRRect(
                                                                   borderRadius:
@@ -128,7 +128,7 @@ class ProfileScreen extends StatelessWidget {
                                                                   color: colorWhite,
                                                                   shadowColor:
                                                                       colorGrey2
-                                                                          .withOpacity(
+                                                                          .withValues(alpha: 
                                                                               0.5),
                                                                   child: const Icon(
                                                                     Icons
@@ -194,7 +194,7 @@ class ProfileScreen extends StatelessWidget {
                                                             elevation: 6,
                                                             color: colorGrey2,
                                                             shadowColor: colorGrey2
-                                                                .withOpacity(0.5),
+                                                                .withValues(alpha: 0.5),
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(50),
@@ -243,7 +243,7 @@ class ProfileScreen extends StatelessWidget {
                                                             elevation: 6,
                                                             color: colorGrey2,
                                                             shadowColor: colorGrey2
-                                                                .withOpacity(0.5),
+                                                                .withValues(alpha: 0.5),
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(50),
@@ -294,7 +294,7 @@ class ProfileScreen extends StatelessWidget {
                                                             elevation: 6,
                                                             color: colorGrey2,
                                                             shadowColor: colorGrey2
-                                                                .withOpacity(0.5),
+                                                                .withValues(alpha: 0.5),
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(50),
@@ -387,13 +387,13 @@ class ProfileScreen extends StatelessWidget {
                         icon: Image.asset(
                           'assets/images/delete-friend.png',
                           height: 20,
-                          color: colorRed1.withOpacity(0.6),
+                          color: colorRed1.withValues(alpha: 0.6),
                         ),
                         label: Text(
                           'Supprimer mon compte',
                           style: TextStyles.montserratBold(
                             textSize: TextSizes.fourteen,
-                            textColor: colorRed1.withOpacity(0.6),
+                            textColor: colorRed1.withValues(alpha: 0.6),
                           ),
                         ),
                       ),

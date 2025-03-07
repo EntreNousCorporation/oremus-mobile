@@ -232,14 +232,14 @@ class SignupScreen extends StatelessWidget {
                                                   bgcolor: _.isValidForm.isTrue
                                                       ? colorGreen
                                                       : colorGrey1
-                                                          .withOpacity(0.5),
+                                                          .withValues(alpha: 0.5),
                                                   borderColor:
                                                       _.isValidForm.isTrue
                                                           ? colorGreen
                                                           : colorGreen
-                                                              .withOpacity(0),
+                                                              .withValues(alpha: 0),
                                                   actionColor: colorGreen
-                                                      .withOpacity(0.5),
+                                                      .withValues(alpha: 0.5),
                                                   enabled: _.isValidForm.value,
                                                   action: () {
                                                     _.signupUser();
