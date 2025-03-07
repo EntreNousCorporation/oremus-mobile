@@ -4,6 +4,20 @@ import 'package:oremusapp/app/modules/customhome/binding/custom_home_binding.dar
 import 'package:oremusapp/app/modules/customhome/views/custom_home_screen.dart';
 import 'package:oremusapp/app/modules/diocese/binding/diocese_binding.dart';
 import 'package:oremusapp/app/modules/diocese/views/diocese_screen.dart';
+import 'package:oremusapp/app/modules/donation/binding/donation_binding.dart';
+import 'package:oremusapp/app/modules/donation/binding/donation_menu_binding.dart';
+import 'package:oremusapp/app/modules/donation/binding/donation_with_worship_binding.dart';
+import 'package:oremusapp/app/modules/donation/binding/filter_donation_worship_binding.dart';
+import 'package:oremusapp/app/modules/donation/views/donation_menu_screen.dart';
+import 'package:oremusapp/app/modules/donation/views/donation_screen.dart';
+import 'package:oremusapp/app/modules/donation/views/donation_with_worship_screen.dart';
+import 'package:oremusapp/app/modules/donation/views/widget/filter_donation_worship_screen.dart';
+import 'package:oremusapp/app/modules/donationhistory/binding/donation_history_binding.dart';
+import 'package:oremusapp/app/modules/donationhistory/binding/donation_history_detail_binding.dart';
+import 'package:oremusapp/app/modules/donationhistory/binding/filter_donation_history_binding.dart';
+import 'package:oremusapp/app/modules/donationhistory/views/donation_history_detail_screen.dart';
+import 'package:oremusapp/app/modules/donationhistory/views/donation_history_screen.dart';
+import 'package:oremusapp/app/modules/donationhistory/views/widget/filter_donation_history_screen.dart';
 import 'package:oremusapp/app/modules/editpassword/binding/edit_password_binding.dart';
 import 'package:oremusapp/app/modules/editpassword/views/edit_password_screen.dart';
 import 'package:oremusapp/app/modules/favorite/binding/favorite_binding.dart';
@@ -93,6 +107,7 @@ class AppPages {
         CustomHomeBinding(),
         ParoisseBinding(),
         MassRequestMenuBinding(),
+        DonationMenuBinding(),
         ProfileBinding(),
         PrayBinding(),
       ],
@@ -299,6 +314,55 @@ class AppPages {
       name: Routes.MASS_REQUEST_MENU,
       page: () => const MassRequestMenuScreen(),
       binding: MassRequestMenuBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.DONATION,
+      page: () => const DonationScreen(),
+      binding: DonationBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.DONATION_HISTORY,
+      page: () => const DonationHistoryScreen(),
+      binding: DonationHistoryBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.DONATION_HISTORY_DETAIL,
+      page: () => const DonationHistoryDetailScreen(),
+      binding: DonationHistoryDetailBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.FILTER_DONATION_HISTORY,
+      page: () => const FilterDonationHistoryScreen(),
+      binding: FilterDonationHistoryBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.FILTER_DONATION_CHOOSE_WORSHIP,
+      page: () => const FilterDonationWorshipScreen(),
+      binding: FilterDonationWorshipBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.DONATION_WITHOUT_WORSHIP,
+      page: () => const DonationWithWorshipScreen(),
+      binding: DonationWithWorshipBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.DONATION_MENU,
+      page: () => const DonationMenuScreen(),
+      binding: DonationMenuBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

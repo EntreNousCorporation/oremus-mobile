@@ -26,8 +26,8 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
       color: colorWhite,
       child: GetX<MassRequestWithWorshipController>(builder: (_) {
         return KeyboardDismisser(
-          child: WillPopScope(
-            onWillPop: () async => _.unlockBackButton.value,
+          child: PopScope(
+            canPop: _.unlockBackButton.value,
             child: Scaffold(
               resizeToAvoidBottomInset: true,
               body: NotificationListener<OverscrollIndicatorNotification>(

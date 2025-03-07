@@ -24,12 +24,12 @@ dependencies:
   #flutter_spinkit: ^5.1.0
   #flutter_fadein: ^2.0.0
   keyboard_dismisser: ^3.0.0
-  jiffy: ^6.0.0
+  jiffy: ^6.3.2
   #firebase_core: ^1.14.1
   #firebase_crashlytics: ^2.3.0
   #fcm_config: ^3.1.8
-  firebase_core: ^1.18.0
-  firebase_crashlytics: ^2.8.2
+  firebase_core: ^3.8.0
+  firebase_crashlytics: ^4.1.5
   #fcm_config: ^3.4.0
   lottie: ^2.7.0
   #flutter_secure_storage: ^5.0.2
@@ -54,6 +54,7 @@ dependencies:
   grouped_list: ^5.1.2
   map_launcher: ^3.1.0
   package_info_plus: ^4.2.0
+  device_info_plus: ^11.3.3
   flutter_animator: ^3.2.1
   flutter_html_v3: ^3.0.6
   #platform_device_id_v3: ^1.0.0
@@ -62,8 +63,9 @@ dependencies:
   path_provider: ^2.0.13
   #platform_device_id_v3: ^1.0.0
   #flutter_intro: ^3.2.3
-  platform_device_id:
-    path: /Users/kog/Projets/Flutter/platform_device_id
+  #custom_platform_device_id: ^1.0.8
+  #platform_device_id:
+    #path: /Users/kog/Projets/Flutter/platform_device_id
 
   in_app_update: ^4.2.3
   upgrader: ^8.2.0
@@ -74,6 +76,7 @@ dependencies:
 
   app_links: ^3.5.1
   flutter_inappwebview: ^6.0.0
+  custom_input_formatter: ^2.0.1
 
 dependency_overrides:
   #collection: ^1.18.0
@@ -83,7 +86,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^1.0.0
   flutter_native_splash: ^2.3.0
-  firebase_core_platform_interface: 4.5.1
+  #firebase_core_platform_interface: 4.5.1
 
 flutter_native_splash:
   #Avant de générer le splash il faut faire un 'flutter pub get'

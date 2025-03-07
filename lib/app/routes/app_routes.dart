@@ -49,6 +49,16 @@ abstract class Routes {
   static const MASS_REQUEST_WITHOUT_WORSHIP = '/mass-request-without-worship';
   static const MASS_REQUEST_MENU = '/mass-request-menu';
 
+  //ASK MASS
+  static const DONATION = '/donation';
+  static const DONATION_HISTORY = '/donation-history';
+  static const DONATION_HISTORY_DETAIL = '/donation-history-detail';
+  static const FILTER_DONATION_HISTORY = '/filter-donation-history';
+  static const FILTER_DONATION_CHOOSE_DATE = '/filter-donation-choose-date';
+  static const FILTER_DONATION_CHOOSE_WORSHIP = '/filter-donation-choose-worship';
+  static const DONATION_WITHOUT_WORSHIP = '/donation-without-worship';
+  static const DONATION_MENU = '/donation-menu';
+
   //PAYMENT
   static const PAYMENT = '/payment';
   static const PAYMENT_SUCCESS = '/payment-success';
