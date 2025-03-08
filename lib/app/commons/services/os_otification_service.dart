@@ -28,33 +28,6 @@ class OSNotificationService {
     setNotificationHandlers();
 
     log("OneSignal initialized with app ID: $appId");
-    _handleSendTags();
-  }
-
-  void _handleSendTags() {
-    // Sending a single tag
-    try {
-      // In v5.3.0, tags are added using OneSignal.User.addTag or addTags
-      OneSignal.User.addTagWithKey("category", "pdv");
-      log("Successfully sent category tag");
-    } catch (e) {
-      log("Encountered an error sending single tag: $e");
-    }
-
-    // Sending multiple tags
-    try {
-      // For multiple tags, use a Map and the addTags method
-      Map<String, String> tags = {
-        'category': 'pdv',
-        'test': 'value',
-        'user_type': 'customer'
-      };
-
-      OneSignal.User.addTags(tags);
-      log("Successfully sent multiple tags");
-    } catch (e) {
-      log("Encountered an error sending multiple tags: $e");
-    }
   }
 
   // Set up all notification handlers
@@ -155,16 +128,6 @@ class OSNotificationService {
   }
 }
 
-// Usage in main.dart
-/*void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize OneSignal
-  await OSNotificationService().initializeOneSignal('YOUR_ONESIGNAL_APP_ID');
-
-  runApp(MyApp());
-}
-*/
 // Example of how to use the service in a widget
 class NotificationListener extends StatefulWidget {
   final Widget child;
