@@ -23,7 +23,6 @@ class EditProfileScreen extends StatelessWidget {
       color: colorGreen,
       child: SafeArea(
         child: GetBuilder<EditProfileController>(
-            initState: (state) {},
             builder: (_) {
               return KeyboardDismisser(
                 child: Scaffold(

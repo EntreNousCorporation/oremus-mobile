@@ -167,7 +167,7 @@ class ProfileController extends GetxController {
       Get.context!,
       type: '',
       message: 'Vous êtes sur le point de supprimer définitivement votre compte.\n\nNotez que cette action est irréversible.\n\nÊtes-vous sûr de vouloir continuer ?',
-      negativeLabel: 'Annuler',
+      negativeLabel: 'Non',
       positiveLabel: 'Oui, je consens',
       positiveBgColor: colorRed1,
       positiveCallBack: () {

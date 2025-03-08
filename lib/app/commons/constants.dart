@@ -57,6 +57,7 @@ abstract class AppConstants {
   static const SIGNIN = 8;
   static const REQUEST_MASS_WITHOUT_WORSHIP = 9;
   static const DONATION_WITHOUT_WORSHIP = 10;
+  static const SETTINGS = 11;
 
   static const MIN_AMOUNT = 100;
 

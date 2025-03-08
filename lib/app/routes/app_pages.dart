@@ -1,5 +1,7 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
+import 'package:oremusapp/app/modules/about/binding/about_binding.dart';
+import 'package:oremusapp/app/modules/about/views/about_screen.dart';
 import 'package:oremusapp/app/modules/customhome/binding/custom_home_binding.dart';
 import 'package:oremusapp/app/modules/customhome/views/custom_home_screen.dart';
 import 'package:oremusapp/app/modules/diocese/binding/diocese_binding.dart';
@@ -18,6 +20,8 @@ import 'package:oremusapp/app/modules/donationhistory/views/donation_history_det
 import 'package:oremusapp/app/modules/donationhistory/views/donation_history_screen.dart';
 import 'package:oremusapp/app/modules/editpassword/binding/edit_password_binding.dart';
 import 'package:oremusapp/app/modules/editpassword/views/edit_password_screen.dart';
+import 'package:oremusapp/app/modules/faq/binding/faq_binding.dart';
+import 'package:oremusapp/app/modules/faq/views/faq_screen.dart';
 import 'package:oremusapp/app/modules/favorite/binding/favorite_binding.dart';
 import 'package:oremusapp/app/modules/favorite/views/favorites_screen.dart';
 import 'package:oremusapp/app/modules/massrequest/binding/filter_mass_request_date_binding.dart';
@@ -75,6 +79,7 @@ import 'package:oremusapp/app/modules/pray/views/pray_screen.dart';
 import 'package:oremusapp/app/modules/profile/binding/edit_profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/binding/profile_binding.dart';
 import 'package:oremusapp/app/modules/profile/views/edit_profile_screen.dart';
+import 'package:oremusapp/app/modules/profile/views/profile_screen.dart';
 import 'package:oremusapp/app/modules/reportproblem/binding/report_problem_binding.dart';
 import 'package:oremusapp/app/modules/reportproblem/views/report_problem_screen.dart';
 import 'package:oremusapp/app/modules/resetpassword/bindings/init_reset_password_binding.dart';
@@ -83,6 +88,7 @@ import 'package:oremusapp/app/modules/resetpassword/bindings/reset_password_bind
 import 'package:oremusapp/app/modules/resetpassword/views/init_reset_password_screen.dart';
 import 'package:oremusapp/app/modules/resetpassword/views/otp_screen.dart';
 import 'package:oremusapp/app/modules/resetpassword/views/reset_password_screen.dart';
+import 'package:oremusapp/app/modules/settings/binding/settings_binding.dart';
 import 'package:oremusapp/app/modules/signin/binding/signin_binding.dart';
 import 'package:oremusapp/app/modules/signin/views/signin_screen.dart';
 import 'package:oremusapp/app/modules/signup/binding/signup_binding.dart';
@@ -108,8 +114,8 @@ class AppPages {
         ParoisseBinding(),
         MassRequestMenuBinding(),
         DonationMenuBinding(),
-        ProfileBinding(),
         PrayBinding(),
+        SettingsBinding(),
       ],
       transition: Transition.circularReveal,
     ),
@@ -227,13 +233,19 @@ class AppPages {
       name: Routes.EDIT_PASSWORD,
       page: () => const EditPasswordScreen(),
       binding: EditPasswordBinding(),
-      transition: Transition.circularReveal,
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: Routes.PROFILE,
+      page: () => const ProfileScreen(),
+      binding: ProfileBinding(),
+      transition: Transition.fadeIn,
     ),
     GetPage(
       name: Routes.EDIT_PROFILE,
       page: () => const EditProfileScreen(),
       binding: EditProfileBinding(),
-      transition: Transition.circularReveal,
+      transition: Transition.fadeIn,
     ),
     GetPage(
       name: Routes.FAVORITES,
@@ -391,6 +403,20 @@ class AppPages {
       name: Routes.REPORT_PROBLEM,
       page: () => const ReportProblemScreen(),
       binding: ReportProblemBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.FAQ,
+      page: () => const FaqScreen(),
+      binding: FaqBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.ABOUT,
+      page: () => const AboutScreen(),
+      binding: AboutBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

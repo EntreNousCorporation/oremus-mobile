@@ -9,6 +9,8 @@ import 'package:in_app_update/in_app_update.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
+import 'package:oremusapp/app/commons/services/notification_consent_manager.dart';
+import 'package:oremusapp/app/commons/services/os_otification_service.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/customhome/data/model/menu_item.dart';
@@ -35,14 +37,25 @@ class CustomHomeController extends GetxController {
   var applyAnim = true.obs;
   final GlobalKey<AnimatorWidgetState> basicIconAnimation = GlobalKey<AnimatorWidgetState>();
 
+  final OSNotificationService notificationService = OSNotificationService();
+
   @override
   void onInit() {
+    // Initialiser OneSignal avec le dialogue de consentement
+    initNotification();
+
     if (flavor == AppConstants.ENV_PROD && GetPlatform.isAndroid) {
       doPerformAppUpdate();
     }
     initMenus();
     update();
     super.onInit();
+  }
+
+  initNotification() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await notificationService.initializeWithConsent('YOUR_ONESIGNAL_APP_ID', Get.context!);
+    });
   }
 
   initMenus() {
@@ -53,20 +66,20 @@ class CustomHomeController extends GetxController {
         icon: Assets.imagesIconNavHome,
       ),
       MenusItem(
+        code: AppConstants.REQUEST_MASS_WITHOUT_WORSHIP,
+        libelle: "Demande de messe",
+        icon: Assets.imagesMesse,
+      ),
+      MenusItem(
         code: AppConstants.PROFILE,
         libelle: 'Mon profil',
         icon: Assets.imagesIconUser,
-        isVisible: isUserConnected.value == true ? true : false,
+        isVisible: false,
       ),
       MenusItem(
         code: AppConstants.PRAY,
         libelle: "Mini Missel",
         icon: Assets.imagesIconPray,
-      ),
-      MenusItem(
-        code: AppConstants.REQUEST_MASS_WITHOUT_WORSHIP,
-        libelle: "Demande de messe",
-        icon: Assets.imagesMesse,
       ),
       MenusItem(
         code: AppConstants.DONATION_WITHOUT_WORSHIP,
@@ -83,6 +96,7 @@ class CustomHomeController extends GetxController {
         code: AppConstants.FAQ,
         libelle: 'F.A.Q',
         icon: Assets.imagesFaqIcon,
+        isVisible: false,
       ),
       MenusItem(
         code: AppConstants.CONTACTS,
@@ -94,18 +108,25 @@ class CustomHomeController extends GetxController {
         code: AppConstants.ABOUT,
         libelle: 'A propos',
         icon: Assets.imagesIconSettings,
-      ),
-      MenusItem(
-        code: AppConstants.SIGNIN,
-        libelle: 'Connexion',
-        icon: Assets.imagesUserLogin,
-        isVisible: isUserConnected.value == true ? false : true,
+        isVisible: false,
       ),
       MenusItem(
         code: AppConstants.SHARE_APP,
         libelle: "Partager l'application",
         icon: Assets.imagesShareIcon,
         isVisible: true,
+      ),
+      MenusItem(
+        code: AppConstants.SETTINGS,
+        libelle: 'Paramètres',
+        icon: Assets.imagesIconSettings,
+        isVisible: true,
+      ),
+      MenusItem(
+        code: AppConstants.SIGNIN,
+        libelle: 'Connexion',
+        icon: Assets.imagesUserLogin,
+        isVisible: isUserConnected.value == true ? false : true,
       ),
     ];
     menus.value = menus.where((element) => element.isVisible).toList();

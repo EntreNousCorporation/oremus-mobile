@@ -30,6 +30,7 @@ abstract class Routes {
   //PROFILE
   static const EDIT_PASSWORD = '/edit-password';
   static const EDIT_PROFILE = '/edit-profile';
+  static const PROFILE = '/profile';
 
   //FAVORIS
   static const FAVORITES = '/favorites';
@@ -67,4 +68,7 @@ abstract class Routes {
 
   //REPORT PROBLEM
   static const REPORT_PROBLEM = '/report-problem';
+
+  static const FAQ = '/faq';
+  static const ABOUT = '/about';
 }

@@ -59,7 +59,7 @@ class _MenuState extends State<DrawerMenu> with TickerProviderStateMixin {
             opacity: _animationController,
             child: Padding(
               padding: EdgeInsets.symmetric(
-                  vertical: (Get.height / 15), horizontal: 15.0),
+                  vertical: (Get.height / 18), horizontal: 15.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
