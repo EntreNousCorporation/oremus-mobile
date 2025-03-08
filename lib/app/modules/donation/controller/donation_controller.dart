@@ -36,6 +36,7 @@ class DonationController extends GetxController {
 
   late TextEditingController amountController;
   var amountFocusNode = FocusNode();
+  late TextEditingController descriptionController;
 
   var isValidForm = false.obs;
 
@@ -53,11 +54,13 @@ class DonationController extends GetxController {
   void dispose() {
     amountController.dispose();
     amountFocusNode.dispose();
+    descriptionController.dispose();
     super.dispose();
   }
 
   initControllers() {
     amountController = TextEditingController();
+    descriptionController = TextEditingController();
     // Attendre 500 millisecondes avant de donner le focus au TextField
     Timer(const Duration(milliseconds: 500), () {
       FocusScope.of(Get.context!).requestFocus(amountFocusNode);
@@ -93,7 +96,7 @@ class DonationController extends GetxController {
   void checkForm() {
     if (amountController.text.isEmpty) return;
     int amount = int.parse(amountController.text.replaceAll(RegExp(r'\s'), ''));
-    isValidForm.value = amountController.text.isNotEmpty && amount >= AppConstants.MIN_AMOUNT;
+    isValidForm.value = descriptionController.text.isNotEmpty && amountController.text.isNotEmpty && amount >= AppConstants.MIN_AMOUNT;
     update();
   }
 
@@ -109,6 +112,7 @@ class DonationController extends GetxController {
 
     var request = DonationData(
       amount: amountController.text.replaceAll(RegExp(r'\s'), ''),
+      description: descriptionController.text,
       worshipPlace: paroisseSelected.value.identifier,
       forceDuplicateCreation: forceDuplicateCreation,
     );

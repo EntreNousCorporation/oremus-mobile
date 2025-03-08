@@ -3,6 +3,7 @@ import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:oremusapp/app/modules/about/binding/about_binding.dart';
 import 'package:oremusapp/app/modules/about/views/about_screen.dart';
 import 'package:oremusapp/app/modules/customhome/binding/custom_home_binding.dart';
+import 'package:oremusapp/app/modules/customhome/views/custom_home_new_screen.dart';
 import 'package:oremusapp/app/modules/customhome/views/custom_home_screen.dart';
 import 'package:oremusapp/app/modules/diocese/binding/diocese_binding.dart';
 import 'package:oremusapp/app/modules/diocese/views/diocese_screen.dart';
@@ -109,6 +110,19 @@ class AppPages {
     GetPage(
       name: Routes.CUSTOM_HOME,
       page: () => const CustomHomeScreen(),
+      bindings: [
+        CustomHomeBinding(),
+        ParoisseBinding(),
+        MassRequestMenuBinding(),
+        DonationMenuBinding(),
+        PrayBinding(),
+        SettingsBinding(),
+      ],
+      transition: Transition.circularReveal,
+    ),
+    GetPage(
+      name: Routes.CUSTOM_HOME_NEW,
+      page: () => const CustomHomeNewScreen(),
       bindings: [
         CustomHomeBinding(),
         ParoisseBinding(),

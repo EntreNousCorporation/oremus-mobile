@@ -29,6 +29,7 @@ abstract class AppConstants {
 
   //CREDENTIALS
   static const KEY_TOKEN = "KEY_TOKEN";
+  static const ONESIGNAL_APP_ID = "-";
 
   static const TIME_ZONE_FORMAT1 = "yyyy-MM-ddTHH:mm:ss.SSS[Z]";
   static const TIME_ZONE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";

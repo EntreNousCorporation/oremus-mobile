@@ -22,8 +22,8 @@ class FilterMassRequestWorshipScreen extends StatelessWidget {
       color: colorGreen,
       child: SafeArea(
         child: GetX<FilterMassRequestWorshipController>(builder: (_) {
-          return WillPopScope(
-            onWillPop: () async => false,
+          return PopScope(
+            canPop: false,
             child: KeyboardDismisser(
               child: Scaffold(
                 resizeToAvoidBottomInset: true,

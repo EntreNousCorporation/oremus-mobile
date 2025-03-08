@@ -15,78 +15,229 @@ class FavoritesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: colorGreen,
-      child: SafeArea(
-        child: GetX<FavoriteController>(builder: (_) {
-          return WillPopScope(
-            onWillPop: () async => false,
+    return Scaffold(
+      backgroundColor: colorGrey4,
+      body: GetX<FavoriteController>(
+        builder: (_) {
+          return PopScope(
+            canPop: false,
             child: KeyboardDismisser(
-              child: Scaffold(
-                resizeToAvoidBottomInset: true,
-                appBar: AppBar(
-                  elevation: applyElevation(),
-                  shadowColor: colorGrey2.withValues(alpha: 0.8),
-                  leading: IconButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    icon: const Icon(Icons.arrow_back_ios_rounded),
+              child: Stack(
+                children: [
+                  // Header gradient background
+                  Container(
+                    height: 200,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          colorGreen,
+                          colorGreen.withOpacity(0.8),
+                          colorGreen.withOpacity(0.6),
+                        ],
+                      ),
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(30),
+                        bottomRight: Radius.circular(30),
+                      ),
+                    ),
                   ),
-                  title: Text(
-                    _.favorites.isNotEmpty
-                        ? 'Mes favoris (${_.favorites.length})'
-                        : 'Mes favoris',
-                    style: TextStyles.montserratBold(
-                        textSize: TextSizes.sixteen, textColor: colorWhite),
-                  ),
-                  centerTitle: true,
-                  backgroundColor: colorGreen,
-                ),
-                body: Container(
-                  color: colorGrey4,
-                  width: double.infinity,
-                  child: Column(
-                    children: [
-                      _.favorites.isNotEmpty
-                          ? Expanded(
-                              child: FadeIn(
-                                child: AnimatedList(
-                                    key: _.key,
-                                    padding: const EdgeInsets.only(
-                                      top: 16,
-                                      bottom: 16,
-                                      left: 16,
-                                      right: 16,
+
+                  // Main content
+                  SafeArea(
+                    child: Column(
+                      children: [
+                        // Custom app bar
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Row(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.3),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: IconButton(
+                                  icon: const Icon(
+                                    Icons.arrow_back_ios_new_rounded,
+                                    color: colorWhite,
+                                    size: 20,
+                                  ),
+                                  onPressed: () {
+                                    Get.back();
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                child: Center(
+                                  child: Text(
+                                    _.favorites.isNotEmpty
+                                        ? 'Mes favoris (${_.favorites.length})'
+                                        : 'Mes favoris',
+                                    style: const TextStyle(
+                                      color: colorWhite,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    physics: const BouncingScrollPhysics(),
-                                    initialItemCount: _.favorites.length,
-                                    itemBuilder: (context, index, animation) {
-                                      var paroisse = _.favorites[index];
-                                      return SizeTransition(
-                                        key: UniqueKey(),
-                                        sizeFactor: animation,
-                                        child: ParoisseItem(
-                                          paroisse: paroisse,
-                                          index: index,
-                                          fromFavoriteUI: true,
-                                        ),
-                                      );
-                                    }),
+                                  ),
+                                ),
                               ),
-                            )
-                          : Expanded(
-                              child: NotFoundScreen(
-                                message: "Aucun favoris pour le moment",
-                              ),
+                              const SizedBox(width: 48), // Balance for the back button
+                            ],
+                          ),
+                        ),
+
+                        // Subtitle
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                          child: Text(
+                            'Retrouvez vos paroisses préférées',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.9),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
                             ),
-                    ],
+                          ),
+                        ),
+
+                        // Favorites list or empty state
+                        Expanded(
+                          child: _.favorites.isNotEmpty
+                              ? _buildFavoritesList(_)
+                              : _buildEmptyState(),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           );
-        }),
+        },
+      ),
+    );
+  }
+
+  Widget _buildFavoritesList(FavoriteController controller) {
+    return Container(
+      margin: const EdgeInsets.only(top: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: FadeIn(
+        child: AnimatedList(
+          key: controller.key,
+          physics: const BouncingScrollPhysics(),
+          initialItemCount: controller.favorites.length,
+          itemBuilder: (context, index, animation) {
+            var paroisse = controller.favorites[index];
+            return SizeTransition(
+              key: UniqueKey(),
+              sizeFactor: animation,
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: ParoisseItem(
+                    paroisse: paroisse,
+                    index: index,
+                    fromFavoriteUI: true,
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Container(
+      margin: const EdgeInsets.only(top: 40),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Empty state illustration
+          Container(
+            width: 120,
+            height: 120,
+            decoration: BoxDecoration(
+              color: colorGreen1.withOpacity(0.3),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.favorite_border_rounded,
+              size: 60,
+              color: colorGreenSemiLight.withOpacity(0.7),
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // Empty state text
+          Text(
+            'Aucun favori pour le moment',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[800],
+            ),
+          ),
+          const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40),
+            child: Text(
+              'Explorez les paroisses et ajoutez-les à vos favoris pour les retrouver facilement',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[600],
+                height: 1.5,
+              ),
+            ),
+          ),
+          const SizedBox(height: 32),
+
+          // Action button
+          ElevatedButton(
+            onPressed: () {
+              Get.back(); // Return to explore parishes
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: colorGreenSemiLight,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Icon(Icons.explore, size: 18),
+                SizedBox(width: 8),
+                Text(
+                  'Explorer les paroisses',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

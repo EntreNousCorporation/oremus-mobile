@@ -12,75 +12,36 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetX<SettingsController>(builder: (controller) {
-      return CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Personnalisez votre expérience spirituelle',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: colorGreenSemiLight,
-                        ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          /*
-          // Section Apparence
-          SliverToBoxAdapter(
-            child: _buildSectionHeader(context, 'Apparence', 'Personnalisez l\'interface'),
-          ),
-
-          SliverToBoxAdapter(
-            child: Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-                side: BorderSide(color: colorGreen1.withOpacity(0.5)),
-              ),
-              child: Column(
-                children: [
-                  _buildSettingTile(
-                    context,
-                    icon: Icons.dark_mode_outlined,
-                    title: 'Thème sombre',
-                    subtitle: 'Réduisez la luminosité de l\'écran',
-                    trailing: Switch(
-                      value: false,
-                      activeColor: colorGreenSemiLight,
-                      onChanged: (value) {},
-                    ),
-                  ),
-                  const Divider(height: 1, indent: 72),
-                  _buildSettingTile(
-                    context,
-                    icon: Icons.text_fields_rounded,
-                    title: 'Taille du texte',
-                    subtitle: 'Ajustez la taille de la police',
-                    trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-                    onTap: () {},
-                  ),
-                ],
-              ),
-            ),
-          ),
-          */
-
-          // Section Compte
-          if (isUserConnected.value) ...[
+    return Container(
+      color: colorGrey3,
+      child: GetX<SettingsController>(builder: (controller) {
+        return CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
             SliverToBoxAdapter(
-              child: _buildSectionHeader(
-                  context, 'Compte', 'Gérez vos informations personnelles'),
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Personnalisez votre expérience spirituelle',
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: colorGreenSemiLight,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
             ),
+
+            /*
+            // Section Apparence
+            SliverToBoxAdapter(
+              child: _buildSectionHeader(context, 'Apparence', 'Personnalisez l\'interface'),
+            ),
+
             SliverToBoxAdapter(
               child: Card(
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -93,27 +54,92 @@ class SettingsScreen extends StatelessWidget {
                   children: [
                     _buildSettingTile(
                       context,
-                      icon: Icons.account_circle_outlined,
-                      title: 'Mon profil',
-                      subtitle: 'Modifiez vos informations',
-                      trailing:
-                          const Icon(Icons.chevron_right, color: Colors.grey),
-                      onTap: () {
-                        controller.moveToProfile();
-                      },
+                      icon: Icons.dark_mode_outlined,
+                      title: 'Thème sombre',
+                      subtitle: 'Réduisez la luminosité de l\'écran',
+                      trailing: Switch(
+                        value: false,
+                        activeColor: colorGreenSemiLight,
+                        onChanged: (value) {},
+                      ),
+                    ),
+                    const Divider(height: 1, indent: 72),
+                    _buildSettingTile(
+                      context,
+                      icon: Icons.text_fields_rounded,
+                      title: 'Taille du texte',
+                      subtitle: 'Ajustez la taille de la police',
+                      trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                      onTap: () {},
                     ),
                   ],
                 ),
               ),
             ),
-          ],
+            */
 
-          // Section Notifications
-          if (isUserConnected.value) ...[
+            // Section Compte
+            if (isUserConnected.value) ...[
+              SliverToBoxAdapter(
+                child: _buildSectionHeader(
+                    context, 'Compte', 'Gérez vos informations personnelles'),
+              ),
+              SliverToBoxAdapter(
+                child: Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(color: colorGreen1.withOpacity(0.5)),
+                  ),
+                  child: Column(
+                    children: [
+                      _buildSettingTile(
+                        context,
+                        icon: Icons.account_circle_outlined,
+                        title: 'Mon profil',
+                        subtitle: 'Modifiez vos informations',
+                        trailing:
+                            const Icon(Icons.chevron_right, color: Colors.grey),
+                        onTap: () {
+                          controller.moveToProfile();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+
+            // Section Notifications
+            if (isUserConnected.value) ...[
+              SliverToBoxAdapter(
+                child: _buildSectionHeader(
+                    context, 'Notifications', 'Préférences de communication'),
+              ),
+              SliverToBoxAdapter(
+                child: Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(color: colorGreen1.withOpacity(0.5)),
+                  ),
+                  child: Column(
+                    children: [
+                      _buildNotificationSetting(context, controller),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+
+            // Section À propos
             SliverToBoxAdapter(
               child: _buildSectionHeader(
-                  context, 'Notifications', 'Préférences de communication'),
+                  context, 'À propos', 'Informations sur l\'application'),
             ),
+
             SliverToBoxAdapter(
               child: Card(
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -124,82 +150,60 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    _buildNotificationSetting(context, controller),
+                    _buildSettingTile(
+                      context,
+                      icon: Icons.info_outline_rounded,
+                      title: 'OREMUS',
+                      subtitle: 'En savoir plus sur OREMUS',
+                      trailing:
+                          const Icon(Icons.chevron_right, color: Colors.grey),
+                      onTap: () {
+                        controller.moveToAbout();
+                      },
+                    ),
+                    _buildSettingTile(
+                      context,
+                      icon: Icons.support_outlined,
+                      title: 'F.A.Q',
+                      subtitle: 'Questions fréquentes de la communauté',
+                      trailing:
+                      const Icon(Icons.chevron_right, color: Colors.grey),
+                      onTap: () {
+                        controller.moveToFaq();
+                      },
+                    ),
+                    const Divider(height: 1, indent: 72),
+                    const Divider(height: 1, indent: 72),
+                    _buildSettingTile(
+                      context,
+                      icon: Icons.description_outlined,
+                      title: 'Conditions d\'utilisation',
+                      subtitle: 'Lisez nos conditions',
+                      trailing:
+                      const Icon(Icons.chevron_right, color: Colors.grey),
+                      onTap: () {},
+                    ),
+                    const Divider(height: 1, indent: 72),
+                    _buildSettingTile(
+                      context,
+                      icon: Icons.info_outline_rounded,
+                      title: 'Version',
+                      subtitle: 'Oremus $versionName _$versionCode',
+                      trailing: null,
+                    ),
                   ],
                 ),
               ),
             ),
-          ],
 
-          // Section À propos
-          SliverToBoxAdapter(
-            child: _buildSectionHeader(
-                context, 'À propos', 'Informations sur l\'application'),
-          ),
-
-          SliverToBoxAdapter(
-            child: Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-                side: BorderSide(color: colorGreen1.withOpacity(0.5)),
-              ),
-              child: Column(
-                children: [
-                  _buildSettingTile(
-                    context,
-                    icon: Icons.info_outline_rounded,
-                    title: 'OREMUS',
-                    subtitle: 'En savoir plus sur OREMUS',
-                    trailing:
-                        const Icon(Icons.chevron_right, color: Colors.grey),
-                    onTap: () {
-                      controller.moveToAbout();
-                    },
-                  ),
-                  _buildSettingTile(
-                    context,
-                    icon: Icons.support_outlined,
-                    title: 'F.A.Q',
-                    subtitle: 'Questions fréquentes de la communauté',
-                    trailing:
-                    const Icon(Icons.chevron_right, color: Colors.grey),
-                    onTap: () {
-                      controller.moveToFaq();
-                    },
-                  ),
-                  const Divider(height: 1, indent: 72),
-                  const Divider(height: 1, indent: 72),
-                  _buildSettingTile(
-                    context,
-                    icon: Icons.description_outlined,
-                    title: 'Conditions d\'utilisation',
-                    subtitle: 'Lisez nos conditions',
-                    trailing:
-                    const Icon(Icons.chevron_right, color: Colors.grey),
-                    onTap: () {},
-                  ),
-                  const Divider(height: 1, indent: 72),
-                  _buildSettingTile(
-                    context,
-                    icon: Icons.info_outline_rounded,
-                    title: 'Version',
-                    subtitle: 'Oremus $versionName _$versionCode',
-                    trailing: null,
-                  ),
-                ],
-              ),
+            // Espace en bas pour éviter que le dernier élément soit caché
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 32),
             ),
-          ),
-
-          // Espace en bas pour éviter que le dernier élément soit caché
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 32),
-          ),
-        ],
-      );
-    });
+          ],
+        );
+      }),
+    );
   }
 
   Widget _buildSectionHeader(

@@ -13,6 +13,7 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/donation/controller/donation_controller.dart';
 import 'package:oremusapp/app/modules/donation/views/widget/amount_widget.dart';
+import 'package:oremusapp/app/modules/donation/views/widget/donation_description_widget.dart';
 import 'package:oremusapp/generated/assets.dart';
 
 class DonationScreen extends StatelessWidget {
@@ -206,6 +207,24 @@ class DonationScreen extends StatelessWidget {
                             ],
                           ),
                           Separators.maximumVertical(),
+
+                          Text(
+                            'Description',
+                            style: TextStyles.montserratMedium(
+                              textColor: colorGrey1,
+                              textSize: TextSizes.fourteen,
+                            ),
+                          ),
+                          Separators.customSizeVertical(8),
+                          Material(
+                            borderRadius: BorderRadius.circular(10.0),
+                            elevation: 10,
+                            color: colorWhite,
+                            shadowColor: colorGrey2.withValues(alpha: 0.5),
+                            child: const DonationDescriptionWidget(),
+                          ),
+                          Separators.maximum1Vertical(),
+                          Separators.normalVertical(),
 
                           Material(
                             borderRadius: BorderRadius.circular(10.0),

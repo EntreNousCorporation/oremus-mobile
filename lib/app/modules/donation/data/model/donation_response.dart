@@ -127,12 +127,14 @@ class DonationResponse extends ToJsonInterface {
 class DonationData {
   String? amount;
   String? worshipPlace;
+  String? description;
   bool? isOremus; // Nouveau champ pour indiquer si le don est pour Oremus
   bool? forceDuplicateCreation;
 
   DonationData({
     this.amount,
     this.worshipPlace,
+    this.description,
     this.isOremus = false,
     this.forceDuplicateCreation,
   });
@@ -140,6 +142,7 @@ class DonationData {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['amount'] = amount;
+    data['description'] = description;
     if (worshipPlace != null) {
       data['worshipPlace'] = worshipPlace;
     }

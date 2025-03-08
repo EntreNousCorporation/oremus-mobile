@@ -70,7 +70,8 @@ class SplashscreenController extends GetxController {
 
   getInitialView() {
     Future.delayed(const Duration(seconds: 3), () {
-      Get.offNamed(Routes.CUSTOM_HOME);
+      Get.offNamed(Routes.CUSTOM_HOME_NEW);
+      //Get.offNamed(Routes.CUSTOM_HOME);
     });
   }
 }

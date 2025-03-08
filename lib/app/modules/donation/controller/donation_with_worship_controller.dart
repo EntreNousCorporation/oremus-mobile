@@ -36,6 +36,7 @@ class DonationWithWorshipController extends GetxController {
   var isLiked = false.obs;
 
   late TextEditingController amountController;
+  late TextEditingController descriptionController;
   var amountFocusNode = FocusNode();
 
   var isValidForm = false.obs;
@@ -48,18 +49,21 @@ class DonationWithWorshipController extends GetxController {
   @override
   void onInit() {
     initControllers();
+    update();
     super.onInit();
   }
 
   @override
   void dispose() {
     amountController.dispose();
+    descriptionController.dispose();
     amountFocusNode.dispose();
     super.dispose();
   }
 
   initControllers() {
     amountController = TextEditingController();
+    descriptionController = TextEditingController();
     // Attendre un court délai avant de donner le focus au TextField
     Timer(const Duration(milliseconds: 500), () {
       FocusScope.of(Get.context!).requestFocus(amountFocusNode);
@@ -98,6 +102,7 @@ class DonationWithWorshipController extends GetxController {
       Routes.FILTER_MASS_REQUEST_CHOOSE_WORSHIP,
       arguments: 'Faire un don',
     );
+    log('goToWorshipChoice ::: ${paroisseSelected.value.identifier}');
     if (paroisseSelected.value.identifier != null) {
       paroisseSelected.refresh();
     }
@@ -110,9 +115,9 @@ class DonationWithWorshipController extends GetxController {
     if (amountController.text.isEmpty) return;
     int amount = int.parse(amountController.text.replaceAll(RegExp(r'\s'), ''));
     if (selectedEntityType.value == EntityType.oremus.name) {
-      isValidForm.value = amountController.text.isNotEmpty && amount >= AppConstants.MIN_AMOUNT;
+      isValidForm.value = descriptionController.text.isNotEmpty && amountController.text.isNotEmpty && amount >= AppConstants.MIN_AMOUNT;
     } else {
-      isValidForm.value = amountController.text.isNotEmpty && amount >= AppConstants.MIN_AMOUNT &&
+      isValidForm.value = descriptionController.text.isNotEmpty && amountController.text.isNotEmpty && amount >= AppConstants.MIN_AMOUNT &&
           paroisseSelected.value.identifier != null;
     }
     update();
@@ -130,6 +135,7 @@ class DonationWithWorshipController extends GetxController {
 
     var request = DonationData(
       amount: amountController.text.replaceAll(RegExp(r'\s'), ''),
+      description: descriptionController.text,
       // Only set worship place if paroisse is selected
       worshipPlace: selectedEntityType.value == EntityType.worship.name ?
       paroisseSelected.value.identifier : null,

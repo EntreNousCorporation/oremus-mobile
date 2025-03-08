@@ -11,6 +11,7 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/donation/controller/donation_with_worship_controller.dart';
 import 'package:oremusapp/app/modules/donation/views/widget/amount_without_worship_widget.dart';
+import 'package:oremusapp/app/modules/donation/views/widget/donation_description_with_worship_widget.dart';
 import 'package:oremusapp/generated/assets.dart';
 
 class DonationWithWorshipScreen extends StatelessWidget {
@@ -172,6 +173,7 @@ class DonationWithWorshipScreen extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(width: 16),
+
                                 // Paroisse card
                                 Expanded(
                                   child: GestureDetector(
@@ -319,6 +321,24 @@ class DonationWithWorshipScreen extends StatelessWidget {
                                   ),
                                 ),
                               ],
+                            ),
+                            Separators.maximumVertical(),
+
+                            // Description section
+                            Text(
+                              'Description',
+                              style: TextStyles.montserratMedium(
+                                textColor: colorGrey1,
+                                textSize: TextSizes.sixteen,
+                              ),
+                            ),
+                            Separators.customSizeVertical(8),
+                            Material(
+                              borderRadius: BorderRadius.circular(10.0),
+                              elevation: 4,
+                              color: colorWhite,
+                              shadowColor: colorGrey2.withValues(alpha: 0.5),
+                              child: const DonationDescriptionWithWorshipWidget(),
                             ),
                             Separators.maximum1Vertical(),
                             Separators.normalVertical(),
