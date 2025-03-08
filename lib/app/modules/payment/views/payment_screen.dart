@@ -16,42 +16,45 @@ class PaymentScreen extends StatelessWidget {
       child: SafeArea(
         child: Scaffold(
           backgroundColor: colorWhite,
-          body: GetX<PaymentController>(builder: (logic) {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          logic.doBack();
-                        },
-                        icon: const Icon(Icons.arrow_back_ios_rounded,
-                            color: colorBlack),
-                      ),
-                      Text(
-                        'Paiement',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: TextStyles.montserratBold(
-                          textSize: TextSizes.eighteen,
-                          textColor: colorBlack,
+          body: PopScope(
+            canPop: false,
+            child: GetX<PaymentController>(builder: (logic) {
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            logic.doBack();
+                          },
+                          icon: const Icon(Icons.arrow_back_ios_rounded,
+                              color: colorBlack),
                         ),
-                      ),
-                    ],
+                        Text(
+                          'Paiement',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: TextStyles.montserratBold(
+                            textSize: TextSizes.eighteen,
+                            textColor: colorBlack,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Separators.minimunVertical(),
-                Expanded(
-                  child: WebViewWidget(
-                      controller: logic.webViewController.value),
-                ),
-              ],
-            );
-          }),
+                  Separators.minimunVertical(),
+                  Expanded(
+                    child: WebViewWidget(
+                        controller: logic.webViewController.value),
+                  ),
+                ],
+              );
+            }),
+          ),
         ),
       ),
     );

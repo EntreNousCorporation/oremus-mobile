@@ -106,8 +106,8 @@ class AboutScreen extends StatelessWidget {
                                 Text(
                                   'OREMUS',
                                   style: TextStyles.montserratBold(
-                                    textSize: 20,
-                                    textColor: colorWhite
+                                      textSize: 20,
+                                      textColor: colorWhite
                                   ),
                                 ),
                                 Text(
@@ -184,6 +184,38 @@ class AboutScreen extends StatelessWidget {
                                       style: TextStyles.montserratItalic(
                                         textSize: 14,
                                         textColor: Colors.grey[700]!,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              const SizedBox(height: 20),
+
+                              // Bouton "Soutenir Oremus"
+                              ElevatedButton(
+                                onPressed: () {
+                                  logic.moveToDonation();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: colorGreenSemiLight,
+                                  foregroundColor: colorWhite,
+                                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  elevation: 2,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.favorite, size: 20),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'Soutenir Oremus',
+                                      style: TextStyles.montserratBold(
+                                        textSize: 14,
+                                        textColor: colorWhite,
                                       ),
                                     ),
                                   ],
@@ -297,10 +329,10 @@ class AboutScreen extends StatelessWidget {
             ),
           ),
           TextSpan(
-              text: 'de Chrétiens interrogés souhaitent un service PLUS pour faciliter l\'accès aux services ecclésiastiques"\n\n',
+            text: 'de Chrétiens interrogés souhaitent un service PLUS pour faciliter l\'accès aux services ecclésiastiques"\n\n',
           ),
           TextSpan(
-              text: 'L\'application ',
+            text: 'L\'application ',
           ),
           TextSpan(
             text: 'Oremus ',
@@ -371,11 +403,9 @@ class AboutScreen extends StatelessWidget {
         const SizedBox(height: 8),
         GestureDetector(
           onTap: () async {
-            if (await canLaunch(Uri.encodeFull(
-                "mailto:oremus.civ@gmail.com?subject=Besoin d'information&body=")) ==
+            if (await canLaunchUrl(Uri(path: "mailto:oremus.civ@gmail.com?subject=Besoin d'information&body=")) ==
                 true) {
-              launch(Uri.encodeFull(
-                  "mailto:oremus.civ@gmail.com?subject=Besoin d'information&body="));
+              launchUrl(Uri(path: "mailto:oremus.civ@gmail.com?subject=Besoin d'information&body="));
             } else {
               log("Can't launch url");
             }

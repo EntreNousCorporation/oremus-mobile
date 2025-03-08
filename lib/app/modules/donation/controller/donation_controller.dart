@@ -90,13 +90,13 @@ class DonationController extends GetxController {
 
   moveToHome() {
     Get.deleteAll(force: true);
-    Get.offAllNamed(Routes.CUSTOM_HOME);
+    Get.offAllNamed(Routes.CUSTOM_HOME_NEW);
   }
 
   void checkForm() {
     if (amountController.text.isEmpty) return;
     int amount = int.parse(amountController.text.replaceAll(RegExp(r'\s'), ''));
-    isValidForm.value = descriptionController.text.isNotEmpty && amountController.text.isNotEmpty && amount >= AppConstants.MIN_AMOUNT;
+    isValidForm.value = amountController.text.isNotEmpty && amount >= AppConstants.MIN_AMOUNT;
     update();
   }
 

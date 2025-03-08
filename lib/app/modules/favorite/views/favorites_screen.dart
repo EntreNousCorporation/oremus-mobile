@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animator/widgets/fading_entrances/fade_in.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
-import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
-import 'package:oremusapp/app/commons/theme/app_dimension.dart';
-import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/favorite/controller/favorite_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/paroisse_item.dart';
 
@@ -107,7 +103,7 @@ class FavoritesScreen extends StatelessWidget {
                         Expanded(
                           child: _.favorites.isNotEmpty
                               ? _buildFavoritesList(_)
-                              : _buildEmptyState(),
+                              : _buildEmptyState(_),
                         ),
                       ],
                     ),
@@ -163,9 +159,9 @@ class FavoritesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(FavoriteController controller) {
     return Container(
-      margin: const EdgeInsets.only(top: 40),
+      margin: const EdgeInsets.only(top: 100),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -212,7 +208,7 @@ class FavoritesScreen extends StatelessWidget {
           // Action button
           ElevatedButton(
             onPressed: () {
-              Get.back(); // Return to explore parishes
+              controller.moveToHome();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: colorGreenSemiLight,
@@ -222,9 +218,9 @@ class FavoritesScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: Row(
+            child: const Row(
               mainAxisSize: MainAxisSize.min,
-              children: const [
+              children: [
                 Icon(Icons.explore, size: 18),
                 SizedBox(width: 8),
                 Text(

@@ -48,6 +48,7 @@ class DonationWithWorshipController extends GetxController {
 
   @override
   void onInit() {
+    getArguments();
     initControllers();
     update();
     super.onInit();
@@ -59,6 +60,14 @@ class DonationWithWorshipController extends GetxController {
     descriptionController.dispose();
     amountFocusNode.dispose();
     super.dispose();
+  }
+
+  getArguments() {
+    if (Get.arguments == null) return;
+    Map<String, dynamic> arguments = Get.arguments;
+    if (arguments.containsKey('entity_type')) {
+      selectedEntityType.value = arguments['entity_type'];
+    }
   }
 
   initControllers() {
@@ -94,7 +103,7 @@ class DonationWithWorshipController extends GetxController {
 
   moveToHome() {
     Get.deleteAll(force: true);
-    Get.offAllNamed(Routes.CUSTOM_HOME);
+    Get.offAllNamed(Routes.CUSTOM_HOME_NEW);
   }
 
   goToWorshipChoice() async {
@@ -115,9 +124,9 @@ class DonationWithWorshipController extends GetxController {
     if (amountController.text.isEmpty) return;
     int amount = int.parse(amountController.text.replaceAll(RegExp(r'\s'), ''));
     if (selectedEntityType.value == EntityType.oremus.name) {
-      isValidForm.value = descriptionController.text.isNotEmpty && amountController.text.isNotEmpty && amount >= AppConstants.MIN_AMOUNT;
+      isValidForm.value = amountController.text.isNotEmpty && amount >= AppConstants.MIN_AMOUNT;
     } else {
-      isValidForm.value = descriptionController.text.isNotEmpty && amountController.text.isNotEmpty && amount >= AppConstants.MIN_AMOUNT &&
+      isValidForm.value = amountController.text.isNotEmpty && amount >= AppConstants.MIN_AMOUNT &&
           paroisseSelected.value.identifier != null;
     }
     update();

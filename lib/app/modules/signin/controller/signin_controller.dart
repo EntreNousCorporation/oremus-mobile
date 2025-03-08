@@ -130,7 +130,7 @@ class SigninController extends GetxController {
   }
 
   goToHome() {
-    Get.offNamed(Routes.CUSTOM_HOME);
+    Get.offNamed(Routes.CUSTOM_HOME_NEW);
   }
 
   goToSignup() {

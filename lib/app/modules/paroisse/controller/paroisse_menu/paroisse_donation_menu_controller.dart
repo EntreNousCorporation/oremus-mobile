@@ -232,7 +232,7 @@ class ParoisseDonationMenuController extends GetxController {
 
   moveToHome() {
     Get.deleteAll(force: true);
-    Get.offAllNamed(Routes.CUSTOM_HOME);
+    Get.offAllNamed(Routes.CUSTOM_HOME_NEW);
   }
 
   bool isWorshipPlaceFavorite(ContentPlace paroisse) {

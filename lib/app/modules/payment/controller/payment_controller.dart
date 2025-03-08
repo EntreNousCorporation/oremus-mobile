@@ -54,13 +54,15 @@ class PaymentController extends GetxController {
       paymentType.value = Get.arguments['payment_type'];
       if (paymentType.value == PaymentType.donation) {
         if (arguments.containsKey('payment_response')) {
-          donationSelected.value = DonationResponse.fromJson(Get.arguments['payment_response']);
+          donationSelected.value =
+              DonationResponse.fromJson(Get.arguments['payment_response']);
           initWebview();
         }
       }
       if (paymentType.value == PaymentType.massRequest) {
         if (arguments.containsKey('payment_response')) {
-          massRequestResponseSelected.value = MassRequestResponse.fromJson(Get.arguments['payment_response']);
+          massRequestResponseSelected.value =
+              MassRequestResponse.fromJson(Get.arguments['payment_response']);
           initWebview();
         }
       }
@@ -73,10 +75,11 @@ class PaymentController extends GetxController {
     }
     Get.offNamed(
       Routes.PAYMENT_ERROR,
-      arguments: [
-        paroisseSelected.toJson(),
-        paymentStatusMessage.value,
-      ],
+      arguments: {
+        'paroisse_selected': paroisseSelected.toJson(),
+        'payment_status_message': paymentStatusMessage.value,
+        'payment_type': paymentType.value,
+      },
     );
   }
 
@@ -86,10 +89,11 @@ class PaymentController extends GetxController {
     }
     Get.offNamed(
       Routes.PAYMENT_SUCCESS,
-      arguments: [
-        paroisseSelected.toJson(),
-        paymentStatusMessage.value,
-      ],
+      arguments: {
+        'paroisse_selected': paroisseSelected.toJson(),
+        'payment_status_message': paymentStatusMessage.value,
+        'payment_type': paymentType.value,
+      },
     );
   }
 
@@ -131,6 +135,9 @@ class PaymentController extends GetxController {
     if (massRequestResponseSelected.value.paymentUrl?.isNotEmpty == true) {
       webViewController.value.loadRequest(
           Uri.parse(massRequestResponseSelected.value.paymentUrl ?? ''));
+    } else if (donationSelected.value.paymentUrl?.isNotEmpty == true) {
+      webViewController.value.loadRequest(
+          Uri.parse(donationSelected.value.paymentUrl ?? ''));
     } else {
       Timer(const Duration(seconds: 1), () {
         showCustomDialog(
@@ -191,7 +198,8 @@ class PaymentController extends GetxController {
 
   Future<void> launchWaveOrFallback(String waveUrl) async {
     if (await canLaunchUrl(Uri.parse(waveUrl))) {
-      await launchUrl(Uri.parse(waveUrl), mode: LaunchMode.externalNonBrowserApplication);
+      await launchUrl(Uri.parse(waveUrl),
+          mode: LaunchMode.externalNonBrowserApplication);
     } else {
       // L'application Wave n'est pas installée
       // Redirigez l'utilisateur vers le site Web de Wave ou affichez un message
@@ -236,10 +244,15 @@ class PaymentController extends GetxController {
     log('request doGetPaymentStatus :::');
 
     checkingPaymentStatus(true);
-    paymentRepository.paymentStatus(transactionId: massRequestResponseSelected.value.transactionId ?? '').then((value) {
+    paymentRepository
+        .paymentStatus(
+            transactionId:
+                massRequestResponseSelected.value.transactionId ?? '')
+        .then((value) {
       if (value.paymentStatus == PaymentStatus.REFUSED.name) {
         checkingPaymentStatus(true);
-        paymentStatusMessage.value = 'Le paiement a échoué. Veuillez réessayer svp !';
+        paymentStatusMessage.value =
+            'Le paiement a échoué. Veuillez réessayer svp !';
         moveToError();
         return;
       }
@@ -252,7 +265,8 @@ class PaymentController extends GetxController {
       checkingPaymentStatus(true);
       switch (paymentType.value) {
         case PaymentType.massRequest:
-          paymentStatusMessage.value = 'Votre demande de messe a été effectué avec succès';
+          paymentStatusMessage.value =
+              'Votre demande de messe a été effectué avec succès';
           break;
         case PaymentType.donation:
           paymentStatusMessage.value = 'Votre don a été effectué avec succès';
@@ -266,7 +280,8 @@ class PaymentController extends GetxController {
       checkingPaymentStatus(false);
       var err = error as CustomException;
       log(err.message.toString());
-      showNotification(message: err.message ?? 'Une erreur interne est survenue');
+      showNotification(
+          message: err.message ?? 'Une erreur interne est survenue');
       log('doGetPaymentStatus onError ::: ${err.message ?? 'label_error_unknow_server'.tr}');
       //paymentStatusMessage.value = err.message.toString();
       //moveToError();

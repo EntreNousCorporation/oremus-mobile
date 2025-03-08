@@ -58,7 +58,7 @@ class ReportProblemController extends GetxController {
 
   moveToHome() {
     Get.deleteAll(force: true);
-    Get.offAllNamed(Routes.CUSTOM_HOME);
+    Get.offAllNamed(Routes.CUSTOM_HOME_NEW);
   }
 
   void checkForm() {

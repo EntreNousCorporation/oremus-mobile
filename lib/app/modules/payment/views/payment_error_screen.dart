@@ -20,8 +20,8 @@ class PaymentErrorScreen extends StatelessWidget {
         return Scaffold(
           backgroundColor: colorWhite,
           resizeToAvoidBottomInset: false,
-          body: WillPopScope(
-            onWillPop: () async => false,
+          body: PopScope(
+            canPop: false,
             child: FadeIn(
               child: Column(
                 children: <Widget>[
@@ -65,7 +65,7 @@ class PaymentErrorScreen extends StatelessWidget {
                         borderColor: colorGreen,
                         actionColor: colorGreen.withValues(alpha: 0.5),
                         action: () {
-                          logic.moveToMassRequestHistory();
+                          logic.doRedirection();
                         },
                       ),
                     ),

@@ -8,6 +8,7 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
+import 'package:oremusapp/app/routes/app_pages.dart';
 
 class FavoriteController extends GetxController {
   final ParoisseRepository paroisseRepository;
@@ -69,5 +70,9 @@ class FavoriteController extends GetxController {
       positiveLabel: 'Annuler',
       positiveCallBack: () {},
     );
+  }
+
+  moveToHome() {
+    Get.offAllNamed(Routes.CUSTOM_HOME_NEW);
   }
 }

@@ -148,7 +148,7 @@ class MassRequestController extends GetxController {
 
   moveToHome() {
     Get.deleteAll(force: true);
-    Get.offAllNamed(Routes.CUSTOM_HOME);
+    Get.offAllNamed(Routes.CUSTOM_HOME_NEW);
   }
 
   // Ouvrir un date picker qui ne permet que les dates calculées

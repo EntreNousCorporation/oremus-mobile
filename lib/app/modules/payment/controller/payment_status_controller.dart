@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
@@ -11,6 +12,7 @@ class PaymentStatusController extends GetxController {
   var subscriptionSelected = MassRequestResponse().obs;
   var paymentStatusMessage = ''.obs;
   var paroisseSelected = ContentPlace().obs;
+  var paymentType = PaymentType.none.obs;
 
   @override
   void onInit() {
@@ -19,19 +21,46 @@ class PaymentStatusController extends GetxController {
   }
 
   getArguments() {
-    if (Get.arguments != null) {
-      paroisseSelected.value = ContentPlace.fromJson(Get.arguments[0]);
-      paymentStatusMessage.value = Get.arguments[1];
+    if (Get.arguments == null) return;
+    Map<String, dynamic> arguments = Get.arguments;
+    if (arguments.containsKey('payment_type')) {
+      paymentType.value = Get.arguments['payment_response'];
+    }
+    if (arguments.containsKey('paroisse_selected')) {
+      paroisseSelected.value = ContentPlace.fromJson(Get.arguments['paroisse_selected']);
+    }
+    if (arguments.containsKey('payment_status_message')) {
+      paymentStatusMessage.value = arguments['payment_status_message'];
+    }
+  }
+
+  doRedirection() {
+    switch (paymentType.value) {
+      case PaymentType.massRequest:
+        moveToMassRequestHistory();
+        break;
+      case PaymentType.donation:
+        moveToDonationHistory();
+        break;
+      case PaymentType.none:
+        break;
     }
   }
 
   moveToHome() {
-    Get.offAllNamed(Routes.CUSTOM_HOME);
+    Get.offAllNamed(Routes.CUSTOM_HOME_NEW);
   }
 
   moveToMassRequestHistory() async {
     await Get.offNamed(
       Routes.MASS_REQUEST_HISTORY,
+      arguments: paroisseSelected.toJson(),
+    );
+  }
+
+  moveToDonationHistory() async {
+    await Get.offNamed(
+      Routes.DONATION_HISTORY,
       arguments: paroisseSelected.toJson(),
     );
   }
