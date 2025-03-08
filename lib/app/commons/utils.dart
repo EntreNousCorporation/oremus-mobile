@@ -183,6 +183,29 @@ shareApp(String message,
   }
 }
 
+void configStatusBar({
+  Color? statusColor,
+  Brightness? iOSStatusBarBrightness,
+  Brightness? statusBarIconBrightness,
+}) {
+  // Vérifiez si la plateforme est Android
+  if (Platform.isAndroid) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarBrightness: statusBarIconBrightness ?? Brightness.dark,
+      statusBarIconBrightness: statusBarIconBrightness ?? Brightness.dark,
+      statusBarColor: statusColor ?? colorTransparent,
+    ));
+  }
+
+  // Vérifiez si la plateforme est iOS
+  if (Platform.isIOS) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarBrightness: iOSStatusBarBrightness ?? Brightness.dark,
+      statusBarColor: statusColor ?? colorBlack,
+    ));
+  }
+}
+
 List<PriceData> transformWorshipSpecialHours(
     List<LiturgicalCelebrationResponse> worshipDataList) {
 

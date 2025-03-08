@@ -4,14 +4,10 @@ import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
-import 'package:oremusapp/app/commons/components/button.dart';
 import 'package:oremusapp/app/commons/components/text_field.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/formatters/object_separator_input_formatter.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
-import 'package:oremusapp/app/commons/theme/app_dimension.dart';
-import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/profile/controller/edit_profile_controller.dart';
 
 class EditProfileScreen extends StatelessWidget {
@@ -19,251 +15,407 @@ class EditProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: colorGreen,
-      child: SafeArea(
-        child: GetBuilder<EditProfileController>(
-            builder: (_) {
-              return KeyboardDismisser(
-                child: Scaffold(
-                  backgroundColor: colorGrey4,
-                  resizeToAvoidBottomInset: true,
-                  appBar: AppBar(
-                    elevation: applyElevation(),
-                    shadowColor: colorGrey2.withValues(alpha: 0.8),
-                    leading: IconButton(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      icon: const Icon(Icons.arrow_back_ios_rounded),
+    return Scaffold(
+      backgroundColor: colorGrey4,
+      resizeToAvoidBottomInset: true,
+      body: GetBuilder<EditProfileController>(
+        builder: (_) {
+          return KeyboardDismisser(
+            child: Stack(
+              children: [
+                // Header gradient background
+                Container(
+                  height: 220,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        colorGreen,
+                        colorGreen.withOpacity(0.8),
+                        colorGreen.withOpacity(0.6),
+                      ],
                     ),
-                    title: Text(
-                      'Modifier votre profil',
-                      style: TextStyles.montserratBold(
-                          textSize: TextSizes.sixteen, textColor: colorWhite),
-                    ),
-                    centerTitle: true,
-                    backgroundColor: colorGreen,
-                  ),
-                  body: Container(
-                    color: colorGrey4,
-                    width: double.infinity,
-                    child: SingleChildScrollView(
-                      child: FadeIn(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                          child: Column(
-                            children: [
-                              Separators.maximumVertical(),
-                              Separators.maximumVertical(),
-                              Visibility(
-                                visible: false,
-                                child: Stack(
-                                  alignment: Alignment.bottomRight,
-                                  children: [
-                                    Hero(
-                                      tag: 'avatar',
-                                      child: Material(
-                                        borderRadius:
-                                            BorderRadius.circular(110.0),
-                                        elevation: 6,
-                                        color: colorWhite,
-                                        shadowColor:
-                                            colorGrey2.withValues(alpha: 0.5),
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(110),
-                                          child: Container(
-                                            color: colorGreenlight2,
-                                            child: SizedBox(
-                                              width: 110,
-                                              height: 110,
-                                              child: SvgPicture.asset(
-                                                  'assets/images/avatar.svg'),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      right: 0,
-                                      child: Material(
-                                        borderRadius:
-                                            BorderRadius.circular(90.0),
-                                        elevation: 10,
-                                        color: colorWhite,
-                                        shadowColor:
-                                            colorGrey2.withValues(alpha: 0.5),
-                                        child: const Icon(
-                                          Icons.add_circle,
-                                          color: colorPurpleLight,
-                                          size: 35,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Visibility(
-                                visible: false,
-                                child: Separators.maximumVertical(),
-                              ),
-                              Visibility(
-                                visible: false,
-                                child: Separators.maximumVertical(),
-                              ),
-                              Material(
-                                elevation: 6,
-                                color: colorGrey2,
-                                shadowColor: colorGrey2.withValues(alpha: 0.5),
-                                borderRadius: BorderRadius.circular(12),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: colorWhite,
-                                  ),
-                                  child: Form(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 32,
-                                          right: 32,
-                                          top: 32,
-                                          bottom: 32),
-                                      child: Column(
-                                        children: [
-                                          MyTextField(
-                                            focusNode: _.lastnameFocusNode,
-                                            controller: _.lastnameController,
-                                            hintText: '',
-                                            labelText: 'Nom',
-                                            prefixIcon:
-                                                "assets/images/icon_user.svg",
-                                            prefixIconColor: colorGrey1,
-                                            keyboardType: TextInputType.text,
-                                            maskInputs: [
-                                              FilteringTextInputFormatter.allow(
-                                                  RegExp(AppConstants.INPUT_NAME_REGEX)),
-                                            ],
-                                            onChanged: (value) {
-                                              _.checkForm();
-                                            },
-                                            errorText:
-                                                _.lastnameErrorMessage.value,
-                                          ),
-                                          Separators.normalVertical(),
-                                          MyTextField(
-                                            focusNode: _.firstnameFocusNode,
-                                            controller: _.firstnameController,
-                                            hintText: '',
-                                            labelText: 'Prénom(s)',
-                                            prefixIcon:
-                                                "assets/images/icon_user.svg",
-                                            //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
-                                            prefixIconColor: colorGrey1,
-                                            keyboardType: TextInputType.text,
-                                            textCapitalization: TextCapitalization.words,
-                                            maskInputs: [
-                                              FilteringTextInputFormatter.allow(
-                                                  RegExp(AppConstants.INPUT_NAME_REGEX)),
-                                            ],
-                                            onChanged: (value) {
-                                              _.checkForm();
-                                            },
-                                            errorText:
-                                                _.firstnameErrorMessage.value,
-                                          ),
-                                          Separators.normalVertical(),
-                                          MyTextField(
-                                            focusNode: _.phoneFocusNode,
-                                            controller: _.phoneController,
-                                            hintText: '',
-                                            labelText: 'Téléphone',
-                                            prefixIcon:
-                                                "assets/images/icon_phone.svg",
-                                            //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
-                                            prefixIconColor: colorGrey1,
-                                            keyboardType: TextInputType.phone,
-                                            maxLength: 14,
-                                            maskInputs: [
-                                              ObjectSeparatorInputFormatter(
-                                                  groupBy: 2),
-                                              FilteringTextInputFormatter.allow(
-                                                  RegExp(AppConstants
-                                                      .INPUT_NUM_REGEX)),
-                                            ],
-                                            onChanged: (value) {
-                                              _.checkForm();
-                                            },
-                                            errorText:
-                                                _.phoneErrorMessage.value,
-                                          ),
-                                          Visibility(
-                                            visible: false,
-                                            child: Separators.normalVertical(),
-                                          ),
-                                          Visibility(
-                                            visible: false,
-                                            child: MyTextField(
-                                              focusNode: _.emailFocusNode,
-                                              controller: _.emailController,
-                                              readOnly: true,
-                                              hintText: '',
-                                              labelText: 'E-mail',
-                                              prefixIcon:
-                                                  "assets/images/icon_enveloppe.svg",
-                                              //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
-                                              prefixIconColor: colorGrey1,
-                                              keyboardType:
-                                                  TextInputType.emailAddress,
-                                              textCapitalization:
-                                                  TextCapitalization.none,
-                                              enabled: false,
-                                              onChanged: (value) {
-                                                _.checkForm();
-                                              },
-                                              errorText:
-                                                  _.emailErrorMessage.value,
-                                            ),
-                                          ),
-                                          Separators.maximumVertical(),
-                                          Separators.maximumVertical(),
-                                          SizedBox(
-                                            width: Get.width,
-                                            height: 40,
-                                            child: CustomButton(
-                                              paddingVertical: 5,
-                                              icon:
-                                                  'assets/images/icon_arrow_right.svg',
-                                              text: 'Mettre à jour',
-                                              bgcolor: _.isValidForm.isTrue
-                                                  ? colorGreen
-                                                  : colorGrey1.withValues(alpha: 0.5),
-                                              borderColor: _.isValidForm.isTrue
-                                                  ? colorGreen
-                                                  : colorGreen.withValues(alpha: 0),
-                                              actionColor:
-                                                  colorGreen.withValues(alpha: 0.5),
-                                              enabled: _.isValidForm.value,
-                                              action: () {
-                                                _.updateProfile();
-                                              },
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
                     ),
                   ),
                 ),
-              );
-            }),
+
+                // Main content
+                SafeArea(
+                  child: Column(
+                    children: [
+                      // Custom app bar
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.3),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.arrow_back_ios_new_rounded,
+                                  color: colorWhite,
+                                  size: 20,
+                                ),
+                                onPressed: () {
+                                  Get.back();
+                                },
+                              ),
+                            ),
+                            const Expanded(
+                              child: Center(
+                                child: Text(
+                                  'Modifier votre profil',
+                                  style: TextStyle(
+                                    color: colorWhite,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 48), // Balancer l'espace pour le bouton de retour
+                          ],
+                        ),
+                      ),
+
+                      // Form content
+                      Expanded(
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: FadeIn(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: Column(
+                                children: [
+                                  const SizedBox(height: 20),
+
+                                  // Avatar (actuellement masqué mais redesigné)
+                                  Visibility(
+                                    visible: false,
+                                    child: _buildAvatarSection(),
+                                  ),
+
+                                  // Form card
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 20, bottom: 30),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(20),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.05),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 5),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(24),
+                                      child: Form(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            // Section title
+                                            const Padding(
+                                              padding: EdgeInsets.only(left: 4, bottom: 16),
+                                              child: Text(
+                                                'Informations personnelles',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: colorGreenSemiLight,
+                                                ),
+                                              ),
+                                            ),
+
+                                            // Lastname field
+                                            _buildStyledTextField(
+                                              context: context,
+                                              focusNode: _.lastnameFocusNode,
+                                              controller: _.lastnameController,
+                                              labelText: 'Nom',
+                                              prefixIcon: "assets/images/icon_user.svg",
+                                              errorText: _.lastnameErrorMessage.value,
+                                              onChanged: (value) => _.checkForm(),
+                                              maskInputs: [
+                                                FilteringTextInputFormatter.allow(
+                                                    RegExp(AppConstants.INPUT_NAME_REGEX)),
+                                              ],
+                                            ),
+
+                                            const SizedBox(height: 16),
+
+                                            // Firstname field
+                                            _buildStyledTextField(
+                                              context: context,
+                                              focusNode: _.firstnameFocusNode,
+                                              controller: _.firstnameController,
+                                              labelText: 'Prénom(s)',
+                                              prefixIcon: "assets/images/icon_user.svg",
+                                              errorText: _.firstnameErrorMessage.value,
+                                              onChanged: (value) => _.checkForm(),
+                                              textCapitalization: TextCapitalization.words,
+                                              maskInputs: [
+                                                FilteringTextInputFormatter.allow(
+                                                    RegExp(AppConstants.INPUT_NAME_REGEX)),
+                                              ],
+                                            ),
+
+                                            const SizedBox(height: 16),
+
+                                            // Phone field
+                                            _buildStyledTextField(
+                                              context: context,
+                                              focusNode: _.phoneFocusNode,
+                                              controller: _.phoneController,
+                                              labelText: 'Téléphone',
+                                              prefixIcon: "assets/images/icon_phone.svg",
+                                              errorText: _.phoneErrorMessage.value,
+                                              onChanged: (value) => _.checkForm(),
+                                              keyboardType: TextInputType.phone,
+                                              maxLength: 14,
+                                              maskInputs: [
+                                                ObjectSeparatorInputFormatter(groupBy: 2),
+                                                FilteringTextInputFormatter.allow(
+                                                    RegExp(AppConstants.INPUT_NUM_REGEX)),
+                                              ],
+                                            ),
+
+                                            // Email field (hidden)
+                                            Visibility(
+                                              visible: false,
+                                              child: Column(
+                                                children: [
+                                                  const SizedBox(height: 16),
+                                                  _buildStyledTextField(
+                                                    context: context,
+                                                    focusNode: _.emailFocusNode,
+                                                    controller: _.emailController,
+                                                    labelText: 'E-mail',
+                                                    prefixIcon: "assets/images/icon_enveloppe.svg",
+                                                    errorText: _.emailErrorMessage.value,
+                                                    onChanged: (value) => _.checkForm(),
+                                                    keyboardType: TextInputType.emailAddress,
+                                                    textCapitalization: TextCapitalization.none,
+                                                    readOnly: true,
+                                                    enabled: false,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  // Update button
+                                  _buildUpdateButton(_),
+
+                                  const SizedBox(height: 20),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildAvatarSection() {
+    return Column(
+      children: [
+        Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            Hero(
+              tag: 'avatar',
+              child: Material(
+                elevation: 8,
+                shadowColor: Colors.black26,
+                shape: const CircleBorder(),
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(60),
+                    child: Container(
+                      width: 120,
+                      height: 120,
+                      color: colorGreen1.withOpacity(0.3),
+                      child: SvgPicture.asset('assets/images/avatar.svg'),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 5,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: const BoxDecoration(
+                  color: colorGreen,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.camera_alt_rounded,
+                  color: Colors.white,
+                  size: 22,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        const Text(
+          'Modifier votre photo',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: colorGreen,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStyledTextField({
+    required BuildContext context,
+    required FocusNode focusNode,
+    required TextEditingController controller,
+    required String labelText,
+    required String prefixIcon,
+    required String errorText,
+    required Function(String) onChanged,
+    TextInputType keyboardType = TextInputType.text,
+    TextCapitalization textCapitalization = TextCapitalization.none,
+    List<TextInputFormatter>? maskInputs,
+    int? maxLength,
+    bool readOnly = false,
+    bool enabled = true,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: colorGrey4,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: errorText.isNotEmpty
+                  ? Colors.red.shade300
+                  : focusNode.hasFocus
+                  ? colorGreenSemiLight.withOpacity(0.5)
+                  : Colors.transparent,
+              width: 1.5,
+            ),
+          ),
+          child: MyTextField(
+            focusNode: focusNode,
+            controller: controller,
+            hintText: '',
+            labelText: labelText,
+            prefixIcon: prefixIcon,
+            prefixIconColor: colorGreenSemiLight,
+            keyboardType: keyboardType,
+            textCapitalization: textCapitalization,
+            maskInputs: maskInputs,
+            maxLength: maxLength,
+            readOnly: readOnly,
+            enabled: enabled,
+            onChanged: onChanged,
+            errorText: errorText,
+          ),
+        ),
+        if (errorText.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(left: 12, top: 4),
+            child: Text(
+              errorText,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.red.shade600,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildUpdateButton(EditProfileController controller) {
+    return Container(
+      width: double.infinity,
+      height: 54,
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      child: ElevatedButton(
+        onPressed: controller.isValidForm.value
+            ? () => controller.updateProfile()
+            : null,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: controller.isValidForm.value
+              ? colorGreen
+              : Colors.grey.shade300,
+          foregroundColor: Colors.white,
+          elevation: controller.isValidForm.value ? 3 : 0,
+          shadowColor: Colors.black26,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 12),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Mettre à jour',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: controller.isValidForm.value
+                    ? Colors.white
+                    : Colors.grey.shade600,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(
+              Icons.check_circle_outline,
+              color: controller.isValidForm.value
+                  ? Colors.white
+                  : Colors.grey.shade600,
+              size: 20,
+            ),
+          ],
+        ),
       ),
     );
   }

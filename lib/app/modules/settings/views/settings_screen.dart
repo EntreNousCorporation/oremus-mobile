@@ -5,7 +5,6 @@ import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/services/notification_consent_manager.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/settings/controller/settings_controller.dart';
-import 'package:oremusapp/generated/assets.dart';
 import 'package:oremusapp/main.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -159,6 +158,18 @@ class SettingsScreen extends StatelessWidget {
                       controller.moveToAbout();
                     },
                   ),
+                  _buildSettingTile(
+                    context,
+                    icon: Icons.support_outlined,
+                    title: 'F.A.Q',
+                    subtitle: 'Questions fréquentes de la communauté',
+                    trailing:
+                    const Icon(Icons.chevron_right, color: Colors.grey),
+                    onTap: () {
+                      controller.moveToFaq();
+                    },
+                  ),
+                  const Divider(height: 1, indent: 72),
                   const Divider(height: 1, indent: 72),
                   _buildSettingTile(
                     context,
@@ -166,20 +177,8 @@ class SettingsScreen extends StatelessWidget {
                     title: 'Conditions d\'utilisation',
                     subtitle: 'Lisez nos conditions',
                     trailing:
-                        const Icon(Icons.chevron_right, color: Colors.grey),
+                    const Icon(Icons.chevron_right, color: Colors.grey),
                     onTap: () {},
-                  ),
-                  const Divider(height: 1, indent: 72),
-                  _buildSettingTile(
-                    context,
-                    icon: Icons.support_outlined,
-                    title: 'F.A.Q',
-                    subtitle: 'Questions fréquentes de la communauté',
-                    trailing:
-                        const Icon(Icons.chevron_right, color: Colors.grey),
-                    onTap: () {
-                      controller.moveToFaq();
-                    },
                   ),
                   const Divider(height: 1, indent: 72),
                   _buildSettingTile(

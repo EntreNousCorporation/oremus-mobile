@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
-import 'package:oremusapp/app/commons/components/button.dart';
 import 'package:oremusapp/app/commons/components/text_field.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
-import 'package:oremusapp/app/commons/theme/app_dimension.dart';
-import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/editpassword/controller/edit_password_controller.dart';
 
 class EditPasswordScreen extends StatelessWidget {
@@ -14,230 +10,329 @@ class EditPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: colorGreen,
-      child: SafeArea(
-        child: KeyboardDismisser(
-          child: Scaffold(
-            backgroundColor: colorWhite,
-            resizeToAvoidBottomInset: true,
-            appBar: AppBar(
-              elevation: applyElevation(),
-              shadowColor: colorGrey2.withValues(alpha: 0.8),
-              leading: IconButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: const Icon(Icons.arrow_back_ios_rounded),
-              ),
-              title: Hero(
-                tag: 'update-password',
-                child: Text(
-                  'Modifier votre mot de passe',
-                  style: TextStyles.montserratBold(
-                      textSize: TextSizes.sixteen,
-                      textColor: colorWhite),
+    return Scaffold(
+      backgroundColor: colorGrey4,
+      resizeToAvoidBottomInset: true,
+      body: GetX<EditPasswordController>(
+        builder: (_) {
+          return KeyboardDismisser(
+            child: Stack(
+              children: [
+                // Header gradient background
+                Container(
+                  height: 220,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        colorGreen,
+                        colorGreen.withOpacity(0.8),
+                        colorGreen.withOpacity(0.6),
+                      ],
+                    ),
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
+                    ),
+                  ),
                 ),
-              ),
-              centerTitle: true,
-              backgroundColor: colorGreen,
-            ),
-            body: SingleChildScrollView(
-              reverse: false,
-              child: SafeArea(
-                child: GetX<EditPasswordController>(
-                  initState: (_) {},
-                  builder: (_) {
-                    return WillPopScope(
-                      onWillPop: () async => _.unlockBackButton.value,
-                      child: AbsorbPointer(
-                        absorbing: _.lockScreen.value,
-                        child: Container(
-                          padding: const EdgeInsets.only(
-                              bottom: 20, left: 32, right: 32),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            //mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Separators.maximumVertical(),
-                              Separators.maximumVertical(),
-                              Material(
-                                elevation: 6,
-                                color: colorGrey2,
-                                shadowColor: colorGrey2.withValues(alpha: 0.5),
+
+                // Main content
+                SafeArea(
+                  child: Column(
+                    children: [
+                      // Custom app bar
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.3),
                                 borderRadius: BorderRadius.circular(12),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: colorWhite,
-                                  ),
-                                  child: Form(
-                                    key: _.formSigninKey,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 32,
-                                          right: 32,
-                                          top: 32,
-                                          bottom: 32),
-                                      child: Column(
-                                        children: [
-                                          MyTextField(
-                                            focusNode: _.passwordFocusNode,
-                                            controller: _.passwordController,
-                                            hintText: '',
-                                            labelText: 'Ancien mot de passe',
-                                            isPassword: true,
-                                            prefixIcon:
-                                                "assets/images/icon_password_profil.svg",
-                                            prefixIconColor: colorGrey1,
-                                            textCapitalization:
-                                                TextCapitalization.none,
-                                            onChanged: (value) {
-                                              _.checkForm();
-                                            },
-                                            errorText:
-                                                _.passwordErrorMessage.value,
-                                          ),
-                                          Separators.maximumVertical(),
-                                          MyTextField(
-                                            focusNode: _.newPasswordFocusNode,
-                                            controller:
-                                                _.newPasswordController,
-                                            hintText: '',
-                                            labelText: 'Nouveau mot de passe',
-                                            isPassword: true,
-                                            prefixIcon:
-                                                'assets/images/icon_password_profil.svg',
-                                            prefixIconColor: colorGrey1,
-                                            textCapitalization:
-                                                TextCapitalization.none,
-                                            onChanged: (value) {
-                                              _.checkForm();
-                                            },
-                                            errorText: _
-                                                .newPasswordErrorMessage
-                                                .value,
-                                          ),
-                                          Separators.maximumVertical(),
-                                          MyTextField(
-                                            focusNode:
-                                                _.confPasswordFocusNode,
-                                            controller:
-                                                _.confPasswordController,
-                                            hintText: '',
-                                            labelText:
-                                                'Confirmer le mot de passe',
-                                            isPassword: true,
-                                            prefixIcon:
-                                                'assets/images/icon_password_profil.svg',
-                                            prefixIconColor: colorGrey1,
-                                            textCapitalization:
-                                                TextCapitalization.none,
-                                            onChanged: (value) {
-                                              _.checkForm();
-                                            },
-                                            errorText: _
-                                                .confPasswordErrorMessage
-                                                .value,
-                                          ),
-                                          Separators.maximumVertical(),
-                                          Separators.maximumVertical(),
-                                          SizedBox(
-                                            height: 40,
-                                            child: CustomButton(
-                                              paddingVertical: 5,
-                                              text: 'Modifier',
-                                              icon:
-                                                  'assets/images/icon_arrow_right.svg',
-                                              bgcolor: _.isValidForm.isTrue
-                                                  ? colorGreen
-                                                  : colorGrey1
-                                                      .withValues(alpha: 0.5),
-                                              borderColor: _
-                                                      .isValidForm.isTrue
-                                                  ? colorGreen
-                                                  : colorGreen.withValues(alpha: 0),
-                                              actionColor:
-                                                  colorGreen.withValues(alpha: 0.5),
-                                              enabled: _.isValidForm.value,
-                                              action: () {
-                                                _.updatePassword();
-                                              },
-                                            ),
-                                          ),
-                                        ],
+                              ),
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.arrow_back_ios_new_rounded,
+                                  color: colorWhite,
+                                  size: 20,
+                                ),
+                                onPressed: () {
+                                  Get.back();
+                                },
+                              ),
+                            ),
+                            const Expanded(
+                              child: Center(
+                                child: Hero(
+                                  tag: 'update-password',
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: Text(
+                                      'Modifier votre mot de passe',
+                                      style: TextStyle(
+                                        color: colorWhite,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ],
+                            ),
+                            const SizedBox(width: 48), // Pour équilibrer le bouton de retour
+                          ],
+                        ),
+                      ),
+
+                      // Form content
+                      Expanded(
+                        child: PopScope(
+                          canPop: _.unlockBackButton.value,
+                          child: AbsorbPointer(
+                            absorbing: _.lockScreen.value,
+                            child: SingleChildScrollView(
+                              physics: const BouncingScrollPhysics(),
+                              child: Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Security icon
+                                    Center(
+                                      child: Container(
+                                        width: 80,
+                                        height: 80,
+                                        margin: const EdgeInsets.only(top: 10, bottom: 30),
+                                        decoration: BoxDecoration(
+                                          color: colorGreen1.withOpacity(0.3),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(
+                                          Icons.lock_outline_rounded,
+                                          size: 40,
+                                          color: colorGreenSemiLight,
+                                        ),
+                                      ),
+                                    ),
+
+                                    // Password form card
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(20),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(0.05),
+                                            blurRadius: 10,
+                                            offset: const Offset(0, 5),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(24),
+                                        child: Form(
+                                          key: _.formSigninKey,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              // Section title
+                                              const Padding(
+                                                padding: EdgeInsets.only(left: 4, bottom: 20),
+                                                child: Text(
+                                                  'Sécurité du compte',
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: colorGreenSemiLight,
+                                                  ),
+                                                ),
+                                              ),
+
+                                              // Current password field
+                                              _buildStyledTextField(
+                                                context: context,
+                                                focusNode: _.passwordFocusNode,
+                                                controller: _.passwordController,
+                                                labelText: 'Ancien mot de passe',
+                                                prefixIcon: "assets/images/icon_password_profil.svg",
+                                                errorText: _.passwordErrorMessage.value,
+                                                onChanged: (value) => _.checkForm(),
+                                                isPassword: true,
+                                              ),
+
+                                              const SizedBox(height: 20),
+
+                                              // New password field
+                                              _buildStyledTextField(
+                                                context: context,
+                                                focusNode: _.newPasswordFocusNode,
+                                                controller: _.newPasswordController,
+                                                labelText: 'Nouveau mot de passe',
+                                                prefixIcon: "assets/images/icon_password_profil.svg",
+                                                errorText: _.newPasswordErrorMessage.value,
+                                                onChanged: (value) => _.checkForm(),
+                                                isPassword: true,
+                                              ),
+
+                                              const SizedBox(height: 20),
+
+                                              // Confirm password field
+                                              _buildStyledTextField(
+                                                context: context,
+                                                focusNode: _.confPasswordFocusNode,
+                                                controller: _.confPasswordController,
+                                                labelText: 'Confirmer le mot de passe',
+                                                prefixIcon: "assets/images/icon_password_profil.svg",
+                                                errorText: _.confPasswordErrorMessage.value,
+                                                onChanged: (value) => _.checkForm(),
+                                                isPassword: true,
+                                              ),
+
+                                              // Password requirements hint
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 16, left: 4),
+                                                child: Text(
+                                                  'Le mot de passe doit contenir au moins 8 caractères, une lettre majuscule, une minuscule et un chiffre.',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.grey[600],
+                                                    fontStyle: FontStyle.italic,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 30),
+
+                                    // Update button
+                                    _buildUpdateButton(_),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    );
-                  },
+                    ],
+                  ),
                 ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildStyledTextField({
+    required BuildContext context,
+    required FocusNode focusNode,
+    required TextEditingController controller,
+    required String labelText,
+    required String prefixIcon,
+    required String errorText,
+    required Function(String) onChanged,
+    bool isPassword = false,
+    TextInputType keyboardType = TextInputType.text,
+    TextCapitalization textCapitalization = TextCapitalization.none,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: colorGrey4,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: errorText.isNotEmpty
+                  ? Colors.red.shade300
+                  : focusNode.hasFocus
+                  ? colorGreenSemiLight.withOpacity(0.5)
+                  : Colors.transparent,
+              width: 1.5,
+            ),
+          ),
+          child: MyTextField(
+            focusNode: focusNode,
+            controller: controller,
+            hintText: '',
+            labelText: labelText,
+            prefixIcon: prefixIcon,
+            prefixIconColor: colorGreenSemiLight,
+            isPassword: isPassword,
+            keyboardType: keyboardType,
+            textCapitalization: textCapitalization,
+            onChanged: onChanged,
+            errorText: '',  // On gère l'affichage de l'erreur nous-mêmes
+          ),
+        ),
+        if (errorText.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(left: 12, top: 4),
+            child: Text(
+              errorText,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.red.shade600,
               ),
             ),
           ),
+      ],
+    );
+  }
+
+  Widget _buildUpdateButton(EditPasswordController controller) {
+    return Container(
+      width: double.infinity,
+      height: 54,
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      child: ElevatedButton(
+        onPressed: controller.isValidForm.value
+            ? () => controller.updatePassword()
+            : null,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: controller.isValidForm.value
+              ? colorGreen
+              : Colors.grey.shade300,
+          foregroundColor: Colors.white,
+          elevation: controller.isValidForm.value ? 3 : 0,
+          shadowColor: Colors.black26,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 12),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Modifier le mot de passe',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: controller.isValidForm.value
+                    ? Colors.white
+                    : Colors.grey.shade600,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(
+              Icons.check_circle_outline,
+              color: controller.isValidForm.value
+                  ? Colors.white
+                  : Colors.grey.shade600,
+              size: 20,
+            ),
+          ],
         ),
       ),
     );
   }
 }
-
-/*
-* Separators.maximumVertical(),
-                    MyTextField(
-                      focusNode: _.passwordFocusNode,
-                      controller: _.passwordController,
-                      hintText: '',
-                      labelText: 'Ancien mot de passe',
-                      prefixIcon: "assets/images/icon_password_profil.svg",
-                      //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
-                      prefixIconColor: colorGrey1,
-                      keyboardType: TextInputType.emailAddress,
-                      textCapitalization: TextCapitalization.none,
-                      onChanged: (value) {
-                        _.checkForm();
-                      },
-                      errorText: _.passwordErrorMessage.value,
-                    ),
-                    Separators.normalVertical(),
-                    MyTextField(
-                      focusNode: _.newPasswordFocusNode,
-                      controller: _.newPasswordController,
-                      hintText: '',
-                      labelText: 'Nouveau mot de passe',
-                      isPassword: true,
-                      prefixIcon: 'assets/images/icon_password_profil.svg',
-                      prefixIconColor: colorGrey1,
-                      textCapitalization: TextCapitalization.none,
-                      onChanged: (value) {
-                        _.checkForm();
-                      },
-                      errorText: _.newPasswordErrorMessage.value,
-                    ),
-                    Separators.maximumVertical(),
-                    SizedBox(
-                      width: Get.width / 3.5,
-                      height: 40,
-                      child: CustomButton(
-                        paddingVertical: 5,
-                        icon: 'assets/images/icon_arrow_right.svg',
-                        bgcolor: _.isValidForm.isTrue
-                            ? colorGreen
-                            : colorGrey1.withValues(alpha: 0.5),
-                        borderColor: _.isValidForm.isTrue
-                            ? colorGreen
-                            : colorGreen.withValues(alpha: 0),
-                        actionColor: colorGreen.withValues(alpha: 0.5),
-                        enabled: _.isValidForm.value,
-                        action: () {
-                          //_.connectUser();
-                        },
-                      ),
-                    ),
-*
-* */
