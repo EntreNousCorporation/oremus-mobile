@@ -27,17 +27,9 @@ class EditProfileScreen extends StatelessWidget {
                 Container(
                   height: 220,
                   width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        colorGreen,
-                        colorGreen.withOpacity(0.8),
-                        colorGreen.withOpacity(0.6),
-                      ],
-                    ),
-                    borderRadius: const BorderRadius.only(
+                  decoration: const BoxDecoration(
+                    color: colorGreen,
+                    borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(30),
                       bottomRight: Radius.circular(30),
                     ),
@@ -55,7 +47,7 @@ class EditProfileScreen extends StatelessWidget {
                           children: [
                             Container(
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.3),
+                                color: Colors.white.withValues(alpha: 0.3),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: IconButton(
@@ -111,7 +103,7 @@ class EditProfileScreen extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(20),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withOpacity(0.05),
+                                          color: Colors.black.withValues(alpha: 0.05),
                                           blurRadius: 10,
                                           offset: const Offset(0, 5),
                                         ),
@@ -261,7 +253,7 @@ class EditProfileScreen extends StatelessWidget {
                     child: Container(
                       width: 120,
                       height: 120,
-                      color: colorGreen1.withOpacity(0.3),
+                      color: colorGreen1.withValues(alpha: 0.3),
                       child: SvgPicture.asset('assets/images/avatar.svg'),
                     ),
                   ),
@@ -275,7 +267,7 @@ class EditProfileScreen extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 5,
                     offset: const Offset(0, 2),
                   ),
@@ -335,7 +327,7 @@ class EditProfileScreen extends StatelessWidget {
               color: errorText.isNotEmpty
                   ? Colors.red.shade300
                   : focusNode.hasFocus
-                  ? colorGreenSemiLight.withOpacity(0.5)
+                  ? colorGreenSemiLight.withValues(alpha: 0.5)
                   : Colors.transparent,
               width: 1.5,
             ),

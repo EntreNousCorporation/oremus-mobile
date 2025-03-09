@@ -21,151 +21,187 @@ class PrayScreen extends StatelessWidget {
       color: colorWhite,
       child: SafeArea(
         child: GetX<PrayController>(builder: (_) {
-          return WillPopScope(
-            onWillPop: () async => _.unlockBackButton.value,
+          return PopScope(
+            canPop: _.unlockBackButton.value,
             child: KeyboardDismisser(
               child: Scaffold(
                 resizeToAvoidBottomInset: true,
-                body: Container(
-                  color: colorGrey4,
-                  width: double.infinity,
-                  child: Column(
-                    children: [
-                      _.isDataProcessing.isTrue
-                          ? Expanded(
-                              child: Center(
-                                child: LottieLoadingView(
-                                  size: Get.width / 4,
+                body: Column(
+                  children: [
+                    // Enhanced header
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 16,
+                      ),
+                      decoration: BoxDecoration(
+                        color: colorWhite,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: colorGreenSemiLight.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(
+                              Icons.menu_book_rounded,
+                              color: colorGreenSemiLight,
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Prières',
+                                style: TextStyles.montserratBold(
+                                  textSize: TextSizes.eighteen,
+                                  textColor: colorGreenSemiLight,
                                 ),
                               ),
-                            )
-                          : _.hasData.isTrue
-                              ? Expanded(
-                                  child: FadeIn(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 0,
-                                        bottom: 0,
-                                        left: 16,
-                                        right: 16,
-                                      ),
-                                      child: SmartRefresher(
-                                        enablePullDown: true,
-                                        enablePullUp: true,
-                                        onLoading: _.onLoading,
-                                        onRefresh: _.onRefresh,
-                                        header: const CustomClassicHeader(),
-                                        /*header: const WaterDropHeader(
-                                          waterDropColor: colorGreenSemiLight,
-                                        ),*/
-                                        footer: CustomFooter(
-                                          builder: (BuildContext context,
-                                              LoadStatus? mode) {
-                                            Widget body;
-                                            if (mode == LoadStatus.idle) {
-                                              body = Container();
-                                            } else if (mode ==
-                                                LoadStatus.loading) {
-                                              body = LottieLoadingView();
-                                            } else if (mode ==
-                                                LoadStatus.failed) {
-                                              body = Text(
-                                                "Une erreur est survenue lors du chargement",
-                                                style:
-                                                    TextStyles.montserratBold(
-                                                        textSize:
-                                                            TextSizes.thirteen,
-                                                        textColor: colorBlack),
-                                              );
-                                            } else if (mode ==
-                                                LoadStatus.canLoading) {
-                                              body = Text(
-                                                "Relâcher pour charger plus de prières",
-                                                style:
-                                                    TextStyles.montserratBold(
-                                                        textSize:
-                                                            TextSizes.thirteen,
-                                                        textColor: colorBlack),
-                                              );
-                                            } else {
-                                              body = Visibility(
-                                                visible: false,
-                                                child: Column(
-                                                  children: [
-                                                    SizedBox(
-                                                      width: Get.width / 1.7,
-                                                      height: 4,
-                                                      child: Container(
-                                                        decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                          gradient:
-                                                              const LinearGradient(
-                                                            begin: Alignment
-                                                                .topRight,
-                                                            end: Alignment
-                                                                .bottomLeft,
-                                                            colors: [
-                                                              colorGreen,
-                                                              colorGreenSemiLight,
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Separators.minimunVertical(),
-                                                    Text(
-                                                      "Aucune donnée à charger",
-                                                      style: TextStyles
-                                                          .montserratBold(
-                                                        textSize:
-                                                            TextSizes.thirteen,
-                                                        textColor: colorBlack,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            }
-                                            return SizedBox(
-                                              height: 55.0,
-                                              child: Center(child: body),
-                                            );
-                                          },
-                                        ),
-                                        physics: const BouncingScrollPhysics(),
-                                        controller: _.refreshController,
-                                        child: ListView.separated(
-                                          padding: const EdgeInsets.only(
-                                            top: 16.0,
-                                            bottom: 0.0,
-                                          ),
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          shrinkWrap: true,
-                                          itemCount: _.prayers.length,
-                                          itemBuilder: (context, index) {
-                                            var pray = _.prayers[index];
-                                            return PrayItem(pray: pray);
-                                          },
-                                          separatorBuilder:
-                                              (BuildContext context,
-                                                  int index) {
-                                            return Separators.normalVertical();
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : Expanded(
-                                  child: NotFoundScreen(
-                                    message: "Aucune prière trouvée !",
-                                  ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Découvrez des prières inspirantes',
+                                style: TextStyles.montserratRegular(
+                                  textSize: TextSizes.thirteen,
+                                  textColor: Colors.grey[600]!,
                                 ),
-                    ],
-                  ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Main content area
+                    Expanded(
+                      child: Container(
+                        color: colorGrey4,
+                        width: double.infinity,
+                        child: _.isDataProcessing.isTrue
+                            ? Center(
+                          child: LottieLoadingView(
+                            size: Get.width / 4,
+                          ),
+                        )
+                            : _.hasData.isTrue
+                            ? FadeIn(
+                          child: SmartRefresher(
+                            enablePullDown: true,
+                            enablePullUp: true,
+                            onLoading: _.onLoading,
+                            onRefresh: _.onRefresh,
+                            header: const CustomClassicHeader(),
+                            footer: CustomFooter(
+                              builder: (BuildContext context, LoadStatus? mode) {
+                                Widget body;
+                                if (mode == LoadStatus.idle) {
+                                  body = Container();
+                                } else if (mode == LoadStatus.loading) {
+                                  body = LottieLoadingView();
+                                } else if (mode == LoadStatus.failed) {
+                                  body = Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red[50],
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(color: Colors.red[100]!),
+                                    ),
+                                    child: Text(
+                                      "Une erreur est survenue lors du chargement",
+                                      style: TextStyles.montserratMedium(
+                                        textSize: TextSizes.thirteen,
+                                        textColor: Colors.red[700]!,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                } else if (mode == LoadStatus.canLoading) {
+                                  body = Text(
+                                    "Relâcher pour charger plus de prières",
+                                    style: TextStyles.montserratMedium(
+                                      textSize: TextSizes.thirteen,
+                                      textColor: colorGreenSemiLight,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  );
+                                } else {
+                                  body = Visibility(
+                                    visible: false,
+                                    child: Column(
+                                      children: [
+                                        SizedBox(
+                                          width: Get.width / 1.7,
+                                          height: 4,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(10),
+                                              gradient: const LinearGradient(
+                                                begin: Alignment.topRight,
+                                                end: Alignment.bottomLeft,
+                                                colors: [
+                                                  colorGreen,
+                                                  colorGreenSemiLight,
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Separators.minimunVertical(),
+                                        Text(
+                                          "Aucune donnée à charger",
+                                          style: TextStyles.montserratMedium(
+                                            textSize: TextSizes.thirteen,
+                                            textColor: colorBlack,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+                                return SizedBox(
+                                  height: 60.0,
+                                  child: Center(child: body),
+                                );
+                              },
+                            ),
+                            physics: const BouncingScrollPhysics(),
+                            controller: _.refreshController,
+                            child: ListView.builder(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 20,
+                              ),
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: _.prayers.length,
+                              itemBuilder: (context, index) {
+                                var pray = _.prayers[index];
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 16),
+                                  child: PrayItem(pray: pray),
+                                );
+                              },
+                            ),
+                          ),
+                        )
+                            : NotFoundScreen(
+                          message: "Aucune prière trouvée !",
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

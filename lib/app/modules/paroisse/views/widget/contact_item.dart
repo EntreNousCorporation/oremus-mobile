@@ -4,131 +4,173 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
+import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_contact_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/movement_response.dart';
+import 'package:oremusapp/generated/assets.dart';
 
 class ContactItem extends StatelessWidget {
-  ContactItem({Key? key, required this.contact}) : super(key: key);
+  const ContactItem({Key? key, required this.contact}) : super(key: key);
 
-  Contact contact;
+  final Contact contact;
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ParoisseContactController>(builder: (logic) {
       return InkWell(
-        onTap: logic.code.value == 'IP' ? () {
-          logic.launchUrl(contact.url ?? '');
-        } : null,
+        onTap: logic.code.value == 'IP'
+            ? () {
+          doLaunchUrl(contact.url ?? '');
+        }
+            : null,
+        borderRadius: BorderRadius.circular(16),
         child: Ink(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 24.0),
-            child: Material(
-              borderRadius: BorderRadius.circular(10.0),
-              elevation: 10,
-              shadowColor: colorGrey2.withValues(alpha: 0.5),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  crossAxisAlignment: (contact.numbers?.isNotEmpty == true &&
-                          contact.emails?.isNotEmpty == true)
-                      ? CrossAxisAlignment.start
-                      : CrossAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      logic.code.value == 'IP'
-                          ? 'assets/images/icon_infos_paroissiales.svg'
-                          : 'assets/images/contacts.svg',
-                      height: 30,
-                      color: colorGreenSemiLight,
-                    ),
-                    Separators.normalHorizontal(),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            logic.getContactName(contact.name ?? ''),
-                            style: TextStyles.montserratSemiBold(
-                              textSize: TextSizes.sixteen,
-                              textColor: colorGreenSemiLight,
-                            ),
-                          ),
-
-                          //Telephone
-                          Column(
-                            children: contact.numbers?.map((e) {
-                                  return InkWell(
-                                    onTap: () {
-                                      logic.launchPhone(e);
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(5.0),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.phone_android_rounded,
-                                            color: colorBlack.withValues(alpha: 0.5),
-                                            size: 15,
-                                          ),
-                                          Separators.minimunHorizontal(),
-                                          Text(
-                                            contact.numbers?.first ?? '',
-                                            style: TextStyles.montserratRegular(
-                                              textSize: TextSizes.fourteen,
-                                              textColor:
-                                                  colorBlack.withValues(alpha: 0.5),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                }).toList() ??
-                                [],
-                          ),
-                          Visibility(
-                            visible: contact.emails?.isNotEmpty == true,
-                            child: Separators.normalVertical(),
-                          ),
-
-                          //Emails
-                          Column(
-                            children: contact.emails?.map((e) {
-                                  return InkWell(
-                                    onTap: () {
-                                      logic.launchEmail(e);
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.email_rounded,
-                                          color: colorBlack.withValues(alpha: 0.5),
-                                          size: 15,
-                                        ),
-                                        Separators.minimunHorizontal(),
-                                        Text(
-                                          contact.emails?.first ?? '',
-                                          style: TextStyles.montserratRegular(
-                                            textSize: TextSizes.fourteen,
-                                            textColor: colorBlack.withValues(alpha: 0.5),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }).toList() ??
-                                [],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
               ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              crossAxisAlignment: (contact.numbers?.isNotEmpty == true &&
+                  contact.emails?.isNotEmpty == true)
+                  ? CrossAxisAlignment.start
+                  : CrossAxisAlignment.center,
+              children: [
+                // Icône du contact
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: colorGreen.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: SvgPicture.asset(
+                      logic.code.value == 'IP'
+                          ? Assets.imagesIconInfosParoissiales
+                          : Assets.imagesContacts,
+                      height: 24,
+                      colorFilter: const ColorFilter.mode(colorGreenSemiLight, BlendMode.srcIn),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+
+                // Informations du contact
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Nom du contact
+                      Text(
+                        logic.getContactName(contact.name ?? ''),
+                        style: TextStyles.montserratSemiBold(
+                          textSize: TextSizes.sixteen,
+                          textColor: colorGreenSemiLight,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+
+                      // Téléphones
+                      if (contact.numbers != null && contact.numbers!.isNotEmpty)
+                        ...contact.numbers!.map((phone) => _buildContactDetail(
+                          icon: Icons.phone_android_rounded,
+                          text: phone,
+                          onTap: () => doLaunchPhone(phone),
+                        )),
+
+                      // Espacement entre téléphones et emails
+                      if (contact.numbers?.isNotEmpty == true &&
+                          contact.emails?.isNotEmpty == true)
+                        const SizedBox(height: 8),
+
+                      // Emails
+                      if (contact.emails != null && contact.emails!.isNotEmpty)
+                        ...contact.emails!.map((email) => _buildContactDetail(
+                          icon: Icons.email_rounded,
+                          text: email,
+                          onTap: () => doLaunchEmail(email),
+                        )),
+                    ],
+                  ),
+                ),
+
+                // Boutons d'action rapide
+                if (logic.code.value == 'IP' && contact.url != null && contact.url!.isNotEmpty)
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: colorGreen.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.open_in_new_rounded,
+                        color: colorGreenSemiLight,
+                        size: 20,
+                      ),
+                      onPressed: () {
+                        doLaunchUrl(contact.url ?? '');
+                      },
+                    ),
+                  ),
+              ],
             ),
           ),
         ),
       );
     });
+  }
+
+  // Méthode pour construire un détail de contact (téléphone ou email)
+  Widget _buildContactDetail({
+    required IconData icon,
+    required String text,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Ink(
+          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+          decoration: BoxDecoration(
+            color: colorGreen.withValues(alpha: 0.05),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                color: colorGreenSemiLight,
+                size: 16,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  text,
+                  style: TextStyles.montserratMedium(
+                    textSize: TextSizes.fourteen,
+                    textColor: Colors.grey[800]!,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

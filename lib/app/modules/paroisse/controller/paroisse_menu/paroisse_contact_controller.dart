@@ -12,7 +12,6 @@ import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_reposito
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ParoisseContactController extends GetxController {
   final ParoisseRepository paroisseRepository;
@@ -61,36 +60,6 @@ class ParoisseContactController extends GetxController {
     }
   }
 
-  launchEmail(String email) async {
-    if (await canLaunch(Uri.encodeFull(
-            "mailto:$email?subject=Besoin d'information&body=")) ==
-        true) {
-      launch(
-          Uri.encodeFull("mailto:$email?subject=Besoin d'information&body="));
-    } else {
-      log("Can't launch email");
-    }
-  }
-
-  launchPhone(String phone) async {
-    if (await canLaunch("tel:$phone") == true) {
-      launch("tel:$phone");
-    } else {
-      log("Can't launch phone number");
-    }
-  }
-
-  launchUrl(String link) async {
-    if (await canLaunch(link) == true) {
-      launch(link);
-    } else {
-      log("Can't launch url");
-      showNotification(
-        message: 'Aucune information trouvée',
-      );
-    }
-  }
-
   getTypeTitle(String code) {
     switch (code) {
       case 'HM':
@@ -118,9 +87,10 @@ class ParoisseContactController extends GetxController {
       case 'HC':
       case 'HB':
         return 'Horaires non disponibles\nRéessayez plus tard svp';
+      case 'CO':
+        return 'Aucun contact trouvé';
       case 'AM':
       case 'EP':
-      case 'CO':
       case 'IP':
       case 'DM':
         return 'Aucune information trouvée';

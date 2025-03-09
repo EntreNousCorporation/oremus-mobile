@@ -6,6 +6,7 @@ import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:like_button/like_button.dart';
+import 'package:oremusapp/app/commons/components/image_displayer.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/constants.dart';
@@ -24,10 +25,11 @@ class DonationHistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: colorWhite,
+      color: Colors.grey[50],
       child: GetX<DonationHistoryController>(builder: (_) {
         return KeyboardDismisser(
           child: Scaffold(
+            backgroundColor: Colors.grey[50],
             resizeToAvoidBottomInset: true,
             body: NotificationListener<OverscrollIndicatorNotification>(
               onNotification: (notification) {
@@ -37,249 +39,350 @@ class DonationHistoryScreen extends StatelessWidget {
               child: CustomScrollView(
                 physics: const BouncingScrollPhysics(),
                 slivers: [
+                  // Enhanced header with cover image
                   SliverAppBar(
                     expandedHeight: AppConstants.kExpandedHeight,
                     collapsedHeight: 100,
                     floating: false,
                     pinned: true,
                     backgroundColor: colorGreen,
-                    elevation: 10,
-                    shadowColor: colorGrey2.withValues(alpha: 0.8),
-                    leading: IconButton(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      icon: const Icon(Icons.arrow_back_ios_rounded, color: colorWhite,),
+                    elevation: 0,
+                    shadowColor: Colors.transparent,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(30),
+                        bottomRight: Radius.circular(30),
+                      ),
                     ),
-                    actions: donationWithoutWorship.value ? null : [
-                      Visibility(
-                        visible: false,
+                    // Back button
+                    leading: Container(
+                      margin: const EdgeInsets.only(left: 8, top: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        icon: const Icon(
+                          Icons.arrow_back_rounded,
+                          color: colorWhite,
+                          size: 22,
+                        ),
+                      ),
+                    ),
+                    // Actions (favorites, map)
+                    actions: donationWithoutWorship.value
+                        ? null
+                        : [
+                      // Favorites button
+                      Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: LikeButton(
+                          isLiked: _.paroisseSelected.value.isFavorite,
+                          onTap: (isLiked) async {
+                            log('isLiked => $isLiked');
+                            _.paroisseSelected.value.isFavorite =
+                            !isLiked;
+                            if (isLiked) {
+                              _.removeFavorite(
+                                  _.paroisseSelected.value, isLiked);
+                            } else {
+                              _.saveFavorite(
+                                  _.paroisseSelected.value, isLiked);
+                            }
+                            return !isLiked;
+                          },
+                          size: 25,
+                          circleColor: const CircleColor(
+                              start: Color(0xff93291E),
+                              end: Color(0xFFED213A)),
+                          bubblesColor: const BubblesColor(
+                            dotPrimaryColor: Color(0xFFED213A),
+                            dotSecondaryColor: Color(0xff93291E),
+                          ),
+                          likeBuilder: (bool isLiked) {
+                            return Icon(
+                              isLiked
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: isLiked
+                                  ? const Color(0xFFED213A)
+                                  : colorWhite,
+                              size: 22,
+                            );
+                          },
+                          padding: const EdgeInsets.all(8),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      // Map button
+                      Container(
+                        margin: const EdgeInsets.only(right: 8, top: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         child: IconButton(
                           onPressed: () {
-                            _.moveToHome();
+                            _.goToMap();
                           },
-                          icon: const Icon(Icons.home_filled),
+                          icon: const Icon(
+                            Icons.map_rounded,
+                            color: colorWhite,
+                            size: 22,
+                          ),
                         ),
-                      ),
-                      Separators.minimunHorizontal(),
-                      LikeButton(
-                        isLiked: _.paroisseSelected.value.isFavorite,
-                        onTap: (isLiked) async {
-                          log('isLiked => $isLiked');
-                          _.paroisseSelected.value.isFavorite = !isLiked;
-                          if (isLiked) {
-                            _.removeFavorite(_.paroisseSelected.value, isLiked);
-                          } else {
-                            _.saveFavorite(_.paroisseSelected.value, isLiked);
-                          }
-                          return !isLiked;
-                        },
-                        size: 25,
-                        circleColor: const CircleColor(
-                            start: Color(0xff93291E), end: Color(0xFFED213A)),
-                        bubblesColor: const BubblesColor(
-                          dotPrimaryColor: Color(0xFFED213A),
-                          dotSecondaryColor: Color(0xff93291E),
-                        ),
-                        likeBuilder: (bool isLiked) {
-                          return Icon(
-                            isLiked ? Icons.favorite : Icons.favorite_border,
-                            color:
-                                isLiked ? const Color(0xFFED213A) : colorWhite,
-                            size: 25,
-                          );
-                        },
-                      ),
-                      Separators.minimunHorizontal(),
-                      IconButton(
-                        onPressed: () {
-                          _.goToMap();
-                        },
-                        icon: const Icon(Icons.map_rounded, color: colorWhite,),
                       ),
                     ],
+
+                    // Title and background image
                     flexibleSpace: FlexibleSpaceBar(
-                        centerTitle: true,
-                        title: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                            _.paroisseSelected.value.name ?? 'Mes dons',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                            style: TextStyles.montserratBold(
-                                textSize: TextSizes.eighteen,
-                                textColor: colorWhite),
+                      centerTitle: true,
+                      title: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Text(
+                          _.paroisseSelected.value.name ?? 'Mes dons',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: TextStyles.montserratBold(
+                            textSize: TextSizes.eighteen,
+                            textColor: colorWhite,
                           ),
                         ),
-                        background: (_.paroisseSelected.value.coverImage?.link
-                                    ?.isNotEmpty ==
-                                true)
-                            ? Stack(
-                                children: [
-                                  CachedNetworkImage(
-                                    width: Get.width,
-                                    height: Get.width,
-                                    imageUrl: _.paroisseSelected.value
-                                            .coverImage?.link ??
-                                        '',
-                                    fit: BoxFit.cover,
-                                    placeholder: (context, url) =>
-                                        LottieLoadingView(size: Get.width / 6),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
-                                  ),
-                                  Container(
-                                    height: Get.width,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: Colors.black54.withValues(alpha: 0.3),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : Stack(
-                                children: [
-                                  Image.asset(
-                                    Assets.imagesBgLogin,
-                                    width: Get.width,
-                                    height: Get.width,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Container(
-                                    height: Get.width,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: Colors.black54.withValues(alpha: 0.3),
-                                    ),
-                                  ),
-                                ],
-                              )),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    sliver: SliverToBoxAdapter(
-                      child: Column(
-                        children: [
-                          Separators.minimunVertical(),
-                          Text(
-                            'Mes historiques de don',
-                            textAlign: TextAlign.center,
-                            style: TextStyles.montserratBold(
-                              textSize: TextSizes.eighteen,
-                              textColor: colorGreenSemiLight,
-                            ),
+                      ),
+                      background: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30),
                           ),
-                          Separators.minimunVertical(),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              top: 16,
-                              bottom: 0,
-                              left: 16,
-                              right: 16,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.2),
+                              blurRadius: 15,
+                              offset: const Offset(0, 5),
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30),
+                          ),
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              // Cover image
+                              (_.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
+                                  ? CachedNetworkImage(
+                                imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) =>
+                                    LottieLoadingView(size: Get.width / 6),
+                                errorWidget: (context, url, error) =>
+                                    Image.asset(
+                                      Assets.imagesBgLogin,
+                                      width: Get.width,
+                                      height: Get.width,
+                                      fit: BoxFit.cover,
+                                    ),
+                              )
+                                  : Image.asset(
+                                Assets.imagesBgLogin,
+                                width: Get.width,
+                                height: Get.width,
+                                fit: BoxFit.cover,
+                              ),
+                              // Shadow overlay
+                              Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Colors.transparent,
+                                      Colors.black.withValues(alpha: 0.7),
+                                    ],
+                                    stops: const [0.5, 1.0],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Search section and donation list
+                  SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Section header
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(24, 30, 24, 24),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 50,
+                                height: 50,
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: colorGreenSemiLight.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(15),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: colorGreenSemiLight.withValues(alpha: 0.1),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: const ImageDisplayer(
+                                  icon: Assets.imagesVolunteer,
+                                  color: colorGreenSemiLight,
+                                  height: 24,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+
+                              // Section title
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Historique de mes dons',
+                                      style: TextStyles.montserratBold(
+                                        textSize: TextSizes.eighteen,
+                                        textColor: colorGreenSemiLight,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      'Retrouvez tous vos dons',
+                                      style: TextStyles.montserratRegular(
+                                        textSize: TextSizes.fourteen,
+                                        textColor: Colors.grey[600]!,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Enhanced search bar
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Container(
+                            height: 56,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.05),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
                             ),
                             child: Row(
                               children: [
-                                Expanded(
-                                  child: SizedBox(
-                                    height: (Get.width / 9),
-                                    child: const SearchWidget() ,
-                                  ),
-                                ),
-                                /*Separators.normalHorizontal(),
-                                GestureDetector(
-                                  onTap: () {
-                                    _.goToAdvancedSearch();
-                                  },
-                                  child: Material(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    elevation: 10,
-                                    color: colorWhite,
-                                    shadowColor: colorGrey2.withValues(alpha: 0.5),
-                                    child: b.Badge(
-                                      showBadge: (_.searchCriteria.value
-                                                  .isMassRequestCriteriaEmpty ==
-                                              false)
-                                          ? true
-                                          : false,
-                                      position: b.BadgePosition.topEnd(
-                                          top: -10, end: -5),
-                                      badgeContent: Text(
-                                        '${_.searchCriteria.value.countCriteria}',
-                                        style: TextStyles.montserratRegular(
-                                          textColor: colorWhite,
-                                          textSize: TextSizes.thirteen,
-                                        ),
-                                      ),
-                                      child: SizedBox(
-                                        height: (Get.width / 9),
-                                        width: (Get.width / 9),
-                                        child: const Icon(
-                                          Icons.filter_list_rounded,
-                                          color: colorPurpleLight,
-                                        ),
-                                      ),
+                                // Search icon container
+                                Container(
+                                  width: 56,
+                                  height: 56,
+                                  decoration: const BoxDecoration(
+                                    color: colorGreenSemiLight,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(16),
+                                      bottomLeft: Radius.circular(16),
                                     ),
                                   ),
-                                ),*/
+                                  child: const Icon(
+                                    Icons.calendar_month_rounded,
+                                    color: Colors.white,
+                                    size: 24,
+                                  ),
+                                ),
+
+                                // Search field
+                                const Expanded(
+                                  child: SizedBox(
+                                    height: 56,
+                                    child: Center(
+                                      child: SearchWidget(),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                          Separators.minimunVertical(),
-                          _.isDataProcessing.isTrue
-                              ? Column(
-                                  children: [
-                                    Separators.customSizeVertical(
-                                        Get.height * 0.15),
-                                    LottieLoadingView(
-                                      size: Get.width / 4,
-                                    ),
-                                  ],
-                                )
-                              : _.hasData.isTrue
-                                  ? FadeIn(
-                                      child: Column(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                              top: 10,
-                                              bottom: 0,
-                                              left: 16,
-                                              right: 16,
-                                            ),
-                                            child: ListView.separated(
-                                              shrinkWrap: true,
-                                              padding: EdgeInsets.zero,
-                                              physics:
-                                                  const NeverScrollableScrollPhysics(),
-                                              itemBuilder: (context, index) {
-                                                var massRequest = _.donations[index];
-                                                return DonationHistoryItem(donation: massRequest);
-                                              },
-                                              separatorBuilder:
-                                                  (context, index) {
-                                                return Separators
-                                                    .normalVertical();
-                                              },
-                                              itemCount: _.donations.length,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  : Column(
-                                      children: [
-                                        Separators.customSizeVertical(
-                                            Get.height * 0.15),
-                                        NotFoundScreen(
-                                          message:
-                                              "Aucun don effectué !",
-                                        ),
-                                      ],
-                                    ),
-                          Separators.minimunVertical(),
-                        ],
-                      ),
+                        ),
+
+                        const SizedBox(height: 24),
+
+                        // Donations list or loading/empty indicators
+                        _.isDataProcessing.isTrue
+                            ? SizedBox(
+                          height: 200,
+                          child: Center(
+                            child: LottieLoadingView(
+                              size: Get.width / 4,
+                            ),
+                          ),
+                        )
+                            : _.hasData.isTrue
+                            ? FadeIn(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24),
+                            child: Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                              children: [
+                                // List of donations
+                                ListView.separated(
+                                  shrinkWrap: true,
+                                  padding: EdgeInsets.zero,
+                                  physics:
+                                  const NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    var donation = _.donations[index];
+                                    return DonationHistoryItem(
+                                        donation: donation);
+                                  },
+                                  separatorBuilder: (context, index) {
+                                    return const SizedBox(height: 16);
+                                  },
+                                  itemCount: _.donations.length,
+                                ),
+
+                                const SizedBox(height: 24),
+                              ],
+                            ),
+                          ),
+                        )
+                            : SizedBox(
+                          height: 300,
+                          width: double.maxFinite,
+                          child: NotFoundScreen(
+                            message: "Aucun don effectué !",
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

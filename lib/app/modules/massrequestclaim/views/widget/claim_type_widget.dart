@@ -11,46 +11,88 @@ class ClaimTypeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<MassRequestClaimController>(builder: (logic) {
-      return Material(
-        borderRadius: BorderRadius.circular(10.0),
-        elevation: 10,
-        color: colorWhite,
-        shadowColor: colorGrey2.withValues(alpha: 0.5),
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+              spreadRadius: 0,
+            ),
+          ],
+        ),
         child: TextFormField(
           controller: logic.claimDescription,
           keyboardAppearance: Brightness.light,
-          style: TextStyles.montserratSemiBold(textColor: colorBlack),
+          style: TextStyles.montserratMedium(
+            textColor: Colors.black87,
+            textSize: TextSizes.fifteen,
+          ),
           maxLines: 6,
-          cursorColor: colorBlue,
+          cursorColor: colorGreenSemiLight,
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.done,
           decoration: InputDecoration(
-            contentPadding:
-                const EdgeInsets.only(top: 16, left: 16, right: 0, bottom: 0),
+            contentPadding: const EdgeInsets.all(16),
             filled: true,
-            fillColor: colorWhite,
-            border: InputBorder.none,
+            fillColor: Colors.white,
+            hintText: 'Décrivez votre réclamation en détail...',
+            hintStyle: TextStyles.montserratRegular(
+              textColor: Colors.grey[400]!,
+              textSize: TextSizes.fourteen,
+            ),
+            border: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.grey[200]!,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(16),
+            ),
             focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: colorGreen),
-              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(
+                color: colorGreenSemiLight,
+                width: 1.5,
+              ),
+              borderRadius: BorderRadius.circular(16),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: colorTransparent),
-              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(
+                color: Colors.grey[200]!,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(16),
             ),
-            errorBorder: InputBorder.none,
-            disabledBorder: UnderlineInputBorder(
-              borderSide: const BorderSide(color: colorGrey1),
-              borderRadius: BorderRadius.circular(8),
+            errorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                color: Colors.red,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(16),
             ),
-            hintText: '',
-            hintStyle: TextStyles.montserratItalic(
-              textColor: colorPurpleLight,
-              textSize: TextSizes.fourteen,
+            disabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.grey[200]!,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            prefixIcon: Padding(
+              padding: const EdgeInsets.only(left: 16, right: 8, top: 14, bottom: 14),
+              child: Icon(
+                Icons.description_outlined,
+                color: logic.claimDescription.text.isNotEmpty
+                    ? colorGreenSemiLight
+                    : Colors.grey[400],
+                size: 20,
+              ),
             ),
           ),
           onChanged: (value) {
             logic.checkForm();
+            logic.update();
           },
         ),
       );

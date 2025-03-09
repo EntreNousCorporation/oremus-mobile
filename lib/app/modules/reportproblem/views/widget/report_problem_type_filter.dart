@@ -12,62 +12,76 @@ class ReportProblemTypeFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ReportProblemController>(builder: (logic) {
-      return DropdownButtonFormField<ReportProblemTypeData?>(
-        isExpanded: true,
-        value: logic.reportProblemTypeSelected.value,
-        enableFeedback: true,
-        icon: const Icon(
-          Icons.arrow_drop_down_rounded,
-          size: 25,
-        ),
-        iconEnabledColor: colorGreen,
-        style: TextStyles.montserratBold(textSize: TextSizes.eighteen),
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.fromLTRB(
-            12,
-            10,
-            12,
-            10,
-          ),
-          isDense: false,
-          labelText: '',
-          labelStyle: TextStyles.montserratRegular(
-            textColor: colorBlack,
-            textSize: TextSizes.sixteen,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: colorGreen),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: colorTransparent),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          errorBorder: InputBorder.none,
-          disabledBorder: UnderlineInputBorder(
-            borderSide: const BorderSide(color: colorGrey1),
-            borderRadius: BorderRadius.circular(4),
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[50],
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: logic.reportProblemTypeSelected.value != null
+                ? colorGreenSemiLight
+                : Colors.grey[300]!,
+            width: logic.reportProblemTypeSelected.value != null ? 1.5 : 1,
           ),
         ),
-        items: logic.reportProblemTypes
-            .map<DropdownMenuItem<ReportProblemTypeData?>>((ReportProblemTypeData? typeData) {
-          return DropdownMenuItem<ReportProblemTypeData?>(
-            value: typeData,
-            child: Text(
-              typeData?.name?.fr ?? '-',
-              maxLines: 2,
-              softWrap: true,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyles.montserratMedium(
-                textColor: colorBlack,
-                textSize: TextSizes.sixteen,
-              ),
+        child: DropdownButtonFormField<ReportProblemTypeData?>(
+          isExpanded: true,
+          value: logic.reportProblemTypeSelected.value,
+          enableFeedback: true,
+          icon: Icon(
+            Icons.keyboard_arrow_down_rounded,
+            size: 24,
+            color: colorGreenSemiLight,
+          ),
+          iconSize: 24,
+          iconEnabledColor: colorGreenSemiLight,
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            border: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            errorBorder: InputBorder.none,
+            disabledBorder: InputBorder.none,
+            isDense: true,
+            hintText: 'Sélectionnez le type de problème',
+            hintStyle: TextStyles.montserratRegular(
+              textColor: Colors.grey[400]!,
+              textSize: TextSizes.fourteen,
             ),
-          );
-        }).toList(),
-        onChanged: (ReportProblemTypeData? value) {
-          logic.updateReportProblemTypeFilter(value);
-        },
+            prefixIcon: logic.reportProblemTypeSelected.value != null
+                ? const Icon(
+              Icons.error_outline,
+              color: colorGreenSemiLight,
+              size: 20,
+            )
+                : null,
+          ),
+          style: TextStyles.montserratMedium(
+            textColor: colorBlack,
+            textSize: TextSizes.fourteen,
+          ),
+          dropdownColor: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          items: logic.reportProblemTypes
+              .map<DropdownMenuItem<ReportProblemTypeData?>>(
+                  (ReportProblemTypeData? typeData) {
+                return DropdownMenuItem<ReportProblemTypeData?>(
+                  value: typeData,
+                  child: Text(
+                    typeData?.name?.fr ?? '-',
+                    maxLines: 2,
+                    softWrap: true,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyles.montserratMedium(
+                      textColor: colorBlack,
+                      textSize: TextSizes.fourteen,
+                    ),
+                  ),
+                );
+              }).toList(),
+          onChanged: (ReportProblemTypeData? value) {
+            logic.updateReportProblemTypeFilter(value);
+          },
+        ),
       );
     });
   }

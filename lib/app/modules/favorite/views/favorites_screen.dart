@@ -25,15 +25,7 @@ class FavoritesScreen extends StatelessWidget {
                     height: 200,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          colorGreen,
-                          colorGreen.withOpacity(0.8),
-                          colorGreen.withOpacity(0.6),
-                        ],
-                      ),
+                      color: colorGreen,
                       borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(30),
                         bottomRight: Radius.circular(30),
@@ -52,7 +44,7 @@ class FavoritesScreen extends StatelessWidget {
                             children: [
                               Container(
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.3),
+                                  color: Colors.white.withValues(alpha: 0.3),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: IconButton(
@@ -92,7 +84,7 @@ class FavoritesScreen extends StatelessWidget {
                             'Retrouvez vos paroisses préférées',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.9),
+                              color: Colors.white.withValues(alpha: 0.9),
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
                             ),
@@ -119,7 +111,7 @@ class FavoritesScreen extends StatelessWidget {
 
   Widget _buildFavoritesList(FavoriteController controller) {
     return Container(
-      margin: const EdgeInsets.only(top: 16),
+      margin: const EdgeInsets.only(top: 8),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: FadeIn(
         child: AnimatedList(
@@ -137,7 +129,7 @@ class FavoritesScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withValues(alpha: 0.05),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -170,13 +162,13 @@ class FavoritesScreen extends StatelessWidget {
             width: 120,
             height: 120,
             decoration: BoxDecoration(
-              color: colorGreen1.withOpacity(0.3),
+              color: colorGreen1.withValues(alpha: 0.3),
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.favorite_border_rounded,
               size: 60,
-              color: colorGreenSemiLight.withOpacity(0.7),
+              color: colorGreenSemiLight.withValues(alpha: 0.7),
             ),
           ),
           const SizedBox(height: 24),

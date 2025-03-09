@@ -4,14 +4,14 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/massrequest/controller/filter_mass_request_worship_controller.dart';
+import 'package:oremusapp/app/modules/massrequest/controller/filter_worship_controller.dart';
 
 class FilterSearchWidget extends StatelessWidget {
   const FilterSearchWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetX<FilterMassRequestWorshipController>(builder: (logic) {
+    return GetX<FilterWorshipController>(builder: (logic) {
       return Material(
         borderRadius: BorderRadius.circular(10.0),
         elevation: 10,

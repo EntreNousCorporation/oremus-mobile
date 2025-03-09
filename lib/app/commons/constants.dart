@@ -46,6 +46,8 @@ abstract class AppConstants {
 
   static const END_DATE_LIMIT = 365;
 
+  static const CGU_URL = 'https://www.oremus.ci/dcp.html#about';
+
   //DRAWER MENU INDEX
   static const HOME = 0;
   static const PROFILE = 1;

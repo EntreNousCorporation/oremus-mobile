@@ -22,263 +22,393 @@ class FilterParoisseScreen extends StatelessWidget {
       color: colorGreen,
       child: SafeArea(
         child: GetX<FilterParoisseController>(builder: (_) {
-          return WillPopScope(
-            onWillPop: () async => false,
+          return PopScope(
+            canPop: false,
             child: KeyboardDismisser(
               child: Scaffold(
                 resizeToAvoidBottomInset: true,
-                body: Container(
-                  color: colorGrey4,
-                  width: double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      top: 16,
-                      bottom: 8,
-                      left: 16,
-                      right: 16,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                _.doResetFilter();
-                                _.goBackToParoisse();
-                              },
-                              icon: const Icon(
-                                Icons.cancel_rounded,
-                                size: 30,
-                              ),
-                            ),
-                            TextButton.icon(
-                              icon: const Icon(
-                                Icons.restore_rounded,
-                                size: 30,
-                                color: colorBlack,
-                              ),
-                              label: Text(
-                                'Réinitialiser',
-                                style: TextStyles.montserratRegular(
-                                  textColor: colorBlack,
+                body: Column(
+                  children: [
+                    // En-tête avec fond vert
+                    Container(
+                      padding: const EdgeInsets.only(
+                          top: 8, bottom: 16, left: 16, right: 16),
+                      decoration: const BoxDecoration(
+                        color: colorGreen,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(24),
+                          bottomRight: Radius.circular(24),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Boutons de navigation
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // Bouton retour
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.3),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: IconButton(
+                                  onPressed: () {
+                                    _.doResetFilter();
+                                    _.goBackToParoisse();
+                                  },
+                                  icon: const Icon(
+                                    Icons.arrow_back_rounded,
+                                    size: 20,
+                                    color: colorWhite,
+                                  ),
                                 ),
                               ),
-                              onPressed: () {
-                                _.doResetFilter();
-                              },
-                            ),
-                          ],
-                        ),
-                        Separators.normalVertical(),
-                        Text(
-                          'Filtres',
-                          style: TextStyles.montserratBold(
-                            textColor: colorBlack,
-                            textSize: TextSizes.thirty_eight,
-                          ),
-                        ),
-                        Expanded(
-                          child: NotificationListener<OverscrollIndicatorNotification>(
-                            onNotification: (notification) {
-                              notification.disallowIndicator();
-                              return false;
-                            },
-                            child: SingleChildScrollView(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Separators.normalVertical(),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'Type de lieu de culte',
-                                        style: TextStyles.montserratMedium(
-                                          textColor: colorGrey1,
-                                          textSize: TextSizes.fourteen,
-                                        ),
-                                      ),
-                                      Separators.normalHorizontal(),
-                                      Expanded(
-                                        child: SizedBox(
-                                          height: (Get.width / 9),
-                                          child: const TypeLiturgicalSearchWidget(),
-                                        ),
-                                      ),
-                                    ],
+
+                              // Bouton réinitialiser
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.3),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: TextButton.icon(
+                                  icon: const Icon(
+                                    Icons.refresh_rounded,
+                                    size: 20,
+                                    color: colorWhite,
                                   ),
-                                  Separators.minimunVertical(),
-                                  //Separators.minimunVertical(),
-                                  _.isWorshipPlaceDataProcessing.isTrue
-                                      ? Center(
-                                          child: LoadingView(
-                                            size: Get.width / 20,
-                                            color: colorGreenSemiLight,
-                                          ),
-                                        )
-                                      : _.hasWorshipPlaceData.isTrue
-                                          ? Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Separators.minimunVertical(),
-                                                SizedBox(
-                                                  height: Get.width / 8,
-                                                  child: ListView.builder(
-                                                      scrollDirection:
-                                                          Axis.horizontal,
-                                                      itemCount:
-                                                          _.paroisseTypesTemp.length,
-                                                      itemBuilder:
-                                                          (context, index) {
-                                                        var placeType = _
-                                                            .paroisseTypesTemp[index];
-                                                        return PlaceTypeItem(
-                                                          placeType: placeType,
-                                                          key: ValueKey(placeType
-                                                              .identifier),
-                                                        );
-                                                      }),
-                                                ),
-                                              ],
-                                            )
-                                          : Container(),
-                                  Separators.normalVertical(),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'Diocèse',
-                                        style: TextStyles.montserratMedium(
-                                          textColor: colorGrey1,
-                                          textSize: TextSizes.fourteen,
-                                        ),
-                                      ),
-                                      Separators.normalHorizontal(),
-                                      Expanded(
-                                        child: SizedBox(
-                                          height: (Get.width / 9),
-                                          child: const DioceseSearchWidget(),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Separators.minimunVertical(),
-                                  //Separators.minimunVertical(),
-                                  _.isDioceseDataProcessing.isTrue
-                                      ? Center(
-                                          child: LoadingView(
-                                            size: Get.width / 20,
-                                            color: colorGreenSemiLight,
-                                          ),
-                                        )
-                                      : _.hasDioceseData.isTrue
-                                          ? Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Separators.minimunVertical(),
-                                                SizedBox(
-                                                  height: Get.width / 8,
-                                                  child: ListView.builder(
-                                                      scrollDirection:
-                                                          Axis.horizontal,
-                                                      itemCount:
-                                                          _.diocesesTemp.length,
-                                                      itemBuilder:
-                                                          (context, index) {
-                                                        var diocese =
-                                                            _.diocesesTemp[index];
-                                                        return DioceseItem(
-                                                          diocese: diocese,
-                                                          key: ValueKey(
-                                                              diocese?.identifier),
-                                                        );
-                                                      }),
-                                                ),
-                                              ],
-                                            )
-                                          : Container(),
-                                  Separators.normalVertical(),
-                                  Text(
-                                    'Ville',
+                                  label: Text(
+                                    'Réinitialiser',
                                     style: TextStyles.montserratMedium(
-                                      textColor: colorGrey1,
+                                      textColor: colorWhite,
                                       textSize: TextSizes.fourteen,
                                     ),
                                   ),
-                                  Separators.minimunVertical(),
-                                  MyTextField(
-                                    controller: _.cityController,
-                                    onChanged: (value) {
-                                      _.searchCriteria.value.city = value;
-                                      _.canDoApplyAction();
-                                    },
+                                  onPressed: () {
+                                    _.doResetFilter();
+                                  },
+                                  style: TextButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 8),
                                   ),
-                                  Separators.normalVertical(),
-                                  Text(
-                                    'Commune',
-                                    style: TextStyles.montserratMedium(
-                                      textColor: colorGrey1,
-                                      textSize: TextSizes.fourteen,
-                                    ),
-                                  ),
-                                  Separators.minimunVertical(),
-                                  MyTextField(
-                                    controller: _.municipalityController,
-                                    onChanged: (value) {
-                                      _.searchCriteria.value.municipality = value;
-                                      _.canDoApplyAction();
-                                    },
-                                  ),
-                                  Separators.normalVertical(),
-                                  Text(
-                                    'Quartier',
-                                    style: TextStyles.montserratMedium(
-                                      textColor: colorGrey1,
-                                      textSize: TextSizes.fourteen,
-                                    ),
-                                  ),
-                                  Separators.minimunVertical(),
-                                  MyTextField(
-                                    controller: _.neighborhoodController,
-                                    onChanged: (value) {
-                                      _.searchCriteria.value.neighborhood = value;
-                                      _.canDoApplyAction();
-                                    },
-                                  ),
-                                ],
+                                ),
                               ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          // Titre
+                          Text(
+                            'Filtres',
+                            style: TextStyles.montserratBold(
+                              textColor: colorWhite,
+                              textSize: TextSizes.thirty_eight,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Contenu principal
+                    Expanded(
+                      child: Container(
+                        color: colorGrey4,
+                        width: double.infinity,
+                        padding: const EdgeInsets.only(
+                          left: 20,
+                          right: 20,
+                          top: 16,
+                        ),
+                        child: NotificationListener<
+                            OverscrollIndicatorNotification>(
+                          onNotification: (notification) {
+                            notification.disallowIndicator();
+                            return false;
+                          },
+                          child: SingleChildScrollView(
+                            physics: const BouncingScrollPhysics(),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Section Type de lieu de culte
+                                _buildFilterSection(
+                                  title: 'Type de lieu de culte',
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // Barre de recherche
+                                      Container(
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          color: colorWhite,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          border: Border.all(
+                                              color:
+                                                  colorGreen.withValues(alpha: 0.3)),
+                                        ),
+                                        child: const Center(
+                                          child: TypeLiturgicalSearchWidget(),
+                                        ),
+                                      ),
+
+                                      const SizedBox(height: 12),
+
+                                      // Liste des types de lieux
+                                      _.isWorshipPlaceDataProcessing.isTrue
+                                          ? Center(
+                                              child: LoadingView(
+                                                size: Get.width / 20,
+                                                color: colorGreenSemiLight,
+                                              ),
+                                            )
+                                          : _.hasWorshipPlaceData.isTrue
+                                              ? SizedBox(
+                                                  height: 50,
+                                                  child: ListView.builder(
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    itemCount: _
+                                                        .paroisseTypesTemp
+                                                        .length,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      var placeType =
+                                                          _.paroisseTypesTemp[
+                                                              index];
+                                                      return PlaceTypeItem(
+                                                        placeType: placeType,
+                                                        key: ValueKey(placeType
+                                                            .identifier),
+                                                      );
+                                                    },
+                                                  ),
+                                                )
+                                              : Container(),
+                                    ],
+                                  ),
+                                ),
+
+                                // Section Diocèse
+                                _buildFilterSection(
+                                  title: 'Diocèse',
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // Barre de recherche
+                                      Container(
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          color: colorWhite,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          border: Border.all(
+                                              color:
+                                                  colorGreen.withValues(alpha: 0.3)),
+                                        ),
+                                        child: const Center(
+                                          child: DioceseSearchWidget(),
+                                        ),
+                                      ),
+
+                                      const SizedBox(height: 12),
+
+                                      // Liste des diocèses
+                                      _.isDioceseDataProcessing.isTrue
+                                          ? Center(
+                                              child: LoadingView(
+                                                size: Get.width / 20,
+                                                color: colorGreenSemiLight,
+                                              ),
+                                            )
+                                          : _.hasDioceseData.isTrue
+                                              ? SizedBox(
+                                                  height: 50,
+                                                  child: ListView.builder(
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    itemCount:
+                                                        _.diocesesTemp.length,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      var diocese =
+                                                          _.diocesesTemp[index];
+                                                      return DioceseItem(
+                                                        diocese: diocese,
+                                                        key: ValueKey(diocese
+                                                            ?.identifier),
+                                                      );
+                                                    },
+                                                  ),
+                                                )
+                                              : Container(),
+                                    ],
+                                  ),
+                                ),
+
+                                // Section Ville
+                                _buildFilterSection(
+                                  title: 'Ville',
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: colorWhite,
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(alpha: 0.03),
+                                          blurRadius: 6,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: MyTextField(
+                                      controller: _.cityController,
+                                      onChanged: (value) {
+                                        _.searchCriteria.value.city = value;
+                                        _.canDoApplyAction();
+                                      },
+                                      hintText: 'Entrez une ville',
+                                    ),
+                                  ),
+                                ),
+
+                                // Section Commune
+                                _buildFilterSection(
+                                  title: 'Commune',
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: colorWhite,
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(alpha: 0.03),
+                                          blurRadius: 6,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: MyTextField(
+                                      controller: _.municipalityController,
+                                      onChanged: (value) {
+                                        _.searchCriteria.value.municipality =
+                                            value;
+                                        _.canDoApplyAction();
+                                      },
+                                      hintText: 'Entrez une commune',
+                                    ),
+                                  ),
+                                ),
+
+                                // Section Quartier
+                                _buildFilterSection(
+                                  title: 'Quartier',
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: colorWhite,
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(alpha: 0.03),
+                                          blurRadius: 6,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: MyTextField(
+                                      controller: _.neighborhoodController,
+                                      onChanged: (value) {
+                                        _.searchCriteria.value.neighborhood =
+                                            value;
+                                        _.canDoApplyAction();
+                                      },
+                                      hintText: 'Entrez un quartier',
+                                    ),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 20),
+                              ],
                             ),
                           ),
                         ),
-                        Separators.normalVertical(),
-                        CustomButton(
-                          text: 'Appliquer les filtres',
-                          textSize: TextSizes.eighteen,
-                          actionColor: colorGreenSemiLight,
-                          enabled: _.enabledApplyButton.value == false
-                              ? false
-                              : true,
-                          borderColor: _.enabledApplyButton.value == false
-                              ? colorGrey1
-                              : colorGreen,
-                          bgcolor: _.enabledApplyButton.value == false
-                              ? colorGrey1
-                              : colorGreen,
-                          action: () {
-                            _.goBackToParoisse();
-                          },
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+
+                    // Bouton d'application des filtres
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: colorWhite,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, -4),
+                          ),
+                        ],
+                      ),
+                      child: CustomButton(
+                        text: 'Appliquer les filtres',
+                        textSize: TextSizes.sixteen,
+                        actionColor: colorGreenSemiLight,
+                        enabled: _.enabledApplyButton.value,
+                        borderColor: _.enabledApplyButton.value
+                            ? colorGreen
+                            : colorGrey1,
+                        bgcolor: _.enabledApplyButton.value
+                            ? colorGreen
+                            : colorGrey1,
+                        action: () {
+                          _.goBackToParoisse();
+                        },
+                        borderRadius: 12,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
           );
         }),
       ),
+    );
+  }
+
+  Widget _buildFilterSection({required String title, required Widget child}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Row(
+            children: [
+              Container(
+                width: 4,
+                height: 16,
+                decoration: const BoxDecoration(
+                  color: colorGreenSemiLight,
+                  borderRadius: BorderRadius.all(Radius.circular(2)),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: TextStyles.montserratSemiBold(
+                  textColor: colorGrey1,
+                  textSize: TextSizes.fifteen,
+                ),
+              ),
+            ],
+          ),
+        ),
+        child,
+        const SizedBox(height: 12),
+      ],
     );
   }
 }

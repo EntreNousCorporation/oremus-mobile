@@ -41,73 +41,102 @@ class MassRequestScreen extends StatelessWidget {
               child: CustomScrollView(
                 physics: const BouncingScrollPhysics(),
                 slivers: [
+                  // En-tête extensible avec image de couverture
                   SliverAppBar(
                     expandedHeight: AppConstants.kExpandedHeight,
                     collapsedHeight: 100,
                     floating: false,
-                    snap: false,
                     pinned: true,
                     backgroundColor: colorGreen,
-                    elevation: 10,
-                    shadowColor: colorGrey2.withValues(alpha: 0.8),
-                    leading: IconButton(
-                      onPressed: () {
-                        Get.back();
-                        Get.delete<FilterMassRequestDateController>(force: true);
-                      },
-                      icon: const Icon(Icons.arrow_back_ios_rounded, color: colorWhite,),
+                    elevation: 6,
+                    shadowColor: Colors.black.withValues(alpha: 0.2),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(24),
+                        bottomRight: Radius.circular(24),
+                      ),
                     ),
+                    // Bouton retour
+                    leading: Container(
+                      margin: const EdgeInsets.only(left: 8, top: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          Get.back();
+                          Get.delete<FilterMassRequestDateController>(force: true);
+                        },
+                        icon: const Icon(
+                          Icons.arrow_back_rounded,
+                          color: colorWhite,
+                          size: 22,
+                        ),
+                      ),
+                    ),
+                    // Actions (favoris, carte)
                     actions: [
-                      Visibility(
-                        visible: false,
+                      // Bouton favoris
+                      Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: LikeButton(
+                          isLiked: _.paroisseSelected.value.isFavorite,
+                          onTap: (isLiked) async {
+                            log('isLiked => $isLiked');
+                            _.paroisseSelected.value.isFavorite = !isLiked;
+                            if (isLiked) {
+                              _.removeFavorite(_.paroisseSelected.value, isLiked);
+                            } else {
+                              _.saveFavorite(_.paroisseSelected.value, isLiked);
+                            }
+                            return !isLiked;
+                          },
+                          size: 25,
+                          circleColor: const CircleColor(
+                              start: Color(0xff93291E), end: Color(0xFFED213A)),
+                          bubblesColor: const BubblesColor(
+                            dotPrimaryColor: Color(0xFFED213A),
+                            dotSecondaryColor: Color(0xff93291E),
+                          ),
+                          likeBuilder: (bool isLiked) {
+                            return Icon(
+                              isLiked ? Icons.favorite : Icons.favorite_border,
+                              color: isLiked ? const Color(0xFFED213A) : colorWhite,
+                              size: 22,
+                            );
+                          },
+                          padding: const EdgeInsets.all(8),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      // Bouton carte
+                      Container(
+                        margin: const EdgeInsets.only(right: 8, top: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         child: IconButton(
                           onPressed: () {
-                            _.moveToHome();
+                            _.goToMap();
                           },
-                          icon: const Icon(Icons.home_filled),
+                          icon: const Icon(
+                            Icons.map_rounded,
+                            color: colorWhite,
+                            size: 22,
+                          ),
                         ),
-                      ),
-                      Separators.minimunHorizontal(),
-                      LikeButton(
-                        isLiked: _.paroisseSelected.value.isFavorite,
-                        onTap: (isLiked) async {
-                          log('isLiked => $isLiked');
-                          _.paroisseSelected.value.isFavorite = !isLiked;
-                          if (isLiked) {
-                            _.removeFavorite(_.paroisseSelected.value, isLiked);
-                          } else {
-                            _.saveFavorite(_.paroisseSelected.value, isLiked);
-                          }
-                          return !isLiked;
-                        },
-                        size: 25,
-                        circleColor: const CircleColor(
-                            start: Color(0xff93291E), end: Color(0xFFED213A)),
-                        bubblesColor: const BubblesColor(
-                          dotPrimaryColor: Color(0xFFED213A),
-                          dotSecondaryColor: Color(0xff93291E),
-                        ),
-                        likeBuilder: (bool isLiked) {
-                          return Icon(
-                            isLiked ? Icons.favorite : Icons.favorite_border,
-                            color:
-                            isLiked ? const Color(0xFFED213A) : colorWhite,
-                            size: 25,
-                          );
-                        },
-                      ),
-                      Separators.minimunHorizontal(),
-                      IconButton(
-                        onPressed: () {
-                          _.goToMap();
-                        },
-                        icon: const Icon(Icons.map_rounded, color: colorWhite,),
                       ),
                     ],
                     flexibleSpace: FlexibleSpaceBar(
                       centerTitle: true,
                       title: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
                           _.paroisseSelected.value.name ?? '-',
                           maxLines: 2,
@@ -119,307 +148,357 @@ class MassRequestScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      background: (_.paroisseSelected.value.coverImage?.link
-                          ?.isNotEmpty ==
-                          true)
-                          ? Stack(
-                        children: [
-                          CachedNetworkImage(
-                            width: Get.width,
-                            height: Get.width,
-                            imageUrl: _.paroisseSelected.value
-                                .coverImage?.link ??
-                                '',
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) =>
-                                LottieLoadingView(size: Get.width / 6),
-                            errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
+                      background: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(24),
+                            bottomRight: Radius.circular(24),
                           ),
-                          Container(
-                            height: Get.width,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: Colors.black54.withValues(alpha: 0.3),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
                             ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(24),
+                            bottomRight: Radius.circular(24),
                           ),
-                        ],
-                      )
-                          : Stack(
-                        children: [
-                          Image.asset(
-                            Assets.imagesBgLogin,
-                            width: Get.width,
-                            height: Get.width,
-                            fit: BoxFit.cover,
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              // Image de couverture
+                              (_.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
+                                  ? CachedNetworkImage(
+                                imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) =>
+                                    LottieLoadingView(size: Get.width / 6),
+                                errorWidget: (context, url, error) =>
+                                    Image.asset(
+                                      Assets.imagesBgLogin,
+                                      width: Get.width,
+                                      height: Get.width,
+                                      fit: BoxFit.cover,
+                                    ),
+                              )
+                                  : Image.asset(
+                                Assets.imagesBgLogin,
+                                width: Get.width,
+                                height: Get.width,
+                                fit: BoxFit.cover,
+                              ),
+                              // Superposition ombrée
+                              Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Colors.transparent,
+                                      Colors.black.withValues(alpha: 0.7),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          Container(
-                            height: Get.width,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: Colors.black54.withValues(alpha: 0.3),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
+
+                  // Formulaire de demande de messe
                   SliverPadding(
-                    padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 24,
+                    ),
                     sliver: SliverList(
                       delegate: SliverChildListDelegate(
                         [
-                          Separators.minimunVertical(),
-                          Text(
-                            'Faire une demande de messe',
-                            textAlign: TextAlign.center,
-                            style: TextStyles.montserratBold(
-                              textSize: TextSizes.eighteen,
-                              textColor: colorGreenSemiLight,
+                          // Titre principal
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: colorGreenSemiLight.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: colorGreenSemiLight.withValues(alpha: 0.3),
+                                width: 1,
+                              ),
                             ),
-                          ),
-                          Separators.normalVertical(),
-                          Separators.maximum1Vertical(),
-                          Text(
-                            'Type de demande de messe',
-                            style: TextStyles.montserratMedium(
-                              textColor: colorGrey1,
-                              textSize: TextSizes.fourteen,
-                            ),
-                          ),
-                          Separators.customSizeVertical(8),
-                          Material(
-                            borderRadius: BorderRadius.circular(10.0),
-                            elevation: 10,
-                            color: colorWhite,
-                            shadowColor: colorGrey2.withValues(alpha: 0.5),
-                            child: const MassTypeFilter(),
-                          ),
-                          Separators.maximumVertical(),
-
-                          //NUMBER OF MASS
-                          Text(
-                            'Répétition',
-                            style: TextStyles.montserratMedium(
-                              textColor: colorGrey1,
-                              textSize: TextSizes.fourteen,
-                            ),
-                          ),
-                          Separators.customSizeVertical(8),
-                          Material(
-                            borderRadius: BorderRadius.circular(10.0),
-                            elevation: 10,
-                            color: colorWhite,
-                            shadowColor: colorGrey2.withValues(alpha: 0.5),
-                            child: const MassTypeRepetitionFilter(),
-                          ),
-
-                          Separators.maximumVertical(),
-                          Visibility(
-                            visible: _.massRequestTypeRepetitionSelected.value?.code == RepetitionType.many.name,
-                            child: Column(
+                            child: Row(
                               children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    _.goToDatesChoice();
-                                  },
-                                  child: Material(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    elevation: 10,
-                                    color: colorWhite,
-                                    shadowColor: colorGrey2.withValues(alpha: 0.5),
-                                    child: _.isDatesProcessing.isTrue ? const ShimmerPrice(height: 50) : Container(
-                                      padding: const EdgeInsets.all(12),
-                                      width: double.maxFinite,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .spaceBetween,
-                                        children: [
-                                          Text(
-                                            'Choisir les horaires de messe',
-                                            style: TextStyles.montserratMedium(
-                                              textColor: colorGrey1,
-                                              textSize: TextSizes.fourteen,
-                                            ),
-                                          ),
-                                          Icon(
-                                            (_.datesChoosen.isNotEmpty && _.massRequestTypeRepetitionSelected.value?.code == RepetitionType.many.name) ? Icons.check_circle : Icons.calendar_month,
-                                            size: 25,
-                                            color: _.worshipHours.isNotEmpty ? colorGreen : colorGrey1.withValues(alpha: 0.5),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: colorGreenSemiLight.withValues(alpha: 0.2),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.church_outlined,
+                                    color: colorGreenSemiLight,
+                                    size: 24,
                                   ),
                                 ),
-                                Separators.maximumVertical(),
-                              ],
-                            ),
-                          ),
-
-                          //WORSHIP HOURS
-                          Visibility(
-                            visible: _.massRequestTypeRepetitionSelected.value?.code == RepetitionType.once.name,
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 2,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Date',
-                                            style: TextStyles.montserratMedium(
-                                              textColor: colorGrey1,
-                                              textSize: TextSizes.fourteen,
-                                            ),
-                                          ),
-                                          Separators.customSizeVertical(8),
-                                          GestureDetector(
-                                            onTap: () {
-                                              if (_.selectedDate.value == null) return;
-                                              _.showPicker(context);
-                                            },
-                                            child: Material(
-                                              borderRadius: BorderRadius.circular(10.0),
-                                              elevation: 10,
-                                              color: colorWhite,
-                                              shadowColor: colorGrey2.withValues(alpha: 0.5),
-                                              child: _.isDatesProcessing.isTrue ? const ShimmerPrice(height: 50) : Container(
-                                                padding: const EdgeInsets.all(12),
-                                                width: double.maxFinite,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      _.selectedDate.value?.dayToDisplay ?? 'Aucun horaire de messe',
-                                                      style: TextStyles.montserratBold(
-                                                        textColor: _.selectedDate.value != null ? colorBlack : colorRed,
-                                                        textSize: _.selectedDate.value != null ? TextSizes.sixteen : TextSizes.twelve,
-                                                      ),
-                                                    ),
-                                                    Icon(
-                                                      Icons.calendar_month,
-                                                      size: 25,
-                                                      color: _.selectedDate.value != null ? colorGreen : colorGrey1,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Faire une demande de messe',
+                                        style: TextStyles.montserratBold(
+                                          textSize: TextSizes.sixteen,
+                                          textColor: colorGreenSemiLight,
+                                        ),
                                       ),
-                                    ),
-                                    Separators.customSizeHorizontal(16),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Heure',
-                                            style: TextStyles.montserratMedium(
-                                              textColor: colorGrey1,
-                                              textSize: TextSizes.fourteen,
-                                            ),
-                                          ),
-                                          Separators.customSizeVertical(8),
-                                          Material(
-                                            borderRadius: BorderRadius.circular(10.0),
-                                            elevation: 10,
-                                            color: colorWhite,
-                                            shadowColor: colorGrey2.withValues(alpha: 0.5),
-                                            child: const MassTypeHourFilter(),
-                                          ),
-                                        ],
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Veuillez compléter tous les champs',
+                                        style: TextStyles.montserratRegular(
+                                          textSize: TextSizes.thirteen,
+                                          textColor: Colors.grey[600]!,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                                Separators.maximumVertical(),
                               ],
                             ),
                           ),
+                          const SizedBox(height: 24),
 
-                          Text(
-                            'Intention de messe',
-                            style: TextStyles.montserratMedium(
-                              textColor: colorGrey1,
-                              textSize: TextSizes.fourteen,
-                            ),
+                          // Section type de demande
+                          _buildSectionTitle(
+                            icon: Icons.category_outlined,
+                            title: 'Type de demande de messe',
                           ),
-                          Separators.customSizeVertical(8),
-                          Material(
-                            borderRadius: BorderRadius.circular(10.0),
-                            elevation: 10,
-                            color: colorWhite,
-                            shadowColor: colorGrey2.withValues(alpha: 0.5),
-                            child: const IntentTypeDescriptionWidget(),
+                          const SizedBox(height: 12),
+                          _buildCard(
+                            content: const MassTypeFilter(),
                           ),
-                          Separators.maximumVertical(),
+                          const SizedBox(height: 24),
 
-                          //PRICING
-                          Material(
-                            borderRadius: BorderRadius.circular(10.0),
-                            elevation: 10,
-                            color: colorWhite,
-                            shadowColor: colorGrey2.withValues(alpha: 0.5),
-                            child: _.isPricingProcessing.isTrue ? const ShimmerPrice(height: 70) :  Container(
-                              padding: const EdgeInsets.all(24),
-                              width: double.maxFinite,
-                              decoration: BoxDecoration(
-                                color: colorGreenlight2,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Row(
+                          // Section répétition
+                          _buildSectionTitle(
+                            icon: Icons.repeat_outlined,
+                            title: 'Répétition',
+                          ),
+                          const SizedBox(height: 12),
+                          _buildCard(
+                            content: const MassTypeRepetitionFilter(),
+                          ),
+                          const SizedBox(height: 24),
+
+                          // Section dates multiples (conditionnelle)
+                          if (_.massRequestTypeRepetitionSelected.value?.code == RepetitionType.many.name) ...[
+                            _buildSelectionCard(
+                              onTap: () {
+                                _.goToDatesChoice();
+                              },
+                              content: _.isDatesProcessing.isTrue
+                                  ? const ShimmerPrice(height: 50)
+                                  : Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Tarif:',
-                                    style: TextStyles.montserratBold(
-                                      textColor: colorGreySeparator,
-                                      textSize: TextSizes.twenty,
+                                    'Choisir les horaires de messe',
+                                    style: TextStyles.montserratSemiBold(
+                                      textColor: colorGrey1,
+                                      textSize: TextSizes.fifteen,
                                     ),
                                   ),
-                                  Separators.normalHorizontal(),
-                                  Text(
-                                    _.getPrice().value,
-                                    style: TextStyles.montserratBold(
-                                      textColor: colorBlack,
-                                      textSize: TextSizes.twenty_four,
+                                  Icon(
+                                    (_.datesChoosen.isNotEmpty &&
+                                        _.massRequestTypeRepetitionSelected.value?.code == RepetitionType.many.name)
+                                        ? Icons.check_circle
+                                        : Icons.calendar_month,
+                                    size: 22,
+                                    color: _.worshipHours.isNotEmpty
+                                        ? colorGreen
+                                        : colorGrey1,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                          ],
+
+                          // Section date unique (conditionnelle)
+                          if (_.massRequestTypeRepetitionSelected.value?.code == RepetitionType.once.name) ...[
+                            _buildSectionTitle(
+                              icon: Icons.event_outlined,
+                              title: 'Date et heure',
+                            ),
+                            const SizedBox(height: 12),
+                            _buildCard(
+                              content: Row(
+                                children: [
+                                  // Date
+                                  Expanded(
+                                    flex: 2,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        if (_.selectedDate.value == null) return;
+                                        _.showPicker(context);
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 12,
+                                          horizontal: 16,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: colorGreen.withValues(alpha: 0.1),
+                                          borderRadius: BorderRadius.circular(12),
+                                          border: Border.all(
+                                            color: _.selectedDate.value != null
+                                                ? colorGreen.withValues(alpha: 0.3)
+                                                : Colors.red.withValues(alpha: 0.3),
+                                          ),
+                                        ),
+                                        child: _.isDatesProcessing.isTrue
+                                            ? const ShimmerPrice(height: 24)
+                                            : Row(
+                                          children: [
+                                            Icon(
+                                              Icons.calendar_today_rounded,
+                                              size: 20,
+                                              color: _.selectedDate.value != null
+                                                  ? colorGreen
+                                                  : Colors.red,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Text(
+                                                _.selectedDate.value?.dayToDisplay ?? 'Choisir une date',
+                                                style: TextStyles.montserratSemiBold(
+                                                  textColor: _.selectedDate.value != null
+                                                      ? colorBlack
+                                                      : Colors.red,
+                                                  textSize: TextSizes.fourteen,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  // Espace
+                                  const SizedBox(width: 12),
+                                  // Heure
+                                  Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: colorGreen.withValues(alpha: 0.1),
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: colorGreen.withValues(alpha: 0.3),
+                                        ),
+                                      ),
+                                      child: const MassTypeHourFilter(),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                          ),
-                          Separators.maximum1Vertical(),
+                            const SizedBox(height: 24),
+                          ],
 
-                          Material(
-                            borderRadius: BorderRadius.circular(10.0),
-                            elevation: 10,
-                            color: colorWhite,
-                            shadowColor: colorGrey2.withValues(alpha: 0.5),
-                            child: CustomButton(
-                              text: 'Continuer',
-                              borderRadius: 10,
-                              textSize: TextSizes.sixteen,
-                              bgcolor: _.isValidForm.isTrue
-                                  ? colorGreen
-                                  : colorGrey1.withValues(alpha: 0.5),
-                              borderColor: _.isValidForm.isTrue
-                                  ? colorGreen
-                                  : colorGreen.withValues(alpha: 0),
-                              actionColor: colorGreen.withValues(alpha: 0.5),
-                              enabled: _.isValidForm.value,
-                              action: () {
-                                _.doSendMassRequest();
-                              },
+                          // Section intention de messe
+                          _buildSectionTitle(
+                            icon: Icons.message_outlined,
+                            title: 'Intention de messe',
+                          ),
+                          const SizedBox(height: 12),
+                          _buildCard(
+                            content: const IntentTypeDescriptionWidget(),
+                          ),
+                          const SizedBox(height: 32),
+
+                          // Section tarif
+                          Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: colorGreenlight2,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.05),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: _.isPricingProcessing.isTrue
+                                ? const ShimmerPrice(height: 50)
+                                : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: colorGreen.withValues(alpha: 0.2),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.receipt_long_rounded,
+                                    color: colorGreen,
+                                    size: 24,
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Tarif',
+                                      style: TextStyles.montserratMedium(
+                                        textColor: colorGreySeparator,
+                                        textSize: TextSizes.fourteen,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      _.getPrice().value,
+                                      style: TextStyles.montserratBold(
+                                        textColor: colorBlack,
+                                        textSize: TextSizes.twenty_four,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                          Separators.maximum1Vertical(),
+                          const SizedBox(height: 32),
+
+                          // Bouton continuer
+                          CustomButton(
+                            text: 'Continuer',
+                            borderRadius: 12,
+                            textSize: TextSizes.sixteen,
+                            bgcolor: _.isValidForm.isTrue
+                                ? colorGreen
+                                : colorGrey1.withValues(alpha: 0.5),
+                            borderColor: _.isValidForm.isTrue
+                                ? colorGreen
+                                : colorGreen.withValues(alpha: 0),
+                            actionColor: colorGreen.withValues(alpha: 0.5),
+                            enabled: _.isValidForm.value,
+                            action: () {
+                              _.doSendMassRequest();
+                            },
+                          ),
+                          const SizedBox(height: 16),
                         ],
                       ),
                     ),
@@ -431,5 +510,74 @@ class MassRequestScreen extends StatelessWidget {
         ),
       );
     });
+  }
+
+  // Titre de section avec icône
+  Widget _buildSectionTitle({required IconData icon, required String title}) {
+    return Row(
+      children: [
+        Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            color: colorGreenSemiLight.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            icon,
+            color: colorGreenSemiLight,
+            size: 16,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Text(
+          title,
+          style: TextStyles.montserratSemiBold(
+            textColor: colorGrey1,
+            textSize: TextSizes.fifteen,
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Carte de base pour les contenus
+  Widget _buildCard({required Widget content}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: colorWhite,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: content,
+    );
+  }
+
+  // Carte cliquable pour les sélections
+  Widget _buildSelectionCard({required VoidCallback onTap, required Widget content}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        decoration: BoxDecoration(
+          color: colorWhite,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: content,
+      ),
+    );
   }
 }

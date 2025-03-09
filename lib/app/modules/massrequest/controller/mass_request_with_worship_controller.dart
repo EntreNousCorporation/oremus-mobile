@@ -193,7 +193,7 @@ class MassRequestWithWorshipController extends GetxController {
 
   goToWorshipChoice() async {
     paroisseSelected = await Get.toNamed(
-      Routes.FILTER_MASS_REQUEST_CHOOSE_WORSHIP,
+      Routes.FILTER_CHOOSE_WORSHIP,
       arguments: 'Demande de messe',
     );
     if (paroisseSelected.value.identifier != null) {

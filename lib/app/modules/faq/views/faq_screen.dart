@@ -24,17 +24,9 @@ class FaqScreen extends StatelessWidget {
               Container(
                 height: 200,
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      colorGreen,
-                      colorGreen.withOpacity(0.8),
-                      colorGreen.withOpacity(0.6),
-                    ],
-                  ),
-                  borderRadius: const BorderRadius.only(
+                decoration: const BoxDecoration(
+                  color: colorGreen,
+                  borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(30),
                     bottomRight: Radius.circular(30),
                   ),
@@ -53,7 +45,7 @@ class FaqScreen extends StatelessWidget {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.3),
+                              color: Colors.white.withValues(alpha: 0.3),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: IconButton(
@@ -93,7 +85,7 @@ class FaqScreen extends StatelessWidget {
                         'Questions fréquentes de la communauté',
                         textAlign: TextAlign.center,
                         style: TextStyles.montserratRegular(
-                          textColor: Colors.white.withOpacity(0.9),
+                          textColor: Colors.white.withValues(alpha: 0.9),
                           textSize: 14,
                         ),
                       ),
@@ -102,7 +94,7 @@ class FaqScreen extends StatelessWidget {
                     // FAQ content area
                     Expanded(
                       child: Container(
-                        margin: const EdgeInsets.only(top: 16),
+                        margin: const EdgeInsets.only(top: 8),
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(20),
@@ -128,14 +120,14 @@ class FaqScreen extends StatelessWidget {
       children: [
         // Introduction card
         Container(
-          margin: const EdgeInsets.only(bottom: 16),
+          margin: const EdgeInsets.only(bottom: 16, left: 8, right: 8),
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 3),
               ),
@@ -146,7 +138,7 @@ class FaqScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: colorGreen1.withOpacity(0.3),
+                  color: colorGreen1.withValues(alpha: 0.3),
                   shape: BoxShape.circle,
                 ),
                 child: SvgPicture.asset(
@@ -236,17 +228,25 @@ class FaqScreen extends StatelessWidget {
       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
       child: Container(
         margin: EdgeInsets.only(
+          left: 8,
+          right: 8,
+          bottom: isLast ? 20 : 12,
+          top: isFirst ? 0 : 0,
+        ),
+        padding: EdgeInsets.only(
+          left: 8,
+          right: 8,
           bottom: isLast ? 20 : 12,
           top: isFirst ? 0 : 0,
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          color: colorWhite,
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
             ),
           ],
         ),
@@ -258,6 +258,7 @@ class FaqScreen extends StatelessWidget {
           collapsedIconColor: Colors.grey,
           backgroundColor: Colors.white,
           collapsedBackgroundColor: Colors.white,
+          enableFeedback: true,
           title: Text(
             question,
             style: TextStyles.montserratMedium(
@@ -268,7 +269,7 @@ class FaqScreen extends StatelessWidget {
           leading: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: colorGreen1.withOpacity(0.3),
+              color: colorGreen1.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(

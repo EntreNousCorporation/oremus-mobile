@@ -18,91 +18,150 @@ class PrayItem extends StatelessWidget {
       builder: (logic) {
         return AnimatedSize(
           duration: const Duration(milliseconds: 300),
-          curve: Curves.decelerate,
+          curve: Curves.easeInOut,
           child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: 16.0,
-            ),
             decoration: BoxDecoration(
               color: colorGreenlight2,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Html(
-                  data: pray.title?.fr,
-                  style: {
-                    '#': Style(
-                      fontFamily: 'montserrat_bold',
-                      fontSize: FontSize(
-                        TextSizes.sixteen,
-                      ),
-                      margin: Margins.zero,
-                    )
-                  },
-                  //'${DB.getCurrentLanguage() == 'fr' ? pray.title?.fr : pray.title?.en}',
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                  spreadRadius: 0,
                 ),
-                Separators.minimunVertical(),
-                GestureDetector(
-                  onTap: () {
-                    pray.isExpand = !(pray.isExpand == true);
-                    logic.update();
-                  },
-                  child: Html(
-                    data: pray.content?.fr,
-                    style: {
-                      '#': Style(
-                        fontFamily: 'montserrat_regular',
-                        fontSize: FontSize(
-                          TextSizes.fifteen,
-                        ),
-                        maxLines: pray.isExpand == true ? 1000 : 3,
-                        textOverflow: TextOverflow.fade,
-                        margin: Margins.zero,
-                      ),
-                    },
-                  ),
-                ),
-                pray.isExpand == true
-                    ? OutlinedButton.icon(
-                        icon: const Icon(
-                          Icons.arrow_upward_rounded,
-                          color: colorGreenSemiLight,
-                          size: 18,
-                        ),
-                        label: Text(
-                          'Réduire',
-                          style: TextStyles.montserratSemiBoldItalic(
-                            textSize: TextSizes.twelve,
-                            textColor: colorGreenSemiLight,
-                          ),
-                        ),
-                        onPressed: () {
-                          pray.isExpand = false;
-                          logic.update();
-                        },
-                      )
-                    : TextButton.icon(
-                        icon: const Icon(
-                          Icons.arrow_downward_rounded,
-                          color: colorGreenSemiLight,
-                          size: 18,
-                        ),
-                        label: Text(
-                          'Tout afficher',
-                          style: TextStyles.montserratSemiBoldItalic(
-                            textSize: TextSizes.twelve,
-                            textColor: colorGreenSemiLight,
-                          ),
-                        ),
-                        onPressed: () {
-                          pray.isExpand = true;
-                          logic.update();
-                        },
-                      ),
               ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Prayer title with accent bar
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0,
+                      vertical: 16.0,
+                    ),
+                    decoration: const BoxDecoration(
+                      color: colorGreenlight2,
+                      border: Border(
+                        left: BorderSide(
+                          color: colorGreenSemiLight,
+                          width: 4,
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Html(
+                            data: pray.title?.fr,
+                            style: {
+                              '#': Style(
+                                fontFamily: 'montserrat_bold',
+                                fontSize: FontSize(
+                                  TextSizes.sixteen,
+                                ),
+                                margin: Margins.zero,
+                              )
+                            },
+                          ),
+                        ),
+                        Visibility(
+                          visible: false,
+                          child: GestureDetector(
+                            onTap: () {
+                              pray.isExpand = !(pray.isExpand == true);
+                              logic.update();
+                            },
+                            child: Icon(
+                              pray.isExpand == true
+                                  ? Icons.keyboard_arrow_up_rounded
+                                  : Icons.keyboard_arrow_down_rounded,
+                              color: colorGreenSemiLight,
+                              size: 24,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Prayer content
+                  GestureDetector(
+                    onTap: () {
+                      pray.isExpand = !(pray.isExpand == true);
+                      logic.update();
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0,
+                        vertical: 16.0,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Html(
+                            data: pray.content?.fr,
+                            style: {
+                              '#': Style(
+                                fontFamily: 'montserrat_regular',
+                                fontSize: FontSize(
+                                  TextSizes.fifteen,
+                                ),
+                                maxLines: pray.isExpand == true ? 1000 : 3,
+                                textOverflow: TextOverflow.fade,
+                                margin: Margins.zero,
+                              ),
+                            },
+                          ),
+
+                          // Show more/less button with subtle divider
+                          GestureDetector(
+                            onTap: () {
+                              pray.isExpand = !(pray.isExpand == true);
+                              logic.update();
+                            },
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 12),
+                                Container(
+                                  height: 1,
+                                  color: Colors.black.withValues(alpha: 0.05),
+                                ),
+                                const SizedBox(height: 12),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      pray.isExpand == true
+                                          ? Icons.arrow_upward_rounded
+                                          : Icons.arrow_downward_rounded,
+                                      color: colorGreenSemiLight,
+                                      size: 16,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      pray.isExpand == true ? 'Réduire' : 'Tout afficher',
+                                      style: TextStyles.montserratSemiBold(
+                                        textSize: TextSizes.thirteen,
+                                        textColor: colorGreenSemiLight,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );

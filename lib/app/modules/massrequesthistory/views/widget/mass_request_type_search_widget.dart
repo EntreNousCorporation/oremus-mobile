@@ -12,49 +12,92 @@ class MassRequestTypeSearchWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetX<FilterMassRequestHistoryController>(builder: (logic) {
-      return Material(
-        borderRadius: BorderRadius.circular(10.0),
-        elevation: 10,
-        color: colorWhite,
-        shadowColor: colorGrey2.withValues(alpha: 0.5),
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
         child: TextFormField(
           controller: logic.typeMassRequestSearchController,
           keyboardAppearance: Brightness.light,
-          style: TextStyles.montserratMedium(textColor: colorBlack),
+          style: TextStyles.montserratMedium(
+            textColor: Colors.black87,
+            textSize: TextSizes.fifteen,
+          ),
           maxLines: 1,
-          cursorColor: colorBlue,
+          cursorColor: colorGreenSemiLight,
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.search,
           decoration: InputDecoration(
-            contentPadding:
-                const EdgeInsets.only(top: 16, left: 16, right: 0, bottom: 0),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             filled: true,
-            fillColor: colorWhite,
-            border: InputBorder.none,
+            fillColor: Colors.white,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: Colors.grey[200]!,
+                width: 1,
+              ),
+            ),
             focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: colorWhite),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(
+                color: colorGreenSemiLight,
+                width: 1.5,
+              ),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: colorWhite),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: Colors.grey[200]!,
+                width: 1,
+              ),
             ),
             errorBorder: InputBorder.none,
             disabledBorder: InputBorder.none,
-            hintText: 'Faire une recherche...',
-            hintStyle: TextStyles.montserratItalic(
-                textColor: colorPurpleLight, textSize: TextSizes.fourteen),
+            hintText: 'Rechercher un type de messe...',
+            hintStyle: TextStyles.montserratRegular(
+              textColor: Colors.grey[400]!,
+              textSize: TextSizes.fourteen,
+            ),
+            prefixIcon: Container(
+              margin: const EdgeInsets.only(left: 12, right: 8),
+              child: Icon(
+                Icons.search_rounded,
+                color: logic.typeMassRequestSearchController.text.isNotEmpty
+                    ? colorGreenSemiLight
+                    : Colors.grey[400],
+                size: 20,
+              ),
+            ),
             suffixIcon: logic.isMassRequestSearchFieldEmpty.isFalse
                 ? FadeIn(
-                    child: IconButton(
-                      onPressed: () {
-                        //clean search bar
-                        logic.resetMassRequestTypeSearch();
-                      },
-                      icon: const Icon(Icons.cancel,
-                          color: colorPurpleLight, size: 20),
-                    ),
-                  )
+              child: GestureDetector(
+                onTap: () {
+                  //clean search bar
+                  logic.resetMassRequestTypeSearch();
+                },
+                child: Container(
+                  margin: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: colorGreenSemiLight.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.close_rounded,
+                    color: colorGreenSemiLight,
+                    size: 16,
+                  ),
+                ),
+              ),
+            )
                 : null,
           ),
           onChanged: (value) {

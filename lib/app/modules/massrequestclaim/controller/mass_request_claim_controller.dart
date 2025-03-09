@@ -80,7 +80,7 @@ class MassRequestClaimController extends GetxController {
   }
 
   goToWorshipChoice() async {
-    paroisseSelected = await Get.toNamed(Routes.FILTER_MASS_REQUEST_CHOOSE_WORSHIP, arguments: 'Faire une reclamation',);
+    paroisseSelected = await Get.toNamed(Routes.FILTER_CHOOSE_WORSHIP, arguments: 'Faire une reclamation',);
     log('goToWorshipChoice ::: ${paroisseSelected.value.identifier}');
     if (paroisseSelected.value.identifier != null) {
       paroisseSelected.refresh();

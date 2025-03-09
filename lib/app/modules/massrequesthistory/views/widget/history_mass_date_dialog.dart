@@ -17,84 +17,203 @@ Future historyMassDateDialog() {
       reverseTransitionDuration: Duration(milliseconds: 100),
       barrierDismissible: false,
     ),
-    filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
     builder: (cxt) {
       return Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        backgroundColor: Colors.white,
+        elevation: 10,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: GetX<MassRequestHistoryDetailController>(
           builder: (_) {
             return Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(24),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Titre
-                  Text(
-                    'Horaires de messe',
-                    textAlign: TextAlign.center,
-                    style: TextStyles.montserratBold(
-                      textSize: 24,
-                      textColor: colorBlack,
+                  // Header with Icon
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: colorGreenSemiLight.withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.schedule_rounded,
+                          color: colorGreenSemiLight,
+                          size: 24,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Horaires de messe',
+                              style: TextStyles.montserratBold(
+                                textSize: TextSizes.twenty,
+                                textColor: colorGreenSemiLight,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Détails de votre demande',
+                              style: TextStyles.montserratRegular(
+                                textSize: TextSizes.fourteen,
+                                textColor: Colors.grey[600]!,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Divider with gradient
+                  Container(
+                    height: 1,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.grey[300]!,
+                          colorGreenSemiLight.withValues(alpha: 0.5),
+                          Colors.grey[300]!,
+                        ],
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 16),
 
-                  // Sous-titre explicatif
-                  Text(
-                    'Vous avez choisi les horaires suivants pour votre demande de messe :',
-                    textAlign: TextAlign.center,
-                    style: TextStyles.montserratMedium(
-                      textSize: TextSizes.sixteen,
-                      textColor: colorGrey1,
+                  const SizedBox(height: 24),
+
+                  // Explanation text
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: colorGreenSemiLight.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: colorGreenSemiLight.withValues(alpha: 0.2),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.info_outline_rounded,
+                          color: colorGreenSemiLight,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'Vous avez choisi les horaires suivants pour votre demande de messe :',
+                            style: TextStyles.montserratMedium(
+                              textSize: TextSizes.fourteen,
+                              textColor: colorGreenSemiLight,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 20),
 
-                  // Liste des horaires
+                  const SizedBox(height: 24),
+
+                  // List of mass times
                   Flexible(
-                    child: ListView.builder(
+                    child: ListView.separated(
                       shrinkWrap: true,
                       itemCount: _.massRequestSelected.value.bookings?.length ?? 0,
+                      separatorBuilder: (context, index) => const SizedBox(height: 16),
                       itemBuilder: (context, index) {
                         var item = _.massRequestSelected.value.bookings?[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        return Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.04),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Date
-                              Text(
-                                Jiffy.parse(item?.day ?? '-', pattern: 'yyyy-MM-dd').format(pattern: 'dd-MM-yyyy'),
-                                style: TextStyles.montserratSemiBold(
-                                  textColor: colorPurpleLight,
-                                  textSize: TextSizes.eighteen,
-                                ),
+                              // Date with calendar icon
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: colorGreenSemiLight.withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: const Icon(
+                                      Icons.calendar_today_rounded,
+                                      color: colorGreenSemiLight,
+                                      size: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    Jiffy.parse(item?.day ?? '-', pattern: 'yyyy-MM-dd').format(pattern: 'dd-MM-yyyy'),
+                                    style: TextStyles.montserratSemiBold(
+                                      textColor: colorGreenSemiLight,
+                                      textSize: TextSizes.sixteen,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 10),
 
-                              // Horaires
+                              const SizedBox(height: 16),
+
+                              // Time slots with improved design
                               Wrap(
                                 spacing: 10,
                                 runSpacing: 10,
                                 children: item?.slots?.map((e) =>
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                                       decoration: BoxDecoration(
-                                        color: colorGreenSemiLight.withValues(alpha: 0.1),
+                                        color: colorGreenSemiLight.withValues(alpha: 0.08),
                                         borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(color: colorGreenSemiLight, width: 1),
-                                      ),
-                                      child: Text(
-                                        '${e.startTime}',
-                                        style: TextStyles.montserratMedium(
-                                          textSize: TextSizes.fourteen,
-                                          textColor: colorGreenSemiLight,
+                                        border: Border.all(
+                                          color: colorGreenSemiLight.withValues(alpha: 0.3),
+                                          width: 1,
                                         ),
                                       ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons.access_time_rounded,
+                                            color: colorGreenSemiLight,
+                                            size: 14,
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            '${e.startTime}',
+                                            style: TextStyles.montserratSemiBold(
+                                              textSize: TextSizes.fourteen,
+                                              textColor: colorGreenSemiLight,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     )
-                                ).toList() ??
-                                    [],
+                                ).toList() ?? [],
                               ),
                             ],
                           ),
@@ -103,25 +222,36 @@ Future historyMassDateDialog() {
                     ),
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 24),
 
-                  // Bouton Fermer
-                  Center(
+                  // Close button with improved design
+                  SizedBox(
+                    width: double.infinity,
+                    height: 54,
                     child: ElevatedButton(
                       onPressed: () => Get.back(),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: colorGreen,
+                        backgroundColor: colorGreenSemiLight,
+                        foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(16),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                        elevation: 0,
+                        shadowColor: Colors.transparent,
                       ),
-                      child: Text(
-                        'Fermer',
-                        style: TextStyles.montserratBold(
-                          textColor: colorWhite,
-                          textSize: TextSizes.sixteen,
-                        ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.check_circle_outline_rounded, size: 20),
+                          const SizedBox(width: 10),
+                          Text(
+                            'Fermer',
+                            style: TextStyles.montserratBold(
+                              textColor: colorWhite,
+                              textSize: TextSizes.sixteen,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

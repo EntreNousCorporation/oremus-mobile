@@ -17,10 +17,11 @@ class MassRequestTrackClaimDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: colorWhite,
+      color: Colors.grey[50],
       child: GetX<MassRequestTrackClaimDetailController>(builder: (_) {
         return KeyboardDismisser(
           child: Scaffold(
+            backgroundColor: Colors.grey[50],
             resizeToAvoidBottomInset: true,
             body: NotificationListener<OverscrollIndicatorNotification>(
               onNotification: (notification) {
@@ -30,252 +31,306 @@ class MassRequestTrackClaimDetailScreen extends StatelessWidget {
               child: CustomScrollView(
                 physics: const BouncingScrollPhysics(),
                 slivers: [
+                  // Enhanced header with cover image
                   SliverAppBar(
                     expandedHeight: AppConstants.kExpandedHeight,
                     collapsedHeight: 100,
                     floating: false,
                     pinned: true,
                     backgroundColor: colorGreen,
-                    elevation: 10,
-                    shadowColor: colorGrey2.withValues(alpha: 0.8),
-                    leading: IconButton(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      icon: const Icon(Icons.arrow_back_ios_rounded, color: colorWhite,),
+                    elevation: 0,
+                    shadowColor: Colors.transparent,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(30),
+                        bottomRight: Radius.circular(30),
+                      ),
                     ),
+                    // Back button
+                    leading: Container(
+                      margin: const EdgeInsets.only(left: 8, top: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        icon: const Icon(
+                          Icons.arrow_back_rounded,
+                          color: colorWhite,
+                          size: 22,
+                        ),
+                      ),
+                    ),
+                    // Title and background image
                     flexibleSpace: FlexibleSpaceBar(
-                        centerTitle: true,
-                        title: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                            _.paroisseSelected.value.name ?? '',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                            style: TextStyles.montserratBold(
-                                textSize: TextSizes.eighteen,
-                                textColor: colorWhite),
+                      centerTitle: true,
+                      title: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Text(
+                          _.paroisseSelected.value.name ?? '',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: TextStyles.montserratBold(
+                            textSize: TextSizes.eighteen,
+                            textColor: colorWhite,
                           ),
                         ),
-                        background: (_.paroisseSelected.value.coverImage?.link
-                                    ?.isNotEmpty ==
-                                true)
-                            ? Stack(
-                                children: [
-                                  CachedNetworkImage(
-                                    width: Get.width,
-                                    height: Get.width,
-                                    imageUrl: _.paroisseSelected.value
-                                            .coverImage?.link ??
-                                        '',
-                                    fit: BoxFit.cover,
-                                    placeholder: (context, url) =>
-                                        LottieLoadingView(size: Get.width / 6),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
-                                  ),
-                                  Container(
-                                    height: Get.width,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: Colors.black54.withValues(alpha: 0.3),
-                                    ),
-                                  ),
-                                ],
+                      ),
+                      background: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.2),
+                              blurRadius: 15,
+                              offset: const Offset(0, 5),
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30),
+                          ),
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              // Cover image
+                              (_.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
+                                  ? CachedNetworkImage(
+                                width: Get.width,
+                                height: Get.width,
+                                imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) => LottieLoadingView(size: Get.width / 6),
+                                errorWidget: (context, url, error) => Image.asset(
+                                  Assets.imagesBgLogin,
+                                  width: Get.width,
+                                  height: Get.width,
+                                  fit: BoxFit.cover,
+                                ),
                               )
-                            : Stack(
-                                children: [
-                                  Image.asset(
-                                    Assets.imagesBgLogin,
-                                    width: Get.width,
-                                    height: Get.width,
-                                    fit: BoxFit.cover,
+                                  : Image.asset(
+                                Assets.imagesBgLogin,
+                                width: Get.width,
+                                height: Get.width,
+                                fit: BoxFit.cover,
+                              ),
+                              // Shadow overlay
+                              Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Colors.transparent,
+                                      Colors.black.withValues(alpha: 0.7),
+                                    ],
+                                    stops: const [0.5, 1.0],
                                   ),
-                                  Container(
-                                    height: Get.width,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: Colors.black54.withValues(alpha: 0.3),
-                                    ),
-                                  ),
-                                ],
-                              )),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                  const SliverPadding(padding: EdgeInsets.symmetric(vertical: 8)),
+
+                  // Claim details content
                   SliverPadding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     sliver: SliverToBoxAdapter(
                       child: Column(
                         children: [
-                          Separators.minimunVertical(),
-                          Text(
-                            'Détails réclamation',
-                            textAlign: TextAlign.center,
-                            style: TextStyles.montserratBold(
-                              textSize: TextSizes.eighteen,
-                              textColor: colorGreenSemiLight,
-                            ),
-                          ),
-                          Separators.normalVertical(),
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
-                              border: Border.all(
-                                color:
-                                    getColor(_.claimSelected.value?.status?.code),
-                              ),
-                            ),
-                            child: Icon(
-                              getIcon(_.claimSelected.value?.status?.code),
-                              color:
-                                  getColor(_.claimSelected.value?.status?.code),
-                              size: Get.width / 10,
-                            ),
-                          ),
-                          Separators.customSizeVertical(10),
-                          Text(
-                            _.claimSelected.value?.status?.name?.fr ?? '-',
-                            textAlign: TextAlign.center,
-                            style: TextStyles.montserratBold(
-                              textSize: TextSizes.eighteen,
-                              textColor:
-                                  getColor(_.claimSelected.value?.status?.code),
-                            ),
-                          ),
-                          Separators.normalVertical(),
-                          SizedBox(
-                            width: double.maxFinite,
-                            child: Material(
-                              borderRadius: BorderRadius.circular(10.0),
-                              elevation: 10,
-                              color: colorWhite,
-                              shadowColor: colorGrey2.withValues(alpha: 0.5),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      'Paroisse',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyles.montserratRegular(
-                                        textSize: TextSizes.fourteen,
-                                        textColor: colorBlack,
+                          // Section header with icon
+                          Padding(
+                            padding: const EdgeInsets.only(top: 30, bottom: 24),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 50,
+                                  height: 50,
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: colorGreenSemiLight.withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(15),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: colorGreenSemiLight.withValues(alpha: 0.1),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 4),
                                       ),
-                                    ),
-                                    Separators.minimunVertical(),
-                                    Text(
-                                      _.claimSelected.value?.massRequest?.worshipPlace?.name ?? '-',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyles.montserratSemiBold(
-                                        textSize: TextSizes.sixteen,
-                                        textColor: colorBlack,
-                                      ),
-                                    ),
-                                    Separators.normalVertical(),
-                                    Text(
-                                      'Type de réclamation',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyles.montserratRegular(
-                                        textSize: TextSizes.fourteen,
-                                        textColor: colorBlack,
-                                      ),
-                                    ),
-                                    Separators.minimunVertical(),
-                                    Text(
-                                      _.claimSelected.value?.typeOfClaim?.name
-                                              ?.fr ??
-                                          '-',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyles.montserratSemiBold(
-                                        textSize: TextSizes.sixteen,
-                                        textColor: colorBlack,
-                                      ),
-                                    ),
-                                    Separators.normalVertical(),
-                                    Text(
-                                      'Description de la réclamation',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyles.montserratRegular(
-                                        textSize: TextSizes.fourteen,
-                                        textColor: colorBlack,
-                                      ),
-                                    ),
-                                    Separators.minimunVertical(),
-                                    Text(
-                                      _.claimSelected.value?.description ?? '-',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyles.montserratSemiBold(
-                                        textSize: TextSizes.sixteen,
-                                        textColor: colorBlack,
-                                      ),
-                                    ),
-                                    Separators.normalVertical(),
-                                    Text(
-                                      'Créée le',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyles.montserratRegular(
-                                        textSize: TextSizes.fourteen,
-                                        textColor: colorBlack,
-                                      ),
-                                    ),
-                                    Separators.minimunVertical(),
-                                    Text(
-                                      getDateTime(
-                                          _.claimSelected.value?.createdAt ??
-                                              ' - '),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyles.montserratSemiBold(
-                                        textSize: TextSizes.sixteen,
-                                        textColor: colorBlack,
-                                      ),
-                                    ),
-                                    Separators.normalVertical(),
-                                    Text(
-                                      'Modifiée le',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyles.montserratRegular(
-                                        textSize: TextSizes.fourteen,
-                                        textColor: colorBlack,
-                                      ),
-                                    ),
-                                    Separators.minimunVertical(),
-                                    Text(
-                                      getDateTime(
-                                          _.claimSelected.value?.updatedAt ??
-                                              ' - '),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyles.montserratSemiBold(
-                                        textSize: TextSizes.sixteen,
-                                        textColor: colorBlack,
-                                      ),
-                                    ),
-                                    Separators.normalVertical(),
-                                    Text(
-                                      'Observation',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyles.montserratRegular(
-                                        textSize: TextSizes.fourteen,
-                                        textColor: colorBlack,
-                                      ),
-                                    ),
-                                    Separators.minimunVertical(),
-                                    Text(
-                                      _.claimSelected.value?.observation ?? '-',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyles.montserratSemiBold(
-                                        textSize: TextSizes.fourteen,
-                                        textColor: colorBlack,
-                                      ),
-                                    ),
-                                    Separators.normalVertical(),
-                                  ],
+                                    ],
+                                  ),
+                                  child: const Icon(
+                                    Icons.info_outline_rounded,
+                                    color: colorGreenSemiLight,
+                                    size: 24,
+                                  ),
                                 ),
-                              ),
+                                const SizedBox(width: 16),
+
+                                // Section title
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Détails réclamation',
+                                        style: TextStyles.montserratBold(
+                                          textSize: TextSizes.eighteen,
+                                          textColor: colorGreenSemiLight,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Informations sur votre demande',
+                                        style: TextStyles.montserratRegular(
+                                          textSize: TextSizes.fourteen,
+                                          textColor: Colors.grey[600]!,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          Separators.normalVertical(),
+
+                          // Status icon and text
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.05),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 3),
+                                  spreadRadius: 0,
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: 60,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    color: getColor(_.claimSelected.value?.status?.code).withValues(alpha: 0.1),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: getColor(_.claimSelected.value?.status?.code).withValues(alpha: 0.3),
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: Icon(
+                                    getIcon(_.claimSelected.value?.status?.code),
+                                    color: getColor(_.claimSelected.value?.status?.code),
+                                    size: 30,
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color: getColor(_.claimSelected.value?.status?.code).withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    _.claimSelected.value?.status?.name?.fr ?? '-',
+                                    style: TextStyles.montserratBold(
+                                      textSize: TextSizes.sixteen,
+                                      textColor: getColor(_.claimSelected.value?.status?.code),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(height: 24),
+
+                          // Claim details card
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.05),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 3),
+                                  spreadRadius: 0,
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                // Detail items
+                                _buildDetailItem(
+                                  title: 'Paroisse',
+                                  value: _.claimSelected.value?.massRequest?.worshipPlace?.name ?? '-',
+                                  icon: Icons.church_outlined,
+                                ),
+                                _buildDivider(),
+
+                                _buildDetailItem(
+                                  title: 'Type de réclamation',
+                                  value: _.claimSelected.value?.typeOfClaim?.name?.fr ?? '-',
+                                  icon: Icons.category_outlined,
+                                ),
+                                _buildDivider(),
+
+                                _buildDetailItem(
+                                  title: 'Description de la réclamation',
+                                  value: _.claimSelected.value?.description ?? '-',
+                                  icon: Icons.description_outlined,
+                                  isLongText: true,
+                                ),
+                                _buildDivider(),
+
+                                _buildDetailItem(
+                                  title: 'Créée le',
+                                  value: getDateTime(_.claimSelected.value?.createdAt ?? ' - '),
+                                  icon: Icons.calendar_today_rounded,
+                                ),
+                                _buildDivider(),
+
+                                _buildDetailItem(
+                                  title: 'Modifiée le',
+                                  value: getDateTime(_.claimSelected.value?.updatedAt ?? ' - '),
+                                  icon: Icons.update_rounded,
+                                ),
+
+                                // Show observation only if it exists
+                                if ((_.claimSelected.value?.observation ?? '').isNotEmpty) ...[
+                                  _buildDivider(),
+                                  _buildDetailItem(
+                                    title: 'Observation',
+                                    value: _.claimSelected.value?.observation ?? '-',
+                                    icon: Icons.comment_outlined,
+                                    isLongText: true,
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(height: 30),
                         ],
                       ),
                     ),
@@ -286,6 +341,75 @@ class MassRequestTrackClaimDetailScreen extends StatelessWidget {
           ),
         );
       }),
+    );
+  }
+
+  // Helper method to create detail item rows
+  Widget _buildDetailItem({
+    required String title,
+    required String value,
+    required IconData icon,
+    bool isLongText = false,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Title with icon
+          Row(
+            children: [
+              Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: colorGreenSemiLight.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  icon,
+                  color: colorGreenSemiLight,
+                  size: 16,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                title,
+                style: TextStyles.montserratMedium(
+                  textSize: TextSizes.fourteen,
+                  textColor: Colors.grey[700]!,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 8),
+
+          // Value with appropriate styling
+          Padding(
+            padding: const EdgeInsets.only(left: 40),
+            child: Text(
+              value,
+              style: TextStyles.montserratSemiBold(
+                textSize: isLongText ? TextSizes.fifteen : TextSizes.sixteen,
+                textColor: Colors.black87,
+              ),
+              textAlign: isLongText ? TextAlign.start : TextAlign.start,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Helper method to create dividers
+  Widget _buildDivider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Divider(
+        color: Colors.grey[200],
+        height: 1,
+      ),
     );
   }
 }

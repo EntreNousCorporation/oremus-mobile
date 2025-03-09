@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
+import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/services/notification_consent_manager.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/settings/controller/settings_controller.dart';
 import 'package:oremusapp/main.dart';
 
@@ -48,7 +50,7 @@ class SettingsScreen extends StatelessWidget {
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
-                  side: BorderSide(color: colorGreen1.withOpacity(0.5)),
+                  side: BorderSide(color: colorGreen1.withValues(alpha: 0.5)),
                 ),
                 child: Column(
                   children: [
@@ -90,7 +92,7 @@ class SettingsScreen extends StatelessWidget {
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
-                    side: BorderSide(color: colorGreen1.withOpacity(0.5)),
+                    side: BorderSide(color: colorGreen1.withValues(alpha: 0.5)),
                   ),
                   child: Column(
                     children: [
@@ -123,7 +125,7 @@ class SettingsScreen extends StatelessWidget {
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
-                    side: BorderSide(color: colorGreen1.withOpacity(0.5)),
+                    side: BorderSide(color: colorGreen1.withValues(alpha: 0.5)),
                   ),
                   child: Column(
                     children: [
@@ -146,7 +148,7 @@ class SettingsScreen extends StatelessWidget {
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
-                  side: BorderSide(color: colorGreen1.withOpacity(0.5)),
+                  side: BorderSide(color: colorGreen1.withValues(alpha: 0.5)),
                 ),
                 child: Column(
                   children: [
@@ -161,6 +163,7 @@ class SettingsScreen extends StatelessWidget {
                         controller.moveToAbout();
                       },
                     ),
+                    const Divider(height: 1, indent: 72),
                     _buildSettingTile(
                       context,
                       icon: Icons.support_outlined,
@@ -173,15 +176,16 @@ class SettingsScreen extends StatelessWidget {
                       },
                     ),
                     const Divider(height: 1, indent: 72),
-                    const Divider(height: 1, indent: 72),
                     _buildSettingTile(
                       context,
                       icon: Icons.description_outlined,
                       title: 'Conditions d\'utilisation',
                       subtitle: 'Lisez nos conditions',
                       trailing:
-                      const Icon(Icons.chevron_right, color: Colors.grey),
-                      onTap: () {},
+                      const Icon(Icons.open_in_new_rounded, color: Colors.grey),
+                      onTap: () {
+                        doLaunchUrl(AppConstants.CGU_URL);
+                      },
                     ),
                     const Divider(height: 1, indent: 72),
                     _buildSettingTile(
@@ -298,7 +302,7 @@ class SettingsScreen extends StatelessWidget {
               width: 42,
               height: 42,
               decoration: BoxDecoration(
-                color: colorGreen1.withOpacity(0.5),
+                color: colorGreen1.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: customIcon?.isNotEmpty == true

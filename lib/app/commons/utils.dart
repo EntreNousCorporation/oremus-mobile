@@ -6,12 +6,14 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 extension StringExtension on String {
   String toCapitalize() {
@@ -114,9 +116,40 @@ Color getColor(String? code) {
     case 'REQUEST_INITIATED':
     case 'REQUEST_ASSUMED':
     case 'CLAIM_INITIATED':
+    case 'DONATION_INITIATED':
       return colorBlue2;
     default:
       return colorGreen;
+  }
+}
+
+doLaunchEmail(String email) async {
+  if (await canLaunchUrlString(Uri.encodeFull(
+      "mailto:$email?subject=Besoin d'information&body=")) ==
+      true) {
+    launchUrlString(
+        Uri.encodeFull("mailto:$email?subject=Besoin d'information&body="));
+  } else {
+    log("Can't launch email");
+  }
+}
+
+doLaunchPhone(String phone) async {
+  if (await canLaunchUrlString("tel:$phone") == true) {
+    launchUrlString("tel:$phone");
+  } else {
+    log("Can't launch phone number");
+  }
+}
+
+doLaunchUrl(String link) async {
+  if (await canLaunchUrlString(link) == true) {
+    launchUrlString(link);
+  } else {
+    log("Can't launch url");
+    showNotification(
+      message: 'Aucune information trouvée',
+    );
   }
 }
 

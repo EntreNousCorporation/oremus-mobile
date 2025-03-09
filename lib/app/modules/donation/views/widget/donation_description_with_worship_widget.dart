@@ -4,7 +4,6 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/donation/controller/donation_with_worship_controller.dart';
-import 'package:oremusapp/app/modules/massrequest/controller/mass_request_with_worship_controller.dart';
 
 class DonationDescriptionWithWorshipWidget extends StatelessWidget {
   const DonationDescriptionWithWorshipWidget({Key? key}) : super(key: key);
@@ -12,47 +11,51 @@ class DonationDescriptionWithWorshipWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<DonationWithWorshipController>(builder: (logic) {
-      return Material(
-        borderRadius: BorderRadius.circular(10.0),
-        elevation: 10,
-        color: colorWhite,
-        shadowColor: colorGrey2.withValues(alpha: 0.5),
-        child: TextFormField(
-          controller: logic.descriptionController,
-          keyboardAppearance: Brightness.light,
-          style: TextStyles.montserratSemiBold(textColor: colorBlack),
-          maxLines: 5,
-          cursorColor: colorBlue,
-          keyboardType: TextInputType.multiline,
-          decoration: InputDecoration(
-            contentPadding:
-                const EdgeInsets.only(top: 16, left: 16, right: 0, bottom: 0),
-            filled: true,
-            fillColor: colorWhite,
-            border: InputBorder.none,
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: colorGreen),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: colorTransparent),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            errorBorder: InputBorder.none,
-            disabledBorder: UnderlineInputBorder(
-              borderSide: const BorderSide(color: colorGrey1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            hintText: '',
-            hintStyle: TextStyles.montserratItalic(
-              textColor: colorPurpleLight,
-              textSize: TextSizes.fourteen,
+      return TextFormField(
+        controller: logic.descriptionController,
+        keyboardAppearance: Brightness.light,
+        style: TextStyles.montserratMedium(
+          textColor: colorBlack,
+          textSize: TextSizes.fifteen,
+        ),
+        maxLines: 5,
+        cursorColor: colorGreenSemiLight,
+        keyboardType: TextInputType.multiline,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.all(16),
+          filled: true,
+          fillColor: Colors.grey[50],
+          hintText: 'Partagez l\'intention de votre don...',
+          hintStyle: TextStyles.montserratItalic(
+            textColor: Colors.grey[500]!,
+            textSize: TextSizes.fourteen,
+          ),
+          border: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: colorGreenSemiLight, width: 2),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          prefixIcon: Padding(
+            padding: const EdgeInsets.only(left: 12, right: 8, top: 12),
+            child: Icon(
+              Icons.edit_note_rounded,
+              color: logic.descriptionController.text.isNotEmpty
+                  ? colorGreenSemiLight
+                  : Colors.grey[400],
             ),
           ),
-          onChanged: (value) {
-            logic.checkForm();
-          },
         ),
+        onChanged: (value) {
+          logic.checkForm();
+          logic.update();
+        },
       );
     });
   }

@@ -10,11 +10,9 @@ import 'package:oremusapp/app/modules/diocese/views/diocese_screen.dart';
 import 'package:oremusapp/app/modules/donation/binding/donation_binding.dart';
 import 'package:oremusapp/app/modules/donation/binding/donation_menu_binding.dart';
 import 'package:oremusapp/app/modules/donation/binding/donation_with_worship_binding.dart';
-import 'package:oremusapp/app/modules/donation/binding/filter_donation_worship_binding.dart';
 import 'package:oremusapp/app/modules/donation/views/donation_menu_screen.dart';
 import 'package:oremusapp/app/modules/donation/views/donation_screen.dart';
 import 'package:oremusapp/app/modules/donation/views/donation_with_worship_screen.dart';
-import 'package:oremusapp/app/modules/donation/views/widget/filter_donation_worship_screen.dart';
 import 'package:oremusapp/app/modules/donationhistory/binding/donation_history_binding.dart';
 import 'package:oremusapp/app/modules/donationhistory/binding/donation_history_detail_binding.dart';
 import 'package:oremusapp/app/modules/donationhistory/views/donation_history_detail_screen.dart';
@@ -26,7 +24,7 @@ import 'package:oremusapp/app/modules/faq/views/faq_screen.dart';
 import 'package:oremusapp/app/modules/favorite/binding/favorite_binding.dart';
 import 'package:oremusapp/app/modules/favorite/views/favorites_screen.dart';
 import 'package:oremusapp/app/modules/massrequest/binding/filter_mass_request_date_binding.dart';
-import 'package:oremusapp/app/modules/massrequest/binding/filter_mass_request_worship_binding.dart';
+import 'package:oremusapp/app/modules/massrequest/binding/filter_worship_binding.dart';
 import 'package:oremusapp/app/modules/massrequest/binding/mass_request_binding.dart';
 import 'package:oremusapp/app/modules/massrequest/binding/mass_request_menu_binding.dart';
 import 'package:oremusapp/app/modules/massrequest/binding/mass_request_with_worship_binding.dart';
@@ -34,7 +32,7 @@ import 'package:oremusapp/app/modules/massrequest/views/mass_request_menu_screen
 import 'package:oremusapp/app/modules/massrequest/views/mass_request_screen.dart';
 import 'package:oremusapp/app/modules/massrequest/views/mass_request_with_worship_screen.dart';
 import 'package:oremusapp/app/modules/massrequest/views/widget/filter_mass_request_date_screen.dart';
-import 'package:oremusapp/app/modules/massrequest/views/widget/filter_mass_request_worship_screen.dart';
+import 'package:oremusapp/app/modules/massrequest/views/widget/filter_worship_screen.dart';
 import 'package:oremusapp/app/modules/massrequestclaim/binding/mass_request_claim_binding.dart';
 import 'package:oremusapp/app/modules/massrequestclaim/views/mass_request_claim_screen.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/binding/filter_mass_request_history_binding.dart';
@@ -309,9 +307,9 @@ class AppPages {
       transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
-      name: Routes.FILTER_MASS_REQUEST_CHOOSE_WORSHIP,
-      page: () => const FilterMassRequestWorshipScreen(),
-      binding: FilterMassRequestWorshipBinding(),
+      name: Routes.FILTER_CHOOSE_WORSHIP,
+      page: () => const FilterWorshipScreen(),
+      binding: FilterWorshipBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),
@@ -368,13 +366,6 @@ class AppPages {
       name: Routes.DONATION_HISTORY_DETAIL,
       page: () => const DonationHistoryDetailScreen(),
       binding: DonationHistoryDetailBinding(),
-      transition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 500),
-    ),
-    GetPage(
-      name: Routes.FILTER_DONATION_CHOOSE_WORSHIP,
-      page: () => const FilterDonationWorshipScreen(),
-      binding: FilterDonationWorshipBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

@@ -11,49 +11,42 @@ class ReportProblemDescriptionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ReportProblemController>(builder: (logic) {
-      return Material(
-        borderRadius: BorderRadius.circular(10.0),
-        elevation: 10,
-        color: colorWhite,
-        shadowColor: colorGrey2.withValues(alpha: 0.5),
-        child: TextFormField(
-          controller: logic.descriptionController,
-          keyboardAppearance: Brightness.light,
-          style: TextStyles.montserratSemiBold(textColor: colorBlack),
-          maxLines: 6,
-          autofocus: true,
-          cursorColor: colorBlue,
-          keyboardType: TextInputType.multiline,
-          //textInputAction: TextInputAction.done,
-          decoration: InputDecoration(
-            contentPadding:
-                const EdgeInsets.only(top: 16, left: 16, right: 0, bottom: 0),
-            filled: true,
-            fillColor: colorWhite,
-            border: InputBorder.none,
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: colorGreen),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: colorTransparent),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            errorBorder: InputBorder.none,
-            disabledBorder: UnderlineInputBorder(
-              borderSide: const BorderSide(color: colorGrey1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            hintText: '',
-            hintStyle: TextStyles.montserratItalic(
-              textColor: colorPurpleLight,
-              textSize: TextSizes.fourteen,
-            ),
-          ),
-          onChanged: (value) {
-            logic.checkForm();
-          },
+      return TextFormField(
+        controller: logic.descriptionController,
+        keyboardAppearance: Brightness.light,
+        style: TextStyles.montserratRegular(
+          textColor: colorBlack,
+          textSize: TextSizes.fourteen,
         ),
+        maxLines: 6,
+        minLines: 4,
+        cursorColor: colorGreenSemiLight,
+        keyboardType: TextInputType.multiline,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          filled: true,
+          fillColor: Colors.grey[50],
+          hintText: 'Décrivez le problème rencontré...',
+          hintStyle: TextStyles.montserratRegular(
+            textColor: Colors.grey[400]!,
+            textSize: TextSizes.fourteen,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey[300]!),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: colorGreenSemiLight, width: 1.5),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey[300]!),
+          ),
+        ),
+        onChanged: (value) {
+          logic.checkForm();
+        },
       );
     });
   }

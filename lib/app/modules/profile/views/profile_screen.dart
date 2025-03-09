@@ -7,8 +7,6 @@ import 'package:oremusapp/app/commons/components/custom_header.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
-import 'package:oremusapp/app/commons/theme/app_dimension.dart';
-import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/profile/controller/profile_controller.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -33,17 +31,9 @@ class ProfileScreen extends StatelessWidget {
                   Container(
                     height: 260,
                     width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          colorGreen,
-                          colorGreen.withOpacity(0.8),
-                          colorGreen.withOpacity(0.6),
-                        ],
-                      ),
-                      borderRadius: const BorderRadius.only(
+                    decoration: const BoxDecoration(
+                      color: colorGreen,
+                      borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(30),
                         bottomRight: Radius.circular(30),
                       ),
@@ -62,7 +52,7 @@ class ProfileScreen extends StatelessWidget {
                             children: [
                               Container(
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.3),
+                                  color: Colors.white.withValues(alpha: 0.3),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: IconButton(
@@ -90,7 +80,7 @@ class ProfileScreen extends StatelessWidget {
                               ),
                               Container(
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.3),
+                                  color: Colors.white.withValues(alpha: 0.3),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: IconButton(
@@ -219,10 +209,10 @@ class ProfileScreen extends StatelessWidget {
                           controller.showDeleteAccountDialog();
                         },
                         style: TextButton.styleFrom(
-                          backgroundColor: Colors.red.withOpacity(0.1),
+                          backgroundColor: Colors.red.withValues(alpha: 0.1),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
-                            side: BorderSide(color: colorRed1.withOpacity(0.3)),
+                            side: BorderSide(color: colorRed1.withValues(alpha: 0.3)),
                           ),
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 12),
@@ -232,7 +222,7 @@ class ProfileScreen extends StatelessWidget {
                           children: [
                             Icon(
                               Icons.delete_outline,
-                              color: colorRed1.withOpacity(0.8),
+                              color: colorRed1.withValues(alpha: 0.8),
                               size: 20,
                             ),
                             const SizedBox(width: 8),
@@ -240,7 +230,7 @@ class ProfileScreen extends StatelessWidget {
                               'Supprimer mon compte',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                color: colorRed1.withOpacity(0.8),
+                                color: colorRed1.withValues(alpha: 0.8),
                               ),
                             ),
                           ],
@@ -287,7 +277,7 @@ class ProfileScreen extends StatelessWidget {
                   child: Container(
                     width: 120,
                     height: 120,
-                    color: colorGreen1.withOpacity(0.3),
+                    color: colorGreen1.withValues(alpha: 0.3),
                     child: SvgPicture.asset('assets/images/avatar.svg'),
                   ),
                 ),
@@ -307,7 +297,7 @@ class ProfileScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 10,
                   offset: const Offset(0, 5),
                 ),
@@ -379,7 +369,7 @@ class ProfileScreen extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: colorGreen1.withOpacity(0.3),
+                  color: colorGreen1.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
@@ -421,7 +411,7 @@ class ProfileScreen extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: colorGreen1.withOpacity(0.3),
+                color: colorGreen1.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(

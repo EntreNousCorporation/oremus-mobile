@@ -86,6 +86,10 @@ class MassRequestHistoryController extends GetxController {
     return massRequestSelected?.status?.code == 'REQUEST_INITIATED';
   }
 
+  doNewMassRequest() {
+    Get.toNamed(Routes.MASS_REQUEST_WITHOUT_WORSHIP);
+  }
+
   initCriteria() {
     startDate.value = Jiffy.now()
         .subtract(days: 6)
@@ -549,14 +553,10 @@ class MassRequestHistoryController extends GetxController {
   }
 
   goToAdvancedSearch() async {
-    searchCriteria.value =
-        await Get.toNamed(Routes.FILTER_MASS_REQUEST_HISTORY);
-    log('searchCriteria => ${searchCriteria.value.toJson().toString()}');
+    searchCriteria.value = await Get.toNamed(Routes.FILTER_MASS_REQUEST_HISTORY);
     searchCriteria.refresh();
-    log('searchCriteria => ${searchCriteria.value.toJson().toString()}');
     getMassRequests();
-    log('searchCriteria => ${searchCriteria.value.toJson().toString()}');
-    log('searchCriteria isEmpty => ${searchCriteria.value.isMassRequestCriteriaEmpty}');
+    update();
   }
 
   //SEARCH SECTION

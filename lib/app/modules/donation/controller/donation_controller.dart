@@ -113,7 +113,7 @@ class DonationController extends GetxController {
     var request = DonationData(
       amount: amountController.text.replaceAll(RegExp(r'\s'), ''),
       description: descriptionController.text,
-      worshipPlace: paroisseSelected.value.identifier,
+      worshipPlace: paroisseSelected.value.identifier.toString(),
       forceDuplicateCreation: forceDuplicateCreation,
     );
 

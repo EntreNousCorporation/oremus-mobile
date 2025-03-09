@@ -17,16 +17,16 @@ class ParoisseMapController extends GetxController {
 
   var paroisseSelected = ContentPlace().obs;
 
-  //Google Map
-  //Completer<GoogleMapController> controller = Completer();
+  // Google Map
   var mapController = CustomInfoWindowController();
+  GoogleMapController? googleMapController;
   var worshipPlaceMarkers = Rx<Set<Marker>>({});
   List<String> typeMaps = [
     "Plan",
     "Satellite",
   ];
   var typeMapValue = "Plan".obs;
-  //===========================================
+  // ===========================================
 
   @override
   void onInit() {
@@ -34,9 +34,7 @@ class ParoisseMapController extends GetxController {
     initControllers();
     super.onInit();
   }
-  //https://goo.gl/maps/EcqfGFCj7HUjaByD6
-  //https://www.google.com/maps/dir/?api=1&destination=5.3615683,-3.9614188,19z&travelmode=driving&dir_action=navigate
-  //https://www.google.com/maps/dir/?api=1&destination=5.361981170134402,-3.960254155399859&travelmode=driving&dir_action=navigate
+
   @override
   void onReady() {
     showInfoWindow();
@@ -46,6 +44,9 @@ class ParoisseMapController extends GetxController {
   @override
   void dispose() {
     mapController.dispose();
+    if (googleMapController != null) {
+      googleMapController!.dispose();
+    }
     super.dispose();
   }
 
@@ -56,281 +57,224 @@ class ParoisseMapController extends GetxController {
     }
   }
 
-  getIcon() async {
-    return await BitmapDescriptor.fromAssetImage(
-        createLocalImageConfiguration(Get.context!),
-        "assets/images/icon_default_pin.svg");
+  // Méthode pour recentrer la carte sur la paroisse
+  void centerOnParoisse() {
+    if (googleMapController != null) {
+      final position = LatLng(
+        paroisseSelected.value.localisation?.latitude ?? 0.0,
+        paroisseSelected.value.localisation?.longitude ?? 0.0,
+      );
+
+      googleMapController!.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: position,
+            zoom: 17.4746,
+          ),
+        ),
+      );
+
+      // Afficher la fenêtre d'informations après recentrage
+      showInfoWindow();
+    }
+    update();
   }
 
   initControllers() async {
-    /*await MarkerIcon.svgAsset(
-      assetName: 'assets/images/icon_default_pin.svg',
-      context: Get.context!,
-      size: 40,
-    ).then((bitmap) {
-      log("message 2");
-      worshipPlaceMarkers.value.add(
-        Marker(
-            markerId: MarkerId('${paroisseSelected.value.identifier}'),
-            //icon: bitmap, //todo - pourquoi le marker n'est pas mis à jour au 1er lancement de la map
-            position: LatLng(paroisseSelected.value.localisation?.latitude ?? 0.0,
-                paroisseSelected.value.localisation?.longitude ?? 0.0),
-            onTap: () {
-              mapController.value.addInfoWindow!(
-                SizedBox(
-                  width: Get.width / 1.2,
-                  child: Material(
-                    borderRadius: BorderRadius.circular(10.0),
-                    elevation: 10,
-                    color: colorWhite,
-                    shadowColor: colorGrey2.withValues(alpha: 0.5),
+    log("============= Initializing map markers =============");
+    worshipPlaceMarkers.value.clear();
+    worshipPlaceMarkers.value.add(
+      Marker(
+        markerId: MarkerId('${paroisseSelected.value.identifier}'),
+        position: LatLng(
+          paroisseSelected.value.localisation?.latitude ?? 0.0,
+          paroisseSelected.value.localisation?.longitude ?? 0.0,
+        ),
+        onTap: showInfoWindow,
+      ),
+    );
+  }
+
+  // Méthode pour mettre à jour le type de carte
+  void updateTypeMap(String type) {
+    typeMapValue.value = type;
+    update();
+  }
+
+  showInfoWindow() {
+    log("============= showInfoWindow =============");
+    mapController.addInfoWindow!(
+      Container(
+        width: Get.width / 1.2,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // En-tête avec image et informations
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Image de la paroisse
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      width: Get.width / 5,
+                      height: Get.width / 5,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.1),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: paroisseSelected.value.coverImage?.link != null
+                          ? CachedNetworkImage(
+                        imageUrl: paroisseSelected.value.coverImage?.link ?? '',
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => LottieLoadingView(size: Get.width / 6),
+                        errorWidget: (context, url, error) => Image.asset(
+                          'assets/images/bg_login.jpg',
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                          : Image.asset(
+                        'assets/images/bg_login.jpg',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+
+                  // Informations sur la paroisse
+                  Expanded(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Separators.normalVertical(),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        Text(
+                          '${paroisseSelected.value.name}',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyles.montserratBold(
+                            textSize: TextSizes.fifteen,
+                            textColor: colorGreenSemiLight,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        if (paroisseSelected.value.address?.municipality != null)
+                          Row(
                             children: [
-                              Material(
-                                borderRadius: BorderRadius.circular(10.0),
-                                elevation: 10,
-                                color: colorWhite,
-                                shadowColor: colorGrey2.withValues(alpha: 0.8),
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(10.0)),
-                                  child: paroisseSelected
-                                      .value.coverImage?.link !=
-                                      null
-                                      ? CachedNetworkImage(
-                                    width: Get.width / 5,
-                                    height: Get.width / 5,
-                                    imageUrl: paroisseSelected
-                                        .value.coverImage?.link ??
-                                        '',
-                                    fit: BoxFit.cover,
-                                    placeholder: (context, url) =>
-                                        LottieLoadingView(
-                                            size: Get.width / 6),
-                                    errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                                  )
-                                      : Image.asset(
-                                    'assets/images/bg_login.jpg',
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
+                              Icon(
+                                Icons.location_city,
+                                size: 14,
+                                color: Colors.grey[600],
                               ),
-                              Separators.normalHorizontal(),
+                              const SizedBox(width: 4),
                               Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${paroisseSelected.value.name}',
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyles.montserratMedium(
-                                          textSize: TextSizes.eighteen,
-                                          textColor: colorBlack),
-                                    ),
-                                    Text(
-                                      '${paroisseSelected.value.address?.municipality}',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyles.montserratRegular(
-                                          textSize: TextSizes.sixteen,
-                                          textColor: colorGrey1),
-                                    ),
-                                    Text(
-                                      '${paroisseSelected.value.address?.neighbourhood}',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyles.montserratRegular(
-                                        textSize: TextSizes.sixteen,
-                                        textColor: colorGrey1,
-                                      ),
-                                    ),
-                                  ],
+                                child: Text(
+                                  '${paroisseSelected.value.address?.municipality}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyles.montserratRegular(
+                                    textSize: TextSizes.thirteen,
+                                    textColor: Colors.grey[700]!,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                        Separators.normalVertical(),
-                        TextButton.icon(
-                          style: TextButton.styleFrom(
-                              backgroundColor: colorGreenSemiLight),
-                          icon: const Icon(
-                            Icons.pin_drop_rounded,
-                            color: colorWhite,
+                        const SizedBox(height: 4),
+                        if (paroisseSelected.value.address?.neighbourhood != null)
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.home,
+                                size: 14,
+                                color: Colors.grey[600],
+                              ),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  '${paroisseSelected.value.address?.neighbourhood}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyles.montserratRegular(
+                                    textSize: TextSizes.thirteen,
+                                    textColor: Colors.grey[700]!,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          label: Padding(
-                            padding: const EdgeInsets.all(2.0),
-                            child: Text(
-                              'Voir itinéraire',
-                              style: TextStyles.montserratMedium(
-                                  textSize: TextSizes.sixteen,
-                                  textColor: colorWhite),
-                            ),
-                          ),
-                          onPressed: () {
-                            mapController.value.hideInfoWindow!();
-                            showCustomDialog(Get.context!,
-                                message:
-                                "Vous serez redirigés vers une autre application",
-                                negativeLabel: 'Annuler',
-                                negativeCallBack: () {},
-                                positiveLabel: 'Continuer', positiveCallBack: () {
-                                  launchMapRoutes();
-                                });
-                          },
-                        ),
-                        Separators.normalVertical(),
                       ],
                     ),
                   ),
-                ),
-                LatLng(paroisseSelected.value.localisation?.latitude ?? 0.0,
-                    paroisseSelected.value.localisation?.longitude ?? 0.0),
-              );
-            }),
-      );
-    });*/
+                ],
+              ),
+            ),
 
-    log("============= showInfoWindow 1 =============");
-    worshipPlaceMarkers.value.clear();
-    worshipPlaceMarkers.value.add(
-      Marker(
-          markerId: MarkerId('${paroisseSelected.value.identifier}'),
-          //icon: bitmap, //todo - pourquoi le marker n'est pas mis à jour au 1er lancement de la map
-          position: LatLng(paroisseSelected.value.localisation?.latitude ?? 0.0,
-              paroisseSelected.value.localisation?.longitude ?? 0.0),
-          onTap: showInfoWindow),
-    );
-  }
+            // Séparateur
+            Divider(color: Colors.grey[200], height: 1),
 
-  showInfoWindow() {
-    log("============= showInfoWindow ============= ${paroisseSelected.value.localisation?.longitude.toString()}");
-    mapController.addInfoWindow!(
-      SizedBox(
-        width: Get.width / 1.2,
-        child: Material(
-          borderRadius: BorderRadius.circular(10.0),
-          elevation: 10,
-          color: colorWhite,
-          shadowColor: colorGrey2.withValues(alpha: 0.5),
-          child: Column(
-            children: [
-              Separators.normalVertical(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            // Bouton d'itinéraire
+            InkWell(
+              onTap: () {
+                mapController.hideInfoWindow!();
+                launchMapRoutes();
+              },
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(16),
+                bottomRight: Radius.circular(16),
+              ),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 12),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Material(
-                      borderRadius: BorderRadius.circular(10.0),
-                      elevation: 10,
-                      color: colorWhite,
-                      shadowColor: colorGrey2.withValues(alpha: 0.8),
-                      child: ClipRRect(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10.0)),
-                        child: paroisseSelected.value.coverImage?.link != null
-                            ? CachedNetworkImage(
-                                width: Get.width / 5,
-                                height: Get.width / 5,
-                                imageUrl:
-                                    paroisseSelected.value.coverImage?.link ??
-                                        '',
-                                fit: BoxFit.cover,
-                                placeholder: (context, url) =>
-                                    LottieLoadingView(size: Get.width / 6),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                              )
-                            : Image.asset(
-                                'assets/images/bg_login.jpg',
-                                width: Get.width / 5,
-                                height: Get.width / 5,
-                                fit: BoxFit.cover,
-                              ),
-                      ),
+                    const Icon(
+                      Icons.directions,
+                      color: colorGreenSemiLight,
+                      size: 20,
                     ),
-                    Separators.normalHorizontal(),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${paroisseSelected.value.name}',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyles.montserratMedium(
-                                textSize: TextSizes.eighteen,
-                                textColor: colorBlack),
-                          ),
-                          Text(
-                            '${paroisseSelected.value.address?.municipality}',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyles.montserratRegular(
-                                textSize: TextSizes.sixteen,
-                                textColor: colorGrey1),
-                          ),
-                          Text(
-                            '${paroisseSelected.value.address?.neighbourhood}',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyles.montserratRegular(
-                              textSize: TextSizes.sixteen,
-                              textColor: colorGrey1,
-                            ),
-                          ),
-                        ],
+                    const SizedBox(width: 8),
+                    Text(
+                      'Obtenir un itinéraire',
+                      style: TextStyles.montserratSemiBold(
+                        textSize: TextSizes.fourteen,
+                        textColor: colorGreenSemiLight,
                       ),
                     ),
                   ],
                 ),
               ),
-              Separators.normalVertical(),
-              TextButton.icon(
-                style:
-                    TextButton.styleFrom(backgroundColor: colorGreenSemiLight),
-                icon: const Icon(
-                  Icons.pin_drop_rounded,
-                  color: colorWhite,
-                ),
-                label: Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: Text(
-                    'Voir itinéraire',
-                    style: TextStyles.montserratMedium(
-                        textSize: TextSizes.sixteen, textColor: colorWhite),
-                  ),
-                ),
-                onPressed: () {
-                  mapController.hideInfoWindow!();
-                  launchMapRoutes();
-                },
-              ),
-              Separators.normalVertical(),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-      LatLng(paroisseSelected.value.localisation?.latitude ?? 0.0,
-          paroisseSelected.value.localisation?.longitude ?? 0.0),
+      LatLng(
+        paroisseSelected.value.localisation?.latitude ?? 0.0,
+        paroisseSelected.value.localisation?.longitude ?? 0.0,
+      ),
     );
   }
 
   launchMapRoutes() async {
-    //String url = "https://www.google.com/maps/dir/?api=1&origin=${paroisseSelected.value.localisation?.latitude ?? 0.0},${paroisseSelected.value.localisation?.longitude ?? 0.0}&destination=${paroisseSelected.value.localisation?.latitude ?? 0.0},${paroisseSelected.value.localisation?.longitude ?? 0.0}&travelmode=driving&dir_action=navigate";
-
     String url = "https://www.google.com/maps/dir/?api=1&destination=${paroisseSelected.value.localisation?.latitude ?? 0.0},${paroisseSelected.value.localisation?.longitude ?? 0.0}&travelmode=driving&dir_action=navigate";
+
     if (await canLaunch(url)) {
       await launch(url);
     } else {

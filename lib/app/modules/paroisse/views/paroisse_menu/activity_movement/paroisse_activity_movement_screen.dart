@@ -35,165 +35,291 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
                   child: CustomScrollView(
                     physics: const NeverScrollableScrollPhysics(),
                     slivers: [
+                      // En-tête extensible avec image de couverture
                       SliverAppBar(
                         expandedHeight: AppConstants.kExpandedHeight,
+                        collapsedHeight: 100,
                         floating: false,
                         pinned: true,
                         backgroundColor: colorGreen,
-                        elevation: 10,
-                        shadowColor: colorGrey2.withValues(alpha: 0.8),
-                        leading: IconButton(
-                          onPressed: () {
-                            Get.back();
-                          },
-                          icon: const Icon(Icons.arrow_back_ios_rounded, color: colorWhite,),
+                        elevation: 6,
+                        shadowColor: Colors.black.withValues(alpha: 0.2),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(24),
+                            bottomRight: Radius.circular(24),
+                          ),
                         ),
-                        actions: [
-                          IconButton(
-                            onPressed: () {
-                              _.goToReportProblem();
-                            },
-                            icon: SvgPicture.asset(Assets.imagesWarning, colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),),
+                        // Bouton retour
+                        leading: Container(
+                          margin: const EdgeInsets.only(left: 8, top: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          Separators.minimunHorizontal(),
-                          LikeButton(
-                            isLiked: _.paroisseSelected.value.isFavorite,
-                            onTap: (isLiked) async {
-                              _.paroisseSelected.value.isFavorite = !isLiked;
-                              if (isLiked) {
-                                _.removeFavorite(_.paroisseSelected.value, isLiked);
-                              } else {
-                                _.saveFavorite(_.paroisseSelected.value, isLiked);
-                              }
-                              return !isLiked;
+                          child: IconButton(
+                            onPressed: () {
+                              Get.back();
                             },
-                            size: 25,
-                            circleColor: const CircleColor(
-                                start: Color(0xff93291E),
-                                end: Color(0xFFED213A)),
-                            bubblesColor: const BubblesColor(
-                              dotPrimaryColor: Color(0xFFED213A),
-                              dotSecondaryColor: Color(0xff93291E),
+                            icon: const Icon(
+                              Icons.arrow_back_rounded,
+                              color: colorWhite,
+                              size: 22,
                             ),
-                            likeBuilder: (bool isLiked) {
-                              return Icon(
-                                isLiked
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: isLiked
-                                    ? const Color(0xFFED213A)
-                                    : colorWhite,
-                                size: 25,
-                              );
-                            },
                           ),
-                          Separators.minimunHorizontal(),
-                          IconButton(
-                            onPressed: () {
-                              _.goToMap();
-                            },
-                            icon: const Icon(Icons.map_rounded, color: colorWhite,),
+                        ),
+                        // Actions (signaler, favoris, carte)
+                        actions: [
+                          // Bouton signaler un problème
+                          Container(
+                            margin: const EdgeInsets.only(top: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: IconButton(
+                              onPressed: () {
+                                _.goToReportProblem();
+                              },
+                              icon: SvgPicture.asset(
+                                Assets.imagesWarning,
+                                colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),
+                                height: 22,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+
+                          // Bouton favoris
+                          Container(
+                            margin: const EdgeInsets.only(top: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: LikeButton(
+                              isLiked: _.paroisseSelected.value.isFavorite,
+                              onTap: (isLiked) async {
+                                _.paroisseSelected.value.isFavorite = !isLiked;
+                                if (isLiked) {
+                                  _.removeFavorite(_.paroisseSelected.value, isLiked);
+                                } else {
+                                  _.saveFavorite(_.paroisseSelected.value, isLiked);
+                                }
+                                return !isLiked;
+                              },
+                              size: 22,
+                              circleColor: const CircleColor(
+                                start: Color(0xff93291E),
+                                end: Color(0xFFED213A),
+                              ),
+                              bubblesColor: const BubblesColor(
+                                dotPrimaryColor: Color(0xFFED213A),
+                                dotSecondaryColor: Color(0xff93291E),
+                              ),
+                              likeBuilder: (bool isLiked) {
+                                return Icon(
+                                  isLiked ? Icons.favorite : Icons.favorite_border,
+                                  color: isLiked ? const Color(0xFFED213A) : colorWhite,
+                                  size: 22,
+                                );
+                              },
+                              padding: const EdgeInsets.all(8),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+
+                          // Bouton carte
+                          Container(
+                            margin: const EdgeInsets.only(right: 8, top: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: IconButton(
+                              onPressed: () {
+                                _.goToMap();
+                              },
+                              icon: const Icon(
+                                Icons.map_rounded,
+                                color: colorWhite,
+                                size: 22,
+                              ),
+                            ),
                           ),
                         ],
+                        // Titre et image de fond
                         flexibleSpace: FlexibleSpaceBar(
-                            centerTitle: true,
-                            title: Padding(
-                              padding:
-                              const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text(
-                                '${_.paroisseSelected.value.name}',
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center,
-                                style: TextStyles.montserratBold(
-                                    textSize: TextSizes.eighteen,
-                                    textColor: colorWhite),
+                          centerTitle: true,
+                          title: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Text(
+                              '${_.paroisseSelected.value.name}',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                              style: TextStyles.montserratBold(
+                                textSize: TextSizes.eighteen,
+                                textColor: colorWhite,
                               ),
                             ),
-                            background: (_.paroisseSelected.value.coverImage?.link
-                                ?.isNotEmpty ==
-                                true)
-                                ? Stack(
-                              children: [
-                                CachedNetworkImage(
-                                  width: Get.width,
-                                  height: Get.width,
-                                  imageUrl: _.paroisseSelected.value
-                                      .coverImage?.link ??
-                                      '',
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) =>
-                                      LottieLoadingView(
-                                          size: Get.width / 6),
-                                  errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                                ),
-                                Container(
-                                  height: Get.width,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black54.withValues(alpha: 0.3),
-                                  ),
-                                ),
-                              ],
-                            )
-                                : Stack(
-                              children: [
-                                Image.asset(
-                                  Assets.imagesBgLogin,
-                                  width: Get.width,
-                                  height: Get.width,
-                                  fit: BoxFit.cover,
-                                ),
-                                Container(
-                                  height: Get.width,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black54.withValues(alpha: 0.3),
-                                  ),
-                                ),
-                              ],
-                            )),
-                      ),
-                      const SliverPadding(
-                          padding: EdgeInsets.symmetric(vertical: 8)),
-                      SliverFillRemaining(
-                        child: DefaultTabController(
-                          length: 2,
-                          child: Column(
-                            children: <Widget>[
-                              ButtonsTabBar(
-                                backgroundColor: colorGreenSemiLight,
-                                unselectedBackgroundColor: Colors.transparent,
-                                unselectedLabelStyle: TextStyles.montserratBold(
-                                  textSize: TextSizes.fourteen,
-                                  textColor: colorBlack,
-                                ),
-                                contentPadding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                borderWidth: 1,
-                                labelStyle: TextStyles.montserratBold(
-                                  textSize: TextSizes.fourteen,
-                                  textColor: colorWhite,
-                                ),
-                                borderColor: colorGreenSemiLight,
-                                tabs: _.menusTab.map((e) {
-                                  return Tab(text: e);
-                                }).toList(),
+                          ),
+                          background: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(24),
+                                bottomRight: Radius.circular(24),
                               ),
-                              const Expanded(
-                                child: TabBarView(
-                                  children: <Widget>[
-                                    Center(
-                                      child: ActivityScreen(),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.1),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(24),
+                                bottomRight: Radius.circular(24),
+                              ),
+                              child: Stack(
+                                fit: StackFit.expand,
+                                children: [
+                                  // Image de couverture
+                                  (_.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
+                                      ? CachedNetworkImage(
+                                    imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) =>
+                                        LottieLoadingView(size: Get.width / 6),
+                                    errorWidget: (context, url, error) =>
+                                        Image.asset(
+                                          Assets.imagesBgLogin,
+                                          width: Get.width,
+                                          height: Get.width,
+                                          fit: BoxFit.cover,
+                                        ),
+                                  )
+                                      : Image.asset(
+                                    Assets.imagesBgLogin,
+                                    width: Get.width,
+                                    height: Get.width,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  // Superposition ombrée
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Colors.transparent,
+                                          Colors.black.withValues(alpha: 0.7),
+                                        ],
+                                      ),
                                     ),
-                                    Center(
-                                      child: MovementScreen(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      // Section de titre
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: colorGreenSemiLight.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: SvgPicture.asset(
+                                  Assets.imagesGroup,
+                                  colorFilter: const ColorFilter.mode(colorGreenSemiLight, BlendMode.srcIn),
+                                  width: 22,
+                                  height: 22,
+                                  fit: BoxFit.scaleDown,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Activités et Mouvements',
+                                      style: TextStyles.montserratBold(
+                                        textSize: TextSizes.seventeen,
+                                        textColor: colorGreenSemiLight,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Découvrez les activités et mouvements de la paroisse',
+                                      style: TextStyles.montserratRegular(
+                                        textSize: TextSizes.thirteen,
+                                        textColor: Colors.grey[600]!,
+                                      ),
                                     ),
                                   ],
                                 ),
                               ),
                             ],
+                          ),
+                        ),
+                      ),
+                      const SliverPadding(padding: EdgeInsets.symmetric(vertical: 8)),
+
+                      // Contenu principal avec onglets
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                        sliver: SliverFillRemaining(
+                          child: DefaultTabController(
+                            length: 2,
+                            child: Column(
+                              children: <Widget>[
+                                // Barre d'onglets personnalisée
+                                ButtonsTabBar(
+                                  backgroundColor: colorGreenSemiLight,
+                                  unselectedBackgroundColor: Colors.transparent,
+                                  unselectedLabelStyle: TextStyles.montserratBold(
+                                    textSize: TextSizes.fourteen,
+                                    textColor: colorBlack,
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                                  borderWidth: 1,
+                                  labelStyle: TextStyles.montserratBold(
+                                    textSize: TextSizes.fourteen,
+                                    textColor: colorWhite,
+                                  ),
+                                  borderColor: colorGreenSemiLight,
+                                  tabs: _.menusTab.map((e) {
+                                    return Tab(text: e);
+                                  }).toList(),
+                                ),
+
+                                // Contenu des onglets
+                                const Expanded(
+                                  child: TabBarView(
+                                    children: <Widget>[
+                                      Center(
+                                        child: ActivityScreen(),
+                                      ),
+                                      Center(
+                                        child: MovementScreen(),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       )
@@ -202,7 +328,8 @@ class ParoisseActivityMovementScreen extends StatelessWidget {
                 ),
               ),
             );
-          }),
+          }
+      ),
     );
   }
 }

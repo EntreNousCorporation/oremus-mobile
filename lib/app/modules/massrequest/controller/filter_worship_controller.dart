@@ -13,10 +13,10 @@ import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class FilterMassRequestWorshipController extends GetxController {
+class FilterWorshipController extends GetxController {
   final ParoisseRepository paroisseRepository;
 
-  FilterMassRequestWorshipController({
+  FilterWorshipController({
     required this.paroisseRepository,
   });
 
@@ -39,7 +39,6 @@ class FilterMassRequestWorshipController extends GetxController {
 
   @override
   void onInit() {
-    getArguments();
     initController();
     getParoisses();
     super.onInit();

@@ -9,6 +9,7 @@ class DonationResponse extends ToJsonInterface {
   String? updatedAt;
   String? createdBy;
   String? modifiedBy;
+  String? description;
   String? startDate;
   String? traceId;
   dynamic amount;
@@ -33,6 +34,7 @@ class DonationResponse extends ToJsonInterface {
     this.updatedAt,
     this.createdBy,
     this.modifiedBy,
+    this.description,
     this.startDate,
     this.traceId,
     this.amount,
@@ -62,6 +64,7 @@ class DonationResponse extends ToJsonInterface {
     updatedAt = json['updatedAt'];
     createdBy = json['createdBy'];
     modifiedBy = json['modifiedBy'];
+    description = json['description'];
     startDate = json['startDate'];
     traceId = json['traceId'];
     amount = json['amount'];
@@ -98,6 +101,7 @@ class DonationResponse extends ToJsonInterface {
     data['updatedAt'] = updatedAt;
     data['createdBy'] = createdBy;
     data['modifiedBy'] = modifiedBy;
+    data['description'] = description;
     data['startDate'] = startDate;
     data['traceId'] = traceId;
     data['amount'] = amount;

@@ -40,7 +40,7 @@ class ParoisseMassRequestMenuController extends GetxController {
     menus.value = [
       TypeMenu(
         code: 'FDM',
-        title: 'Faire une demande de messe',
+        title: 'Faire une demande',
         icon: Assets.imagesMesse,
         isPngImage: false,
         activeTint: colorGreenSemiLight,

@@ -13,7 +13,6 @@ import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/donation/data/model/donation_response.dart';
 import 'package:oremusapp/app/modules/donation/data/repository/donation_repository.dart';
-import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
@@ -41,9 +40,8 @@ class DonationWithWorshipController extends GetxController {
 
   var isValidForm = false.obs;
   var paroisseSelected = ContentPlace().obs;
-  var massRequestSelected = MassRequestResponse().obs;
 
-  var selectedEntityType = EntityType.worship.name.obs; // default to paroisse
+  var selectedEntityType = EntityType.worship.name.obs;
   var isOremusSelected = false.obs;
 
   @override
@@ -79,7 +77,6 @@ class DonationWithWorshipController extends GetxController {
     });
   }
 
-  // New method to handle entity selection
   void selectEntityType(String entityType) {
     selectedEntityType.value = entityType;
 
@@ -87,7 +84,6 @@ class DonationWithWorshipController extends GetxController {
     if (entityType == EntityType.oremus.name) {
       paroisseSelected.value = ContentPlace();
     }
-
     checkForm();
   }
 
@@ -108,7 +104,7 @@ class DonationWithWorshipController extends GetxController {
 
   goToWorshipChoice() async {
     paroisseSelected = await Get.toNamed(
-      Routes.FILTER_MASS_REQUEST_CHOOSE_WORSHIP,
+      Routes.FILTER_CHOOSE_WORSHIP,
       arguments: 'Faire un don',
     );
     log('goToWorshipChoice ::: ${paroisseSelected.value.identifier}');
@@ -145,9 +141,8 @@ class DonationWithWorshipController extends GetxController {
     var request = DonationData(
       amount: amountController.text.replaceAll(RegExp(r'\s'), ''),
       description: descriptionController.text,
-      // Only set worship place if paroisse is selected
       worshipPlace: selectedEntityType.value == EntityType.worship.name ?
-      paroisseSelected.value.identifier : null,
+      paroisseSelected.value.identifier.toString() : null,
       isOremus: selectedEntityType.value == EntityType.oremus.name, //variable do not go to backend
       forceDuplicateCreation: forceDuplicateCreation,
     );

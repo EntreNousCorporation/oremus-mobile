@@ -14,43 +14,54 @@ class AmountWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<DonationController>(builder: (logic) {
-      return Material(
-        borderRadius: BorderRadius.circular(10.0),
-        elevation: 10,
-        color: colorWhite,
-        shadowColor: colorGrey2.withValues(alpha: 0.5),
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[50],
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: logic.amountFocusNode.hasFocus ? colorGreenSemiLight : Colors.grey[300]!,
+            width: logic.amountFocusNode.hasFocus ? 2 : 1,
+          ),
+        ),
         child: TextFormField(
           controller: logic.amountController,
           keyboardAppearance: Brightness.light,
-          style: TextStyles.montserratSemiBold(textColor: colorBlack),
+          style: TextStyles.montserratBold(
+            textColor: colorGreenSemiLight,
+            textSize: TextSizes.seventeen,
+          ),
           focusNode: logic.amountFocusNode,
-          cursorColor: colorBlue,
+          cursorColor: colorGreenSemiLight,
           keyboardType: TextInputType.number,
           textCapitalization: TextCapitalization.words,
+          textAlign: TextAlign.center,
           decoration: InputDecoration(
-            contentPadding:
-            const EdgeInsets.only(top: 16, left: 16, right: 0, bottom: 0),
-            filled: true,
-            fillColor: colorWhite,
+            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            hintText: 'Entrez le montant',
+            hintStyle: TextStyles.montserratRegular(
+              textColor: Colors.grey[500]!,
+              textSize: TextSizes.sixteen,
+            ),
+            prefixIcon: Container(
+              margin: const EdgeInsets.only(left: 16, right: 8),
+              child: Icon(
+                Icons.payments_rounded,
+                color: logic.amountFocusNode.hasFocus || logic.amountController.text.isNotEmpty
+                    ? colorGreenSemiLight
+                    : Colors.grey[500],
+                size: 24,
+              ),
+            ),
+            suffixText: 'FCFA',
+            suffixStyle: TextStyles.montserratBold(
+              textColor: Colors.grey[800]!,
+              textSize: TextSizes.fifteen,
+            ),
             border: InputBorder.none,
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: colorGreen),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: colorTransparent),
-              borderRadius: BorderRadius.circular(8),
-            ),
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
             errorBorder: InputBorder.none,
-            disabledBorder: UnderlineInputBorder(
-              borderSide: const BorderSide(color: colorGrey1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            hintText: '',
-            hintStyle: TextStyles.montserratItalic(
-              textColor: colorPurpleLight,
-              textSize: TextSizes.fourteen,
-            ),
+            disabledBorder: InputBorder.none,
           ),
           inputFormatters: [
             CustomNumberInputFormatter(
@@ -61,9 +72,40 @@ class AmountWidget extends StatelessWidget {
           ],
           onChanged: (value) {
             logic.checkForm();
+            logic.update();
           },
         ),
       );
     });
+  }
+
+  Widget _buildQuickAmountButton(DonationController controller, String displayAmount, String amount) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          controller.amountController.text = amount;
+          controller.checkForm();
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.grey[50],
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Colors.grey[300]!,
+              width: 1,
+            ),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            displayAmount,
+            style: TextStyles.montserratSemiBold(
+              textColor: colorGreenSemiLight,
+              textSize: TextSizes.fourteen,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

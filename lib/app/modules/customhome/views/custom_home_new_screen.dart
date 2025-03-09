@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animator/flutter_animator.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:hidden_drawer_menu/hidden_drawer_menu.dart';
-import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
-import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/about/views/about_screen.dart';
 import 'package:oremusapp/app/modules/contact/views/contact_screen.dart';
 import 'package:oremusapp/app/modules/customhome/controller/custom_home_controller.dart';
@@ -22,7 +20,6 @@ import 'package:oremusapp/app/modules/profile/views/profile_screen.dart';
 import 'package:oremusapp/app/modules/promos/views/promo_screen.dart';
 import 'package:oremusapp/app/modules/settings/views/settings_screen.dart';
 import 'package:oremusapp/main.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomHomeNewScreen extends StatelessWidget {
   const CustomHomeNewScreen({Key? key}) : super(key: key);
@@ -112,7 +109,7 @@ class CustomHomeNewScreen extends StatelessWidget {
                             children: [
                               Container(
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.3),
+                                  color: Colors.white.withValues(alpha: 0.3),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: IconButton(
@@ -145,7 +142,7 @@ class CustomHomeNewScreen extends StatelessWidget {
                                     builder: (profileLogic) {
                                       return Container(
                                         decoration: BoxDecoration(
-                                          color: Colors.white.withOpacity(0.3),
+                                          color: Colors.white.withValues(alpha: 0.3),
                                           borderRadius: BorderRadius.circular(12),
                                         ),
                                         child: IconButton(
@@ -173,7 +170,7 @@ class CustomHomeNewScreen extends StatelessWidget {
                                         ),
                                         child: Container(
                                           decoration: BoxDecoration(
-                                            color: Colors.white.withOpacity(0.3),
+                                            color: Colors.white.withValues(alpha: 0.3),
                                             borderRadius: BorderRadius.circular(12),
                                           ),
                                           child: IconButton(
@@ -226,7 +223,7 @@ class CustomHomeNewScreen extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -257,7 +254,7 @@ class CustomHomeNewScreen extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withValues(alpha: 0.9),
               height: 1.4,
             ),
           ),
@@ -289,7 +286,7 @@ class ModernParoisseScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),

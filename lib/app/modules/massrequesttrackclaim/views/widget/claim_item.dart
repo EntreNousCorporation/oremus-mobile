@@ -21,33 +21,43 @@ class ClaimItem extends StatelessWidget {
         onTap: () {
           logic.moveToTrackClaimDetails(claimData);
         },
-        child: Material(
-          borderRadius: BorderRadius.circular(10.0),
-          elevation: 10,
-          color: colorWhite,
-          shadowColor: colorGrey2.withValues(alpha: 0.5),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Row(
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              // Upper section with claim details
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
                   children: [
+                    // Icon container
                     Container(
-                      padding: const EdgeInsets.all(8),
+                      width: 50,
+                      height: 50,
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          border: Border.all(color: colorGreen)),
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        child: SvgPicture.asset(
-                          Assets.imagesChecklist,
-                          height: Get.width / 15,
-                          colorFilter: const ColorFilter.mode(colorOrangeLight4, BlendMode.srcIn),
-                        ),
+                        color: colorGreenSemiLight.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: SvgPicture.asset(
+                        Assets.imagesChecklist,
+                        colorFilter: const ColorFilter.mode(colorOrangeLight4, BlendMode.srcIn),
                       ),
                     ),
-                    Separators.minimunHorizontal(),
-                    Separators.minimunHorizontal(),
+                    const SizedBox(width: 14),
+
+                    // Claim details
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,70 +65,146 @@ class ClaimItem extends StatelessWidget {
                           Text(
                             claimData?.typeOfClaim?.name?.fr ?? '-',
                             textAlign: TextAlign.start,
-                            style: TextStyles.montserratMedium(
-                              textSize: TextSizes.fifteen,
-                              textColor: colorBlue,
+                            style: TextStyles.montserratSemiBold(
+                              textSize: TextSizes.sixteen,
+                              textColor: colorGreenSemiLight,
                             ),
                           ),
-                          Separators.minimunVertical(),
-                          Text(
-                            'Créée le ${getDateTime(claimData?.createdAt ?? ' - ')}',
-                            textAlign: TextAlign.start,
-                            style: TextStyles.montserratRegular(
-                              textSize: TextSizes.thirteen,
-                              textColor: colorGreySeparator,
-                            ),
+                          const SizedBox(height: 8),
+
+                          // Date information in a cleaner format
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.calendar_today_rounded,
+                                size: 14,
+                                color: Colors.grey,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                'Créée le ${getDateTime(claimData?.createdAt ?? ' - ')}',
+                                style: TextStyles.montserratRegular(
+                                  textSize: TextSizes.thirteen,
+                                  textColor: Colors.grey[600]!,
+                                ),
+                              ),
+                            ],
                           ),
-                          Separators.minimunVertical(),
-                          Text(
-                            'Modifiée le ${getDateTime(claimData?.updatedAt ?? ' - ')}',
-                            textAlign: TextAlign.start,
-                            style: TextStyles.montserratRegular(
-                              textSize: TextSizes.thirteen,
-                              textColor: colorGreySeparator,
+                          const SizedBox(height: 6),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.update_rounded,
+                                size: 14,
+                                color: Colors.grey,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                'Modifiée le ${getDateTime(claimData?.updatedAt ?? ' - ')}',
+                                style: TextStyles.montserratRegular(
+                                  textSize: TextSizes.thirteen,
+                                  textColor: Colors.grey[600]!,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Arrow indicator
+                    Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 14,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Divider with lighter color
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Divider(
+                  color: Colors.grey[200],
+                  height: 1,
+                ),
+              ),
+
+              // Bottom section with parish and status
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Parish name with icon
+                    Expanded(
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.church_outlined,
+                            color: colorGreenSemiLight,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              claimData?.massRequest?.worshipPlace?.name ?? '-',
+                              style: TextStyles.montserratSemiBold(
+                                textSize: TextSizes.fourteen,
+                                textColor: Colors.black87,
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 15,
-                      color: colorGrey1,
+
+                    // Status indicator with enhanced styling
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: getColor(claimData?.status?.code).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: getColor(claimData?.status?.code).withValues(alpha: 0.4),
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: getColor(claimData?.status?.code),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            claimData?.status?.name?.fr ?? '-',
+                            style: TextStyles.montserratMedium(
+                              textSize: TextSizes.thirteen,
+                              textColor: getColor(claimData?.status?.code),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-                const Divider(color: colorTurquois),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      claimData?.massRequest?.worshipPlace?.name ?? '-',
-                      textAlign: TextAlign.center,
-                      style: TextStyles.montserratSemiBold(
-                        textSize: TextSizes.thirteen,
-                        textColor: colorBlack,
-                      ),
-                    ),
-                    const Spacer(),
-                    Icon(
-                      Icons.circle,
-                      color: getColor(claimData?.status?.code),
-                      size: 12,
-                    ),
-                    Separators.customSizeHorizontal(3),
-                    Text(
-                      claimData?.status?.name?.fr ?? '-',
-                      textAlign: TextAlign.center,
-                      style: TextStyles.montserratMedium(
-                        textSize: TextSizes.thirteen,
-                        textColor: getColor(claimData?.status?.code),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       );

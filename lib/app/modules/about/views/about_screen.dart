@@ -44,7 +44,7 @@ class AboutScreen extends StatelessWidget {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.3),
+                              color: Colors.white.withValues(alpha: 0.3),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: IconButton(
@@ -87,7 +87,7 @@ class AboutScreen extends StatelessWidget {
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
+                                  color: Colors.black.withValues(alpha: 0.1),
                                   blurRadius: 10,
                                   offset: const Offset(0, 4),
                                 ),
@@ -114,7 +114,7 @@ class AboutScreen extends StatelessWidget {
                                   'Au cœur de l\'information chrétienne',
                                   style: TextStyles.montserratRegular(
                                       textSize: 14,
-                                      textColor: colorWhite.withOpacity(0.9)
+                                      textColor: colorWhite.withValues(alpha: 0.9)
                                   ),
                                 ),
                               ],
@@ -166,7 +166,7 @@ class AboutScreen extends StatelessWidget {
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
-                                    color: colorGreen1.withOpacity(0.5),
+                                    color: colorGreen1.withValues(alpha: 0.5),
                                     width: 1,
                                   ),
                                 ),
@@ -249,7 +249,7 @@ class AboutScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -273,7 +273,7 @@ class AboutScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: colorGreen1.withOpacity(0.3),
+                    color: colorGreen1.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
@@ -298,7 +298,7 @@ class AboutScreen extends StatelessWidget {
           Divider(
             height: 1,
             thickness: 1,
-            color: colorGreen1.withOpacity(0.2),
+            color: colorGreen1.withValues(alpha: 0.2),
           ),
 
           // Card content
@@ -413,10 +413,10 @@ class AboutScreen extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             decoration: BoxDecoration(
-              color: colorGreen1.withOpacity(0.2),
+              color: colorGreen1.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                color: colorGreenSemiLight.withOpacity(0.3),
+                color: colorGreenSemiLight.withValues(alpha: 0.3),
                 width: 1,
               ),
             ),

@@ -119,8 +119,7 @@ class ParoisseMenuController extends GetxController {
           );
           log("retour");
           //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite =
-              isWorshipPlaceFavorite(paroisseSelected.value);
+          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
           paroisseSelected.refresh();
         },
       ),

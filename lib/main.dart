@@ -16,7 +16,6 @@ import 'package:oremusapp/app/commons/components/custom_animation.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/lang/translation_service.dart';
-import 'package:oremusapp/app/commons/services/os_otification_service.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_theme.dart';
 import 'package:oremusapp/app/configs/flavor_settings.dart';
