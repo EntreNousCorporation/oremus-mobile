@@ -108,6 +108,7 @@ class OtpController extends GetxController {
   void checkForm() {
     String otp = otpController.text.trim();
     isValidForm.value = otp.isNotEmpty && (otp.length == otpLength.value);
+    update();
   }
 
   @override

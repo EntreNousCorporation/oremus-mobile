@@ -92,7 +92,7 @@ class ResetPasswordController extends GetxController {
         message: "Votre mot de passe a été réinitialisé avec succès",
         bgColor: colorGreen
       );
-      Get.toNamed(Routes.SIGNIN);
+      Get.offAllNamed(Routes.SIGNIN);
     }, onError: (error) {
       EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;
