@@ -110,19 +110,36 @@ class MassRequestMenuController extends GetxController {
   checkIfUserIsconnected(String code) {
     Get.bottomSheet(
       Container(
-        height: Get.height * 0.3,
-        decoration: const BoxDecoration(
+        height: Get.height * 0.32, // Légèrement plus haut pour plus d'espace
+        decoration: BoxDecoration(
           color: colorWhite,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
+            ),
+          ],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(24), // Padding légèrement plus grand
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+              // Indicateur de dialogue en haut
+              Container(
+                width: 50,
+                height: 5,
+                margin: const EdgeInsets.only(bottom: 15),
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
               Text(
                 'Authentification requise',
                 style: TextStyles.montserratBold(
@@ -130,20 +147,25 @@ class MassRequestMenuController extends GetxController {
                   textColor: colorBlack,
                 ),
               ),
-              Separators.maximumVertical(),
+              const SizedBox(height: 8),
+              // Icône pour renforcer le message
+              Icon(
+                Icons.lock_outline_rounded,
+                size: 48,
+                color: colorGreen.withOpacity(0.8),
+              ),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Veuillez-vous connecter afin de mener cette action',
+                      'Veuillez vous connecter afin de mener cette action',
                       textAlign: TextAlign.center,
                       style: TextStyles.montserratMedium(
                         textSize: TextSizes.sixteen,
-                        textColor: colorBlack,
+                        textColor: Colors.grey[800]!,
                       ),
                     ),
-                    Separators.maximumVertical(),
                   ],
                 ),
               ),
@@ -153,43 +175,43 @@ class MassRequestMenuController extends GetxController {
                   Expanded(
                     child: TextButton(
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
                         child: Text(
                           "Annuler",
                           style: TextStyles.montserratMedium(
-                            textSize: TextSizes.fourteen,
-                            textColor: colorBlack,
+                            textSize: TextSizes.sixteen,
+                            textColor: colorGreen,
                           ),
                         ),
                       ),
                       style: TextButton.styleFrom(
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side: const BorderSide(color: colorGreen, width: 0.5),
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(color: colorGreen.withOpacity(0.7), width: 1),
                         ),
                       ),
                       onPressed: Get.back,
                     ),
                   ),
-                  Separators.normalHorizontal(),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: TextButton(
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
                         child: Text(
                           "Se connecter",
                           style: TextStyles.montserratBold(
-                            textSize: TextSizes.fourteen,
+                            textSize: TextSizes.sixteen,
                             textColor: colorWhite,
                           ),
                         ),
                       ),
-                      style: TextButton.styleFrom(
+                      style: ElevatedButton.styleFrom(
                         backgroundColor: colorGreen,
-                        enableFeedback: true,
+                        elevation: 2,
+                        shadowColor: colorGreen.withOpacity(0.5),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side: const BorderSide(color: colorGreen, width: 0.5),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                       onPressed: () {
