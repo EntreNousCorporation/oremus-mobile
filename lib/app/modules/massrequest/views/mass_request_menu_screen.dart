@@ -31,7 +31,7 @@ class MassRequestMenuScreen extends StatelessWidget {
                         color: colorGreenSemiLight.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.church_outlined,
                         color: colorGreenSemiLight,
                         size: 20,

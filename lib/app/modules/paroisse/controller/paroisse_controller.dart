@@ -51,6 +51,13 @@ class ParoisseController extends GetxController {
 
   var offset = const Offset(16, 16).obs;
 
+  // Observable pour suivre si l'utilisateur est connecté
+  RxBool get isUserLoggedIn => RxBool(DB.getUserSigninInfo()?.id != null && DB.getUserSigninInfo()?.id?.isNotEmpty == true);
+  // Obtenir l'ID de l'utilisateur actuel
+  static String? get currentUserId => DB.getUserSigninInfo()?.id;
+  static var userIdBeforeLogout = ''.obs;
+
+
   @override
   void onInit() {
     initController();
@@ -60,6 +67,28 @@ class ParoisseController extends GetxController {
 
   @override
   void onReady() {
+    // Vérifier si la connectivité a changé
+    ever(isUserLoggedIn, (bool loggedIn) {
+      if (loggedIn) {
+        // Vérifier si c'est une nouvelle connexion
+        if (userIdBeforeLogout.isEmpty || userIdBeforeLogout.value != currentUserId) {
+          log('New user logged in: $currentUserId');
+          // Un nouvel utilisateur s'est connecté, synchroniser les favoris si nécessaire
+          synchronizeFavorites();
+          // Rafraîchir la liste pour afficher les favoris de ce nouvel utilisateur
+          onRefresh();
+        } else {
+          log('Same user logged in again: $currentUserId');
+        }
+      } else {
+        // L'utilisateur s'est déconnecté
+        if (userIdBeforeLogout.isNotEmpty) {
+          paroisseRepository.handleLogout();
+          // Rafraîchir la liste pour refléter l'état déconnecté
+          onRefresh();
+        }
+      }
+    });
     getParoisses();
     super.onReady();
   }
@@ -254,9 +283,9 @@ class ParoisseController extends GetxController {
         (value) {
       isDataProcessing(false);
       paroisses.value = value.contents ?? [];
-      for (var paroisse in paroisses) {
+      /*for (var paroisse in paroisses) {
         paroisse?.isFavorite = isWorshipPlaceFavorite(paroisse);
-      }
+      }*/
       if (paroisses.isNotEmpty == true) {
         hasData(true);
       } else {
@@ -295,18 +324,22 @@ class ParoisseController extends GetxController {
 
     resetSearch();
     paroisseRepository.getParoisses(searchCriteria: searchCriteria.value).then(
-        (value) {
-      refreshController.refreshCompleted();
-      paroisses.value = value.contents ?? [];
-      for (var paroisse in paroisses) {
-        paroisse?.isFavorite = isWorshipPlaceFavorite(paroisse);
-      }
-      if (value.last == false) {
-        page.value += 1;
-      } else {
-        refreshController.loadNoData();
-      }
-    }, onError: (error) {
+            (value) {
+          refreshController.refreshCompleted();
+          paroisses.value = value.contents ?? [];
+
+          // IMPORTANT: Ne pas écraser le statut des favoris ici
+          // La ligne suivante est commentée car elle écrase les statuts définis par getParoisses()
+          // for (var paroisse in paroisses) {
+          //   paroisse?.isFavorite = isWorshipPlaceFavorite(paroisse);
+          // }
+
+          if (value.last == false) {
+            page.value += 1;
+          } else {
+            refreshController.loadNoData();
+          }
+        }, onError: (error) {
       refreshController.refreshCompleted();
       var err = error as CustomException;
       if (error.toString().contains('401')) {
@@ -337,9 +370,13 @@ class ParoisseController extends GetxController {
         .getParoisses(page: page.value, searchCriteria: searchCriteria.value)
         .then((value) {
       paroisses.addAll(value.contents ?? []);
-      for (var paroisse in paroisses) {
-        paroisse?.isFavorite = isWorshipPlaceFavorite(paroisse);
-      }
+
+      // IMPORTANT: Ne pas écraser le statut des favoris ici
+      // La ligne suivante est commentée car elle écrase les statuts définis par getParoisses()
+      // for (var paroisse in paroisses) {
+      //   paroisse?.isFavorite = isWorshipPlaceFavorite(paroisse);
+      // }
+
       paroisses.refresh();
       refreshController.loadComplete();
       log('${paroisses.length}');
@@ -379,14 +416,78 @@ class ParoisseController extends GetxController {
     return isFavorite;
   }
 
-  saveFavorite(ContentPlace? paroisse) {
+  /*saveFavorite(ContentPlace? paroisse) {
     paroisseRepository.addFavorite(paroisse);
     showMessageFavorite(paroisse);
+  }*/
+
+  // Sauvegarder un favori (local et/ou serveur)
+  Future<void> saveFavorite(ContentPlace? paroisse) async {
+    if (paroisse == null) return;
+
+    try {
+      // Mettre à jour l'UI immédiatement
+      int index = paroisses.indexWhere((element) => element?.identifier == paroisse.identifier);
+      if (index != -1) {
+        paroisses[index]?.isFavorite = true;
+        // Si l'utilisateur est connecté, on anticipe aussi la mise à jour de isUserFavorite
+        if (isUserLoggedIn.value) {
+          paroisses[index]?.isUserFavorite = true;
+        }
+        paroisses.refresh();
+      }
+
+      // Sauvegarder le favori
+      await paroisseRepository.addFavorite(paroisse);
+    } catch (e) {
+      log('Error saving favorite: $e');
+      // Restaurer l'état en cas d'erreur
+      int index = paroisses.indexWhere((element) => element?.identifier == paroisse.identifier);
+      if (index != -1) {
+        paroisses[index]?.isFavorite = false;
+        if (isUserLoggedIn.value) {
+          paroisses[index]?.isUserFavorite = false;
+        }
+        paroisses.refresh();
+      }
+    }
   }
 
-  removeFavorite(ContentPlace? paroisse) {
+  /*removeFavorite(ContentPlace? paroisse) {
     paroisseRepository.deleteFavorite(paroisse);
     showMessageFavorite(paroisse);
+  }*/
+
+  // Supprimer un favori (local et/ou serveur)
+  Future<void> removeFavorite(ContentPlace? paroisse) async {
+    if (paroisse == null) return;
+
+    try {
+      // Mettre à jour l'UI immédiatement
+      int index = paroisses.indexWhere((element) => element?.identifier == paroisse.identifier);
+      if (index != -1) {
+        paroisses[index]?.isFavorite = false;
+        // Si l'utilisateur est connecté, on anticipe aussi la mise à jour de isUserFavorite
+        if (isUserLoggedIn.value) {
+          paroisses[index]?.isUserFavorite = false;
+        }
+        paroisses.refresh();
+      }
+
+      // Supprimer le favori
+      await paroisseRepository.deleteFavorite(paroisse);
+    } catch (e) {
+      log('Error removing favorite: $e');
+      // Restaurer l'état en cas d'erreur
+      int index = paroisses.indexWhere((element) => element?.identifier == paroisse.identifier);
+      if (index != -1) {
+        paroisses[index]?.isFavorite = true;
+        if (isUserLoggedIn.value) {
+          paroisses[index]?.isUserFavorite = true;
+        }
+        paroisses.refresh();
+      }
+    }
   }
 
   showMessageFavorite(ContentPlace? paroisse) {
@@ -453,8 +554,8 @@ class ParoisseController extends GetxController {
       ],
     );
     //on met à jour la liste au cas où favoris mis à jour
-    paroisses[index]?.isFavorite = isWorshipPlaceFavorite(paroisse);
-    paroisses.refresh();
+    //paroisses[index]?.isFavorite = isWorshipPlaceFavorite(paroisse);
+    //paroisses.refresh();
   }
 
   goToAdvancedSearch() async {
@@ -475,5 +576,38 @@ class ParoisseController extends GetxController {
     previousSimpleSearchValue.value = '';
     currentSimpleSearchValue.value = '';
     hideKeyboard();
+  }
+
+  // Méthode appelée avant la déconnexion de l'utilisateur
+  static void prepareForLogout() {
+    if (currentUserId != null && currentUserId!.isNotEmpty) {
+      userIdBeforeLogout.value = currentUserId!;
+      log('Storing user ID before logout: ${userIdBeforeLogout.value}');
+    }
+  }
+
+  // Synchroniser les favoris locaux avec le serveur après la connexion
+  Future<void> synchronizeFavorites() async {
+    try {
+      await paroisseRepository.syncFavorites();
+    } catch (e) {
+      log('Error synchronizing favorites: $e');
+    }
+  }
+
+  // Méthode pour gérer la modification du favori dans l'UI
+  Future<bool> onLikeButtonTapped(bool isLiked, ContentPlace? paroisse) async {
+    try {
+      if (isLiked) {
+        await removeFavorite(paroisse);
+        return false;
+      } else {
+        await saveFavorite(paroisse);
+        return true;
+      }
+    } catch (e) {
+      log('Error toggling favorite: $e');
+      return isLiked; // Garder l'état actuel en cas d'erreur
+    }
   }
 }

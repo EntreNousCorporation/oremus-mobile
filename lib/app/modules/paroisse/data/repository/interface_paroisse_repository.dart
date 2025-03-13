@@ -22,4 +22,9 @@ abstract class IParoisseRepository {
   List<ContentPlace> getAllFavorites();
   void addFavorite(ContentPlace paroisse);
   void deleteFavorite(ContentPlace paroisse);
+
+  Future<void> syncFavorites();
+  Future<DataResponse<ContentPlace>> getServerFavorites();
+  Future<bool> addServerFavorite(ContentPlace? paroisse);
+  Future<bool> removeServerFavorite(ContentPlace? paroisse);
 }

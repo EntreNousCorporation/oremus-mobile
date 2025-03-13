@@ -14,6 +14,7 @@ import 'package:oremusapp/app/commons/services/os_otification_service.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/customhome/data/model/menu_item.dart';
+import 'package:oremusapp/app/modules/paroisse/controller/paroisse_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
@@ -185,6 +186,9 @@ class CustomHomeController extends GetxController {
   }
 
   doLogout() {
+    // Mémoriser l'ID de l'utilisateur avant la déconnexion
+    ParoisseController.prepareForLogout();
+    paroisseRepository.handleLogout();
     DB.saveData(AppConstants.KEY_USER_LOG_INFOS, null);
     Get.deleteAll(force: true);
     isUserConnected.value = false;

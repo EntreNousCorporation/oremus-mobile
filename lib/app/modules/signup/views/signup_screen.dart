@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -441,15 +440,17 @@ class SignupScreen extends StatelessWidget {
                                                       textColor: Colors.grey[600]!,
                                                     ),
                                                   ),
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Get.back();
-                                                    },
-                                                    child: Text(
-                                                      "Se connecter",
-                                                      style: TextStyles.montserratSemiBold(
-                                                        textSize: TextSizes.fourteen,
-                                                        textColor: colorPurpleLight,
+                                                  Expanded(
+                                                    child: TextButton(
+                                                      onPressed: () {
+                                                        Get.back();
+                                                      },
+                                                      child: Text(
+                                                        "Se connecter",
+                                                        style: TextStyles.montserratSemiBold(
+                                                          textSize: TextSizes.fourteen,
+                                                          textColor: colorPurpleLight,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),

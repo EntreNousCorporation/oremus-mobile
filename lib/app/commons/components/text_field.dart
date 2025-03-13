@@ -160,7 +160,7 @@ class _MyTextFieldState extends State<MyTextField> {
           border: InputBorder.none,
           counterText: counterText,
           focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: colorGrey3),
+            borderSide: const BorderSide(color: colorBlack),
             borderRadius: BorderRadius.circular(10),
           ),
           enabledBorder: OutlineInputBorder(
@@ -238,28 +238,6 @@ class _MyTextFieldState extends State<MyTextField> {
           enabled: enabled,
           hintStyle: TextStyles.montserratMedium(textSize: inputTextSize),
           labelStyle: TextStyles.montserratMedium(),
-          /*prefixIcon: CountryCodePicker(
-            onChanged: (code) {
-              phoneIndicatifController!.text =
-                  "${code.dialCode!.replaceAll("+", "")}";
-              print("indicatif=${phoneIndicatifController!.text}");
-              print("on onChanged ${code.name} ${code.dialCode} ${code.name}");
-            },
-            onInit: (code) {
-              phoneIndicatifController!.text =
-                  "${code!.dialCode!.replaceAll("+", "")}";
-              print("indicatif=${phoneIndicatifController!.text}");
-              print("on onInit ${code.name} ${code.dialCode} ${code.name}");
-            },
-            // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-            initialSelection: 'CI',
-            favorite: ['+225', 'CI'],
-
-            // flag can be styled with BoxDecoration's `borderRadius` and `shape` fields
-            flagDecoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(7),
-            ),
-          ),*/
           suffixIcon: !isPassword
               ? ((suffixIcon != null)
                   ? SvgPicture.asset(

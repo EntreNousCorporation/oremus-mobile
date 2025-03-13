@@ -201,24 +201,26 @@ class SigninScreen extends StatelessWidget {
                                                           ),
                                                         ),
                                                         const SizedBox(width: 16),
-                                                        Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Text(
-                                                              "Bienvenue",
-                                                              style: TextStyles.montserratBold(
-                                                                textSize: TextSizes.twenty_four,
-                                                                textColor: colorGreen,
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                "Bienvenue",
+                                                                style: TextStyles.montserratBold(
+                                                                  textSize: TextSizes.twenty_four,
+                                                                  textColor: colorGreen,
+                                                                ),
                                                               ),
-                                                            ),
-                                                            Text(
-                                                              "Connectez-vous à votre compte",
-                                                              style: TextStyles.montserratRegular(
-                                                                textSize: TextSizes.fourteen,
-                                                                textColor: Colors.grey[600]!,
+                                                              Text(
+                                                                "Connectez-vous à votre compte",
+                                                                style: TextStyles.montserratRegular(
+                                                                  textSize: TextSizes.fourteen,
+                                                                  textColor: Colors.grey[600]!,
+                                                                ),
                                                               ),
-                                                            ),
-                                                          ],
+                                                            ],
+                                                          ),
                                                         ),
                                                       ],
                                                     ),

@@ -3,11 +3,17 @@ import 'dart:developer';
 
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DB {
   static Box? encryptedBox;
+  // Clés pour la gestion des favoris synchronisés
+  static const String KEY_LAST_SYNC_USER_ID = 'last_sync_user_id';
+  static const String KEY_UNSYNCHRONIZED_FAVORITES = 'unsynchronized_favorites';
+  static const String KEY_SYNCED_FAVORITES = 'synced_favorites';
+
   static initDatabase() async {
     Hive.initFlutter();
 
@@ -55,5 +61,63 @@ class DB {
       return Signin.fromJson(json.decode(userInfo));
     }
     return null;
+  }
+
+  // Vérifie si des favoris non synchronisés existent
+  static bool hasUnsynchronizedFavorites() {
+    String? data = getData(KEY_UNSYNCHRONIZED_FAVORITES);
+    return data != null && data.isNotEmpty;
+  }
+
+// Récupère la liste des favoris non synchronisés
+  static List<ContentPlace> getUnsynchronizedFavorites() {
+    String? data = getData(KEY_UNSYNCHRONIZED_FAVORITES);
+    if (data != null && data.isNotEmpty) {
+      Iterable l = json.decode(data);
+      return l.map((model) => ContentPlace.fromJson(model)).toList();
+    }
+    return [];
+  }
+
+// Sauvegarde la liste des favoris non synchronisés
+  static void saveUnsynchronizedFavorites(List<ContentPlace> favorites) {
+    saveData(KEY_UNSYNCHRONIZED_FAVORITES, jsonEncode(favorites).toString());
+  }
+
+// Efface la liste des favoris non synchronisés
+  static void clearUnsynchronizedFavorites() {
+    saveData(KEY_UNSYNCHRONIZED_FAVORITES, '');
+  }
+
+// Récupère l'ID du dernier utilisateur qui a synchronisé des favoris
+  static String? getLastSyncUserId() {
+    return getData(KEY_LAST_SYNC_USER_ID);
+  }
+
+// Enregistre l'ID du dernier utilisateur qui a synchronisé des favoris
+  static void setLastSyncUserId(String userId) {
+    saveData(KEY_LAST_SYNC_USER_ID, userId);
+  }
+
+// Efface l'ID du dernier utilisateur qui a synchronisé des favoris
+  static void clearLastSyncUserId() {
+    saveData(KEY_LAST_SYNC_USER_ID, '');
+  }
+
+  static List<ContentPlace> getSyncedFavorites() {
+    String? data = getData(KEY_SYNCED_FAVORITES);
+    if (data != null && data.isNotEmpty) {
+      Iterable l = json.decode(data);
+      return l.map((model) => ContentPlace.fromJson(model)).toList();
+    }
+    return [];
+  }
+
+  static void saveSyncedFavorites(List<ContentPlace> favorites) {
+    saveData(KEY_SYNCED_FAVORITES, jsonEncode(favorites).toString());
+  }
+
+  static void clearSyncedFavorites() {
+    saveData(KEY_SYNCED_FAVORITES, '');
   }
 }
