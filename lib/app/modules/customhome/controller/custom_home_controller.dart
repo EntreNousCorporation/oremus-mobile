@@ -55,7 +55,7 @@ class CustomHomeController extends GetxController {
 
   initNotification() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await notificationService.initializeWithConsent(AppConstants.ONESIGNAL_APP_ID, Get.context!);
+      await notificationService.initializeWithConsent(oneSignalAppID, Get.context!);
     });
   }
 

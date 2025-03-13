@@ -34,6 +34,7 @@ var versionCode;
 var phoneId;
 var shareAppLink;
 var canCheckConectivity;
+var oneSignalAppID;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,6 +44,7 @@ void main() async {
       appUrl = settings.oremusFlavor.apiBaseUrl.toString() + settings.oremusFlavor.endpoint.toString();
       shareAppLink = settings.oremusFlavor.shareAppLink;
       canCheckConectivity = settings.oremusFlavor.canCheckConectivity;
+      oneSignalAppID = settings.oremusFlavor.oneSignalAppID;
       //byPassAuth = settings.oremusFlavor.byPassAuth;
 
       await DB.initDatabase();
