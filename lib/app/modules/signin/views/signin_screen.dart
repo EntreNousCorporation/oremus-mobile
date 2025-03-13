@@ -18,215 +18,327 @@ class SigninScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Container(
-        decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(Assets.imagesBgLogin),
-              fit: BoxFit.cover,
-            )),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-          child: Stack(
-            children: [
-              FadeIn(
-                child: KeyboardDismisser(
-                  child: Scaffold(
-                      backgroundColor: Colors.transparent,
-                      resizeToAvoidBottomInset: false,
-                      body: Center(
-                        child: SingleChildScrollView(
-                          reverse: false,
-                          child: SafeArea(
-                            child: GetX<SigninController>(
-                              builder: (_) {
-                                return WillPopScope(
-                                  onWillPop: () async => _.unlockBackButton.value,
-                                  child: AbsorbPointer(
-                                    absorbing: _.lockScreen.value,
-                                    child: Container(
-                                      padding: const EdgeInsets.only(
-                                          bottom: 20, left: 32, right: 32,),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment
-                                            .start,
-                                        children: [
-                                          Text(
-                                            "S'identifier",
-                                            style: TextStyles.montserratBold(
-                                                textSize: TextSizes.twenty_four,
-                                                textColor: colorWhite),
-                                          ),
-                                          Separators.normalVertical(),
-                                          Container(
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(Assets.imagesBgLogin),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 6.0, sigmaY: 6.0),
+        child: GetX<SigninController>(
+          builder: (_) {
+            return FadeIn(
+              preferences: const AnimationPreferences(
+                duration: Duration(milliseconds: 800),
+                offset: Duration(milliseconds: 300),
+              ),
+              child: KeyboardDismisser(
+                child: Scaffold(
+                  backgroundColor: Colors.black.withValues(alpha:0.3),
+                  resizeToAvoidBottomInset: false,
+                  body: PopScope(
+                    canPop: _.unlockBackButton.value,
+                    child: AbsorbPointer(
+                      absorbing: _.lockScreen.value,
+                      child: Stack(
+                        children: [
+                          // Back/Home Button with animation
+                          Positioned(
+                            top: Get.mediaQuery.padding.top + 20,
+                            left: 24,
+                            child: ZoomIn(
+                              preferences: const AnimationPreferences(
+                                duration: Duration(milliseconds: 600),
+                                offset: Duration(milliseconds: 200),
+                              ),
+                              child: GestureDetector(
+                                onTap: () {
+                                  _.tempLogin.value ? Get.back() : _.goToHome();
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha:0.95),
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha:0.15),
+                                        blurRadius: 12,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    _.tempLogin.value
+                                        ? Icons.arrow_back_rounded
+                                        : Icons.home_rounded,
+                                    color: colorGreen,
+                                    size: 24,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // Main Content
+                          SafeArea(
+                            child: Center(
+                              child: SingleChildScrollView(
+                                physics: const BouncingScrollPhysics(),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 24, vertical: 12),
+                                  child: FadeInUp(
+                                    preferences: const AnimationPreferences(
+                                      duration: Duration(milliseconds: 800),
+                                      offset: Duration(milliseconds: 400),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        // Logo section with animation
+                                        Center(
+                                          child: Container(
+                                            height: 80,
+                                            width: 80,
+                                            margin: const EdgeInsets.only(bottom: 20),
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius
-                                                  .circular(12),
-                                              color: colorWhite,
+                                              color: Colors.white,
+                                              shape: BoxShape.circle,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: colorGreen.withValues(alpha:0.3),
+                                                  blurRadius: 20,
+                                                  spreadRadius: 5,
+                                                ),
+                                              ],
+                                            ),
+                                            child: Center(
+                                              child: SvgPicture.asset(
+                                                'assets/images/logo.svg',
+                                                height: 40,
+                                                width: 40,
+                                                fit: BoxFit.contain,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+
+                                        // Sign-in Title with elegant styling
+                                        Center(
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 24, vertical: 12),
+                                            decoration: BoxDecoration(
+                                              color: colorGreen.withValues(alpha:0.9),
+                                              borderRadius: BorderRadius.circular(30),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: colorGreen.withValues(alpha:0.3),
+                                                  blurRadius: 15,
+                                                  offset: const Offset(0, 5),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Text(
+                                              "S'identifier",
+                                              style: TextStyles.montserratBold(
+                                                textSize: TextSizes.twenty_four,
+                                                textColor: colorWhite,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+
+                                        const SizedBox(height: 30),
+
+                                        // Form Container with elegant styling and subtle animation
+                                        SlideInUp(
+                                          preferences: const AnimationPreferences(
+                                            duration: Duration(milliseconds: 800),
+                                            offset: Duration(milliseconds: 500),
+                                          ),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(30),
+                                              color: Colors.white.withValues(alpha:0.97),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black.withValues(alpha:0.15),
+                                                  blurRadius: 25,
+                                                  offset: const Offset(0, 10),
+                                                  spreadRadius: 0,
+                                                ),
+                                              ],
                                             ),
                                             child: Form(
                                               key: _.formSigninKey,
                                               child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 32,
-                                                    right: 32,
-                                                    top: 32,
-                                                    bottom: 32),
+                                                padding: const EdgeInsets.all(30),
                                                 child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
                                                   children: [
-                                                    Text(
-                                                      "Bienvenue",
-                                                      style: TextStyles
-                                                          .montserratBold(
-                                                          textSize: TextSizes
-                                                              .twenty_four,
-                                                          textColor: colorGreen),
+                                                    // Welcome Text with improved styling
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                          padding: const EdgeInsets.all(12),
+                                                          decoration: BoxDecoration(
+                                                            color: colorGreen.withValues(alpha: 0.15),
+                                                            shape: BoxShape.circle,
+                                                            border: Border.all(
+                                                              color: colorGreen.withValues(alpha:0.3),
+                                                              width: 1.5,
+                                                            ),
+                                                          ),
+                                                          child: const Icon(
+                                                            Icons.person_rounded,
+                                                            color: colorGreen,
+                                                            size: 28,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(width: 16),
+                                                        Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text(
+                                                              "Bienvenue",
+                                                              style: TextStyles.montserratBold(
+                                                                textSize: TextSizes.twenty_four,
+                                                                textColor: colorGreen,
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              "Connectez-vous à votre compte",
+                                                              style: TextStyles.montserratRegular(
+                                                                textSize: TextSizes.fourteen,
+                                                                textColor: Colors.grey[600]!,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
                                                     ),
-                                                    Separators
-                                                        .maximumVertical(),
+
+                                                    const SizedBox(height: 32),
+
+                                                    // Email Field with enhanced styling
                                                     MyTextField(
-                                                      focusNode: _
-                                                          .emailFocusNode,
-                                                      controller: _
-                                                          .emailController,
-                                                      hintText: '',
+                                                      focusNode: _.emailFocusNode,
+                                                      controller: _.emailController,
+                                                      hintText: 'Votre adresse email',
                                                       labelText: 'E-mail',
                                                       prefixIcon: "assets/images/icon_enveloppe.svg",
-                                                      //suffixIcon: _.isValidEmail.isTrue ? const Icon(Icons.check_circle) : null,
-                                                      prefixIconColor: colorGrey1,
-                                                      keyboardType: TextInputType
-                                                          .emailAddress,
-                                                      textCapitalization: TextCapitalization
-                                                          .none,
+                                                      prefixIconColor: colorGreen,
+                                                      //textFieldColor: Colors.grey[50],
+                                                      //borderRadius: 16,
+                                                      keyboardType: TextInputType.emailAddress,
+                                                      textCapitalization: TextCapitalization.none,
                                                       onChanged: (value) {
                                                         _.checkForm();
                                                       },
-                                                      errorText: _
-                                                          .emailErrorMessage
-                                                          .value,
+                                                      errorText: _.emailErrorMessage.value,
                                                     ),
-                                                    Separators.normalVertical(),
+
+                                                    const SizedBox(height: 20),
+
+                                                    // Password Field with enhanced styling
                                                     MyTextField(
-                                                      focusNode: _
-                                                          .passwordFocusNode,
-                                                      controller: _
-                                                          .passwordController,
-                                                      hintText: '',
+                                                      focusNode: _.passwordFocusNode,
+                                                      controller: _.passwordController,
+                                                      hintText: 'Votre mot de passe',
                                                       labelText: 'Mot de passe',
                                                       isPassword: true,
                                                       prefixIcon: 'assets/images/icon_password_profil.svg',
-                                                      prefixIconColor: colorGrey1,
-                                                      textCapitalization: TextCapitalization
-                                                          .none,
+                                                      prefixIconColor: colorGreen,
+                                                      //textFieldColor: Colors.grey[50],
+                                                      //borderRadius: 16,
+                                                      textCapitalization: TextCapitalization.none,
                                                       onChanged: (value) {
                                                         _.checkForm();
                                                       },
-                                                      errorText: _
-                                                          .passwordErrorMessage
-                                                          .value,
+                                                      errorText: _.passwordErrorMessage.value,
                                                     ),
-                                                    //Separators.normalVertical(),
-                                                    MaterialButton(
-                                                      elevation: 0,
-                                                      padding: const EdgeInsets
-                                                          .only(right: 0),
-                                                      onPressed: () {
-                                                        _.goToForgotPassword();
-                                                      },
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                        MainAxisAlignment.end,
-                                                        children: [
-                                                          Text(
-                                                            'Mot de passe oublié ?',
-                                                            style:
-                                                            TextStyles
-                                                                .montserratSemiBold(
-                                                                textSize:
-                                                                TextSizes
-                                                                    .sixteen,
-                                                                textColor:
-                                                                colorPurpleLight),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Separators.normalVertical(),
-                                                    //Separators.maximumVertical(),
-                                                    SizedBox(
-                                                      width: Get.width / 3.5,
-                                                      height: 40,
-                                                      child: CustomButton(
-                                                        paddingVertical: 5,
-                                                        icon: 'assets/images/icon_arrow_right.svg',
-                                                        bgcolor: _.isValidForm
-                                                            .isTrue
-                                                            ? colorGreen
-                                                            : colorGrey1
-                                                            .withValues(alpha: 0.5),
-                                                        borderColor: _
-                                                            .isValidForm.isTrue
-                                                            ? colorGreen
-                                                            : colorGreen
-                                                            .withValues(alpha: 0),
-                                                        actionColor: colorGreen
-                                                            .withValues(alpha: 0.5),
-                                                        enabled: _.isValidForm.value,
-                                                        action: () {
-                                                          _.connectUser();
+
+                                                    // Forgot Password Link with improved styling
+                                                    Align(
+                                                      alignment: Alignment.centerRight,
+                                                      child: TextButton(
+                                                        onPressed: () {
+                                                          _.goToForgotPassword();
                                                         },
+                                                        style: TextButton.styleFrom(
+                                                          padding: const EdgeInsets.symmetric(
+                                                              vertical: 10, horizontal: 12),
+                                                        ),
+                                                        child: Text(
+                                                          'Mot de passe oublié ?',
+                                                          style: TextStyles.montserratSemiBold(
+                                                            textSize: TextSizes.fourteen,
+                                                            textColor: colorPurpleLight,
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
-                                                    Visibility(
-                                                      visible: false,
-                                                      child: Separators
-                                                          .normalVertical(),
-                                                    ),
-                                                    Visibility(
-                                                      visible: false,
-                                                      child: Text(
-                                                        'Connectez-vous via',
-                                                        style: TextStyles
-                                                            .montserratSemiBold(
-                                                            textSize: TextSizes
-                                                                .sixteen,
-                                                            textColor: colorGrey1),
-                                                      ),
-                                                    ),
-                                                    Visibility(
-                                                      visible: false,
-                                                      child: Separators
-                                                          .normalVertical(),
-                                                    ),
-                                                    Visibility(
-                                                      visible: false,
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets
-                                                                .only(
-                                                                right: 12.0),
-                                                            child: SvgPicture
-                                                                .asset(
-                                                              'assets/images/google_logo.svg',
-                                                              height: 35,
+
+                                                    const SizedBox(height: 32),
+
+                                                    // Sign-in Button with enhanced styling and animation
+                                                    Hero(
+                                                      tag: 'loginButton',
+                                                      child: SizedBox(
+                                                        width: double.infinity,
+                                                        height: 56,
+                                                        child: ElevatedButton(
+                                                          onPressed: _.isValidForm.isTrue
+                                                              ? () {
+                                                            _.connectUser();
+                                                          }
+                                                              : null,
+                                                          style: ElevatedButton.styleFrom(
+                                                            backgroundColor: _.isValidForm.isTrue
+                                                                ? colorGreen
+                                                                : Colors.grey[300],
+                                                            foregroundColor: Colors.white,
+                                                            shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.circular(18),
+                                                            ),
+                                                            elevation: _.isValidForm.isTrue ? 4 : 0,
+                                                            padding: const EdgeInsets.symmetric(vertical: 12),
+                                                          ),
+                                                          child: AnimatedOpacity(
+                                                            duration: const Duration(milliseconds: 300),
+                                                            opacity: _.isValidForm.isTrue ? 1.0 : 0.7,
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              children: [
+                                                                const Text(
+                                                                  "Se connecter",
+                                                                  style: TextStyle(
+                                                                    fontSize: 16,
+                                                                    fontWeight: FontWeight.bold,
+                                                                    letterSpacing: 0.5,
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(width: 10),
+                                                                SvgPicture.asset(
+                                                                  'assets/images/icon_arrow_right.svg',
+                                                                  width: 20,
+                                                                  height: 20,
+                                                                  colorFilter: ColorFilter.mode(
+                                                                    _.isValidForm.isTrue
+                                                                        ? Colors.white
+                                                                        : Colors.grey[400]!,
+                                                                    BlendMode.srcIn,
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
                                                           ),
-                                                          Padding(
-                                                            padding: const EdgeInsets
-                                                                .only(
-                                                                left: 12.0),
-                                                            child: SvgPicture
-                                                                .asset(
-                                                              'assets/images/facebook_logo.svg',
-                                                              height: 35,
-                                                            ),
-                                                          ),
-                                                        ],
+                                                        ),
                                                       ),
                                                     ),
                                                   ],
@@ -234,99 +346,103 @@ class SigninScreen extends StatelessWidget {
                                               ),
                                             ),
                                           ),
-                                          Separators.maximumVertical(),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment
-                                                .center,
+                                        ),
+
+                                        const SizedBox(height: 30),
+
+                                        // Registration Section with divider and text
+                                        SlideInUp(
+                                          preferences: const AnimationPreferences(
+                                            duration: Duration(milliseconds: 800),
+                                            offset: Duration(milliseconds: 600),
+                                          ),
+                                          child: Column(
                                             children: [
-                                              SizedBox(
-                                                width: Get.width / 2,
-                                                child: CustomButton(
-                                                  borderRadius: 10,
-                                                  text: "S'inscrire",
-                                                  bgcolor: colorGreen,
-                                                  borderColor: colorGreen,
-                                                  actionColor: colorGreen
-                                                      .withValues(alpha: 0.5),
-                                                  action: () {
-                                                    _.goToSignup();
-                                                  },
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Container(
+                                                      height: 1,
+                                                      color: Colors.white.withValues(alpha:0.5),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                    child: Text(
+                                                      "Pas encore de compte ?",
+                                                      style: TextStyles.montserratMedium(
+                                                        textSize: TextSizes.fourteen,
+                                                        textColor: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Container(
+                                                      height: 1,
+                                                      color: Colors.white.withValues(alpha:0.5),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+
+                                              const SizedBox(height: 20),
+
+                                              // Registration Button with enhanced styling
+                                              Center(
+                                                child: Container(
+                                                  width: Get.width * 0.7,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(18),
+                                                    gradient: LinearGradient(
+                                                      colors: [
+                                                        colorGreen.withValues(alpha:0.9),
+                                                        colorGreen,
+                                                      ],
+                                                      begin: Alignment.topLeft,
+                                                      end: Alignment.bottomRight,
+                                                    ),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: colorGreen.withValues(alpha:0.3),
+                                                        blurRadius: 15,
+                                                        offset: const Offset(0, 8),
+                                                        spreadRadius: 0,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  child: CustomButton(
+                                                    text: "S'inscrire",
+                                                    textSize: TextSizes.sixteen,
+                                                    borderRadius: 18,
+                                                    bgcolor: Colors.transparent,
+                                                    borderColor: Colors.transparent,
+                                                    actionColor: colorGreen.withValues(alpha:0.7),
+                                                    action: () {
+                                                      _.goToSignup();
+                                                    },
+                                                  ),
                                                 ),
                                               ),
                                             ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+
+                                        const SizedBox(height: 20),
+                                      ],
                                     ),
                                   ),
-                                );
-                              },
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      )),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
-              Positioned(
-                top: Get.height * 0.06,
-                child: GetBuilder<SigninController>(builder: (logic) {
-                  return Visibility(
-                    visible: logic.tempLogin.value == false,
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            logic.goToHome();
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            margin: const EdgeInsets.only(left: 24),
-                            decoration: BoxDecoration(
-                              color: colorWhite,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                  color: Colors.grey.withValues(alpha: 0)),
-                            ),
-                            child: const Icon(
-                                Icons.home_filled, color: colorGreen),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-              ),
-              Positioned(
-                top: Get.height * 0.06,
-                child: GetBuilder<SigninController>(builder: (logic) {
-                  return Visibility(
-                    visible: logic.tempLogin.value == true,
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Get.back();
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            margin: const EdgeInsets.only(left: 24),
-                            decoration: BoxDecoration(
-                              color: colorWhite,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                  color: Colors.grey.withValues(alpha: 0)),
-                            ),
-                            child: const Icon(
-                                Icons.arrow_back_rounded, color: colorGreen),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-              ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
