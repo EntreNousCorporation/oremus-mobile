@@ -44,44 +44,6 @@ class SigninScreen extends StatelessWidget {
                       absorbing: _.lockScreen.value,
                       child: Stack(
                         children: [
-                          // Back/Home Button with animation
-                          Positioned(
-                            top: Get.mediaQuery.padding.top + 20,
-                            left: 24,
-                            child: ZoomIn(
-                              preferences: const AnimationPreferences(
-                                duration: Duration(milliseconds: 600),
-                                offset: Duration(milliseconds: 200),
-                              ),
-                              child: GestureDetector(
-                                onTap: () {
-                                  _.tempLogin.value ? Get.back() : _.goToHome();
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha:0.95),
-                                    borderRadius: BorderRadius.circular(16),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withValues(alpha:0.15),
-                                        blurRadius: 12,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Icon(
-                                    _.tempLogin.value
-                                        ? Icons.arrow_back_rounded
-                                        : Icons.home_rounded,
-                                    color: colorGreen,
-                                    size: 24,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-
                           // Main Content
                           SafeArea(
                             child: Center(
@@ -432,6 +394,44 @@ class SigninScreen extends StatelessWidget {
                                         const SizedBox(height: 20),
                                       ],
                                     ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // Back/Home Button with animation
+                          Positioned(
+                            top: Get.mediaQuery.padding.top + 20,
+                            left: 24,
+                            child: ZoomIn(
+                              preferences: const AnimationPreferences(
+                                duration: Duration(milliseconds: 600),
+                                offset: Duration(milliseconds: 200),
+                              ),
+                              child: GestureDetector(
+                                onTap: () {
+                                  _.tempLogin.value ? Get.back() : _.goToHome();
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha:0.95),
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha:0.15),
+                                        blurRadius: 12,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    _.tempLogin.value
+                                        ? Icons.arrow_back_rounded
+                                        : Icons.home_rounded,
+                                    color: colorGreen,
+                                    size: 24,
                                   ),
                                 ),
                               ),

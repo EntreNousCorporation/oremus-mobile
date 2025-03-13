@@ -8,6 +8,7 @@ import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
+import 'package:oremusapp/app/commons/services/refresh_controller_factory.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
@@ -40,7 +41,8 @@ class ParoisseController extends GetxController {
 
   var page = 0.obs;
 
-  var refreshController = RefreshController();
+  RefreshController get refreshController => RefreshControllerFactory.getController('paroisse_list');
+  //var refreshController = RefreshController();
 
   late TextEditingController searchController;
   var isSearchFieldEmpty = true.obs;
@@ -95,7 +97,7 @@ class ParoisseController extends GetxController {
 
   @override
   void dispose() {
-    refreshController.dispose();
+    RefreshControllerFactory.disposeController('paroisse_list');
     searchController.dispose();
     scrollController.dispose();
     super.dispose();

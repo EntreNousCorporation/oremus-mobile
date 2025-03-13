@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animator/widgets/fading_entrances/fade_in.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
+import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/favorite/controller/favorite_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/paroisse_item.dart';
@@ -24,9 +25,9 @@ class FavoritesScreen extends StatelessWidget {
                   Container(
                     height: 200,
                     width: double.infinity,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: colorGreen,
-                      borderRadius: const BorderRadius.only(
+                      borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(30),
                         bottomRight: Radius.circular(30),
                       ),
@@ -91,13 +92,40 @@ class FavoritesScreen extends StatelessWidget {
                           ),
                         ),
 
-                        // Favorites list or empty state
+                        // Favorites list, loading state, or empty state
                         Expanded(
-                          child: _.favorites.isNotEmpty
+                          child: _.isLoading.isTrue
+                              ? _buildLoadingState()
+                              : _.favorites.isNotEmpty
                               ? _buildFavoritesList(_)
                               : _buildEmptyState(_),
                         ),
                       ],
+                    ),
+                  ),
+
+                  // Pull to refresh
+                  Positioned(
+                    right: 16,
+                    top: 200 - 20, // Positioned just at the edge of the header
+                    child: Material(
+                      elevation: 4,
+                      shape: const CircleBorder(),
+                      color: colorWhite,
+                      child: InkWell(
+                        customBorder: const CircleBorder(),
+                        onTap: () {
+                          _.getAllFavorites();
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.refresh,
+                            color: colorGreen,
+                            size: 24,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -105,6 +133,14 @@ class FavoritesScreen extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildLoadingState() {
+    return Center(
+      child: LottieLoadingView(
+        size: Get.width / 4,
       ),
     );
   }
@@ -186,7 +222,9 @@ class FavoritesScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 40),
             child: Text(
-              'Explorez les paroisses et ajoutez-les à vos favoris pour les retrouver facilement',
+              controller.isUserLoggedIn
+                  ? 'Explorez les paroisses et ajoutez-les à vos favoris pour les retrouver facilement'
+                  : 'Connectez-vous pour synchroniser vos favoris ou explorez les paroisses et ajoutez-les à vos favoris',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
