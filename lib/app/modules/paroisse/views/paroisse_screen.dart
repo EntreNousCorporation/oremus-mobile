@@ -156,7 +156,6 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                           ),
                           child: Row(
                             children: [
-                              // Reste du code inchangé...
                               GestureDetector(
                                 onTap: () {
                                   _.doLaunchSimpleSearch();

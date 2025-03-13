@@ -53,39 +53,40 @@ class ParoisseItem extends StatelessWidget {
                         transitionOnUserGestures: true,
                         tag: 'tag$index',
                         child: ClipRRect(
-                          borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10.0)),
                           child: SizedBox(
                             //height: Get.width / 2.8,
                             height: Get.width / 2.2,
                             width: double.infinity,
-                            child: (paroisse?.coverImage?.link?.isNotEmpty == true)
+                            child: (paroisse?.coverImage?.link?.isNotEmpty ==
+                                    true)
                                 ? Flow(
-                                  delegate: ParallaxFlowDelegate(
-                                    scrollable: Scrollable.of(context),
-                                    listItemContext: context,
-                                    backgroundImageKey: _backgroundImageKey,
-                                  ),
-                                  children: [
-                                    CachedNetworkImage(
-                                      key: _backgroundImageKey,
-                                      imageUrl:
-                                      paroisse?.coverImage?.link ?? '',
-                                      fit: BoxFit.cover,
-                                      placeholder: (context, url) =>
-                                          SizedBox(
-                                              width: Get.width / 4,
-                                              height: Get.width / 4,
-                                              child: LottieLoadingView(
-                                                  size: Get.width / 6)),
-                                      errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
+                                    delegate: ParallaxFlowDelegate(
+                                      scrollable: Scrollable.of(context),
+                                      listItemContext: context,
+                                      backgroundImageKey: _backgroundImageKey,
                                     ),
-                                  ],
-                                )
+                                    children: [
+                                      CachedNetworkImage(
+                                        key: _backgroundImageKey,
+                                        imageUrl:
+                                            paroisse?.coverImage?.link ?? '',
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) => SizedBox(
+                                            width: Get.width / 4,
+                                            height: Get.width / 4,
+                                            child: LottieLoadingView(
+                                                size: Get.width / 6)),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.error),
+                                      ),
+                                    ],
+                                  )
                                 : Image.asset(
-                              'assets/images/bg_login.jpg',
-                              fit: BoxFit.cover,
-                            ),
+                                    'assets/images/bg_login.jpg',
+                                    fit: BoxFit.cover,
+                                  ),
                           ),
                         ),
                       ),
@@ -99,7 +100,7 @@ class ParoisseItem extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10)),
                         child: Padding(
                           padding:
-                          EdgeInsets.symmetric(horizontal: Get.width / 10),
+                              EdgeInsets.symmetric(horizontal: Get.width / 10),
                           child: Text(
                             '${paroisse?.name}',
                             maxLines: 2,
@@ -158,51 +159,54 @@ class ParoisseItem extends StatelessWidget {
                             width: fromFavoriteUI ? 0 : 10,
                           ),
                           fromFavoriteUI
-                              ? GetBuilder<FavoriteController>(builder: (logic) {
-                            return IconButton(
-                              constraints: const BoxConstraints(maxWidth: 30),
-                                alignment: AlignmentDirectional.center,
-                                onPressed: () {
-                                //todo:- trouver le moyen de mettre à jour la liste des paroisses lorsque celle-ci n'est plus dans la liste des favoris
-                                  logic.removeToFavoriteList(paroisse, index);
-                                },
-                                icon: const Icon(
-                                  Icons.favorite,
-                                  color: Color(0xFFED213A),
-                                  size: 25,
-                                ));
-                          })
+                              ? GetBuilder<FavoriteController>(
+                                  builder: (logic) {
+                                    return IconButton(
+                                        constraints:
+                                            const BoxConstraints(maxWidth: 30),
+                                        alignment: AlignmentDirectional.center,
+                                        onPressed: () {
+                                          //todo:- trouver le moyen de mettre à jour la liste des paroisses lorsque celle-ci n'est plus dans la liste des favoris
+                                          logic.removeToFavoriteList(paroisse, index);
+                                        },
+                                        icon: const Icon(
+                                          Icons.favorite,
+                                          color: Color(0xFFED213A),
+                                          size: 25,
+                                        ));
+                                  },
+                                )
                               : LikeButton(
-                            isLiked: paroisse?.isFavorite,
-                            onTap: (isLiked) async {
-                              paroisse?.isFavorite = !isLiked;
-                              if (isLiked) {
-                                logic.removeFavorite(paroisse);
-                              } else {
-                                logic.saveFavorite(paroisse);
-                              }
-                              return !isLiked;
-                            },
-                            size: 25,
-                            circleColor: const CircleColor(
-                                start: Color(0xff93291E),
-                                end: Color(0xFFED213A)),
-                            bubblesColor: const BubblesColor(
-                              dotPrimaryColor: Color(0xFFED213A),
-                              dotSecondaryColor: Color(0xff93291E),
-                            ),
-                            likeBuilder: (bool isLiked) {
-                              return Icon(
-                                isLiked
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: isLiked
-                                    ? const Color(0xFFED213A)
-                                    : colorGrey1,
-                                size: 25,
-                              );
-                            },
-                          ),
+                                  isLiked: paroisse?.isFavorite,
+                                  onTap: (isLiked) async {
+                                    paroisse?.isFavorite = !isLiked;
+                                    if (isLiked) {
+                                      logic.removeFavorite(paroisse);
+                                    } else {
+                                      logic.saveFavorite(paroisse);
+                                    }
+                                    return !isLiked;
+                                  },
+                                  size: 25,
+                                  circleColor: const CircleColor(
+                                      start: Color(0xff93291E),
+                                      end: Color(0xFFED213A)),
+                                  bubblesColor: const BubblesColor(
+                                    dotPrimaryColor: Color(0xFFED213A),
+                                    dotSecondaryColor: Color(0xff93291E),
+                                  ),
+                                  likeBuilder: (bool isLiked) {
+                                    return Icon(
+                                      isLiked
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+                                      color: isLiked
+                                          ? const Color(0xFFED213A)
+                                          : colorGrey1,
+                                      size: 25,
+                                    );
+                                  },
+                                ),
                         ],
                       ),
                     ],

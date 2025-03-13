@@ -15,6 +15,7 @@ class SearchCriteria {
   String? typeOfClaim;
   String? traceId;
   String? identifier;
+  String? likerUserId;
 
   SearchCriteria({
     this.name,
@@ -30,6 +31,7 @@ class SearchCriteria {
     this.typeOfClaim,
     this.traceId,
     this.identifier,
+    this.likerUserId,
   });
 
   ///use to know if we must launch search or not
@@ -55,6 +57,7 @@ class SearchCriteria {
     data['typeOfClaim'] = typeOfClaim;
     data['traceId'] = traceId;
     data['identifier'] = identifier;
+    data['likerUserId'] = likerUserId;
     return data;
   }
 }

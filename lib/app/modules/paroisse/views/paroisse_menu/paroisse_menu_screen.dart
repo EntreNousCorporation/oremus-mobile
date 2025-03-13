@@ -299,7 +299,7 @@ class ParoisseMenuScreen extends StatelessWidget {
                       sliver: SliverGrid(
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                          childAspectRatio: 4/3, // Carré pour un look plus moderne
+                          childAspectRatio: 16/11,
                           crossAxisCount: 2,
                           crossAxisSpacing: 16.0,
                           mainAxisSpacing: 16.0,
@@ -307,7 +307,6 @@ class ParoisseMenuScreen extends StatelessWidget {
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
                             var menu = _.menus[index];
-                            // Remplacer par un widget de menu amélioré
                             return _buildEnhancedMenuItem(menu);
                           },
                           childCount: _.menus.length,

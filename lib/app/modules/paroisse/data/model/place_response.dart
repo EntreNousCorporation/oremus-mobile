@@ -18,6 +18,7 @@ class ContentPlace extends ToJsonInterface {
   Diocese? diocese;
   Localisation? localisation;
   CoverImage? coverImage;
+  bool? isUserFavorite;
 
   ContentPlace({
     this.identifier,
@@ -37,6 +38,7 @@ class ContentPlace extends ToJsonInterface {
     this.diocese,
     this.localisation,
     this.coverImage,
+    this.isUserFavorite,
   });
 
   ContentPlace.fromJson(Map<String, dynamic> json) {
@@ -52,6 +54,7 @@ class ContentPlace extends ToJsonInterface {
     leader = json['leader'];
     isArchDiocese = json['isArchDiocese'];
     isFavorite = json['isFavorite'] ?? false;
+    isUserFavorite = json['isUserFavorite'] ?? false;
     type = json['type'] != null
         ? TypeContent.fromJson(json['type'])
         : null;
