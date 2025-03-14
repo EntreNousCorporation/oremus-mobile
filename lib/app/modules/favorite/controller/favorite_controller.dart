@@ -23,12 +23,32 @@ class FavoriteController extends GetxController {
 
   var favorites = RxList<ContentPlace>([]);
   var isLoading = false.obs;
+  var currentUserId = ''.obs;
 
   // Vérifier si l'utilisateur est connecté
   bool get isUserLoggedIn => DB.getUserSigninInfo()?.id != null && DB.getUserSigninInfo()?.id?.isNotEmpty == true;
 
+  // Observer l'ID de l'utilisateur pour détecter les changements
+  String? get userId => DB.getUserSigninInfo()?.id;
+
   final GlobalKey<AnimatedListState> key = GlobalKey();
   RefreshController get refreshController => RefreshControllerFactory.getController('favorite_list');
+
+  @override
+  void onInit() {
+    // Stocker l'ID de l'utilisateur actuel
+    currentUserId.value = userId ?? '';
+
+    // Observer les changements d'utilisateur
+    ever(currentUserId, (String id) {
+      if (id != (userId ?? '')) {
+        log('User changed from $id to ${userId ?? 'none'}');
+        // Rafraîchir la liste des favoris quand l'utilisateur change
+        getAllFavorites();
+      }
+    });
+    super.onInit();
+  }
 
   @override
   void onReady() {
@@ -46,8 +66,12 @@ class FavoriteController extends GetxController {
     isLoading(true);
 
     try {
+      // Mettre à jour l'ID de l'utilisateur actuel
+      currentUserId.value = userId ?? '';
+
       if (isUserLoggedIn) {
         // Si l'utilisateur est connecté, charger les favoris du cache local synchronisé
+        log('Loading synced favorites for user: $currentUserId');
         List<ContentPlace> syncedFavorites = DB.getSyncedFavorites();
 
         // Si le cache est vide ou si c'est la première fois, essayer de charger depuis le serveur
@@ -72,12 +96,13 @@ class FavoriteController extends GetxController {
 
           // Sauvegarder dans le cache local
           DB.saveSyncedFavorites(syncedFavorites);
-          log('Saved ${syncedFavorites.length} favorites to synced cache');
+          log('Saved ${syncedFavorites.length} favorites to synced cache for user: $currentUserId');
         }
 
         favorites.value = syncedFavorites;
       } else {
         // Si l'utilisateur n'est pas connecté, charger les favoris non synchronisés
+        log('Loading unsynchronized favorites (user not logged in)');
         favorites.value = DB.getUnsynchronizedFavorites();
       }
 
@@ -164,5 +189,19 @@ class FavoriteController extends GetxController {
 
   moveToHome() {
     Get.back();
+  }
+
+  // Méthode à appeler lors de la déconnexion
+  void handleLogout() {
+    // Mémoriser l'ID de l'utilisateur actuel avant la déconnexion
+    String oldUserId = currentUserId.value;
+
+    // Effacer l'ID de l'utilisateur actuel
+    currentUserId.value = '';
+
+    // Rafraîchir la liste des favoris
+    getAllFavorites();
+
+    log('User logged out: $oldUserId');
   }
 }

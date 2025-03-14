@@ -123,7 +123,7 @@ class ParoisseRepository implements IParoisseRepository {
 
     try {
       Response response = await _apiClient.doRequest(
-        endpoint: "/places-of-worship/user-favorites?page=$page&size=${AppConstants.MASS_REQUEST_PAGING_SIZE}&sort=code%2CASC",
+        endpoint: "/places-of-worship/user-favorites?page=$page&size=${AppConstants.MASS_REQUEST_PAGING_SIZE}&sort=%2CASC",
         method: HttpMethod.get,
         useBearer: true,
       );
@@ -157,7 +157,7 @@ class ParoisseRepository implements IParoisseRepository {
         // 2. Obtenir les favoris non synchronisés
         List<ContentPlace> unsyncedFavorites = DB.getUnsynchronizedFavorites();
         if (unsyncedFavorites.isNotEmpty) {
-          log('Syncing ${unsyncedFavorites.length} unsynced favorites');
+          log('Syncing ${unsyncedFavorites.length} unsynced favorites for user: $currentUserId');
 
           // 3. Obtenir les favoris du serveur (source de vérité)
           DataResponse<ContentPlace> serverFavoritesResponse = await getServerFavorites();
@@ -170,9 +170,7 @@ class ParoisseRepository implements IParoisseRepository {
           // 5. Ajouter les favoris locaux au serveur
           for (var paroisse in toAddToServer) {
             bool success = await addServerFavorite(paroisse);
-            if (success) {
-              log('Added favorite to server: ${paroisse.identifier}');
-            }
+            log('Added favorite to server: $success - ${paroisse.name}');
           }
 
           // 6. Une fois la synchronisation terminée, effacer les favoris non synchronisés
@@ -183,38 +181,37 @@ class ParoisseRepository implements IParoisseRepository {
         DataResponse<ContentPlace> updatedServerFavoritesResponse = await getServerFavorites();
         List<ContentPlace?> updatedServerFavorites = updatedServerFavoritesResponse.contents ?? [];
 
-        // 8. Mettre à jour le cache local des favoris synchronisés
+        // 8. Convertir la liste en liste non nullable
         List<ContentPlace> syncedFavorites = updatedServerFavorites
             .where((item) => item != null)
             .map((item) => item!)
             .toList();
 
-        // Marquer tous les favoris comme étant favoris
+        // 9. Marquer tous les favoris comme étant favoris
         for (var favorite in syncedFavorites) {
           favorite.isFavorite = true;
           favorite.isUserFavorite = true;
         }
 
-        // Sauvegarder dans le cache local
-        DB.saveData(
-            DB.KEY_SYNCED_FAVORITES,
-            jsonEncode(syncedFavorites).toString()
-        );
+        // 10. Sauvegarder dans le cache local spécifique à l'utilisateur
+        DB.saveSyncedFavorites(syncedFavorites);
 
-        log('Updated local cache with ${syncedFavorites.length} favorites from server');
+        log('Updated local cache with ${syncedFavorites.length} favorites for user: $currentUserId');
 
-        // 9. Enregistrer l'ID de l'utilisateur actuel comme dernier synchronisateur
+        // 11. Enregistrer l'ID de l'utilisateur actuel comme dernier synchronisateur
         DB.setLastSyncUserId(currentUserId!);
 
         log('Favorites synchronized successfully with user $currentUserId');
       } else {
-        // C'est un utilisateur différent, ne pas synchroniser les favoris locaux
-        log('Not syncing favorites: different user ($lastSyncUserId vs $currentUserId)');
+        // C'est un utilisateur différent, nettoyer les favoris non synchronisés précédents
+        log('Different user detected! Last: $lastSyncUserId, Current: $currentUserId');
+        DB.clearUnsynchronizedFavorites();
 
-        // Mais récupérer quand même ses favoris du serveur pour mettre à jour le cache
+        // Récupérer les favoris du nouvel utilisateur depuis le serveur
         DataResponse<ContentPlace> serverFavoritesResponse = await getServerFavorites();
         List<ContentPlace?> serverFavorites = serverFavoritesResponse.contents ?? [];
 
+        // Convertir la liste en liste non nullable
         List<ContentPlace> syncedFavorites = serverFavorites
             .where((item) => item != null)
             .map((item) => item!)
@@ -226,16 +223,13 @@ class ParoisseRepository implements IParoisseRepository {
           favorite.isUserFavorite = true;
         }
 
-        // Sauvegarder dans le cache local
-        DB.saveData(
-            DB.KEY_SYNCED_FAVORITES,
-            jsonEncode(syncedFavorites).toString()
-        );
+        // Sauvegarder dans le cache local spécifique à l'utilisateur
+        DB.saveSyncedFavorites(syncedFavorites);
 
         // Mettre à jour l'ID du dernier utilisateur synchronisé
         DB.setLastSyncUserId(currentUserId!);
 
-        log('Updated local cache with ${syncedFavorites.length} favorites for new user');
+        log('Loaded ${syncedFavorites.length} favorites for new user: $currentUserId');
       }
     } catch (e) {
       log('Error synchronizing favorites: $e');

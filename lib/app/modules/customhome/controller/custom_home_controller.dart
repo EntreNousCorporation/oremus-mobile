@@ -14,6 +14,7 @@ import 'package:oremusapp/app/commons/services/os_otification_service.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/customhome/data/model/menu_item.dart';
+import 'package:oremusapp/app/modules/favorite/controller/favorite_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
@@ -188,10 +189,25 @@ class CustomHomeController extends GetxController {
   doLogout() {
     // Mémoriser l'ID de l'utilisateur avant la déconnexion
     ParoisseController.prepareForLogout();
+
+    // Effacer les données spécifiques à l'utilisateur dans DB
+    DB.clearAllUserSpecificData();
+
+    // Gérer la déconnexion dans le repository
     paroisseRepository.handleLogout();
+
+    // Notifier le FavoriteController si disponible
+    try {
+      final favoriteController = Get.find<FavoriteController>();
+      favoriteController.handleLogout();
+    } catch (e) {
+      // Le contrôleur n'est pas disponible, rien à faire
+      log('FavoriteController not available: $e');
+    }
+
+    // Effacer les données de connexion
     DB.saveData(AppConstants.KEY_USER_LOG_INFOS, null);
     Get.deleteAll(force: true);
-    isUserConnected.value = false;
     Get.offAllNamed(Routes.SIGNIN);
   }
 

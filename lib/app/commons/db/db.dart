@@ -104,8 +104,18 @@ class DB {
     saveData(KEY_LAST_SYNC_USER_ID, '');
   }
 
+  // Génère une clé de stockage spécifique à l'utilisateur
+  static String userSpecificKey(String baseKey) {
+    String? userId = getUserSigninInfo()?.id;
+    return userId != null && userId.isNotEmpty
+        ? "${baseKey}_$userId"
+        : baseKey;
+  }
+
+// Méthodes améliorées pour les favoris synchronisés avec le serveur
   static List<ContentPlace> getSyncedFavorites() {
-    String? data = getData(KEY_SYNCED_FAVORITES);
+    String key = userSpecificKey(KEY_SYNCED_FAVORITES);
+    String? data = getData(key);
     if (data != null && data.isNotEmpty) {
       Iterable l = json.decode(data);
       return l.map((model) => ContentPlace.fromJson(model)).toList();
@@ -114,10 +124,22 @@ class DB {
   }
 
   static void saveSyncedFavorites(List<ContentPlace> favorites) {
-    saveData(KEY_SYNCED_FAVORITES, jsonEncode(favorites).toString());
+    String key = userSpecificKey(KEY_SYNCED_FAVORITES);
+    saveData(key, jsonEncode(favorites).toString());
   }
 
   static void clearSyncedFavorites() {
-    saveData(KEY_SYNCED_FAVORITES, '');
+    String key = userSpecificKey(KEY_SYNCED_FAVORITES);
+    saveData(key, '');
+  }
+
+// Méthode pour effacer tous les favoris synchronisés quand l'utilisateur se déconnecte
+  static void clearAllUserSpecificData() {
+    String? userId = getUserSigninInfo()?.id;
+    if (userId != null && userId.isNotEmpty) {
+      clearSyncedFavorites();
+
+      // Vous pouvez ajouter d'autres données spécifiques à l'utilisateur à effacer ici
+    }
   }
 }

@@ -75,10 +75,15 @@ class ParoisseController extends GetxController {
         // Vérifier si c'est une nouvelle connexion
         if (userIdBeforeLogout.isEmpty || userIdBeforeLogout.value != currentUserId) {
           log('New user logged in: $currentUserId');
+
+          // Nettoyer les anciens favoris au cas où
+          DB.clearSyncedFavorites();
+
           // Un nouvel utilisateur s'est connecté, synchroniser les favoris si nécessaire
-          synchronizeFavorites();
-          // Rafraîchir la liste pour afficher les favoris de ce nouvel utilisateur
-          onRefresh();
+          synchronizeFavorites().then((_) {
+            // Rafraîchir la liste pour afficher les favoris de ce nouvel utilisateur
+            onRefresh();
+          });
         } else {
           log('Same user logged in again: $currentUserId');
         }
