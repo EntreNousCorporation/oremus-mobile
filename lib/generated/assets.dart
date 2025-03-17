@@ -4,6 +4,7 @@ class Assets {
 
   static const String assetsImagesCheck = 'assets/images/check.json';
   static const String assetsImagesLogo = 'assets/images/logo.svg';
+  static const String audiosAnnonciation = 'assets/audios/annonciation.mp3';
   static const String fontsMontserratAlternatesBlack = 'assets/fonts/MontserratAlternates_Black.otf';
   static const String fontsMontserratAlternatesBlackItalic = 'assets/fonts/MontserratAlternates_BlackItalic.otf';
   static const String fontsMontserratAlternatesBold = 'assets/fonts/MontserratAlternates_Bold.otf';
@@ -91,9 +92,11 @@ class Assets {
   static const String imagesMesse = 'assets/images/messe.svg';
   static const String imagesMovement = 'assets/images/movement.svg';
   static const String imagesPriestIcon = 'assets/images/priest_icon.svg';
+  static const String imagesRosary = 'assets/images/rosary.svg';
   static const String imagesShareIcon = 'assets/images/share_icon.svg';
   static const String imagesTime = 'assets/images/time.svg';
   static const String imagesUserLogin = 'assets/images/user_login.svg';
-  static const String imagesWarning = 'assets/images/warning.svg';
   static const String imagesVolunteer = 'assets/images/volunteer.svg';
+  static const String imagesWarning = 'assets/images/warning.svg';
+
 }

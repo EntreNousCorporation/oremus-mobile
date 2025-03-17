@@ -89,6 +89,11 @@ class CustomHomeController extends GetxController {
         icon: Assets.imagesVolunteer,
       ),
       MenusItem(
+        code: AppConstants.ROSAIRE,
+        libelle: "Rosaire",
+        icon: Assets.imagesRosary,
+      ),
+      MenusItem(
         code: AppConstants.PROMO,
         libelle: 'Codes promo',
         icon: Assets.imagesIconSettings,

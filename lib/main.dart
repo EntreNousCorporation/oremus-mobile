@@ -19,7 +19,10 @@ import 'package:oremusapp/app/commons/lang/translation_service.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_theme.dart';
 import 'package:oremusapp/app/configs/flavor_settings.dart';
+import 'package:oremusapp/app/modules/rosaire/services/audio_player_service.dart';
+import 'package:oremusapp/app/modules/rosaire/services/interaction_zone_service.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:oremusapp/main_app_wrapper.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -59,6 +62,15 @@ void main() async {
       FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
       FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
+      // Initialiser le service audio player
+      final audioService = Get.put(AudioPlayerService(), permanent: true);
+      final zoneService = Get.put(InteractionZoneService(), permanent: true);
+      Future.delayed(Duration.zero, () {
+        // La première route peut être différente de celle attendue initialement
+        zoneService.currentRoute.value = Get.currentRoute;
+        zoneService.updatePositionForCurrentRoute();
+      });
+
       runApp(const MyApp());
     },
   );
@@ -91,8 +103,8 @@ class MyApp extends StatelessWidget {
         getPages: AppPages.pages,
         builder: EasyLoading.init(builder: (context, child) {
           return MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
-            child: child!,
+            data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1)),
+            child: MainAppWrapper(child: child!),
           );
         }),
       ),

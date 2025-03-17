@@ -20,6 +20,7 @@ import 'package:oremusapp/app/modules/pray/views/pray_screen.dart';
 import 'package:oremusapp/app/modules/profile/controller/profile_controller.dart';
 import 'package:oremusapp/app/modules/profile/views/profile_screen.dart';
 import 'package:oremusapp/app/modules/promos/views/promo_screen.dart';
+import 'package:oremusapp/app/modules/rosaire/views/rosaire_screen.dart';
 import 'package:oremusapp/app/modules/settings/views/settings_screen.dart';
 import 'package:oremusapp/main.dart';
 
@@ -57,6 +58,10 @@ class CustomHomeScreen extends StatelessWidget {
               case AppConstants.DONATION_WITHOUT_WORSHIP:
                 logic.title.value = logic.menus[position].libelle ?? 'Faire un don';
                 screenCurrent = const DonationMenuScreen();
+                break;
+              case AppConstants.ROSAIRE:
+                logic.title.value = logic.menus[position].libelle ?? 'Rosaire';
+                screenCurrent = const RosaireScreen();
                 break;
               case AppConstants.PROMO:
                 logic.title.value = logic.menus[position].libelle ?? 'Codes promo';

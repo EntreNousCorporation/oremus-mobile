@@ -79,6 +79,10 @@ dependencies:
   custom_input_formatter: ^2.0.1
   onesignal_flutter: ^5.3.0
 
+  just_audio: ^0.9.34
+  audio_session: ^0.1.16
+  rxdart: ^0.27.7
+
 dependency_overrides:
   #collection: ^1.18.0
 
@@ -173,6 +177,7 @@ flutter:
   assets:
     - assets/images/
     - assets/fonts/
+    - assets/audios/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -18,6 +18,8 @@ import 'package:oremusapp/app/modules/pray/views/pray_screen.dart';
 import 'package:oremusapp/app/modules/profile/controller/profile_controller.dart';
 import 'package:oremusapp/app/modules/profile/views/profile_screen.dart';
 import 'package:oremusapp/app/modules/promos/views/promo_screen.dart';
+import 'package:oremusapp/app/modules/rosaire/controller/rosaire_controller.dart';
+import 'package:oremusapp/app/modules/rosaire/views/rosaire_screen.dart';
 import 'package:oremusapp/app/modules/settings/views/settings_screen.dart';
 import 'package:oremusapp/main.dart';
 
@@ -55,6 +57,10 @@ class CustomHomeNewScreen extends StatelessWidget {
               case AppConstants.DONATION_WITHOUT_WORSHIP:
                 logic.title.value = logic.menus[position].libelle ?? 'Faire un don';
                 screenCurrent = const DonationMenuScreen();
+                break;
+              case AppConstants.ROSAIRE:
+                logic.title.value = logic.menus[position].libelle ?? 'Rosaire';
+                screenCurrent = const RosaireScreen();
                 break;
               case AppConstants.PROMO:
                 logic.title.value = logic.menus[position].libelle ?? 'Codes promo';
@@ -183,6 +189,23 @@ class CustomHomeNewScreen extends StatelessWidget {
                                               homeLogic.goToFavorites();
                                             },
                                           ),
+                                        ),
+                                      );
+                                    }
+                                ),
+                              if (logic.menus[logic.selectedIndex.value].code == AppConstants.ROSAIRE)
+                                GetBuilder<RosaireController>(
+                                    builder: (rosaireController) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withValues(alpha: 0.3),
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        child: IconButton(
+                                          icon: const Icon(Icons.settings_outlined, color: Colors.white),
+                                          onPressed: () {
+                                            rosaireController.showSettingsDialog();
+                                          },
                                         ),
                                       );
                                     }
