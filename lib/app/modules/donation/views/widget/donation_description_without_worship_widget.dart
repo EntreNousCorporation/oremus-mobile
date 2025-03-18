@@ -3,14 +3,14 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/donation/controller/donation_with_worship_controller.dart';
+import 'package:oremusapp/app/modules/donation/controller/donation_without_worship_controller.dart';
 
-class DonationDescriptionWithWorshipWidget extends StatelessWidget {
-  const DonationDescriptionWithWorshipWidget({Key? key}) : super(key: key);
+class DonationDescriptionWithoutWorshipWidget extends StatelessWidget {
+  const DonationDescriptionWithoutWorshipWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<DonationWithWorshipController>(builder: (logic) {
+    return GetBuilder<DonationWithoutWorshipController>(builder: (logic) {
       return TextFormField(
         controller: logic.descriptionController,
         keyboardAppearance: Brightness.light,

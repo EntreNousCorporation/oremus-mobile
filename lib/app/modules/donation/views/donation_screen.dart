@@ -296,13 +296,13 @@ class DonationScreen extends StatelessWidget {
                               const SizedBox(height: 12),
                               Row(
                                 children: [
-                                  _buildQuickAmountButton(_, '1 000', '1000'),
+                                  _buildQuickAmountButton(_, '1 000', '1 000'),
                                   const SizedBox(width: 8),
-                                  _buildQuickAmountButton(_, '5 000', '5000'),
+                                  _buildQuickAmountButton(_, '5 000', '5 000'),
                                   const SizedBox(width: 8),
-                                  _buildQuickAmountButton(_, '10 000', '10000'),
+                                  _buildQuickAmountButton(_, '10 000', '10 000'),
                                   const SizedBox(width: 8),
-                                  _buildQuickAmountButton(_, '20 000', '20000'),
+                                  _buildQuickAmountButton(_, '20 000', '20 000'),
                                 ],
                               ),
                             ],
@@ -467,34 +467,50 @@ class DonationScreen extends StatelessWidget {
     );
   }
 
-  // Quick amount button
   Widget _buildQuickAmountButton(DonationController controller, String displayAmount, String amount) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          controller.amountController.text = amount;
-          controller.checkForm();
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            color: Colors.grey[50],
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.grey[300]!,
-              width: 1,
+    return Obx(() {
+      // Utiliser selectedAmount pour vérifier la sélection
+      bool isSelected = controller.selectedAmount.value == amount;
+
+      return Expanded(
+        child: GestureDetector(
+          onTap: () {
+            // Mettre à jour directement le controller
+            controller.amountController.text = amount;
+            controller.selectedAmount.value = amount;
+            controller.checkForm();
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? colorGreenSemiLight.withValues(alpha: 0.1)
+                  : Colors.grey[50],
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isSelected ? colorGreenSemiLight : Colors.grey[300]!,
+                width: isSelected ? 2 : 1,
+              ),
+              boxShadow: isSelected ? [
+                BoxShadow(
+                  color: colorGreenSemiLight.withValues(alpha: 0.2),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                )
+              ] : [],
             ),
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            displayAmount,
-            style: TextStyles.montserratSemiBold(
-              textColor: colorGreenSemiLight,
-              textSize: TextSizes.fourteen,
+            alignment: Alignment.center,
+            child: Text(
+              displayAmount,
+              style: TextStyles.montserratSemiBold(
+                textColor: isSelected ? colorGreenSemiLight : Colors.grey[600]!,
+                textSize: TextSizes.fourteen,
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

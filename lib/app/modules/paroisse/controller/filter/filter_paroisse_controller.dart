@@ -53,6 +53,10 @@ class FilterParoisseController extends GetxController {
 
   @override
   void onInit() {
+    configStatusBar(
+      statusBarIconBrightness: Brightness.dark,
+      iOSStatusBarBrightness: Brightness.light,
+    );
     initControllers();
     super.onInit();
   }

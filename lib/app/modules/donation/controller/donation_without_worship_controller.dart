@@ -18,11 +18,11 @@ import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_reposito
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
-class DonationWithWorshipController extends GetxController {
+class DonationWithoutWorshipController extends GetxController {
   final DonationRepository donationRepository;
   final ParoisseRepository paroisseRepository;
 
-  DonationWithWorshipController({
+  DonationWithoutWorshipController({
     required this.donationRepository,
     required this.paroisseRepository,
   });
@@ -44,10 +44,13 @@ class DonationWithWorshipController extends GetxController {
   var selectedEntityType = EntityType.worship.name.obs;
   var isOremusSelected = false.obs;
 
+  var selectedAmount = ''.obs;
+
   @override
   void onInit() {
     getArguments();
     initControllers();
+    initAmountListeners();
     update();
     super.onInit();
   }
@@ -68,13 +71,21 @@ class DonationWithWorshipController extends GetxController {
     }
   }
 
+  void initAmountListeners() {
+    // Observer les changements de texte dans amountController
+    amountController.addListener(() {
+      // Mise à jour de selectedAmount quand amountController change
+      selectedAmount.value = amountController.text.replaceAll(RegExp(r'\s'), '');
+    });
+  }
+
   initControllers() {
     amountController = TextEditingController();
     descriptionController = TextEditingController();
     // Attendre un court délai avant de donner le focus au TextField
-    Timer(const Duration(milliseconds: 500), () {
+    /*Timer(const Duration(milliseconds: 500), () {
       FocusScope.of(Get.context!).requestFocus(amountFocusNode);
-    });
+    });*/
   }
 
   void selectEntityType(String entityType) {
@@ -85,6 +96,7 @@ class DonationWithWorshipController extends GetxController {
       paroisseSelected.value = ContentPlace();
     }
     checkForm();
+    update();
   }
 
   moveToPayment(DonationResponse donationResponse) {
@@ -103,7 +115,7 @@ class DonationWithWorshipController extends GetxController {
   }
 
   goToWorshipChoice() async {
-    paroisseSelected = await Get.toNamed(
+    paroisseSelected.value = await Get.toNamed(
       Routes.FILTER_CHOOSE_WORSHIP,
       arguments: 'Faire un don',
     );
@@ -112,6 +124,7 @@ class DonationWithWorshipController extends GetxController {
       paroisseSelected.refresh();
     }
     checkForm();
+    update();
   }
 
   void checkForm() {

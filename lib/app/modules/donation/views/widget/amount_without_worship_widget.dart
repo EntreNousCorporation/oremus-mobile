@@ -6,14 +6,14 @@ import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/donation/controller/donation_with_worship_controller.dart';
+import 'package:oremusapp/app/modules/donation/controller/donation_without_worship_controller.dart';
 
 class AmountWithoutWorshipWidget extends StatelessWidget {
   const AmountWithoutWorshipWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<DonationWithWorshipController>(builder: (logic) {
+    return GetBuilder<DonationWithoutWorshipController>(builder: (logic) {
       return Container(
         decoration: BoxDecoration(
           color: Colors.grey[50],

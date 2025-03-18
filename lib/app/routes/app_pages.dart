@@ -12,7 +12,7 @@ import 'package:oremusapp/app/modules/donation/binding/donation_menu_binding.dar
 import 'package:oremusapp/app/modules/donation/binding/donation_with_worship_binding.dart';
 import 'package:oremusapp/app/modules/donation/views/donation_menu_screen.dart';
 import 'package:oremusapp/app/modules/donation/views/donation_screen.dart';
-import 'package:oremusapp/app/modules/donation/views/donation_with_worship_screen.dart';
+import 'package:oremusapp/app/modules/donation/views/donation_without_worship_screen.dart';
 import 'package:oremusapp/app/modules/donationhistory/binding/donation_history_binding.dart';
 import 'package:oremusapp/app/modules/donationhistory/binding/donation_history_detail_binding.dart';
 import 'package:oremusapp/app/modules/donationhistory/views/donation_history_detail_screen.dart';
@@ -374,8 +374,8 @@ class AppPages {
     ),
     GetPage(
       name: Routes.DONATION_WITHOUT_WORSHIP,
-      page: () => const DonationWithWorshipScreen(),
-      binding: DonationWithWorshipBinding(),
+      page: () => const DonationWithoutWorshipScreen(),
+      binding: DonationWithoutWorshipBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

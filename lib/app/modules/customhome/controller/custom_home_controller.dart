@@ -44,7 +44,7 @@ class CustomHomeController extends GetxController {
   @override
   void onInit() {
     // Initialiser OneSignal avec le dialogue de consentement
-    initNotification();
+    //initNotification();
 
     if (flavor == AppConstants.ENV_PROD && GetPlatform.isAndroid) {
       doPerformAppUpdate();
@@ -92,6 +92,7 @@ class CustomHomeController extends GetxController {
         code: AppConstants.ROSAIRE,
         libelle: "Rosaire",
         icon: Assets.imagesRosary,
+        isVisible: false,
       ),
       MenusItem(
         code: AppConstants.PROMO,
@@ -213,6 +214,7 @@ class CustomHomeController extends GetxController {
     // Effacer les données de connexion
     DB.saveData(AppConstants.KEY_USER_LOG_INFOS, null);
     Get.deleteAll(force: true);
+    isUserConnected.value = false;
     Get.offAllNamed(Routes.SIGNIN);
   }
 

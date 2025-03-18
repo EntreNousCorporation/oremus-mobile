@@ -120,7 +120,7 @@ class _MenuState extends State<DrawerMenu> with TickerProviderStateMixin {
                   Padding(
                     padding: EdgeInsets.only(left: 8.0, top: Get.width / 5,),
                     child: Text(
-                      'Version: $versionName' '_$versionCode',
+                      'Version: $versionName''_$versionCode',
                       style: TextStyles.montserratRegular(
                         textSize: TextSizes.ten,
                         textColor: colorWhite,

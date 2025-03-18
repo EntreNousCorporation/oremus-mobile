@@ -43,10 +43,13 @@ class DonationController extends GetxController {
   var paroisseSelected = ContentPlace().obs;
   var donationSelected = DonationResponse().obs;
 
+  var selectedAmount = ''.obs;
+
   @override
   void onInit() {
     getArguments();
     initControllers();
+    initAmountListeners();
     super.onInit();
   }
 
@@ -56,6 +59,14 @@ class DonationController extends GetxController {
     amountFocusNode.dispose();
     descriptionController.dispose();
     super.dispose();
+  }
+
+  void initAmountListeners() {
+    // Observer les changements de texte dans amountController
+    amountController.addListener(() {
+      // Mise à jour de selectedAmount quand amountController change
+      selectedAmount.value = amountController.text.replaceAll(RegExp(r'\s'), '');
+    });
   }
 
   initControllers() {
@@ -183,7 +194,7 @@ class DonationController extends GetxController {
   goToMap() {
     Get.toNamed(
       Routes.PAROISSE_MAP,
-      arguments: jsonEncode(paroisseSelected.toJson()),
+      arguments: paroisseSelected.toJson(),
     );
   }
 

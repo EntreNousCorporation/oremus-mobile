@@ -207,6 +207,6 @@ class FilterWorshipController extends GetxController {
 
   goBackToMassRequest() {
     log('goBackToMassRequest ::: ${worshipSelected.value?.identifier}');
-    Get.back(result: worshipSelected);
+    Get.back(result: worshipSelected.value);
   }
 }

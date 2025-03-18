@@ -103,7 +103,9 @@ class ProfileScreen extends StatelessWidget {
                           child: SmartRefresher(
                             controller: _.refreshController,
                             onRefresh: _.getProfile,
-                            header: const CustomClassicHeader(),
+                            header: const CustomClassicHeader(
+                              textColor: colorWhite,
+                            ),
                             child: _.isDataProcessing.isTrue
                                 ? Center(
                                     child: LottieLoadingView(

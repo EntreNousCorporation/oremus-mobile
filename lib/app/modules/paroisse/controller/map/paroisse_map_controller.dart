@@ -10,7 +10,7 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class ParoisseMapController extends GetxController {
   ParoisseMapController();
@@ -275,8 +275,8 @@ class ParoisseMapController extends GetxController {
   launchMapRoutes() async {
     String url = "https://www.google.com/maps/dir/?api=1&destination=${paroisseSelected.value.localisation?.latitude ?? 0.0},${paroisseSelected.value.localisation?.longitude ?? 0.0}&travelmode=driving&dir_action=navigate";
 
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrlString(url)) {
+      await launchUrlString(url);
     } else {
       throw 'Could not launch $url';
     }

@@ -12,59 +12,69 @@ class TypeLiturgicalSearchWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetX<FilterParoisseController>(builder: (logic) {
-      return Material(
-        borderRadius: BorderRadius.circular(10.0),
-        elevation: 10,
-        color: colorWhite,
-        shadowColor: colorGrey2.withValues(alpha: 0.5),
-        child: TextFormField(
-          controller: logic.typeLiturgicalSearchController,
-          keyboardAppearance: Brightness.light,
-          style: TextStyles.montserratMedium(textColor: colorBlack),
-          maxLines: 1,
-          cursorColor: colorBlue,
-          keyboardType: TextInputType.text,
-          textInputAction: TextInputAction.search,
-          decoration: InputDecoration(
-            contentPadding:
-                const EdgeInsets.only(top: 16, left: 16, right: 0, bottom: 0),
-            filled: true,
-            fillColor: colorWhite,
-            border: InputBorder.none,
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: colorWhite),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: colorWhite),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            errorBorder: InputBorder.none,
-            disabledBorder: InputBorder.none,
-            hintText: 'Faire une recherche...',
-            hintStyle: TextStyles.montserratItalic(
-                textColor: colorPurpleLight, textSize: TextSizes.fourteen),
-            suffixIcon: logic.isTypeLiturgicalSearchFieldEmpty.isFalse
-                ? FadeIn(
-                    child: IconButton(
-                      onPressed: () {
-                        //clean search bar
-                        logic.resetTypeLiturgicalSearch();
-                      },
-                      icon: const Icon(Icons.cancel,
-                          color: colorPurpleLight, size: 20),
-                    ),
-                  )
-                : null,
-          ),
-          onChanged: (value) {
-            logic.isTypeLiturgicalSearchFieldEmpty.value = value.isEmpty;
-            logic.updateTypeLiturgicalFilter(value);
-            if (value.isEmpty) {
-              logic.resetTypeLiturgicalSearch();
-            }
-          },
+      return TextFormField(
+        controller: logic.typeLiturgicalSearchController,
+        keyboardAppearance: Brightness.light,
+        style: TextStyles.montserratMedium(
+          textColor: colorBlack,
+          textSize: TextSizes.fifteen,
         ),
+        maxLines: 1,
+        cursorColor: colorGreenSemiLight,
+        keyboardType: TextInputType.text,
+        textInputAction: TextInputAction.search,
+        decoration: InputDecoration(
+          contentPadding:
+          const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          filled: true,
+          fillColor: colorWhite,
+          border: InputBorder.none,
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: colorGreenSemiLight.withOpacity(0.3)),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: colorGreyDrawer),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          errorBorder: InputBorder.none,
+          disabledBorder: InputBorder.none,
+          hintText: 'Rechercher un type de lieu...',
+          hintStyle: TextStyles.montserratRegular(
+            textColor: Colors.grey[500]!,
+            textSize: TextSizes.fourteen,
+          ),
+          prefixIcon: const Padding(
+            padding: EdgeInsets.only(left: 16, right: 8),
+            child: Icon(
+              Icons.search,
+              color: colorGreenSemiLight,
+              size: 22,
+            ),
+          ),
+          suffixIcon: logic.isTypeLiturgicalSearchFieldEmpty.isFalse
+              ? FadeIn(
+            child: IconButton(
+              onPressed: () {
+                //clean search bar
+                logic.resetTypeLiturgicalSearch();
+              },
+              icon: Icon(
+                Icons.cancel_rounded,
+                color: Colors.grey[400]!,
+                size: 20,
+              ),
+            ),
+          )
+              : null,
+        ),
+        onChanged: (value) {
+          logic.isTypeLiturgicalSearchFieldEmpty.value = value.isEmpty;
+          logic.updateTypeLiturgicalFilter(value);
+          if (value.isEmpty) {
+            logic.resetTypeLiturgicalSearch();
+          }
+        },
       );
     });
   }

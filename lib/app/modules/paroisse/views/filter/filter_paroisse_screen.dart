@@ -18,100 +18,176 @@ class FilterParoisseScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<FilterParoisseController>();
+
     return Container(
       color: colorGreen,
-      child: SafeArea(
-        child: GetX<FilterParoisseController>(builder: (_) {
+      child: GetBuilder<FilterParoisseController>(
+        builder: (_) {
           return PopScope(
             canPop: false,
             child: KeyboardDismisser(
               child: Scaffold(
                 resizeToAvoidBottomInset: true,
+                backgroundColor: colorGreen,
                 body: Column(
                   children: [
-                    // En-tête avec fond vert
+                    // En-tête avec fond vert - Design amélioré
+                    SizedBox(height: MediaQuery.of(context).padding.top),
                     Container(
                       padding: const EdgeInsets.only(
-                          top: 8, bottom: 16, left: 16, right: 16),
-                      decoration: const BoxDecoration(
+                          top: 12, bottom: 20, left: 20, right: 20),
+                      decoration: BoxDecoration(
                         color: colorGreen,
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(24),
-                          bottomRight: Radius.circular(24),
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(28),
+                          bottomRight: Radius.circular(28),
                         ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Boutons de navigation
+                          // Boutons de navigation avec design amélioré
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              // Bouton retour
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.3),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: IconButton(
-                                  onPressed: () {
-                                    _.doResetFilter();
-                                    _.goBackToParoisse();
-                                  },
-                                  icon: const Icon(
-                                    Icons.arrow_back_rounded,
-                                    size: 20,
-                                    color: colorWhite,
-                                  ),
-                                ),
+                              // Bouton retour avec animation
+                              TweenAnimationBuilder(
+                                tween: Tween<double>(begin: 0, end: 1),
+                                duration: const Duration(milliseconds: 400),
+                                builder: (context, double value, child) {
+                                  return Transform.scale(
+                                    scale: value,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withValues(alpha: 0.3),
+                                        borderRadius: BorderRadius.circular(12),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withValues(alpha: 0.05),
+                                            blurRadius: 4,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: IconButton(
+                                        onPressed: () {
+                                          _.doResetFilter();
+                                          _.goBackToParoisse();
+                                        },
+                                        icon: const Icon(
+                                          Icons.arrow_back_rounded,
+                                          size: 20,
+                                          color: colorWhite,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
 
-                              // Bouton réinitialiser
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.3),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: TextButton.icon(
-                                  icon: const Icon(
-                                    Icons.refresh_rounded,
-                                    size: 20,
-                                    color: colorWhite,
-                                  ),
-                                  label: Text(
-                                    'Réinitialiser',
-                                    style: TextStyles.montserratMedium(
-                                      textColor: colorWhite,
-                                      textSize: TextSizes.fourteen,
+                              // Bouton réinitialiser avec animation
+                              TweenAnimationBuilder(
+                                tween: Tween<double>(begin: 0, end: 1),
+                                duration: const Duration(milliseconds: 600),
+                                builder: (context, double value, child) {
+                                  return Transform.scale(
+                                    scale: value,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withValues(alpha: 0.3),
+                                        borderRadius: BorderRadius.circular(12),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withValues(alpha: 0.05),
+                                            blurRadius: 4,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: TextButton.icon(
+                                        icon: const Icon(
+                                          Icons.refresh_rounded,
+                                          size: 20,
+                                          color: colorWhite,
+                                        ),
+                                        label: Text(
+                                          'Réinitialiser',
+                                          style: TextStyles.montserratMedium(
+                                            textColor: colorWhite,
+                                            textSize: TextSizes.fourteen,
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          _.doResetFilter();
+                                        },
+                                        style: TextButton.styleFrom(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 12, vertical: 8),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                  onPressed: () {
-                                    _.doResetFilter();
-                                  },
-                                  style: TextButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 8),
-                                  ),
-                                ),
+                                  );
+                                },
                               ),
                             ],
                           ),
 
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 20),
 
-                          // Titre
-                          Text(
-                            'Filtres',
-                            style: TextStyles.montserratBold(
-                              textColor: colorWhite,
-                              textSize: TextSizes.thirty_eight,
-                            ),
+                          // Titre avec animation
+                          TweenAnimationBuilder(
+                            tween: Tween<double>(begin: 0, end: 1),
+                            duration: const Duration(milliseconds: 800),
+                            builder: (context, double value, child) {
+                              return Opacity(
+                                opacity: value,
+                                child: Transform.translate(
+                                  offset: Offset(0, 30 * (1 - value)),
+                                  child: Text(
+                                    'Filtres',
+                                    style: TextStyles.montserratBold(
+                                      textColor: colorWhite,
+                                      textSize: TextSizes.thirty_eight,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+
+                          // Sous-titre explicatif
+                          TweenAnimationBuilder(
+                            tween: Tween<double>(begin: 0, end: 1),
+                            duration: const Duration(milliseconds: 900),
+                            builder: (context, double value, child) {
+                              return Opacity(
+                                opacity: value,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 8),
+                                  child: Text(
+                                    'Affinez votre recherche de paroisse',
+                                    style: TextStyles.montserratRegular(
+                                      textColor: Colors.white.withValues(alpha: 0.8),
+                                      textSize: TextSizes.sixteen,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
                     ),
 
-                    // Contenu principal
+                    // Contenu principal - Design amélioré
                     Expanded(
                       child: Container(
                         color: colorGrey4,
@@ -119,7 +195,6 @@ class FilterParoisseScreen extends StatelessWidget {
                         padding: const EdgeInsets.only(
                           left: 20,
                           right: 20,
-                          top: 16,
                         ),
                         child: NotificationListener<
                             OverscrollIndicatorNotification>(
@@ -132,205 +207,292 @@ class FilterParoisseScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Section Type de lieu de culte
-                                _buildFilterSection(
-                                  title: 'Type de lieu de culte',
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      // Barre de recherche
-                                      Container(
-                                        height: 50,
-                                        decoration: BoxDecoration(
-                                          color: colorWhite,
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          border: Border.all(
-                                              color:
-                                                  colorGreen.withValues(alpha: 0.3)),
-                                        ),
-                                        child: const Center(
-                                          child: TypeLiturgicalSearchWidget(),
+                                // Section Type de lieu de culte - Design amélioré
+                                TweenAnimationBuilder(
+                                  tween: Tween<double>(begin: 0, end: 1),
+                                  duration: const Duration(milliseconds: 500),
+                                  builder: (context, double value, child) {
+                                    return Opacity(
+                                      opacity: value,
+                                      child: Transform.translate(
+                                        offset: Offset(0, 20 * (1 - value)),
+                                        child: _buildFilterSection(
+                                          title: 'Type de lieu de culte',
+                                          icon: Icons.church_rounded,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              // Barre de recherche améliorée
+                                              Container(
+                                                height: 50,
+                                                decoration: BoxDecoration(
+                                                  color: colorWhite,
+                                                  borderRadius: BorderRadius.circular(16),
+                                                  border: Border.all(
+                                                      color: colorGreen.withValues(alpha: 0.3)),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black.withValues(alpha: 0.03),
+                                                      blurRadius: 8,
+                                                      offset: const Offset(0, 2),
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: const Center(
+                                                  child: TypeLiturgicalSearchWidget(),
+                                                ),
+                                              ),
+
+                                              const SizedBox(height: 16),
+
+                                              // Liste des types de lieux avec Obx pour réactivité
+                                              Obx(() => controller.isWorshipPlaceDataProcessing.isTrue
+                                                  ? Center(
+                                                child: LoadingView(
+                                                  size: Get.width / 20,
+                                                  color: colorGreenSemiLight,
+                                                ),
+                                              )
+                                                  : controller.hasWorshipPlaceData.isTrue
+                                                  ? Container(
+                                                height: 54,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(12),
+                                                ),
+                                                child: ListView.builder(
+                                                  scrollDirection: Axis.horizontal,
+                                                  itemCount: controller.paroisseTypesTemp.length,
+                                                  itemBuilder: (context, index) {
+                                                    var placeType = controller.paroisseTypesTemp[index];
+                                                    return PlaceTypeItem(
+                                                      placeType: placeType,
+                                                      key: ValueKey(placeType.identifier),
+                                                    );
+                                                  },
+                                                ),
+                                              )
+                                                  : const Center(
+                                                child: Padding(
+                                                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                                                  child: Text(
+                                                    'Aucun type disponible',
+                                                    style: TextStyle(
+                                                      color: Colors.grey,
+                                                      fontStyle: FontStyle.italic,
+                                                    ),
+                                                  ),
+                                                ),
+                                              )),
+                                            ],
+                                          ),
                                         ),
                                       ),
-
-                                      const SizedBox(height: 12),
-
-                                      // Liste des types de lieux
-                                      _.isWorshipPlaceDataProcessing.isTrue
-                                          ? Center(
-                                              child: LoadingView(
-                                                size: Get.width / 20,
-                                                color: colorGreenSemiLight,
-                                              ),
-                                            )
-                                          : _.hasWorshipPlaceData.isTrue
-                                              ? SizedBox(
-                                                  height: 50,
-                                                  child: ListView.builder(
-                                                    scrollDirection:
-                                                        Axis.horizontal,
-                                                    itemCount: _
-                                                        .paroisseTypesTemp
-                                                        .length,
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      var placeType =
-                                                          _.paroisseTypesTemp[
-                                                              index];
-                                                      return PlaceTypeItem(
-                                                        placeType: placeType,
-                                                        key: ValueKey(placeType
-                                                            .identifier),
-                                                      );
-                                                    },
-                                                  ),
-                                                )
-                                              : Container(),
-                                    ],
-                                  ),
+                                    );
+                                  },
                                 ),
 
-                                // Section Diocèse
-                                _buildFilterSection(
-                                  title: 'Diocèse',
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      // Barre de recherche
-                                      Container(
-                                        height: 50,
-                                        decoration: BoxDecoration(
-                                          color: colorWhite,
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          border: Border.all(
-                                              color:
-                                                  colorGreen.withValues(alpha: 0.3)),
-                                        ),
-                                        child: const Center(
-                                          child: DioceseSearchWidget(),
+                                // Section Diocèse - Design amélioré
+                                TweenAnimationBuilder(
+                                  tween: Tween<double>(begin: 0, end: 1),
+                                  duration: const Duration(milliseconds: 600),
+                                  builder: (context, double value, child) {
+                                    return Opacity(
+                                      opacity: value,
+                                      child: Transform.translate(
+                                        offset: Offset(0, 20 * (1 - value)),
+                                        child: _buildFilterSection(
+                                          title: 'Diocèse',
+                                          icon: Icons.account_balance,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              // Barre de recherche améliorée
+                                              Container(
+                                                height: 50,
+                                                decoration: BoxDecoration(
+                                                  color: colorWhite,
+                                                  borderRadius: BorderRadius.circular(16),
+                                                  border: Border.all(
+                                                      color: colorGreen.withValues(alpha: 0.3)),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black.withValues(alpha: 0.03),
+                                                      blurRadius: 8,
+                                                      offset: const Offset(0, 2),
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: const Center(
+                                                  child: DioceseSearchWidget(),
+                                                ),
+                                              ),
+
+                                              const SizedBox(height: 16),
+
+                                              // Liste des diocèses avec Obx pour réactivité
+                                              Obx(() => controller.isDioceseDataProcessing.isTrue
+                                                  ? Center(
+                                                child: LoadingView(
+                                                  size: Get.width / 20,
+                                                  color: colorGreenSemiLight,
+                                                ),
+                                              )
+                                                  : controller.hasDioceseData.isTrue
+                                                  ? Container(
+                                                height: 54,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(12),
+                                                ),
+                                                child: ListView.builder(
+                                                  scrollDirection: Axis.horizontal,
+                                                  itemCount: controller.diocesesTemp.length,
+                                                  itemBuilder: (context, index) {
+                                                    var diocese = controller.diocesesTemp[index];
+                                                    return DioceseItem(
+                                                      diocese: diocese,
+                                                      key: ValueKey(diocese?.identifier),
+                                                    );
+                                                  },
+                                                ),
+                                              )
+                                                  : const Center(
+                                                child: Padding(
+                                                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                                                  child: Text(
+                                                    'Aucun diocèse disponible',
+                                                    style: TextStyle(
+                                                      color: Colors.grey,
+                                                      fontStyle: FontStyle.italic,
+                                                    ),
+                                                  ),
+                                                ),
+                                              )),
+                                            ],
+                                          ),
                                         ),
                                       ),
-
-                                      const SizedBox(height: 12),
-
-                                      // Liste des diocèses
-                                      _.isDioceseDataProcessing.isTrue
-                                          ? Center(
-                                              child: LoadingView(
-                                                size: Get.width / 20,
-                                                color: colorGreenSemiLight,
-                                              ),
-                                            )
-                                          : _.hasDioceseData.isTrue
-                                              ? SizedBox(
-                                                  height: 50,
-                                                  child: ListView.builder(
-                                                    scrollDirection:
-                                                        Axis.horizontal,
-                                                    itemCount:
-                                                        _.diocesesTemp.length,
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      var diocese =
-                                                          _.diocesesTemp[index];
-                                                      return DioceseItem(
-                                                        diocese: diocese,
-                                                        key: ValueKey(diocese
-                                                            ?.identifier),
-                                                      );
-                                                    },
-                                                  ),
-                                                )
-                                              : Container(),
-                                    ],
-                                  ),
+                                    );
+                                  },
                                 ),
 
-                                // Section Ville
-                                _buildFilterSection(
-                                  title: 'Ville',
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: colorWhite,
-                                      borderRadius: BorderRadius.circular(12),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withValues(alpha: 0.03),
-                                          blurRadius: 6,
-                                          offset: const Offset(0, 2),
+                                // Section Ville - Design amélioré
+                                TweenAnimationBuilder(
+                                  tween: Tween<double>(begin: 0, end: 1),
+                                  duration: const Duration(milliseconds: 700),
+                                  builder: (context, double value, child) {
+                                    return Opacity(
+                                      opacity: value,
+                                      child: Transform.translate(
+                                        offset: Offset(0, 20 * (1 - value)),
+                                        child: _buildFilterSection(
+                                          title: 'Ville',
+                                          icon: Icons.location_city,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: colorWhite,
+                                              borderRadius: BorderRadius.circular(16),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black.withValues(alpha: 0.03),
+                                                  blurRadius: 8,
+                                                  offset: const Offset(0, 2),
+                                                ),
+                                              ],
+                                            ),
+                                            child: MyTextField(
+                                              controller: _.cityController,
+                                              onChanged: (value) {
+                                                _.searchCriteria.value.city = value;
+                                                _.canDoApplyAction();
+                                              },
+                                              hintText: 'Entrez une ville',
+                                            ),
+                                          ),
                                         ),
-                                      ],
-                                    ),
-                                    child: MyTextField(
-                                      controller: _.cityController,
-                                      onChanged: (value) {
-                                        _.searchCriteria.value.city = value;
-                                        _.canDoApplyAction();
-                                      },
-                                      hintText: 'Entrez une ville',
-                                    ),
-                                  ),
+                                      ),
+                                    );
+                                  },
                                 ),
 
-                                // Section Commune
-                                _buildFilterSection(
-                                  title: 'Commune',
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: colorWhite,
-                                      borderRadius: BorderRadius.circular(12),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withValues(alpha: 0.03),
-                                          blurRadius: 6,
-                                          offset: const Offset(0, 2),
+                                // Section Commune - Design amélioré
+                                TweenAnimationBuilder(
+                                  tween: Tween<double>(begin: 0, end: 1),
+                                  duration: const Duration(milliseconds: 800),
+                                  builder: (context, double value, child) {
+                                    return Opacity(
+                                      opacity: value,
+                                      child: Transform.translate(
+                                        offset: Offset(0, 20 * (1 - value)),
+                                        child: _buildFilterSection(
+                                          title: 'Commune',
+                                          icon: Icons.apartment,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: colorWhite,
+                                              borderRadius: BorderRadius.circular(16),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black.withValues(alpha: 0.03),
+                                                  blurRadius: 8,
+                                                  offset: const Offset(0, 2),
+                                                ),
+                                              ],
+                                            ),
+                                            child: MyTextField(
+                                              controller: _.municipalityController,
+                                              onChanged: (value) {
+                                                _.searchCriteria.value.municipality = value;
+                                                _.canDoApplyAction();
+                                              },
+                                              hintText: 'Entrez une commune',
+                                            ),
+                                          ),
                                         ),
-                                      ],
-                                    ),
-                                    child: MyTextField(
-                                      controller: _.municipalityController,
-                                      onChanged: (value) {
-                                        _.searchCriteria.value.municipality =
-                                            value;
-                                        _.canDoApplyAction();
-                                      },
-                                      hintText: 'Entrez une commune',
-                                    ),
-                                  ),
+                                      ),
+                                    );
+                                  },
                                 ),
 
-                                // Section Quartier
-                                _buildFilterSection(
-                                  title: 'Quartier',
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: colorWhite,
-                                      borderRadius: BorderRadius.circular(12),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withValues(alpha: 0.03),
-                                          blurRadius: 6,
-                                          offset: const Offset(0, 2),
+                                // Section Quartier - Design amélioré
+                                TweenAnimationBuilder(
+                                  tween: Tween<double>(begin: 0, end: 1),
+                                  duration: const Duration(milliseconds: 900),
+                                  builder: (context, double value, child) {
+                                    return Opacity(
+                                      opacity: value,
+                                      child: Transform.translate(
+                                        offset: Offset(0, 20 * (1 - value)),
+                                        child: _buildFilterSection(
+                                          title: 'Quartier',
+                                          icon: Icons.holiday_village,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: colorWhite,
+                                              borderRadius: BorderRadius.circular(16),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black.withValues(alpha: 0.03),
+                                                  blurRadius: 8,
+                                                  offset: const Offset(0, 2),
+                                                ),
+                                              ],
+                                            ),
+                                            child: MyTextField(
+                                              controller: _.neighborhoodController,
+                                              onChanged: (value) {
+                                                _.searchCriteria.value.neighborhood = value;
+                                                _.canDoApplyAction();
+                                              },
+                                              hintText: 'Entrez un quartier',
+                                            ),
+                                          ),
                                         ),
-                                      ],
-                                    ),
-                                    child: MyTextField(
-                                      controller: _.neighborhoodController,
-                                      onChanged: (value) {
-                                        _.searchCriteria.value.neighborhood =
-                                            value;
-                                        _.canDoApplyAction();
-                                      },
-                                      hintText: 'Entrez un quartier',
-                                    ),
-                                  ),
+                                      ),
+                                    );
+                                  },
                                 ),
 
-                                const SizedBox(height: 20),
+                                const SizedBox(height: 30),
                               ],
                             ),
                           ),
@@ -338,35 +500,41 @@ class FilterParoisseScreen extends StatelessWidget {
                       ),
                     ),
 
-                    // Bouton d'application des filtres
+                    // Bouton d'application des filtres - Design amélioré avec Obx pour réactivité
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         color: colorWhite,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.05),
-                            blurRadius: 10,
+                            color: Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 15,
                             offset: const Offset(0, -4),
                           ),
                         ],
                       ),
-                      child: CustomButton(
-                        text: 'Appliquer les filtres',
-                        textSize: TextSizes.sixteen,
-                        actionColor: colorGreenSemiLight,
-                        enabled: _.enabledApplyButton.value,
-                        borderColor: _.enabledApplyButton.value
-                            ? colorGreen
-                            : colorGrey1,
-                        bgcolor: _.enabledApplyButton.value
-                            ? colorGreen
-                            : colorGrey1,
-                        action: () {
-                          _.goBackToParoisse();
+                      child: TweenAnimationBuilder(
+                        tween: Tween<double>(begin: 0, end: 1),
+                        duration: const Duration(milliseconds: 1000),
+                        builder: (context, double value, child) {
+                          return Transform.scale(
+                            scale: 0.8 + (value * 0.2),
+                            child: Obx(() => CustomButton(
+                              text: 'Appliquer les filtres',
+                              textSize: TextSizes.sixteen,
+                              actionColor: colorGreenSemiLight,
+                              enabled: controller.enabledApplyButton.value,
+                              borderColor:
+                              controller.enabledApplyButton.value ? colorGreen : colorGrey1,
+                              bgcolor: controller.enabledApplyButton.value ? colorGreen : colorGrey1,
+                              action: () {
+                                _.goBackToParoisse();
+                              },
+                              borderRadius: 16,
+                            )),
+                          );
                         },
-                        borderRadius: 12,
                       ),
                     ),
                   ],
@@ -374,12 +542,16 @@ class FilterParoisseScreen extends StatelessWidget {
               ),
             ),
           );
-        }),
+        },
       ),
     );
   }
 
-  Widget _buildFilterSection({required String title, required Widget child}) {
+  Widget _buildFilterSection({
+    required String title,
+    required Widget child,
+    required IconData icon
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -388,26 +560,31 @@ class FilterParoisseScreen extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 4,
-                height: 16,
-                decoration: const BoxDecoration(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: colorGreenSemiLight.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  icon,
                   color: colorGreenSemiLight,
-                  borderRadius: BorderRadius.all(Radius.circular(2)),
+                  size: 16,
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 10),
               Text(
                 title,
                 style: TextStyles.montserratSemiBold(
-                  textColor: colorGrey1,
-                  textSize: TextSizes.fifteen,
+                  textColor: colorGreenSemiLight,
+                  textSize: TextSizes.sixteen,
                 ),
               ),
             ],
           ),
         ),
         child,
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
       ],
     );
   }

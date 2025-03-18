@@ -13,35 +13,67 @@ class DioceseItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetX<FilterParoisseController>(builder: (logic) {
-      return GestureDetector(
-        onTap: () {
-          logic.onDioceseSelected(diocese ?? ContentPlace());
-        },
-        child: Row(
-          children: [
-            Separators.minimunHorizontal(),
-            Container(
-              decoration: BoxDecoration(
-                color: logic.dioceseSelected.value == diocese ? colorGreenSemiLight : colorWhite,
-                border: Border.all(color: colorGreenSemiLight),
-                borderRadius: BorderRadius.circular(Get.width/10),
+    final controller = Get.find<FilterParoisseController>();
+
+    return Obx(() {
+      bool isSelected = controller.dioceseSelected.value == diocese;
+
+      return Padding(
+        padding: const EdgeInsets.only(right: 10.0),
+        child: GestureDetector(
+          onTap: () {
+            controller.onDioceseSelected(diocese ?? ContentPlace());
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            decoration: BoxDecoration(
+              color: isSelected ? colorGreenSemiLight : colorWhite,
+              border: Border.all(
+                color: isSelected ? colorGreenSemiLight : Colors.grey[300]!,
+                width: isSelected ? 2 : 1,
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text(
-                  '${diocese?.name}',
-                  textAlign: TextAlign.center,
-                  style: TextStyles
-                      .montserratSemiBold(
-                      textSize:
-                      TextSizes
-                          .fourteen,
-                      textColor: logic.dioceseSelected.value == diocese ? colorWhite : colorBlack,),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: isSelected
+                  ? [
+                BoxShadow(
+                  color: colorGreenSemiLight.withValues(alpha: 0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
                 ),
+              ]
+                  : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.03),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (isSelected)
+                    const Padding(
+                      padding: EdgeInsets.only(right: 6.0),
+                      child: Icon(
+                        Icons.check_circle,
+                        color: colorWhite,
+                        size: 18,
+                      ),
+                    ),
+                  Text(
+                    '${diocese?.name}',
+                    style: TextStyles.montserratSemiBold(
+                      textSize: TextSizes.fourteen,
+                      textColor: isSelected ? colorWhite : Colors.grey[800]!,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
       );
     });

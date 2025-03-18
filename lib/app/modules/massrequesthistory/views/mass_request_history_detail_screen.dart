@@ -465,7 +465,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                       ),
                                       child: Column(
                                         children: [
-                                          Icon(
+                                          const Icon(
                                             Icons.real_estate_agent_rounded,
                                             color: colorTurquois,
                                             size: 28,

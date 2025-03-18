@@ -891,7 +891,7 @@ class MassRequestController extends GetxController {
   goToMap() {
     Get.toNamed(
       Routes.PAROISSE_MAP,
-      arguments: jsonEncode(paroisseSelected.toJson()),
+      arguments: paroisseSelected.toJson(),
     );
   }
 

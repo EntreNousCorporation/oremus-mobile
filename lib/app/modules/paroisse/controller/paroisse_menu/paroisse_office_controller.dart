@@ -141,7 +141,7 @@ class ParoisseOfficeController extends GetxController {
   goToMap() {
     Get.toNamed(
       Routes.PAROISSE_MAP,
-      arguments: paroisseSelected.value.toJson(),
+      arguments: paroisseSelected.toJson(),
     );
   }
 

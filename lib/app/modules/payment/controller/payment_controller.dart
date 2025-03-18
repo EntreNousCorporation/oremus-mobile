@@ -61,8 +61,7 @@ class PaymentController extends GetxController {
       }
       if (paymentType.value == PaymentType.massRequest) {
         if (arguments.containsKey('payment_response')) {
-          massRequestResponseSelected.value =
-              MassRequestResponse.fromJson(Get.arguments['payment_response']);
+          massRequestResponseSelected.value = MassRequestResponse.fromJson(Get.arguments['payment_response']);
           initWebview();
         }
       }
@@ -241,13 +240,18 @@ class PaymentController extends GetxController {
       return;
     }
 
+    String? transactionId;
+    if (paymentType.value == PaymentType.donation) {
+      transactionId = donationSelected.value.transactionId ?? '';
+    }
+    if (paymentType.value == PaymentType.massRequest) {
+      transactionId = massRequestResponseSelected.value.transactionId ?? '';
+    }
+
     log('request doGetPaymentStatus :::');
 
     checkingPaymentStatus(true);
-    paymentRepository
-        .paymentStatus(
-            transactionId:
-                massRequestResponseSelected.value.transactionId ?? '')
+    paymentRepository.paymentStatus(transactionId: transactionId ?? '')
         .then((value) {
       if (value.paymentStatus == PaymentStatus.REFUSED.name) {
         checkingPaymentStatus(true);
