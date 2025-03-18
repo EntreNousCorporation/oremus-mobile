@@ -3,18 +3,18 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/rosaire/controller/rosaire_controller.dart';
-import 'package:oremusapp/app/modules/rosaire/services/audio_player_service.dart';
-import 'package:oremusapp/app/modules/rosaire/views/widgets/rosary_painter.dart';
+import 'package:oremusapp/app/modules/rosary/controller/rosary_controller.dart';
+import 'package:oremusapp/app/modules/rosary/services/audio_player_service.dart';
+import 'package:oremusapp/app/modules/rosary/views/widgets/rosary_painter.dart';
 
-class RosaireScreen extends StatefulWidget {
-  const RosaireScreen({Key? key}) : super(key: key);
+class RosaryScreen extends StatefulWidget {
+  const RosaryScreen({Key? key}) : super(key: key);
 
   @override
-  State<RosaireScreen> createState() => _RosaireScreenState();
+  State<RosaryScreen> createState() => _RosaryScreenState();
 }
 
-class _RosaireScreenState extends State<RosaireScreen>
+class _RosaryScreenState extends State<RosaryScreen>
     with SingleTickerProviderStateMixin {
   // Animation controller pour l'effet de pulsation
   late AnimationController _animationController;
@@ -50,7 +50,7 @@ class _RosaireScreenState extends State<RosaireScreen>
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<RosaireController>(
+    return GetBuilder<RosaryController>(
       builder: (controller) {
         return Column(
           children: [

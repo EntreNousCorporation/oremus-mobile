@@ -5,13 +5,13 @@ import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/pray/data/model/prayer.dart';
-import 'package:oremusapp/app/modules/rosaire/data/repository/interface_rosaire_repository.dart';
+import 'package:oremusapp/app/modules/rosary/data/repository/interface_rosaire_repository.dart';
 import 'package:oremusapp/app/remote/api_client.dart';
 
-class RosaireRepository implements IRosaireRepository {
+class RosaryRepository implements IRosaryRepository {
   final ApiClient _apiClient;
 
-  RosaireRepository(this._apiClient);
+  RosaryRepository(this._apiClient);
 
   @override
   Future<List<Prayer>> getPrayers({int? page = 0}) async {

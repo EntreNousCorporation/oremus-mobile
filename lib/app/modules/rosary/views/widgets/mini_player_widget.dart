@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/rosaire/services/audio_player_service.dart';
-import 'package:oremusapp/app/modules/rosaire/services/interaction_zone_service.dart';
+import 'package:oremusapp/app/modules/rosary/services/audio_player_service.dart';
+import 'package:oremusapp/app/modules/rosary/services/interaction_zone_service.dart';
 
 class MiniPlayerWidget extends StatelessWidget {
   const MiniPlayerWidget({Key? key}) : super(key: key);
@@ -80,7 +80,7 @@ class MiniPlayerWidget extends StatelessWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(32),
                 border: Border.all(
-                  color: colorGreenSemiLight.withOpacity(0.3),
+                  color: colorGreenSemiLight.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
@@ -108,8 +108,8 @@ class MiniPlayerWidget extends StatelessWidget {
                             flex: (progress * 100).toInt(),
                             child: Container(
                               decoration: BoxDecoration(
-                                color: colorGreenSemiLight.withOpacity(0.2),
-                                borderRadius: const BorderRadius.horizontal(left: Radius.circular(32)),
+                                color: colorGreenSemiLight.withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.horizontal(left: const Radius.circular(32), right: Radius.circular(progress >= 1.0 ? 32 : 0)),
                               ),
                             ),
                           ),
@@ -186,7 +186,7 @@ class MiniPlayerWidget extends StatelessWidget {
                         children: [
                           // Bouton précédent
                           IconButton(
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.skip_previous_rounded,
                               color: colorGreenSemiLight,
                               size: 24,
@@ -212,7 +212,7 @@ class MiniPlayerWidget extends StatelessWidget {
 
                           // Bouton suivant
                           IconButton(
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.skip_next_rounded,
                               color: colorGreenSemiLight,
                               size: 24,

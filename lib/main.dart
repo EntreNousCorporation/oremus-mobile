@@ -12,6 +12,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:oremusapp/app/commons/components/custom_animation.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
@@ -19,8 +20,8 @@ import 'package:oremusapp/app/commons/lang/translation_service.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_theme.dart';
 import 'package:oremusapp/app/configs/flavor_settings.dart';
-import 'package:oremusapp/app/modules/rosaire/services/audio_player_service.dart';
-import 'package:oremusapp/app/modules/rosaire/services/interaction_zone_service.dart';
+import 'package:oremusapp/app/modules/rosary/services/audio_player_service.dart';
+import 'package:oremusapp/app/modules/rosary/services/interaction_zone_service.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main_app_wrapper.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -41,6 +42,19 @@ var oneSignalAppID;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialiser le service de lecture en arrière-plan
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.oremusapp.audio',
+    androidNotificationChannelName: 'Oremus Rosaire',
+    androidNotificationChannelDescription: 'Lecture audio du Rosaire',
+    androidNotificationOngoing: true,
+    androidShowNotificationBadge: true,
+    androidStopForegroundOnPause: true,
+    notificationColor: colorGreen,
+    androidNotificationIcon: 'mipmap/ic_launcher',
+  );
+
   initializeDateFormatting('fr_FR', null).then(
     (_) async {
       final settings = await _getFlavorSettings();
@@ -167,7 +181,7 @@ void configLoading() {
     ..progressColor = Colors.yellow
     ..indicatorColor = Colors.yellow
     ..textColor = Colors.yellow
-    ..maskColor = Colors.black.withOpacity(0.8)
+    ..maskColor = Colors.black.withValues(alpha: 0.8)
     ..userInteractions = false
     ..dismissOnTap = false
     ..textStyle =

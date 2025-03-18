@@ -5,13 +5,13 @@ import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/rosaire/data/repository/rosaire_repository.dart';
+import 'package:oremusapp/app/modules/rosary/data/repository/rosary_repository.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
-class RosaireController extends GetxController {
-  final RosaireRepository rosaireRepository;
+class RosaryController extends GetxController {
+  final RosaryRepository rosaireRepository;
 
-  RosaireController({required this.rosaireRepository});
+  RosaryController({required this.rosaireRepository});
 
   var unlockBackButton = true.obs;
   var isDataProcessing = false.obs;

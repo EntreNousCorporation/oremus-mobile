@@ -3,6 +3,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:oremusapp/generated/assets.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 
 // Classe pour les données de position (comme dans votre code original)
 class PositionData {
@@ -87,7 +88,7 @@ class AudioPlayerService extends GetxService {
     ]*/
   ];
 
-  // Mappez chaque mystère à son fichier audio correspondant (comme dans votre code original)
+  // Mappez chaque mystère à son fichier audio correspondant
   final Map<int, Map<int, String>> audioFiles = {
     0: { // Mystères Joyeux
       0: Assets.audiosAnnonciation,
@@ -169,8 +170,21 @@ class AudioPlayerService extends GetxService {
         // Arrêter l'audio en cours s'il y en a un
         await _audioPlayer.stop();
 
-        // Charger le nouvel audio
-        await _audioPlayer.setAsset(audioPath);
+        // Créer la source audio avec les métadonnées pour la notification
+        final audioSource = AudioSource.asset(
+          audioPath,
+          tag: MediaItem(
+            id: '$mystereIndex-$detailIndex',
+            album: 'Rosaire',
+            title: mystereDetails[mystereIndex][detailIndex],
+            artist: mysteres[mystereIndex],
+            //artUri: Uri.parse('asset:///${Assets.imagesRosaryIcon}'),
+            //artUri: Uri.parse(Assets.imagesRosaryIcon),
+          ),
+        );
+
+        // Charger le nouvel audio avec les métadonnées
+        await _audioPlayer.setAudioSource(audioSource);
 
         // Réinitialiser le flag de complétion
         isCompleted.value = false;
@@ -231,10 +245,11 @@ class AudioPlayerService extends GetxService {
     }
   }
 
-  // Fermer le lecteur
+  // Fermer le lecteur et arrêter toute notification
   void closeMiniPlayer() {
     _audioPlayer.stop();
     showMiniPlayer.value = false;
+    isCompleted.value = false;
   }
 
   String formatDuration(Duration duration) {

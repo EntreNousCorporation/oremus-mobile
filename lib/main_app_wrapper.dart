@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:oremusapp/app/modules/rosaire/services/audio_player_service.dart';
-import 'package:oremusapp/app/modules/rosaire/services/interaction_zone_service.dart';
-import 'package:oremusapp/app/modules/rosaire/views/widgets/mini_player_widget.dart';
+import 'package:oremusapp/app/modules/rosary/services/audio_player_service.dart';
+import 'package:oremusapp/app/modules/rosary/services/interaction_zone_service.dart';
+import 'package:oremusapp/app/modules/rosary/views/widgets/mini_player_widget.dart';
 
 /// Un wrapper pour afficher le mini-lecteur au-dessus de toutes les pages de l'application
 class MainAppWrapper extends StatefulWidget {
@@ -59,7 +59,7 @@ class _MainAppWrapperState extends State<MainAppWrapper> with WidgetsBindingObse
           widget.child,
 
           // Le mini-lecteur avec positionnement intelligent
-          MiniPlayerWidget(),
+          const MiniPlayerWidget(),
         ],
       ),
     );

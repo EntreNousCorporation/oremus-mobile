@@ -1,6 +1,10 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
 
     <queries>
         <!-- If your app opens https URLs -->
@@ -59,5 +63,22 @@
             android:value="2" />
        <meta-data android:name="com.google.android.geo.API_KEY"
            android:value="AIzaSyCTR_9q5d6380xtzxM__KL5Ph96gqvQucg"/>
+
+       <!-- Service audio en arrière-plan -->
+       <service android:name="com.ryanheise.audioservice.AudioService"
+           android:foregroundServiceType="mediaPlayback"
+           android:exported="true" tools:ignore="Instantiatable">
+           <intent-filter>
+               <action android:name="android.media.browse.MediaBrowserService" />
+           </intent-filter>
+       </service>
+
+       <!-- Récepteur pour les actions de la notification -->
+       <receiver android:name="com.ryanheise.audioservice.MediaButtonReceiver"
+           android:exported="true" tools:ignore="Instantiatable">
+           <intent-filter>
+               <action android:name="android.intent.action.MEDIA_BUTTON" />
+           </intent-filter>
+       </receiver>
     </application>
 </manifest>
