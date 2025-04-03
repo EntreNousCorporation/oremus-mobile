@@ -27,8 +27,8 @@ class FaqScreen extends StatelessWidget {
                 decoration: const BoxDecoration(
                   color: colorGreen,
                   borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30),
+                    bottomLeft: Radius.circular(0),
+                    bottomRight: Radius.circular(0),
                   ),
                 ),
               ),
@@ -39,8 +39,7 @@ class FaqScreen extends StatelessWidget {
                   children: [
                     // Custom app bar
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       child: Row(
                         children: [
                           Container(
@@ -71,8 +70,7 @@ class FaqScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const SizedBox(
-                              width: 48), // Balance for the back button
+                          const SizedBox(width: 48),
                         ],
                       ),
                     ),
@@ -91,10 +89,68 @@ class FaqScreen extends StatelessWidget {
                       ),
                     ),
 
+                    // Introduction card
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 16),
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: colorGreen1.withValues(alpha: 0.3),
+                                shape: BoxShape.circle,
+                              ),
+                              child: SvgPicture.asset(
+                                'assets/images/logo.svg',
+                                height: 30,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Bienvenue dans la FAQ',
+                                    style: TextStyles.montserratBold(
+                                      textSize: 16,
+                                      textColor: colorGreenSemiLight,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Trouvez des réponses à vos questions sur l\'application Oremus',
+                                    style: TextStyles.montserratRegular(
+                                      textSize: 14,
+                                      textColor: Colors.grey[600]!,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
                     // FAQ content area
                     Expanded(
                       child: Container(
-                        margin: const EdgeInsets.only(top: 8),
+                        margin: const EdgeInsets.only(top: 0),
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(20),
@@ -118,61 +174,6 @@ class FaqScreen extends StatelessWidget {
   Widget _buildFaqContent(BuildContext context) {
     return Column(
       children: [
-        // Introduction card
-        Container(
-          margin: const EdgeInsets.only(bottom: 16, left: 8, right: 8),
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: colorGreen1.withValues(alpha: 0.3),
-                  shape: BoxShape.circle,
-                ),
-                child: SvgPicture.asset(
-                  'assets/images/logo.svg',
-                  height: 30,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Bienvenue dans la FAQ',
-                      style: TextStyles.montserratBold(
-                        textSize: 16,
-                        textColor: colorGreenSemiLight,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Trouvez des réponses à vos questions sur l\'application Oremus',
-                      style: TextStyles.montserratRegular(
-                        textSize: 14,
-                        textColor: Colors.grey[600]!,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-
         // FAQ items
         _buildFaqItem(
           context: context,

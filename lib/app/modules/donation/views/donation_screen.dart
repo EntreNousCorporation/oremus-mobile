@@ -49,8 +49,8 @@ class DonationScreen extends StatelessWidget {
                     shadowColor: Colors.transparent,
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30),
+                        bottomLeft: Radius.circular(0),
+                        bottomRight: Radius.circular(0),
                       ),
                     ),
                     // Back button
@@ -152,8 +152,8 @@ class DonationScreen extends StatelessWidget {
                       background: Container(
                         decoration: BoxDecoration(
                           borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(30),
-                            bottomRight: Radius.circular(30),
+                            bottomLeft: Radius.circular(0),
+                            bottomRight: Radius.circular(0),
                           ),
                           boxShadow: [
                             BoxShadow(
@@ -166,8 +166,8 @@ class DonationScreen extends StatelessWidget {
                         ),
                         child: ClipRRect(
                           borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(30),
-                            bottomRight: Radius.circular(30),
+                            bottomLeft: Radius.circular(0),
+                            bottomRight: Radius.circular(0),
                           ),
                           child: Stack(
                             fit: StackFit.expand,

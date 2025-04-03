@@ -44,7 +44,7 @@ class CustomHomeController extends GetxController {
   @override
   void onInit() {
     // Initialiser OneSignal avec le dialogue de consentement
-    //initNotification();
+    initNotification();
 
     if (flavor == AppConstants.ENV_PROD && GetPlatform.isAndroid) {
       doPerformAppUpdate();
@@ -92,7 +92,6 @@ class CustomHomeController extends GetxController {
         code: AppConstants.ROSAIRE,
         libelle: "Rosaire",
         icon: Assets.imagesRosary,
-        isVisible: false,
       ),
       MenusItem(
         code: AppConstants.PROMO,

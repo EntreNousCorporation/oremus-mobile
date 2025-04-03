@@ -47,8 +47,8 @@ class ReportProblemScreen extends StatelessWidget {
                       shadowColor: Colors.black.withValues(alpha: 0.2),
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(24),
-                          bottomRight: Radius.circular(24),
+                          bottomLeft: Radius.circular(0),
+                          bottomRight: Radius.circular(0),
                         ),
                       ),
                       // Bouton retour
@@ -88,8 +88,8 @@ class ReportProblemScreen extends StatelessWidget {
                         background: Container(
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(24),
-                              bottomRight: Radius.circular(24),
+                              bottomLeft: Radius.circular(0),
+                              bottomRight: Radius.circular(0),
                             ),
                             boxShadow: [
                               BoxShadow(
@@ -101,8 +101,8 @@ class ReportProblemScreen extends StatelessWidget {
                           ),
                           child: ClipRRect(
                             borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(24),
-                              bottomRight: Radius.circular(24),
+                              bottomLeft: Radius.circular(0),
+                              bottomRight: Radius.circular(0),
                             ),
                             child: Stack(
                               fit: StackFit.expand,
@@ -164,7 +164,7 @@ class ReportProblemScreen extends StatelessWidget {
                                       color: colorGreenSemiLight.withValues(alpha: 0.15),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: Icon(
+                                    child: const Icon(
                                       Icons.report_problem_outlined,
                                       color: colorGreenSemiLight,
                                       size: 20,

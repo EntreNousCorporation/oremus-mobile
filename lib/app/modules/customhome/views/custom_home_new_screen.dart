@@ -98,8 +98,8 @@ class CustomHomeNewScreen extends StatelessWidget {
                     decoration: const BoxDecoration(
                       color: colorGreen,
                       borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30),
+                        bottomLeft: Radius.circular(0),
+                        bottomRight: Radius.circular(0),
                       ),
                     ),
                   ),
@@ -194,21 +194,27 @@ class CustomHomeNewScreen extends StatelessWidget {
                                     }
                                 ),
                               if (logic.menus[logic.selectedIndex.value].code == AppConstants.ROSAIRE)
-                                GetBuilder<RosaryController>(
-                                    builder: (rosaireController) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.white.withValues(alpha: 0.3),
-                                          borderRadius: BorderRadius.circular(12),
-                                        ),
-                                        child: IconButton(
-                                          icon: const Icon(Icons.settings_outlined, color: Colors.white),
-                                          onPressed: () {
-                                            rosaireController.showSettingsDialog();
-                                          },
-                                        ),
-                                      );
-                                    }
+                                Visibility(
+                                  visible: false,
+                                  maintainState: true,
+                                  maintainSize: true,
+                                  maintainAnimation: true,
+                                  child: GetBuilder<RosaryController>(
+                                      builder: (rosaireController) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withValues(alpha: 0.3),
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: IconButton(
+                                            icon: const Icon(Icons.settings_outlined, color: Colors.white),
+                                            onPressed: () {
+                                              rosaireController.showSettingsDialog();
+                                            },
+                                          ),
+                                        );
+                                      }
+                                  ),
                                 ),
                             ],
                           ),

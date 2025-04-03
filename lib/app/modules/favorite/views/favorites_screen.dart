@@ -23,13 +23,13 @@ class FavoritesScreen extends StatelessWidget {
                 children: [
                   // Header gradient background
                   Container(
-                    height: 200,
+                    height: 150,
                     width: double.infinity,
                     decoration: const BoxDecoration(
                       color: colorGreen,
                       borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30),
+                        bottomLeft: Radius.circular(0),
+                        bottomRight: Radius.circular(0),
                       ),
                     ),
                   ),
@@ -107,7 +107,7 @@ class FavoritesScreen extends StatelessWidget {
                   // Pull to refresh
                   Positioned(
                     right: 16,
-                    top: 200 - 20, // Positioned just at the edge of the header
+                    top: 150 - 20,
                     child: Material(
                       elevation: 4,
                       shape: const CircleBorder(),
@@ -147,7 +147,7 @@ class FavoritesScreen extends StatelessWidget {
 
   Widget _buildFavoritesList(FavoriteController controller) {
     return Container(
-      margin: const EdgeInsets.only(top: 8),
+      margin: const EdgeInsets.only(top: 24),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: FadeIn(
         child: AnimatedList(

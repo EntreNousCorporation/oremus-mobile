@@ -27,7 +27,7 @@ class SignupRepository implements ISignupRepository {
     final String resp = json.encode(response.bodyString.toString());
     log('resp => ${response.statusCode}');
 
-    if (response.statusCode! >= 200 && response.statusCode! <= 202) {
+    if (response.statusCode! >= 200 && response.statusCode! <= 205) {
       return SigninResponse.fromJson(json.decode(response.bodyString.toString()));
     } else {
       var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));

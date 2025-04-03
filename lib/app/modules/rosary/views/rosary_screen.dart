@@ -124,7 +124,7 @@ class _RosaryScreenState extends State<RosaryScreen>
             // Main content
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
                 children: [
                   // Current mystery info
                   Container(

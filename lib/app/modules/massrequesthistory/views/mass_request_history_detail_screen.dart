@@ -45,8 +45,8 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                     shadowColor: Colors.black.withValues(alpha: 0.2),
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(24),
-                        bottomRight: Radius.circular(24),
+                        bottomLeft: Radius.circular(0),
+                        bottomRight: Radius.circular(0),
                       ),
                     ),
                     // Bouton retour
@@ -152,8 +152,8 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                       background: Container(
                         decoration: BoxDecoration(
                           borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(24),
-                            bottomRight: Radius.circular(24),
+                            bottomLeft: Radius.circular(0),
+                            bottomRight: Radius.circular(0),
                           ),
                           boxShadow: [
                             BoxShadow(
@@ -165,8 +165,8 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                         ),
                         child: ClipRRect(
                           borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(24),
-                            bottomRight: Radius.circular(24),
+                            bottomLeft: Radius.circular(0),
+                            bottomRight: Radius.circular(0),
                           ),
                           child: Stack(
                             fit: StackFit.expand,

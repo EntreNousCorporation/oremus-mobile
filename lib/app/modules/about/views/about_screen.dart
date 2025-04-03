@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -22,13 +23,13 @@ class AboutScreen extends StatelessWidget {
             children: [
               // Header gradient background
               Container(
-                height: 200,
+                height: Platform.isAndroid ? 200 : 220,
                 width: double.infinity,
                 decoration: const BoxDecoration(
                   color: colorGreen,
                   borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30),
+                    bottomLeft: Radius.circular(0),
+                    bottomRight: Radius.circular(0),
                   ),
                 ),
               ),

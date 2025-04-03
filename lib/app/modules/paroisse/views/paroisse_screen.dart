@@ -23,8 +23,9 @@ class ParoisseScreen extends StatefulWidget {
   State<ParoisseScreen> createState() => _ParoisseScreenState();
 }
 
-class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStateMixin {
-  late Worker _extendedWorker;
+class _ParoisseScreenState extends State<ParoisseScreen>
+    with TickerProviderStateMixin {
+  // Remove the _extendedWorker variable as we won't be observing isExtended anymore
   Offset? _fabPosition; // Position du FAB
   double fabSize = 250.0; // Taille par défaut du FAB
   bool _isSubMenuOpen = false;
@@ -33,11 +34,7 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
   late AnimationController _animationController;
   late Animation<double> _expandAnimation;
 
-  // Animation pour la transition entre compact et étendu
-  late AnimationController _sizeAnimationController;
-  late Animation<double> _widthAnimation;
-  late Animation<double> _opacityAnimation;
-  late Animation<double> _scaleAnimation;
+  // Remove the size animation controller as we won't be animating the size change anymore
 
   @override
   void initState() {
@@ -53,63 +50,15 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
       curve: Curves.easeInOut,
     );
 
-    // Initialisation des animations pour la transition entre compact et étendu
-    _sizeAnimationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 400),
-    );
-
-    _widthAnimation = Tween<double>(begin: 75.0, end: 250.0).animate(
-      CurvedAnimation(
-        parent: _sizeAnimationController,
-        curve: Curves.easeOutCubic,
-      ),
-    );
-
-    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _sizeAnimationController,
-        curve: const Interval(0.5, 1.0, curve: Curves.easeInOut),
-      ),
-    );
-
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _sizeAnimationController,
-        curve: Curves.elasticOut,
-      ),
-    );
-
-    // Initialiser l'écouteur après un court délai pour s'assurer que le contrôleur est prêt
-    Future.delayed(Duration.zero, () {
-      final controller = Get.find<ParoisseController>();
-
-      // Stockez la référence à l'écouteur pour pouvoir l'annuler plus tard
-      _extendedWorker = ever(controller.isExtended, (value) {
-        // Vérifiez si le widget est toujours monté avant d'utiliser les contrôleurs d'animation
-        if (mounted) {
-          if (value == true) {
-            _sizeAnimationController.forward();
-          } else {
-            _sizeAnimationController.reverse();
-          }
-        }
-      });
-
-      // Initialiser l'état de l'animation en fonction de l'état actuel
-      if (controller.isExtended.isTrue) {
-        _sizeAnimationController.value = 1.0;
-      } else {
-        _sizeAnimationController.value = 0.0;
-      }
-    });
+    // Remove the sizeAnimationController initialization
+    // Remove the worker setup
   }
 
   @override
   void dispose() {
-    _extendedWorker.dispose();
+    // Remove the _extendedWorker disposal
     _animationController.dispose();
-    _sizeAnimationController.dispose();
+    // Remove the _sizeAnimationController disposal
     super.dispose();
   }
 
@@ -128,13 +77,19 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
   Widget build(BuildContext context) {
     // Si la position initiale n'est pas encore définie, la définir en bas à droite
     _fabPosition ??= Offset(
-      Get.width - fabSize - 16.0, // 16.0 pour une petite marge du bord
-      Get.height - 150 - 16.0 - kToolbarHeight - MediaQuery.of(context).padding.top, // Compense la AppBar et la barre de statut
+      Get.width - fabSize - 16.0,
+      Get.height -
+          250 -
+          16.0 -
+          kToolbarHeight - MediaQuery.of(context).padding.top,
     );
 
     return Container(
       color: colorGreen,
       child: GetX<ParoisseController>(builder: (_) {
+        // Force isExtended to always be true to keep the FAB expanded
+        _.isExtended.value = true;
+
         return PopScope(
           canPop: false,
           child: KeyboardDismisser(
@@ -164,7 +119,8 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                   borderRadius: BorderRadius.circular(10.0),
                                   elevation: 10,
                                   color: colorWhite,
-                                  shadowColor: colorGrey2.withValues(alpha: 0.5),
+                                  shadowColor:
+                                  colorGrey2.withValues(alpha: 0.5),
                                   child: SizedBox(
                                     height: (Get.width / 9),
                                     width: (Get.width / 9),
@@ -191,7 +147,8 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                     borderRadius: BorderRadius.circular(10.0),
                                     elevation: 10,
                                     color: colorWhite,
-                                    shadowColor: colorGrey2.withValues(alpha: 0.5),
+                                    shadowColor:
+                                    colorGrey2.withValues(alpha: 0.5),
                                     child: b.Badge(
                                       showBadge: (_.searchCriteria.value
                                           .isCriteriaEmpty ==
@@ -245,7 +202,8 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                   return false;
                                 },
                                 child: SmartRefresher(
-                                  scrollController: _.scrollController,
+                                  scrollController:
+                                  _.scrollController,
                                   enablePullDown: true,
                                   enablePullUp: true,
                                   onRefresh: _.onRefresh,
@@ -266,8 +224,7 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                           "Une erreur est survenue lors du chargement",
                                           style: TextStyles
                                               .montserratBold(
-                                              textSize:
-                                              TextSizes
+                                              textSize: TextSizes
                                                   .thirteen,
                                               textColor:
                                               colorBlack),
@@ -278,8 +235,7 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                           "Relacher pour charger plus de paroisses",
                                           style: TextStyles
                                               .montserratBold(
-                                              textSize:
-                                              TextSizes
+                                              textSize: TextSizes
                                                   .thirteen,
                                               textColor:
                                               colorBlack),
@@ -340,20 +296,26 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                   physics:
                                   const BouncingScrollPhysics(),
                                   child: ListView.separated(
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    padding: const EdgeInsets.only(top: 16),
+                                    physics:
+                                    const NeverScrollableScrollPhysics(),
+                                    padding: const EdgeInsets.only(
+                                        top: 16),
                                     shrinkWrap: false,
                                     itemCount: _.paroisses.length,
                                     itemBuilder: (builder, index) {
-                                      var paroisse = _.paroisses[index];
+                                      var paroisse =
+                                      _.paroisses[index];
                                       return ParoisseItem(
                                         paroisse: paroisse,
                                         index: index,
-                                        key: ValueKey(paroisse?.identifier),
+                                        key: ValueKey(
+                                            paroisse?.identifier),
                                       );
                                     },
-                                    separatorBuilder: (builder, index) {
-                                      return Separators.maximum1Vertical();
+                                    separatorBuilder:
+                                        (builder, index) {
+                                      return Separators
+                                          .maximum1Vertical();
                                     },
                                   ),
                                 ),
@@ -382,13 +344,14 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                             double newY = _fabPosition!.dy + details.delta.dy;
 
                             // Limiter la position à l'intérieur des bords de l'écran
-                            if (_.isExtended.isTrue) {
-                              newX = newX.clamp(0.0, Get.width - 250);
-                              newY = newY.clamp(0.0, Get.height - 150 - kToolbarHeight - MediaQuery.of(context).padding.top);
-                            } else {
-                              newX = newX.clamp(0.0, Get.width - 70);
-                              newY = newY.clamp(0.0, Get.height - 150 - kToolbarHeight - MediaQuery.of(context).padding.top);
-                            }
+                            // Always use the extended width for boundary checking
+                            newX = newX.clamp(0.0, Get.width - 250);
+                            newY = newY.clamp(
+                                0.0,
+                                Get.height -
+                                    150 -
+                                    kToolbarHeight -
+                                    MediaQuery.of(context).padding.top);
 
                             _fabPosition = Offset(newX, newY);
                           });
@@ -416,7 +379,8 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                       width: 250.0,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(16),
-                                        color: colorGreen.withValues(alpha: 0.9),
+                                        color:
+                                        colorGreen.withValues(alpha: 0.9),
                                       ),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
@@ -427,12 +391,14 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                               _toggleSubMenu(); // Ferme le sous-menu
                                               _.doMoveRequestMass(); // Fonction existante
                                             },
-                                            borderRadius: const BorderRadius.only(
+                                            borderRadius:
+                                            const BorderRadius.only(
                                               topLeft: Radius.circular(16),
                                               topRight: Radius.circular(16),
                                             ),
                                             child: Padding(
-                                              padding: const EdgeInsets.symmetric(
+                                              padding:
+                                              const EdgeInsets.symmetric(
                                                 vertical: 12.0,
                                                 horizontal: 16.0,
                                               ),
@@ -441,13 +407,18 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                                   SvgPicture.asset(
                                                     Assets.imagesMesse,
                                                     height: 24,
-                                                    colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),
+                                                    colorFilter:
+                                                    const ColorFilter.mode(
+                                                        colorWhite,
+                                                        BlendMode.srcIn),
                                                   ),
                                                   const SizedBox(width: 12),
                                                   Text(
                                                     "Demande de messe",
-                                                    style: TextStyles.montserratSemiBold(
-                                                      textSize: TextSizes.fifteen,
+                                                    style: TextStyles
+                                                        .montserratSemiBold(
+                                                      textSize:
+                                                      TextSizes.fifteen,
                                                       textColor: colorWhite,
                                                     ),
                                                   ),
@@ -458,8 +429,10 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                           // Séparateur
                                           Container(
                                             height: 1,
-                                            color: Colors.white.withValues(alpha: 0.3),
-                                            margin: const EdgeInsets.symmetric(horizontal: 8),
+                                            color: Colors.white
+                                                .withValues(alpha: 0.3),
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 8),
                                           ),
                                           // Option Faire un don
                                           InkWell(
@@ -467,12 +440,14 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                               _toggleSubMenu(); // Ferme le sous-menu
                                               _.doMakeDonation();
                                             },
-                                            borderRadius: const BorderRadius.only(
+                                            borderRadius:
+                                            const BorderRadius.only(
                                               bottomLeft: Radius.circular(16),
                                               bottomRight: Radius.circular(16),
                                             ),
                                             child: Padding(
-                                              padding: const EdgeInsets.symmetric(
+                                              padding:
+                                              const EdgeInsets.symmetric(
                                                 vertical: 12.0,
                                                 horizontal: 16.0,
                                               ),
@@ -481,13 +456,18 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                                   SvgPicture.asset(
                                                     Assets.imagesVolunteer,
                                                     height: 24,
-                                                    colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),
+                                                    colorFilter:
+                                                    const ColorFilter.mode(
+                                                        colorWhite,
+                                                        BlendMode.srcIn),
                                                   ),
                                                   const SizedBox(width: 12),
                                                   Text(
                                                     "Faire un don",
-                                                    style: TextStyles.montserratSemiBold(
-                                                      textSize: TextSizes.fifteen,
+                                                    style: TextStyles
+                                                        .montserratSemiBold(
+                                                      textSize:
+                                                      TextSizes.fifteen,
                                                       textColor: colorWhite,
                                                     ),
                                                   ),
@@ -503,14 +483,14 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                 ],
                               ),
                             ),
-                            // Bouton principal avec animation fluide
-                            AnimatedContainer(
-                              duration: const Duration(milliseconds: 400),
-                              curve: Curves.easeOutBack,
-                              width: _.isExtended.isTrue ? 250.0 : 75.0,
+                            // Bouton principal - always show the extended version
+                            SizedBox(
+                              width: 250.0, // Always use the extended width
                               height: 75.0,
                               child: Material(
-                                color: _isSubMenuOpen ? colorGreen.withValues(alpha: 0.8) : colorGreen,
+                                color: _isSubMenuOpen
+                                    ? colorGreen.withValues(alpha: 0.8)
+                                    : colorGreen,
                                 elevation: 6.0,
                                 shadowColor: colorGreen,
                                 shape: const StadiumBorder(),
@@ -518,79 +498,41 @@ class _ParoisseScreenState extends State<ParoisseScreen> with TickerProviderStat
                                   onTap: _toggleSubMenu,
                                   customBorder: const StadiumBorder(),
                                   child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: _.isExtended.isTrue ? 16.0 : 0.0),
-                                    child: AnimatedSwitcher(
-                                      duration: const Duration(milliseconds: 300),
-                                      transitionBuilder: (Widget child, Animation<double> animation) {
-                                        return FadeTransition(
-                                          opacity: animation,
-                                          child: ScaleTransition(
-                                            scale: animation,
-                                            child: child,
-                                          ),
-                                        );
-                                      },
-                                      child: _.isExtended.isTrue
-                                          ? Row(
-                                        key: const ValueKey('extended'),
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          SvgPicture.asset(
-                                            Assets.imagesMesse,
-                                            height: 35,
-                                            colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Expanded(
-                                            child: Text(
-                                              "Menu paroissial",
-                                              style: TextStyles.montserratSemiBold(
-                                                textSize: TextSizes.fifteen,
-                                                textColor: colorWhite,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: Row(
+                                      key: const ValueKey('extended'),
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        SvgPicture.asset(
+                                          Assets.imagesMesse,
+                                          height: 35,
+                                          colorFilter: const ColorFilter.mode(
+                                              colorWhite, BlendMode.srcIn),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(
+                                            "Menu rapide",
+                                            style:
+                                            TextStyles.montserratSemiBold(
+                                              textSize: TextSizes.fifteen,
+                                              textColor: colorWhite,
                                             ),
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                          AnimatedRotation(
-                                            turns: _isSubMenuOpen ? 0.5 : 0.0,
-                                            duration: const Duration(milliseconds: 200),
-                                            child: const Icon(
-                                              Icons.keyboard_arrow_down,
-                                              color: colorWhite,
-                                            ),
+                                        ),
+                                        AnimatedRotation(
+                                          turns:
+                                          _isSubMenuOpen ? 0.5 : 0.0,
+                                          duration:
+                                          const Duration(milliseconds: 200),
+                                          child: const Icon(
+                                            Icons.keyboard_arrow_down,
+                                            color: colorWhite,
                                           ),
-                                        ],
-                                      )
-                                          : Stack(
-                                        key: const ValueKey('compact'),
-                                        clipBehavior: Clip.none,
-                                        children: [
-                                          SvgPicture.asset(
-                                            Assets.imagesMesse,
-                                            height: 35,
-                                            colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),
-                                          ),
-                                          Positioned(
-                                            right: -10,
-                                            bottom: -5,
-                                            child: AnimatedRotation(
-                                              turns: _isSubMenuOpen ? 0.5 : 0.0,
-                                              duration: const Duration(milliseconds: 200),
-                                              child: Container(
-                                                decoration: const BoxDecoration(
-                                                  color: colorGreen,
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                child: const Icon(
-                                                  Icons.keyboard_arrow_down,
-                                                  color: colorWhite,
-                                                  size: 20,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),

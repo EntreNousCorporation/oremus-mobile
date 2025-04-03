@@ -22,7 +22,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.grey[50],
-      child: GetX<DonationWithoutWorshipController>(builder: (_) {
+      child: GetBuilder<DonationWithoutWorshipController>(builder: (_) {
         return KeyboardDismisser(
           child: PopScope(
             canPop: _.unlockBackButton.value,
@@ -36,7 +36,6 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                 child: CustomScrollView(
                   physics: const BouncingScrollPhysics(),
                   slivers: [
-                    // Header with background image - Modernized
                     SliverAppBar(
                       expandedHeight: AppConstants.kExpandedHeight,
                       collapsedHeight: 100,
@@ -47,8 +46,8 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                       shadowColor: Colors.transparent,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30),
+                          bottomLeft: Radius.circular(0),
+                          bottomRight: Radius.circular(0),
                         ),
                       ),
                       // Back button with improved styling
@@ -94,8 +93,8 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                         background: Container(
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(30),
-                              bottomRight: Radius.circular(30),
+                              bottomLeft: Radius.circular(0),
+                              bottomRight: Radius.circular(0),
                             ),
                             boxShadow: [
                               BoxShadow(
@@ -108,8 +107,8 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                           ),
                           child: ClipRRect(
                             borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(30),
-                              bottomRight: Radius.circular(30),
+                              bottomLeft: Radius.circular(0),
+                              bottomRight: Radius.circular(0),
                             ),
                             child: Stack(
                               fit: StackFit.expand,
@@ -304,8 +303,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                               Expanded(
                                                 child: GestureDetector(
                                                   onTap: () {
-                                                    _.selectEntityType(
-                                                        EntityType.oremus.name);
+                                                    _.selectEntityType(EntityType.oremus.name);
                                                   },
                                                   child: AnimatedContainer(
                                                     duration: const Duration(
@@ -627,7 +625,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                               },
                             ),
 
-                            // Parish selection section - Redesigned with animations
+                            // Parish selection section
                             if (_.selectedEntityType.value ==
                                 EntityType.worship.name)
                               TweenAnimationBuilder(
@@ -940,7 +938,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                               },
                             ),
 
-                            // Description section - Redesigned
+                            // Description section
                             TweenAnimationBuilder(
                               tween: Tween<double>(begin: 0.0, end: 1.0),
                               duration: const Duration(milliseconds: 700),

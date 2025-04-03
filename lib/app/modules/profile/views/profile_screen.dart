@@ -34,8 +34,8 @@ class ProfileScreen extends StatelessWidget {
                     decoration: const BoxDecoration(
                       color: colorGreen,
                       borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30),
+                        bottomLeft: Radius.circular(0),
+                        bottomRight: Radius.circular(0),
                       ),
                     ),
                   ),

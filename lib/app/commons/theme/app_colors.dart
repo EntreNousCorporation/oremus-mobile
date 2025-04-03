@@ -21,6 +21,7 @@ const Color colorPurpleLight = Color(0xFF8482bf);
 const Color colorGreenlight1 = Color(0xFFC4D9C4);
 const Color colorGreenlight2 = Color(0xFFF2F5F2);
 const Color colorGreenlight3 = Color(0xFFD3F8DF);
+const Color colorGreenlight4 = Color(0xFFE5F7EC);
 const Color colorWhite1 = Color(0x00000022);
 const Color colorOrange = Color(0xFFFF8900);
 const Color colorOrangeLight = Color(0xFFF7DCBC);

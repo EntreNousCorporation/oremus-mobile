@@ -96,7 +96,6 @@ class DonationWithoutWorshipController extends GetxController {
       paroisseSelected.value = ContentPlace();
     }
     checkForm();
-    update();
   }
 
   moveToPayment(DonationResponse donationResponse) {
@@ -128,16 +127,36 @@ class DonationWithoutWorshipController extends GetxController {
   }
 
   void checkForm() {
-    // For Oremus, only amount is needed
-    // For Paroisse, both amount and parish selection are needed
-    if (amountController.text.isEmpty) return;
-    int amount = int.parse(amountController.text.replaceAll(RegExp(r'\s'), ''));
-    if (selectedEntityType.value == EntityType.oremus.name) {
-      isValidForm.value = amountController.text.isNotEmpty && amount >= AppConstants.MIN_AMOUNT;
+    log("checkForm appelé: montant=${amountController.text}, entityType=${selectedEntityType.value}, paroisseId=${paroisseSelected.value.identifier}");
+
+    // Vérifier si le montant est vide
+    if (amountController.text.isEmpty) {
+      isValidForm.value = false;
     } else {
-      isValidForm.value = amountController.text.isNotEmpty && amount >= AppConstants.MIN_AMOUNT &&
-          paroisseSelected.value.identifier != null;
+      // Vérifier le montant minimum
+      int amount;
+      try {
+        amount = int.parse(amountController.text.replaceAll(RegExp(r'\s'), ''));
+      } catch (e) {
+        isValidForm.value = false;
+        update();
+        return;
+      }
+
+      // Pour Oremus, seul le montant est nécessaire
+      if (selectedEntityType.value == EntityType.oremus.name) {
+        isValidForm.value = amount >= AppConstants.MIN_AMOUNT;
+      }
+      // Pour Paroisse, le montant et la paroisse sont nécessaires
+      else {
+        isValidForm.value = amount >= AppConstants.MIN_AMOUNT &&
+            paroisseSelected.value.identifier != null;
+      }
     }
+
+    // Forcer une mise à jour
+    isValidForm.refresh();
+    log("isValidForm mis à jour: ${isValidForm.value}");
     update();
   }
 
