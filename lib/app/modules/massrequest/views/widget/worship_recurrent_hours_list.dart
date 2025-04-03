@@ -40,6 +40,7 @@ class WorshipRecurrentHoursList extends StatelessWidget {
       Get.lazyPut(()=>FilterMassRequestDateController());
       controller = Get.find<FilterMassRequestDateController>();
     }
+
     // Si une date de fin a été sélectionnée, on ignore les règles du tableau
     if (controller.endSelectedDate.value?.dayToDisplay != null &&
         controller.endSelectedDate.value?.dayToDisplay != '-') {
@@ -48,13 +49,98 @@ class WorshipRecurrentHoursList extends StatelessWidget {
 
     final slotTime = parseTime(startTime);
 
-    // Si c'est la première occurrence, on applique les règles du tableau
-    if (isFirstOccurrence(currentDayDate, ruleBasedDate)) {
-      return slotTime.hour >= 12;  // Règle du tableau pour la première date valide
+    // Convertir le jour de la semaine Dart (1-7) au format de l'application (0-6)
+    // Dans l'application: 0=lundi, 1=mardi, ..., 6=dimanche
+    // Dans Dart: 1=lundi, 2=mardi, ..., 7=dimanche
+    int currentWeekDay = DateTime.now().weekday - 1; // 0 pour lundi, 6 pour dimanche
+
+    // Obtenir le jour de la semaine cible au format de l'application
+    int targetWeekDay = currentDayDate.weekday - 1; // 0 pour lundi, 6 pour dimanche
+
+    // Vérifier l'heure actuelle
+    final now = DateTime.now();
+    final isAfternoon = now.hour >= 12;
+
+    // Appliquer les règles du tableau
+    switch (currentWeekDay) {
+      case 6: // Dimanche (6)
+      // Si le jour cible est mardi (1)
+        if (targetWeekDay == 1) { // Mardi
+          return slotTime.hour >= 12;
+        }
+        break;
+
+      case 0: // Lundi (0)
+        if (targetWeekDay == 1) { // Mardi
+          return slotTime.hour >= 12;
+        }
+        break;
+
+      case 1: // Mardi (1)
+        if (targetWeekDay == 1) { // Mardi (même jour)
+          if (!isAfternoon) { // Avant 12h00
+            return slotTime.hour >= 16;
+          } else { // Après 12h00
+            return false; // Pas de messe disponible le même jour après 12h
+          }
+        } else if (targetWeekDay == 2) { // Mercredi
+          return isAfternoon && slotTime.hour >= 12; // Disponible si demandé après 12h
+        }
+        break;
+
+      case 2: // Mercredi (2)
+        if (targetWeekDay == 2) { // Mercredi (même jour)
+          if (!isAfternoon) { // Avant 12h00
+            return slotTime.hour >= 16;
+          } else { // Après 12h00
+            return false; // Pas de messe disponible le même jour après 12h
+          }
+        } else if (targetWeekDay == 3) { // Jeudi
+          return isAfternoon && slotTime.hour >= 12; // Disponible si demandé après 12h
+        }
+        break;
+
+      case 3: // Jeudi (3)
+        if (targetWeekDay == 3) { // Jeudi (même jour)
+          if (!isAfternoon) { // Avant 12h00
+            return slotTime.hour >= 16;
+          } else { // Après 12h00
+            return false; // Pas de messe disponible le même jour après 12h
+          }
+        } else if (targetWeekDay == 4) { // Vendredi
+          return isAfternoon && slotTime.hour >= 12; // Disponible si demandé après 12h
+        }
+        break;
+
+      case 4: // Vendredi (4)
+        if (targetWeekDay == 4) { // Vendredi (même jour)
+          if (!isAfternoon) { // Avant 12h00
+            return slotTime.hour >= 16;
+          } else { // Après 12h00
+            return false; // Pas de messe disponible le même jour après 12h
+          }
+        } else if (targetWeekDay == 5) { // Samedi
+          return isAfternoon && slotTime.hour >= 12; // Disponible si demandé après 12h
+        }
+        break;
+
+      case 5: // Samedi (5)
+        if (targetWeekDay == 5) { // Samedi (même jour)
+          if (!isAfternoon) { // Avant 12h00
+            return slotTime.hour >= 16;
+          } else { // Après 12h00
+            return false; // Pas de messe disponible le même jour après 12h
+          }
+        } else if (targetWeekDay == 1) { // Mardi
+          return isAfternoon && slotTime.hour >= 12; // Disponible si demandé après 12h
+        }
+        break;
     }
 
-    return true;  // Toutes les heures sont disponibles pour les occurrences suivantes
+    // Par défaut, toutes les heures sont disponibles pour les autres jours
+    return true;
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -85,11 +171,71 @@ class WorshipRecurrentHoursList extends StatelessWidget {
         }
 
         final now = DateTime.now();
-        // Déterminer la date valide selon la règle du tableau
-        final timeRange = _determineTimeRange(now);
-        final ruleBasedDate = timeRange == TimeRange.evening
-            ? DateTime.now().add(const Duration(days: 1))  // Lendemain si 15h01-00h00
-            : DateTime.now();  // Même jour sinon
+        // Déterminer la date valide selon les règles du grand tableau
+        final currentWeekDay = now.weekday - 1; // 0 pour lundi, 6 pour dimanche
+        final isAfternoon = now.hour >= 12;
+
+        // Déterminer la date de référence pour les règles
+        DateTime ruleBasedDate;
+
+        switch (currentWeekDay) {
+          case 6: // Dimanche (6)
+          // Pour dimanche, la prochaine date valide est mardi
+            ruleBasedDate = _findNextDayOfWeek(now, 1); // 1 = Mardi
+            break;
+          case 0: // Lundi (0)
+          // Pour lundi, la prochaine date valide est mardi
+            ruleBasedDate = _findNextDayOfWeek(now, 1); // 1 = Mardi
+            break;
+          case 1: // Mardi (1)
+            if (!isAfternoon) {
+              // Avant 12h: le même jour (mardi) à 16h
+              ruleBasedDate = now;
+            } else {
+              // Après 12h: mercredi à 12h
+              ruleBasedDate = _findNextDayOfWeek(now, 2); // 2 = Mercredi
+            }
+            break;
+          case 2: // Mercredi (2)
+            if (!isAfternoon) {
+              // Avant 12h: le même jour (mercredi) à 16h
+              ruleBasedDate = now;
+            } else {
+              // Après 12h: jeudi à 12h
+              ruleBasedDate = _findNextDayOfWeek(now, 3); // 3 = Jeudi
+            }
+            break;
+          case 3: // Jeudi (3)
+            if (!isAfternoon) {
+              // Avant 12h: le même jour (jeudi) à 16h
+              ruleBasedDate = now;
+            } else {
+              // Après 12h: vendredi à 12h
+              ruleBasedDate = _findNextDayOfWeek(now, 4); // 4 = Vendredi
+            }
+            break;
+          case 4: // Vendredi (4)
+            if (!isAfternoon) {
+              // Avant 12h: le même jour (vendredi) à 16h
+              ruleBasedDate = now;
+            } else {
+              // Après 12h: samedi à 12h
+              ruleBasedDate = _findNextDayOfWeek(now, 5); // 5 = Samedi
+            }
+            break;
+          case 5: // Samedi (5)
+            if (!isAfternoon) {
+              // Avant 12h: le même jour (samedi) à 16h
+              ruleBasedDate = now;
+            } else {
+              // Après 12h: mardi à 12h
+              ruleBasedDate = _findNextDayOfWeek(now, 1); // 1 = Mardi
+            }
+            break;
+          default:
+            ruleBasedDate = now;
+            break;
+        }
 
         // Trier les jours en fonction de leur sélectionnabilité
         final List<Map<String, dynamic>> sortedDays = _.worshipRecurrentHours.map((item) {
@@ -122,7 +268,6 @@ class WorshipRecurrentHoursList extends StatelessWidget {
             final dayOfWeek = int.parse(item.dayOfWeek ?? '0') + 1;
             final currentDayDate = getDateForDayOfWeek(ruleBasedDate, dayOfWeek);
             final isFirstDay = isFirstOccurrence(currentDayDate, ruleBasedDate);
-
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,11 +363,30 @@ class WorshipRecurrentHoursList extends StatelessWidget {
     );
   }
 
+  DateTime _findNextDayOfWeek(DateTime from, int dayOfWeek) {
+    DateTime result = DateTime(from.year, from.month, from.day);
+
+    // Convertir dayOfWeek du format de l'application (0-6) au format Dart (1-7)
+    int dartDayOfWeek = dayOfWeek + 1;
+
+    while (result.weekday != dartDayOfWeek) {
+      result = result.add(const Duration(days: 1));
+    }
+    return result;
+  }
+
   TimeRange _determineTimeRange(DateTime now) {
-    final currentTime = now.hour * 60 + now.minute;
-    if (currentTime >= 0 && currentTime <= 9 * 60) return TimeRange.morning;
-    if (currentTime > 9 * 60 && currentTime <= 15 * 60) return TimeRange.afternoon;
-    return TimeRange.evening;
+    final currentHour = now.hour;
+    final currentMinute = now.minute;
+
+    // Utiliser le format 24h pour la comparaison
+    final currentTimeInMinutes = currentHour * 60 + currentMinute;
+
+    if (currentTimeInMinutes >= 0 && currentTimeInMinutes < 12 * 60) {
+      return TimeRange.morning; // 00h01 - 12h00
+    } else {
+      return TimeRange.afternoon; // 12h01 - 24h00
+    }
   }
 
   DateTime getNextDateForDay(DateTime startDate, int targetDay) {

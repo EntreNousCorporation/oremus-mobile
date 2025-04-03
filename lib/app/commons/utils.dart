@@ -239,62 +239,54 @@ void configStatusBar({
   }
 }
 
-List<PriceData> transformWorshipSpecialHours(
-    List<LiturgicalCelebrationResponse> worshipDataList) {
+List<PriceData> transformWorshipSpecialHours(List<LiturgicalCelebrationResponse> specialCelebrations) {
+  List<PriceData> result = [];
 
-  // Map pour stocker les célébrations par date
-  Map<String, List<LiturgicalCelebrationResponse>> celebrationsByDate = {};
+  for (var celebration in specialCelebrations) {
+    if (celebration.startDate == null) continue;
 
-  // Première passe : formater les dates et grouper les célébrations
-  for (var event in worshipDataList) {
-    // Formater la date (garder seulement la partie date)
-    String formattedDate = event.startDate?.split('T')[0] ?? '';
-    event.startDateFormatted = formattedDate;
+    // Convertir la date de début en format 'yyyy-MM-dd'
+    DateTime? startDate = Jiffy.parse(
+        celebration.startDate ?? "",
+        pattern: AppConstants.TIME_ZONE_FORMAT
+    ).dateTime;
 
-    // Ne prendre que les messes spéciales
-    if (event.type?.code == 'SPECIAL_MASS') {
-      String day = event.startDateFormatted ?? '';
-      if (!celebrationsByDate.containsKey(day)) {
-        celebrationsByDate[day] = [];
+    String formattedDate = "${startDate.year}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}";
+
+    // Vérifier si cette date existe déjà dans notre liste résultante
+    int dateIndex = result.indexWhere((item) => item.day == formattedDate);
+
+    if (dateIndex >= 0) {
+      // Si la date existe déjà, ajouter les slots à cette date
+      List<Slot> existingSlots = result[dateIndex].slots ?? [];
+      List<Slot> newSlots = celebration.slots ?? [];
+
+      // Fusionner les slots sans doublon
+      for (var newSlot in newSlots) {
+        if (!existingSlots.any((existingSlot) =>
+        existingSlot.startTime == newSlot.startTime)) {
+          existingSlots.add(newSlot);
+        }
       }
-      celebrationsByDate[day]?.add(event);
+
+      result[dateIndex].slots = existingSlots;
+    } else {
+      // Sinon, créer une nouvelle entrée pour cette date
+      result.add(PriceData(
+        day: formattedDate,
+        // Calculer le jour de la semaine (0-6, dimanche-samedi)
+        dayOfWeek: (startDate.weekday % 7).toString(),
+        name: celebration.name,
+        slots: celebration.slots ?? [],
+        // Format pour l'affichage: 'dd-MM-yyyy'
+        dayToDisplay: "${startDate.day.toString().padLeft(2, '0')}-${startDate.month.toString().padLeft(2, '0')}-${startDate.year}",
+      ));
     }
   }
 
-  // Transformer en liste de PriceData
-  return celebrationsByDate.entries.map((entry) {
-    String day = entry.key;
-    List<LiturgicalCelebrationResponse> celebrations = entry.value;
-
-    // Collecter tous les slots de toutes les messes spéciales pour cette date
-    List<Slot> allSlots = [];
-    String? celebrationName;  // Pour stocker le nom de la célébration
-
-    for (var celebration in celebrations) {
-      if (celebration.slots != null) {
-        allSlots.addAll(celebration.slots!);
-      }
-      // Prendre le nom de la première célébration comme nom représentatif
-      celebrationName ??= celebration.name;
-    }
-
-    // Trier les slots par heure
-    allSlots.sort((a, b) {
-      final timeA = parseTime(a.startTime ?? '');
-      final timeB = parseTime(b.startTime ?? '');
-      return compareTimes(timeA, timeB);
-    });
-
-    // Créer le PriceData avec tous les slots et les informations des célébrations
-    return PriceData(
-        day: day,
-        slots: allSlots,
-        celebrationType: 'SPECIAL_MASS',
-        name: celebrationName  // Ajouter le nom de la célébration ici
-    );
-  }).toList();
+  log('Messes spéciales transformées: ${result.length}');
+  return result;
 }
-
 
 // Function utilitaire pour parser et comparer les heures
 TimeOfDay parseTime(String time) {
@@ -310,51 +302,44 @@ int compareTimes(TimeOfDay a, TimeOfDay b) {
   return a.minute.compareTo(b.minute);
 }
 
-List<PriceData> transformWorshipRecurrentHours(
-    List<LiturgicalCelebrationResponse> worshipDataList) {
+List<PriceData> transformWorshipRecurrentHours(List<LiturgicalCelebrationResponse> recurrentCelebrations) {
+  List<PriceData> result = [];
 
-  // Dictionnaire pour regrouper les créneaux par jour de la semaine
-  Map<String, List<Slot>> groupedByDay = {};
-  Map<String, int> identifierByDay = {};
-  Map<String, LiturgicalCelebrationResponse> celebrationByDay = {};
+  for (var celebration in recurrentCelebrations) {
+    // Pour chaque célébration récurrente, parcourir les heures d'ouverture
+    for (var openingTime in celebration.openingTime ?? []) {
+      // Vérifier si ce jour existe déjà dans notre liste résultante
+      int dayIndex = result.indexWhere((item) =>
+      item.dayOfWeek == openingTime.dayOfWeek?.toString()
+      );
 
-  // Parcourir chaque célébration liturgique
-  for (var worshipData in worshipDataList) {
-    // Parcourir les heures d'ouverture, si elles existent
-    for (var openingTime in worshipData.openingTime ?? []) {
-      String dayOfWeek = openingTime.dayOfWeek.toString();
+      if (dayIndex >= 0) {
+        // Si le jour existe déjà, ajouter les slots à ce jour
+        List<Slot> existingSlots = result[dayIndex].slots ?? [];
+        List<Slot> newSlots = openingTime.slots ?? [];
 
-      // Si nous n'avons pas encore de célébration pour ce jour
-      // ou si la célébration existante n'est pas une messe
-      // ou si c'est une messe et que la nouvelle célébration est aussi une messe
-      bool shouldUpdate = !celebrationByDay.containsKey(dayOfWeek) ||
-          celebrationByDay[dayOfWeek]?.type?.code != 'MASS' ||
-          (celebrationByDay[dayOfWeek]?.type?.code == 'MASS' && worshipData.type?.code == 'MASS');
+        // Fusionner les slots sans doublon
+        for (var newSlot in newSlots) {
+          if (!existingSlots.any((existingSlot) =>
+          existingSlot.startTime == newSlot.startTime)) {
+            existingSlots.add(newSlot);
+          }
+        }
 
-      if (shouldUpdate) {
-        // Mettre à jour ou ajouter les créneaux pour ce jour
-        groupedByDay[dayOfWeek] = openingTime.slots;
-        identifierByDay[dayOfWeek] = worshipData.identifier;
-        celebrationByDay[dayOfWeek] = worshipData;
+        result[dayIndex].slots = existingSlots;
+      } else {
+        // Sinon, créer une nouvelle entrée pour ce jour
+        result.add(PriceData(
+          dayOfWeek: openingTime.dayOfWeek?.toString() ?? "0",
+          slots: openingTime.slots ?? [],
+          repeat: 1, // Par défaut, une répétition
+        ));
       }
     }
   }
 
-  // Transformer le dictionnaire en une liste de PriceData
-  return groupedByDay.entries.map((entry) {
-    String dayOfWeek = entry.key;
-    List<Slot> slots = entry.value;
-    int identifier = identifierByDay[dayOfWeek]!;
-    LiturgicalCelebrationResponse celebration = celebrationByDay[dayOfWeek]!;
-
-    return PriceData(
-        dayOfWeek: dayOfWeek,
-        slots: slots,
-        identifier: identifier,
-        celebrationType: celebration.type?.code,
-        name: celebration.name
-    );
-  }).toList();
+  log('Jours récurrents transformés: ${result.length}');
+  return result;
 }
 
 // Fonction pour obtenir les dates des jours spécifiques
@@ -464,21 +449,22 @@ List<PriceData> duplicateEventsByRepeat(List<PriceData> events) {
 }
 
 bool isDayOfWeekInDateRange(int dayOfWeek, DateTime startDate, DateTime endDate) {
-  // Vérifier que la date de début est avant ou égale à la date de fin
-  if (startDate.isAfter(endDate)) {
+  // Vérifier si les dates sont valides
+  if (startDate == null || endDate == null) {
     return false;
   }
 
-  // Parcourir chaque jour dans la plage de dates
-  for (DateTime currentDate = startDate;
-  currentDate.isBefore(endDate) || currentDate.isAtSameMomentAs(endDate);
-  currentDate = currentDate.add(const Duration(days: 1))) {
-    // Vérifier si le jour de la semaine actuel correspond au jour recherché
-    if ((currentDate.weekday - 1) == dayOfWeek) {
-      return true; // Trouvé, retourner vrai
+  // Convertir dayOfWeek (0-6) en format standard (1-7)
+  int standardDayOfWeek = dayOfWeek + 1;
+
+  // Parcourir la période jour par jour
+  for (DateTime day = startDate; !day.isAfter(endDate); day = day.add(const Duration(days: 1))) {
+    if (day.weekday == standardDayOfWeek) {
+      return true;
     }
   }
-  return false; // Pas trouvé, retourner faux
+
+  return false;
 }
 
 bool isDayOfWeekInDateRangeB(int dayOfWeek, DateTime startDate, DateTime endDate) {

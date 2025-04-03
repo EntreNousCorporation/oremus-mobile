@@ -499,6 +499,7 @@ class MassRequestController extends GetxController {
     checkForm();
   }
 
+  /*
   void updateRepetitionFilter(DateTime datetime, {bool isFirst = true, Slot? selectHour}) {
     final now = DateTime.now();
     final timeRange = _determineTimeRange(now);
@@ -628,6 +629,300 @@ class MassRequestController extends GetxController {
       doGetMassRequestPrice();
     }
     update();
+  }*/
+
+  void updateRepetitionFilter(DateTime datetime, {bool isFirst = true, Slot? selectHour}) {
+    final now = DateTime.now();
+
+    // Convertir jour de la semaine standard (1-7, lundi-dimanche) vers votre système (0-6, lundi-dimanche)
+    // Dans votre système: 0=lundi, 1=mardi, 2=mercredi, 3=jeudi, 4=vendredi, 5=samedi, 6=dimanche
+    final currentDayOfWeekSystem = now.weekday - 1; // weekday: 1=lundi, 7=dimanche
+
+    // Déterminer si nous sommes avant ou après midi
+    final isBefore12h = now.hour < 12;
+
+    log('Jour actuel: ${now.weekday} (${getDay(now.weekday)}), converti en système: $currentDayOfWeekSystem');
+    log('Avant midi: $isBefore12h');
+
+    // Variables pour stocker la date et l'heure cibles selon les règles
+    DateTime targetDate;
+    int targetHour;
+    int targetDayOfWeekStandard; // Format standard (1-7, lundi-dimanche)
+
+    // Appliquer les règles du tableau
+    switch (now.weekday) { // Utiliser le format standard weekday (1-7)
+      case 7: // Dimanche (tout le jour) -> Mardi 12h
+        targetDayOfWeekStandard = 2; // Mardi
+        targetHour = 12;
+        break;
+      case 1: // Lundi (tout le jour) -> Mardi 12h
+        targetDayOfWeekStandard = 2; // Mardi
+        targetHour = 12;
+        break;
+      case 2: // Mardi
+        if (isBefore12h) {
+          targetDayOfWeekStandard = 2; // Même jour (mardi)
+          targetHour = 16;
+        } else {
+          targetDayOfWeekStandard = 3; // Mercredi
+          targetHour = 12;
+        }
+        break;
+      case 3: // Mercredi
+        if (isBefore12h) {
+          targetDayOfWeekStandard = 3; // Même jour (mercredi)
+          targetHour = 16;
+        } else {
+          targetDayOfWeekStandard = 4; // Jeudi
+          targetHour = 12;
+        }
+        break;
+      case 4: // Jeudi
+        if (isBefore12h) {
+          targetDayOfWeekStandard = 4; // Même jour (jeudi)
+          targetHour = 16;
+        } else {
+          targetDayOfWeekStandard = 5; // Vendredi
+          targetHour = 12;
+        }
+        break;
+      case 5: // Vendredi
+        if (isBefore12h) {
+          targetDayOfWeekStandard = 5; // Même jour (vendredi)
+          targetHour = 16;
+        } else {
+          targetDayOfWeekStandard = 6; // Samedi
+          targetHour = 12;
+        }
+        break;
+      case 6: // Samedi
+        if (isBefore12h) {
+          targetDayOfWeekStandard = 6; // Même jour (samedi)
+          targetHour = 16;
+        } else {
+          targetDayOfWeekStandard = 2; // Mardi (semaine suivante)
+          targetHour = 12;
+        }
+        break;
+      default:
+      // Fallback au cas où
+        targetDayOfWeekStandard = now.weekday + 1 > 7 ? 1 : now.weekday + 1;
+        targetHour = 12;
+    }
+
+    // Calculer la date cible basée sur le jour de la semaine cible
+    targetDate = getNextSpecificWeekday(now, targetDayOfWeekStandard);
+
+    log('Date cible selon règles: ${targetDate.toString()} (${getDay(targetDate.weekday)}), Heure cible: $targetHour');
+
+    // Si la date sélectionnée (datetime) est différente de la date par défaut et après la date minimale,
+    // utiliser la date sélectionnée en gardant les règles d'heure
+    if (!isFirst && datetime != targetDate && !datetime.isBefore(targetDate)) {
+      targetDate = datetime;
+      log('Utilisation de la date sélectionnée: ${targetDate.toString()} (${getDay(targetDate.weekday)})');
+    }
+
+    // Vérifier si des messes sont disponibles à cette date
+    if (!hasMassesAvailable(targetDate)) {
+      log('Aucune messe disponible pour ${targetDate.toString()} (${getDay(targetDate.weekday)})');
+
+      // Chercher la prochaine date avec des messes disponibles en commençant par la date cible
+      DateTime nextDate = findNextDateWithMasses(targetDate);
+
+      if (nextDate != targetDate) {
+        targetDate = nextDate;
+        // Réinitialiser targetHour si on a changé de date
+        targetHour = 0; // Prendra toutes les heures disponibles
+        log('Prochaine date avec messes disponibles: ${targetDate.toString()} (${getDay(targetDate.weekday)})');
+      }
+    }
+
+    // Formater la date pour l'affichage et pour les requêtes
+    final formattedDay = targetDate.day.toString().padLeft(2, '0');
+    final formattedMonth = targetDate.month.toString().padLeft(2, '0');
+    final formattedTargetDate = "${targetDate.year}-$formattedMonth-$formattedDay";
+
+    // Récupérer tous les slots disponibles pour cette date
+    List<Slot> allSlots = [];
+
+    // Conversion vers votre système: targetDate.weekday (1-7) -> votre système (0-6)
+    final targetDayOfWeekSystem = targetDate.weekday - 1;
+
+    // Ajouter les horaires récurrents pour le jour de la semaine
+    final recurentHour = worshipRecurrentHours.firstWhereOrNull(
+            (element) => int.parse(element.dayOfWeek ?? '-1') == targetDayOfWeekSystem
+    );
+
+    if (recurentHour != null && recurentHour.slots != null) {
+      log('Messes récurrentes trouvées pour ${getDay(targetDate.weekday)}: ${recurentHour.slots?.length ?? 0}');
+      allSlots.addAll(recurentHour.slots ?? []);
+    }
+
+    // Ajouter les horaires spéciaux pour cette date spécifique
+    final specialHour = worshipSpecialHours.firstWhereOrNull(
+            (element) => element.day == formattedTargetDate
+    );
+
+    if (specialHour != null && specialHour.slots != null) {
+      log('Messes spéciales trouvées pour $formattedTargetDate: ${specialHour.slots?.length ?? 0}');
+      allSlots.addAll(specialHour.slots ?? []);
+    }
+
+    log('Nombre total de slots trouvés: ${allSlots.length}');
+
+    // Filtrer les slots selon les règles
+    List<Slot> filteredSlots = [];
+
+    // Si c'est le jour même, appliquer des règles spécifiques
+    if (isSameDay(targetDate, now)) {
+      filteredSlots = allSlots.where((slot) {
+        // Convertir "HH:MM:SS" en heure
+        final slotTime = parseTimeFromString(slot.startTime ?? '00:00:00');
+        return slotTime.hour >= targetHour;
+      }).toList();
+    } else if (targetDate.difference(DateTime(now.year, now.month, now.day)).inDays == 1) {
+      // Si c'est le lendemain, les messes à partir de l'heure minimale
+      filteredSlots = allSlots.where((slot) {
+        final slotTime = parseTimeFromString(slot.startTime ?? '00:00:00');
+        return slotTime.hour >= targetHour;
+      }).toList();
+    } else {
+      // Pour les jours plus loin, toutes les messes sont disponibles
+      filteredSlots = List.from(allSlots);
+    }
+
+    log('Nombre de slots filtrés: ${filteredSlots.length}');
+
+    // Si aucun slot n'est disponible après filtrage, prendre tous les slots
+    if (filteredSlots.isEmpty && allSlots.isNotEmpty) {
+      log('Aucun slot après filtrage, on prend tous les slots disponibles');
+      filteredSlots = List.from(allSlots);
+    }
+
+    // Trier les slots par heure
+    filteredSlots.sort((a, b) {
+      final timeA = parseTimeFromString(a.startTime ?? '00:00:00');
+      final timeB = parseTimeFromString(b.startTime ?? '00:00:00');
+      return timeA.hour * 60 + timeA.minute - (timeB.hour * 60 + timeB.minute);
+    });
+
+    // Mettre à jour les heures disponibles
+    selectedHours.clear();
+    selectedHours.addAll(filteredSlots);
+    selectedHours.refresh();
+
+    log('Heures disponibles après filtrage: ${selectedHours.length}');
+
+    // Sélectionner l'heure
+    if (selectedHours.isNotEmpty) {
+      if (isFirst || selectedHour.value == null) {
+        selectedHour.value = selectedHours.first;
+        log('Sélection de la première heure disponible: ${selectedHour.value?.startTime}');
+      } else if (selectHour != null) {
+        selectedHour.value = selectHour;
+        log('Sélection de l\'heure spécifiée: ${selectedHour.value?.startTime}');
+      } else if (!selectedHours.contains(selectedHour.value)) {
+        selectedHour.value = selectedHours.first;
+        log('L\'heure précédente n\'est plus disponible, sélection de la première heure: ${selectedHour.value?.startTime}');
+      }
+      selectedHour.refresh();
+    } else {
+      selectedHour.value = null;
+      log('Aucune heure disponible après filtrage');
+    }
+
+    // Mettre à jour la date sélectionnée
+    selectedDate.value = PriceData(
+      day: formattedTargetDate,
+      dayOfWeek: (targetDate.weekday - 1).toString(), // Conversion vers votre système
+      isDaySelected: true,
+      dayToDisplay: "$formattedDay-$formattedMonth-${targetDate.year}",
+      slots: selectedHour.value != null ? [selectedHour.value!] : [],
+    );
+    selectedDate.refresh();
+
+    // Après avoir mis à jour la date et l'heure sélectionnées
+    if (selectedHour.value != null && selectedDate.value != null) {
+      // Mettre à jour datesChoosen avec une seule date
+      datesChoosen.value = [selectedDate.value ?? PriceData()];
+      // Appeler le service de prix
+      doGetMassRequestPrice();
+    }
+    update();
+  }
+
+// Méthode pour obtenir le prochain jour de la semaine spécifique
+  DateTime getNextSpecificWeekday(DateTime date, int targetWeekday) {
+    DateTime result = date;
+
+    // Ajuster pour que targetWeekday soit de 1-7 où 1 est lundi (format standard de DateTime)
+    if (targetWeekday == 0) targetWeekday = 7; // Dimanche
+
+    // Calculer combien de jours ajouter pour atteindre le jour cible
+    int daysToAdd = targetWeekday - date.weekday;
+    if (daysToAdd <= 0) daysToAdd += 7; // Si le jour cible est aujourd'hui ou avant, passer à la semaine suivante
+
+    result = result.add(Duration(days: daysToAdd));
+    return result;
+  }
+
+// Fonction pour vérifier si deux dates sont le même jour
+  bool isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
+  }
+
+// Fonction pour analyser une heure à partir d'une chaîne "HH:MM:SS"
+  DateTime parseTimeFromString(String timeString) {
+    try {
+      final parts = timeString.split(':');
+      int hour = int.parse(parts[0]);
+      int minute = parts.length > 1 ? int.parse(parts[1]) : 0;
+      int second = parts.length > 2 ? int.parse(parts[2]) : 0;
+
+      return DateTime(2000, 1, 1, hour, minute, second);
+    } catch (e) {
+      log('Erreur lors du parsing de l\'heure: $timeString - $e');
+      return DateTime(2000, 1, 1, 0, 0, 0);
+    }
+  }
+
+// Vérifier si des messes sont disponibles pour une date donnée
+  bool hasMassesAvailable(DateTime date) {
+    // Convertir en jour de la semaine dans votre système (0-6, lundi-dimanche)
+    final dayOfWeekSystem = date.weekday - 1;
+
+    // Format de date "yyyy-MM-dd" pour les messes spéciales
+    final formattedDate = "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+
+    // Vérifier les messes récurrentes
+    bool hasRecurrent = worshipRecurrentHours.any(
+            (hour) => int.parse(hour.dayOfWeek ?? '-1') == dayOfWeekSystem &&
+            (hour.slots?.isNotEmpty ?? false)
+    );
+
+    // Vérifier les messes spéciales
+    bool hasSpecial = worshipSpecialHours.any(
+            (hour) => hour.day == formattedDate &&
+            (hour.slots?.isNotEmpty ?? false)
+    );
+
+    return hasRecurrent || hasSpecial;
+  }
+
+// Trouver la prochaine date avec des messes disponibles
+  DateTime findNextDateWithMasses(DateTime startDate) {
+    DateTime checkDate = startDate;
+
+    // Chercher pendant 30 jours maximum
+    for (int i = 0; i < 30; i++) {
+      if (hasMassesAvailable(checkDate)) {
+        return checkDate;
+      }
+      checkDate = checkDate.add(const Duration(days: 1));
+    }
+
+    // Si aucune messe n'est trouvée, retourner la date de départ
+    return startDate;
   }
 
   /// Détermine la plage horaire en fonction de l'heure actuelle
@@ -905,5 +1200,30 @@ class MassRequestController extends GetxController {
     log('removeFavorite 1 => ${paroisse.isFavorite}');
     paroisseRepository.deleteFavorite(paroisse);
     //showMessageFavorite(state);
+  }
+
+  // Fonction pour analyser une heure à partir d'une chaîne (par exemple "12:30")
+  DateTime parseTime(String timeString) {
+    if (timeString.isEmpty) {
+      return DateTime(2000, 1, 1, 0, 0); // Date arbitraire avec heure 00:00
+    }
+
+    final parts = timeString.split(':');
+    if (parts.length < 2) {
+      return DateTime(2000, 1, 1, 0, 0);
+    }
+
+    int hours = int.tryParse(parts[0]) ?? 0;
+    int minutes = int.tryParse(parts[1]) ?? 0;
+
+    return DateTime(2000, 1, 1, hours, minutes);
+  }
+
+// Fonction pour comparer deux heures
+  int compareTimes(DateTime time1, DateTime time2) {
+    if (time1.hour != time2.hour) {
+      return time1.hour.compareTo(time2.hour);
+    }
+    return time1.minute.compareTo(time2.minute);
   }
 }

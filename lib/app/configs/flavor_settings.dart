@@ -36,8 +36,7 @@ class OremusFlavor {
   final String? endpoint;
   final String? shareAppLink;
   final String? oneSignalAppID;
-  final bool?
-      byPassAuth; // True or False, whether we want to bypass the auth or not
+  final bool? byPassAuth; // True or False, whether we want to bypass the auth or not
   final bool? canCheckConectivity;
   final EnvCredentials? envCredentials;
 

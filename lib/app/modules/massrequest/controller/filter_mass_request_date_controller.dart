@@ -98,57 +98,6 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
     super.dispose();
   }
 
-  void getArguments_() {
-    if (Get.arguments != null) {
-      worshipHours.value = Get.arguments[0];
-      worshipRecurrentHoursTemp.value =
-          worshipHours.where((element) => element.isRecurrent == true).toList();
-      worshipSpecialHoursTemp.value = worshipHours
-          .where((element) =>
-      element.isRecurrent == false &&
-          (Jiffy.parse(element.startDate ?? Jiffy.now().format(),
-              pattern: AppConstants.TIME_ZONE_FORMAT)
-              .isAfter(Jiffy.now().add(hours: 24))))
-          .toList();
-
-      worshipRecurrentHours.value =
-          transformWorshipRecurrentHours(worshipRecurrentHoursTemp);
-      worshipSpecialHours.value =
-          transformWorshipSpecialHours(worshipSpecialHoursTemp);
-
-      // Restaurer les dates initiale et finale
-      initialSelectedDate.value = PriceData.fromJson(Get.arguments[1]);
-
-      // Restaurer l'état sauvegardé si disponible
-      if (Get.arguments.length > 2 && Get.arguments[2] != null) {
-        final savedState = Get.arguments[2];
-
-        // Restaurer la date de fin
-        if (savedState['endDate'] != null) {
-          endSelectedDate.value = PriceData.fromJson(savedState['endDate']);
-        } else {
-          endSelectedDate.value = PriceData.fromJson(Get.arguments[1]);
-        }
-
-        // Restaurer les selectedSlotKeys
-        if (savedState['specialMasses'] != null) {
-          final savedSpecialMasses = List<Map<String, dynamic>>.from(savedState['specialMasses']);
-          _restoreSpecialMasses(savedSpecialMasses);
-        }
-
-        if (savedState['selectedSlotKeys'] != null) {
-          selectedSlotKeys.clear();
-          selectedSlotKeys.addAll(List<String>.from(savedState['selectedSlotKeys']));
-        }
-      } else {
-        endSelectedDate.value = PriceData.fromJson(Get.arguments[1]);
-      }
-
-      doRefreshHoursAfterAction();
-      canDoApplyAction();
-    }
-  }
-
   void getArguments() {
     if (Get.arguments != null) {
       worshipHours.value = Get.arguments[0];
@@ -169,47 +118,92 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
 
       // Déterminer la première date autorisée selon les règles
       final now = DateTime.now();
-      final timeRange = _determineTimeRange(now);
+      final currentWeekDay = now.weekday - 1; // Convertir au format 0-6 où 0=lundi
+      final isAfternoon = now.hour >= 12;
+
+      // Trouver le prochain jour valide selon le tableau
       DateTime firstAllowedDate;
 
-      switch (timeRange) {
-        case TimeRange.morning:     // 00h01 - 09h00
-        // La même journée est possible, première messe à 12h
-          firstAllowedDate = now;
+      switch (currentWeekDay) {
+        case 6: // Dimanche (6)
+        // Prochain jour valide: Mardi
+          firstAllowedDate = _findNextDayOfWeek(now, 1); // 1 = Mardi dans notre format
           break;
-        case TimeRange.afternoon:   // 09h01 - 15h00
-        // La même journée est possible, première messe à 18h
-          firstAllowedDate = now;
+        case 0: // Lundi (0)
+        // Prochain jour valide: Mardi
+          firstAllowedDate = _findNextDayOfWeek(now, 1); // 1 = Mardi dans notre format
           break;
-        case TimeRange.evening:     // 15h01 - 00h00
-        // Il faut passer au lendemain
-          firstAllowedDate = now.add(const Duration(days: 1));
+        case 1: // Mardi (1)
+          if (!isAfternoon) {
+            // Avant 12h: le même jour (mardi) à 16h
+            firstAllowedDate = now;
+          } else {
+            // Après 12h: mercredi à 12h
+            firstAllowedDate = _findNextDayOfWeek(now, 2); // 2 = Mercredi dans notre format
+          }
+          break;
+        case 2: // Mercredi (2)
+          if (!isAfternoon) {
+            // Avant 12h: le même jour (mercredi) à 16h
+            firstAllowedDate = now;
+          } else {
+            // Après 12h: jeudi à 12h
+            firstAllowedDate = _findNextDayOfWeek(now, 3); // 3 = Jeudi dans notre format
+          }
+          break;
+        case 3: // Jeudi (3)
+          if (!isAfternoon) {
+            // Avant 12h: le même jour (jeudi) à 16h
+            firstAllowedDate = now;
+          } else {
+            // Après 12h: vendredi à 12h
+            firstAllowedDate = _findNextDayOfWeek(now, 4); // 4 = Vendredi dans notre format
+          }
+          break;
+        case 4: // Vendredi (4)
+          if (!isAfternoon) {
+            // Avant 12h: le même jour (vendredi) à 16h
+            firstAllowedDate = now;
+          } else {
+            // Après 12h: samedi à 12h
+            firstAllowedDate = _findNextDayOfWeek(now, 5); // 5 = Samedi dans notre format
+          }
+          break;
+        case 5: // Samedi (5)
+          if (!isAfternoon) {
+            // Avant 12h: le même jour (samedi) à 16h
+            firstAllowedDate = now;
+          } else {
+            // Après 12h: mardi à 12h
+            firstAllowedDate = _findNextDayOfWeek(now, 1); // 1 = Mardi dans notre format
+          }
           break;
         default:
-          firstAllowedDate = now;
+        // Par défaut, on commence au lendemain
+          firstAllowedDate = now.add(const Duration(days: 1));
+          break;
       }
-
-      firstAllowedDate = firstAllowedDate.add(const Duration(days: 1));
 
       // Formater la date pour l'initialSelectedDate
       String formattedDay = firstAllowedDate.day.toString().padLeft(2, '0');
       String formattedMonth = firstAllowedDate.month.toString().padLeft(2, '0');
       String formattedDate = "${firstAllowedDate.year}-$formattedMonth-$formattedDay";
 
-      // Initialiser les dates
+      // Initialiser la date de début
       initialSelectedDate.value = PriceData(
           day: formattedDate,
           dayToDisplay: "$formattedDay-$formattedMonth-${firstAllowedDate.year}",
-          dayOfWeek: firstAllowedDate.weekday.toString(),
+          dayOfWeek: (firstAllowedDate.weekday - 1).toString(), // Convertir au format 0-6
           isDaySelected: true
       );
 
-      // Si l'état sauvegardé existe
+      // Si l'état sauvegardé existe, on le restaure
       if (Get.arguments.length > 2 && Get.arguments[2] != null) {
         final savedState = Get.arguments[2];
         if (savedState['endDate'] != null) {
           endSelectedDate.value = PriceData.fromJson(savedState['endDate']);
         } else {
+          // Sinon on utilise la même date que celle de début
           endSelectedDate.value = PriceData.fromJson(initialSelectedDate.value!.toJson());
         }
 
@@ -223,12 +217,26 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
           selectedSlotKeys.addAll(List<String>.from(savedState['selectedSlotKeys']));
         }
       } else {
+        // Si pas d'état sauvegardé, la date de fin est la même que celle de début
         endSelectedDate.value = PriceData.fromJson(initialSelectedDate.value!.toJson());
       }
 
       doRefreshHoursAfterAction();
       canDoApplyAction();
     }
+  }
+
+  // Ici, dayOfWeek est au format 0-6 où 0=lundi, 6=dimanche
+  DateTime _findNextDayOfWeek(DateTime from, int dayOfWeek) {
+    DateTime result = DateTime(from.year, from.month, from.day);
+
+    // Convertir dayOfWeek de notre format (0-6) au format Dart (1-7)
+    int dartDayOfWeek = dayOfWeek + 1;
+
+    while (result.weekday != dartDayOfWeek) {
+      result = result.add(const Duration(days: 1));
+    }
+    return result;
   }
 
   // Créer une clé unique pour chaque slot
@@ -244,9 +252,48 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
   void toggleSlotSelection(String identifier, String startTime, {bool isSpecial = false}) {
     if (isSpecial) {
       // Vérifier si la messe spéciale est sélectionnable
+      final specialDate = Jiffy.parse(identifier).dateTime;
+      final now = DateTime.now();
+      final currentWeekDay = now.weekday - 1; // 0=lundi, 6=dimanche
+      final isAfternoon = now.hour >= 12;
+      final slotTime = parseTime(startTime);
+      bool isAvailable = true;
+
+      // Vérifier si la messe est dans la plage de dates sélectionnée
       if (!isSpecialMassSelectable(identifier)) {
         showNotification(
           message: 'Cette messe spéciale n\'est pas disponible pour la période sélectionnée',
+          bgColor: colorBlue2,
+        );
+        return;
+      }
+
+      // Pour aujourd'hui, vérifier selon les règles du tableau
+      if (isSameDay(specialDate, now)) {
+        switch (currentWeekDay) {
+          case 1: // Mardi
+            isAvailable = !isAfternoon && slotTime.hour >= 16;
+            break;
+          case 2: // Mercredi
+            isAvailable = !isAfternoon && slotTime.hour >= 16;
+            break;
+          case 3: // Jeudi
+            isAvailable = !isAfternoon && slotTime.hour >= 16;
+            break;
+          case 4: // Vendredi
+            isAvailable = !isAfternoon && slotTime.hour >= 16;
+            break;
+          case 5: // Samedi
+            isAvailable = !isAfternoon && slotTime.hour >= 16;
+            break;
+          default:
+            isAvailable = false; // Dimanche et Lundi: pas de messe disponible
+        }
+      }
+
+      if (!isAvailable) {
+        showNotification(
+          message: 'Cette heure n\'est pas disponible',
           bgColor: colorBlue2,
         );
         return;
@@ -277,7 +324,78 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
 
       worshipSpecialHours.refresh();
     } else {
-      // Logique existante pour les messes récurrentes
+      // Code pour les messes récurrentes
+      // Vérifier la disponibilité selon les règles actuelles
+      final now = DateTime.now();
+      final currentWeekDay = now.weekday - 1; // 0=lundi, 6=dimanche
+      final isAfternoon = now.hour >= 12;
+      final targetWeekDay = int.parse(identifier);
+      final slotTime = parseTime(startTime);
+
+      // Vérifier si l'heure est disponible pour le jour actuel
+      bool isHourAvailable = true;
+
+      // Si une date de fin a été sélectionnée, on ignore certaines règles
+      if (endSelectedDate.value?.dayToDisplay == null ||
+          endSelectedDate.value?.dayToDisplay == '-') {
+        // Appliquer les règles spécifiques selon le jour actuel
+        switch (currentWeekDay) {
+          case 6: // Dimanche (6)
+            if (targetWeekDay == 1) { // Mardi
+              isHourAvailable = slotTime.hour >= 12;
+            }
+            break;
+          case 0: // Lundi (0)
+            if (targetWeekDay == 1) { // Mardi
+              isHourAvailable = slotTime.hour >= 12;
+            }
+            break;
+          case 1: // Mardi (1)
+            if (targetWeekDay == 1) { // Mardi (même jour)
+              isHourAvailable = !isAfternoon && slotTime.hour >= 16;
+            } else if (targetWeekDay == 2) { // Mercredi
+              isHourAvailable = isAfternoon && slotTime.hour >= 12;
+            }
+            break;
+          case 2: // Mercredi (2)
+            if (targetWeekDay == 2) { // Mercredi (même jour)
+              isHourAvailable = !isAfternoon && slotTime.hour >= 16;
+            } else if (targetWeekDay == 3) { // Jeudi
+              isHourAvailable = isAfternoon && slotTime.hour >= 12;
+            }
+            break;
+          case 3: // Jeudi (3)
+            if (targetWeekDay == 3) { // Jeudi (même jour)
+              isHourAvailable = !isAfternoon && slotTime.hour >= 16;
+            } else if (targetWeekDay == 4) { // Vendredi
+              isHourAvailable = isAfternoon && slotTime.hour >= 12;
+            }
+            break;
+          case 4: // Vendredi (4)
+            if (targetWeekDay == 4) { // Vendredi (même jour)
+              isHourAvailable = !isAfternoon && slotTime.hour >= 16;
+            } else if (targetWeekDay == 5) { // Samedi
+              isHourAvailable = isAfternoon && slotTime.hour >= 12;
+            }
+            break;
+          case 5: // Samedi (5)
+            if (targetWeekDay == 5) { // Samedi (même jour)
+              isHourAvailable = !isAfternoon && slotTime.hour >= 16;
+            } else if (targetWeekDay == 1) { // Mardi
+              isHourAvailable = isAfternoon && slotTime.hour >= 12;
+            }
+            break;
+        }
+      }
+
+      if (!isHourAvailable) {
+        showNotification(
+          message: 'Cette heure n\'est pas disponible selon les règles actuelles',
+          bgColor: colorBlue2,
+        );
+        return;
+      }
+
       var recurrentMass = worshipRecurrentHours.firstWhere(
             (mass) => mass.dayOfWeek == identifier,
         orElse: () => PriceData(),
@@ -320,6 +438,10 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
   }
 
   void _restoreSpecialMasses(List<Map<String, dynamic>> savedSpecialMasses) {
+    final now = DateTime.now();
+    final currentWeekDay = now.weekday - 1; // 0=lundi, 6=dimanche
+    final isAfternoon = now.hour >= 12;
+
     for (var savedMass in savedSpecialMasses) {
       var mass = worshipSpecialHours.firstWhereOrNull(
               (m) => m.day == savedMass['day']
@@ -327,6 +449,8 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
 
       if (mass != null) {
         final savedSlots = List<Map<String, dynamic>>.from(savedMass['slots'] ?? []);
+        final specialDate = Jiffy.parse(mass.day ?? '').dateTime;
+        final isToday = isSameDay(specialDate, now);
 
         for (var savedSlot in savedSlots) {
           if (savedSlot['isHourSelected'] == true) {
@@ -336,15 +460,44 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
             );
 
             if (slot != null) {
-              // Marquer le slot comme sélectionné
-              slot.isHourSelected = true;
+              bool isAvailable = true;
 
-              // Ajouter la clé au selectedSlotKeys
-              final slotKey = _createSpecialSlotKey(mass.day ?? '', slot.startTime ?? '');
-              selectedSlotKeys.add(slotKey);
+              // Si c'est aujourd'hui, vérifier selon les règles
+              if (isToday) {
+                final slotTime = parseTime(slot.startTime ?? '');
 
-              // Mettre à jour l'état global
-              onWorshipSpecialHoursSelected(mass);
+                switch (currentWeekDay) {
+                  case 1: // Mardi
+                    isAvailable = !isAfternoon && slotTime.hour >= 16;
+                    break;
+                  case 2: // Mercredi
+                    isAvailable = !isAfternoon && slotTime.hour >= 16;
+                    break;
+                  case 3: // Jeudi
+                    isAvailable = !isAfternoon && slotTime.hour >= 16;
+                    break;
+                  case 4: // Vendredi
+                    isAvailable = !isAfternoon && slotTime.hour >= 16;
+                    break;
+                  case 5: // Samedi
+                    isAvailable = !isAfternoon && slotTime.hour >= 16;
+                    break;
+                  default:
+                    isAvailable = false; // Dimanche et Lundi: pas de messe disponible
+                }
+              }
+
+              if (isAvailable && isSpecialMassSelectable(mass.day ?? '')) {
+                // Marquer le slot comme sélectionné
+                slot.isHourSelected = true;
+
+                // Ajouter la clé au selectedSlotKeys
+                final slotKey = _createSpecialSlotKey(mass.day ?? '', slot.startTime ?? '');
+                selectedSlotKeys.add(slotKey);
+
+                // Mettre à jour l'état global
+                onWorshipSpecialHoursSelected(mass);
+              }
             }
           }
         }
@@ -355,14 +508,16 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
 
   // Déterminer la plage horaire en fonction de l'heure actuelle
   TimeRange _determineTimeRange(DateTime now) {
-    final currentTime = now.hour * 60 + now.minute;  // Convertir en minutes
+    final currentHour = now.hour;
+    final currentMinute = now.minute;
 
-    if (currentTime >= 0 && currentTime <= 9 * 60) {
-      return TimeRange.morning;    // 00h01 - 09h00
-    } else if (currentTime > 9 * 60 && currentTime <= 15 * 60) {
-      return TimeRange.afternoon;  // 09h01 - 15h00
+    // Utiliser le format 24h pour la comparaison
+    final currentTimeInMinutes = currentHour * 60 + currentMinute;
+
+    if (currentTimeInMinutes >= 0 && currentTimeInMinutes < 12 * 60) {
+      return TimeRange.morning; // 00h01 - 12h00
     } else {
-      return TimeRange.evening;    // 15h01 - 00h00
+      return TimeRange.afternoon; // 12h01 - 24h00
     }
   }
 
@@ -421,13 +576,79 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
   }
 
   doRefreshHoursAfterAction() {
+    // Obtenir l'heure actuelle pour calculer correctement les disponibilités
+    final now = DateTime.now();
+    final currentWeekDay = now.weekday - 1; // 0 pour lundi, 6 pour dimanche
+    final isAfternoon = now.hour >= 12;
+
+    // Déterminer la première date selon les règles
+    DateTime firstAllowedDate = Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime;
+
     for (PriceData? i in worshipRecurrentHours) {
       for (Slot l in i?.slots ?? []) {
         if (isDayOfWeekInDateRange(
             int.parse(i?.dayOfWeek ?? '0'),
-            Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime,
+            firstAllowedDate,
             Jiffy.parse(endSelectedDate.value?.day ?? '').dateTime)) {
-          if (l.isHourSelected == true) {
+
+          // Vérifier si l'heure est disponible pour le jour actuel
+          bool isAvailable = true;
+          if (isSameDay(firstAllowedDate, now)) {
+            // Pour aujourd'hui, appliquer les règles spécifiques
+            int targetWeekDay = int.parse(i?.dayOfWeek ?? '0');
+            final slotTime = parseTime(l.startTime ?? '');
+
+            switch (currentWeekDay) {
+              case 6: // Dimanche (6)
+                if (targetWeekDay == 1) { // Mardi
+                  isAvailable = slotTime.hour >= 12;
+                }
+                break;
+              case 0: // Lundi (0)
+                if (targetWeekDay == 1) { // Mardi
+                  isAvailable = slotTime.hour >= 12;
+                }
+                break;
+              case 1: // Mardi (1)
+                if (targetWeekDay == 1) { // Mardi (même jour)
+                  isAvailable = !isAfternoon && slotTime.hour >= 16;
+                } else if (targetWeekDay == 2) { // Mercredi
+                  isAvailable = isAfternoon && slotTime.hour >= 12;
+                }
+                break;
+              case 2: // Mercredi (2)
+                if (targetWeekDay == 2) { // Mercredi (même jour)
+                  isAvailable = !isAfternoon && slotTime.hour >= 16;
+                } else if (targetWeekDay == 3) { // Jeudi
+                  isAvailable = isAfternoon && slotTime.hour >= 12;
+                }
+                break;
+              case 3: // Jeudi (3)
+                if (targetWeekDay == 3) { // Jeudi (même jour)
+                  isAvailable = !isAfternoon && slotTime.hour >= 16;
+                } else if (targetWeekDay == 4) { // Vendredi
+                  isAvailable = isAfternoon && slotTime.hour >= 12;
+                }
+                break;
+              case 4: // Vendredi (4)
+                if (targetWeekDay == 4) { // Vendredi (même jour)
+                  isAvailable = !isAfternoon && slotTime.hour >= 16;
+                } else if (targetWeekDay == 5) { // Samedi
+                  isAvailable = isAfternoon && slotTime.hour >= 12;
+                }
+                break;
+              case 5: // Samedi (5)
+                if (targetWeekDay == 5) { // Samedi (même jour)
+                  isAvailable = !isAfternoon && slotTime.hour >= 16;
+                } else if (targetWeekDay == 1) { // Mardi
+                  isAvailable = isAfternoon && slotTime.hour >= 12;
+                }
+                break;
+            }
+          }
+
+          // Mettre à jour l'état de sélection en fonction de la disponibilité
+          if (l.isHourSelected == true && isAvailable) {
             l.isHourSelected = true;
             onWorshipRecurrentHoursSelected(i, true);
           } else {
@@ -510,8 +731,8 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
   }
 
   selectDate(BuildContext context, PriceData? item) async {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
+    // Utiliser la date de début comme minimum
+    DateTime startDate = Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime;
 
     // Déterminer la date initiale du picker
     DateTime initialDate;
@@ -519,32 +740,27 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
         endSelectedDate.value?.dayToDisplay != '-') {
       // Si une date de fin est déjà sélectionnée, on l'utilise comme date initiale
       List<String> dateParts = endSelectedDate.value!.dayToDisplay!.split('-');
-      DateTime selectedDateTime = DateTime(
+      initialDate = DateTime(
           int.parse(dateParts[2]), // année
           int.parse(dateParts[1]), // mois
           int.parse(dateParts[0]) // jour
-          );
+      );
 
-      // Vérifier si la date sélectionnée est valide (après la date de début)
-      if (selectedDateTime.isAfter(
-              Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime) ||
-          selectedDateTime.isAtSameMomentAs(
-              Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime)) {
-        initialDate = selectedDateTime;
-      } else {
-        initialDate =
-            Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime;
+      // Vérifier si la date est après la date de début
+      if (initialDate.isBefore(startDate)) {
+        initialDate = startDate;
       }
     } else {
-      initialDate = Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime;
+      // Sinon on utilise la date de début
+      initialDate = startDate;
     }
 
     final DateTime? selected = await showDatePicker(
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       context: context,
       initialDate: initialDate,
-      firstDate: Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime,
-      lastDate: DateTime(today.year + 5),
+      firstDate: startDate, // La date de début est la date minimum
+      lastDate: DateTime(startDate.year + 5),
       cancelText: 'cancel'.tr,
       confirmText: 'confirm'.tr,
       builder: (context, child) {
@@ -559,7 +775,7 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
               style: TextButton.styleFrom(
                 foregroundColor: colorWhite,
                 textStyle:
-                    TextStyles.montserratRegular(textSize: TextSizes.fourteen),
+                TextStyles.montserratRegular(textSize: TextSizes.fourteen),
                 backgroundColor: colorPurpleLight,
                 shape: RoundedRectangleBorder(
                   side: const BorderSide(
@@ -604,29 +820,98 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
   Future<void> selectStartDate(BuildContext context) async {
     // Obtenir la date actuelle
     final now = DateTime.now();
-    final timeRange = _determineTimeRange(now);
+    final currentWeekDay = now.weekday - 1; // 0=lundi, 6=dimanche
+    final isAfternoon = now.hour >= 12;
 
     // Déterminer la première date autorisée
-    DateTime minimumAllowedDate = now;
-    if (timeRange == TimeRange.evening) {
-      minimumAllowedDate = now.add(const Duration(days: 1));
+    DateTime minimumAllowedDate;
+
+    switch (currentWeekDay) {
+      case 6: // Dimanche (6)
+      // Prochain jour valide: Mardi
+        minimumAllowedDate = _findNextDayOfWeek(now, 1); // 1 = Mardi
+        break;
+      case 0: // Lundi (0)
+      // Prochain jour valide: Mardi
+        minimumAllowedDate = _findNextDayOfWeek(now, 1); // 1 = Mardi
+        break;
+      case 1: // Mardi (1)
+        if (!isAfternoon) {
+          // Avant 12h: le même jour à 16h
+          minimumAllowedDate = now;
+        } else {
+          // Après 12h: mercredi
+          minimumAllowedDate = _findNextDayOfWeek(now, 2); // 2 = Mercredi
+        }
+        break;
+      case 2: // Mercredi (2)
+        if (!isAfternoon) {
+          // Avant 12h: le même jour à 16h
+          minimumAllowedDate = now;
+        } else {
+          // Après 12h: jeudi
+          minimumAllowedDate = _findNextDayOfWeek(now, 3); // 3 = Jeudi
+        }
+        break;
+      case 3: // Jeudi (3)
+        if (!isAfternoon) {
+          // Avant 12h: le même jour à 16h
+          minimumAllowedDate = now;
+        } else {
+          // Après 12h: vendredi
+          minimumAllowedDate = _findNextDayOfWeek(now, 4); // 4 = Vendredi
+        }
+        break;
+      case 4: // Vendredi (4)
+        if (!isAfternoon) {
+          // Avant 12h: le même jour à 16h
+          minimumAllowedDate = now;
+        } else {
+          // Après 12h: samedi
+          minimumAllowedDate = _findNextDayOfWeek(now, 5); // 5 = Samedi
+        }
+        break;
+      case 5: // Samedi (5)
+        if (!isAfternoon) {
+          // Avant 12h: le même jour à 16h
+          minimumAllowedDate = now;
+        } else {
+          // Après 12h: mardi
+          minimumAllowedDate = _findNextDayOfWeek(now, 1); // 1 = Mardi
+        }
+        break;
+      default:
+        minimumAllowedDate = now;
+        break;
     }
 
     final DateTime? picked = await showDatePicker(
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       context: context,
-      initialDate: Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime,
+      initialDate: minimumAllowedDate,
       firstDate: minimumAllowedDate,
       lastDate: DateTime(now.year + 5),
       cancelText: 'cancel'.tr,
       confirmText: 'confirm'.tr,
       selectableDayPredicate: (date) {
-        // Si ce n'est pas aujourd'hui, la date est sélectionnable
-        if (date.year != now.year || date.month != now.month || date.day != now.day) {
-          return true;
+        // Vérifier si la date est éligible selon les règles du tableau
+        if (isSameDay(date, now)) {
+          // Pour aujourd'hui, vérifier selon le jour de la semaine et l'heure
+          switch (currentWeekDay) {
+            case 6: // Dimanche
+            case 0: // Lundi
+              return false; // Pas de messe disponible le même jour
+            case 1: // Mardi
+            case 2: // Mercredi
+            case 3: // Jeudi
+            case 4: // Vendredi
+            case 5: // Samedi
+              return !isAfternoon; // Disponible uniquement avant 12h
+            default:
+              return false;
+          }
         }
-        // Pour aujourd'hui, vérifier selon la plage horaire
-        return timeRange != TimeRange.evening;
+        return true; // Les autres jours sont sélectionnables
       },
       builder: (context, child) {
         return Theme(
@@ -654,25 +939,6 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
     );
 
     if (picked != null) {
-      // Si la date sélectionnée est aujourd'hui, afficher le message approprié
-      if (picked.year == now.year && picked.month == now.month && picked.day == now.day) {
-        String message = '';
-        switch (timeRange) {
-          case TimeRange.morning:
-            message = 'Les messes ne sont disponibles qu\'à partir de 12h aujourd\'hui';
-            break;
-          case TimeRange.afternoon:
-            message = 'Les messes ne sont disponibles qu\'à partir de 18h aujourd\'hui';
-            break;
-        }
-        if (message.isNotEmpty) {
-          showNotification(
-            message: message,
-            bgColor: colorBlue2,
-          );
-        }
-      }
-
       // Réinitialiser toutes les sélections
       resetSelections();
       resetRecurrentHours();
@@ -685,18 +951,12 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
       initialSelectedDate.value = PriceData(
           day: "${picked.year}-$month-$day",
           dayToDisplay: "$day-$month-${picked.year}",
-          dayOfWeek: picked.weekday.toString(),
+          dayOfWeek: (picked.weekday - 1).toString(), // Convertir au format 0-6
           isDaySelected: true
       );
 
-      // Ajuster la date de fin si nécessaire
-      final endDate = endSelectedDate.value != null
-          ? Jiffy.parse(endSelectedDate.value!.day!).dateTime
-          : null;
-
-      if (endDate == null || endDate.isBefore(picked)) {
-        endSelectedDate.value = PriceData.fromJson(initialSelectedDate.value!.toJson());
-      }
+      // Ajuster la date de fin pour qu'elle soit égale à la date de début
+      endSelectedDate.value = PriceData.fromJson(initialSelectedDate.value!.toJson());
 
       // Rafraîchir l'interface
       doRefreshHoursAfterAction();
@@ -706,31 +966,78 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
 
   bool isStartDateSelectable(DateTime date) {
     final now = DateTime.now();
-    final timeRange = _determineTimeRange(now);
 
     // Si ce n'est pas aujourd'hui, la date est sélectionnable
     if (date.year != now.year || date.month != now.month || date.day != now.day) {
       return true;
     }
 
-    // Pour aujourd'hui, vérifier selon la plage horaire
-    return timeRange != TimeRange.evening;
+    // Pour aujourd'hui, vérifier selon le jour de la semaine
+    final currentWeekDay = now.weekday - 1; // Convertir au format 0-6
+
+    switch (currentWeekDay) {
+      case 6: // Dimanche (6)
+      case 0: // Lundi (0)
+        return false; // Jamais sélectionnable le même jour
+      case 1: // Mardi (1)
+      case 2: // Mercredi (2)
+      case 3: // Jeudi (3)
+      case 4: // Vendredi (4)
+      case 5: // Samedi (5)
+        return now.hour < 12; // Sélectionnable uniquement avant 12h
+      default:
+        return false;
+    }
   }
 
   void showStartDateRestrictionMessage() {
     final now = DateTime.now();
-    final timeRange = _determineTimeRange(now);
+    final currentWeekDay = now.weekday - 1; // Convertir au format 0-6
+    final isAfternoon = now.hour >= 12;
 
     String message = '';
-    switch (timeRange) {
-      case TimeRange.morning:
-        message = 'Les messes ne sont disponibles qu\'à partir de 12h aujourd\'hui';
+
+    switch (currentWeekDay) {
+      case 6: // Dimanche (6)
+        message = 'Les messes ne sont disponibles qu\'à partir de mardi à 12h';
         break;
-      case TimeRange.afternoon:
-        message = 'Les messes ne sont disponibles qu\'à partir de 18h aujourd\'hui';
+      case 0: // Lundi (0)
+        message = 'Les messes ne sont disponibles qu\'à partir de mardi à 12h';
         break;
-      case TimeRange.evening:
-        message = 'Les messes ne sont disponibles qu\'à partir de demain';
+      case 1: // Mardi (1)
+        if (!isAfternoon) {
+          message = 'Les messes ne sont disponibles qu\'à partir de 16h aujourd\'hui';
+        } else {
+          message = 'Les messes ne sont disponibles qu\'à partir de mercredi à 12h';
+        }
+        break;
+      case 2: // Mercredi (2)
+        if (!isAfternoon) {
+          message = 'Les messes ne sont disponibles qu\'à partir de 16h aujourd\'hui';
+        } else {
+          message = 'Les messes ne sont disponibles qu\'à partir de jeudi à 12h';
+        }
+        break;
+      case 3: // Jeudi (3)
+        if (!isAfternoon) {
+          message = 'Les messes ne sont disponibles qu\'à partir de 16h aujourd\'hui';
+        } else {
+          message = 'Les messes ne sont disponibles qu\'à partir de vendredi à 12h';
+        }
+        break;
+      case 4: // Vendredi (4)
+        if (!isAfternoon) {
+          message = 'Les messes ne sont disponibles qu\'à partir de 16h aujourd\'hui';
+        } else {
+          message = 'Les messes ne sont disponibles qu\'à partir de samedi à 12h';
+        }
+        break;
+      case 5: // Samedi (5)
+        if (!isAfternoon) {
+          message = 'Les messes ne sont disponibles qu\'à partir de 16h aujourd\'hui';
+        } else {
+          message = 'Les messes ne sont disponibles qu\'à partir de mardi à 12h';
+        }
         break;
     }
 
@@ -748,18 +1055,56 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
       return true;
     }
 
-    final timeRange = _determineTimeRange(now);
+    // Obtenir le jour de la semaine actuel au format 0-6 (0=lundi, 6=dimanche)
+    int currentWeekDay = now.weekday - 1;
+
+    final isAfternoon = now.hour >= 12;
     final slotTime = parseTime(startTime);
 
-    switch (timeRange) {
-      case TimeRange.morning:     // 00h01 - 09h00
-        return slotTime.hour >= 12;
-      case TimeRange.afternoon:   // 09h01 - 15h00
-        return slotTime.hour >= 18;
-      case TimeRange.evening:     // 15h01 - 00h00
-        return false;
+    // Appliquer les règles selon le jour actuel
+    switch (currentWeekDay) {
+      case 1: // Mardi (1)
+        if (!isAfternoon) {
+          // Avant 12h: le même jour (mardi) à 16h
+          return slotTime.hour >= 16;
+        } else {
+          // Après 12h: pas de messe le même jour
+          return false;
+        }
+      case 2: // Mercredi (2)
+        if (!isAfternoon) {
+          // Avant 12h: le même jour (mercredi) à 16h
+          return slotTime.hour >= 16;
+        } else {
+          // Après 12h: pas de messe le même jour
+          return false;
+        }
+      case 3: // Jeudi (3)
+        if (!isAfternoon) {
+          // Avant 12h: le même jour (jeudi) à 16h
+          return slotTime.hour >= 16;
+        } else {
+          // Après 12h: pas de messe le même jour
+          return false;
+        }
+      case 4: // Vendredi (4)
+        if (!isAfternoon) {
+          // Avant 12h: le même jour (vendredi) à 16h
+          return slotTime.hour >= 16;
+        } else {
+          // Après 12h: pas de messe le même jour
+          return false;
+        }
+      case 5: // Samedi (5)
+        if (!isAfternoon) {
+          // Avant 12h: le même jour (samedi) à 16h
+          return slotTime.hour >= 16;
+        } else {
+          // Après 12h: pas de messe le même jour
+          return false;
+        }
       default:
-        return true;
+        return false; // Pas de messe disponible le même jour pour dimanche et lundi
     }
   }
 
