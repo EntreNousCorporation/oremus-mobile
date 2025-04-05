@@ -19,6 +19,7 @@ abstract class ApiClient extends GetConnect {
     required HttpMethod method,
     dynamic body,
     bool useBearer = true,
+    String? customBaseUrl,
   });
 }
 
@@ -29,6 +30,7 @@ class ApiClientImpl extends ApiClient {
     required HttpMethod method,
     body,
     bool useBearer = true,
+    String? customBaseUrl,
   }) async {
     Map<String, String> headers = <String, String>{};
     headers[HttpHeaders.contentTypeHeader] = 'application/json; charset=utf-8';
@@ -39,7 +41,9 @@ class ApiClientImpl extends ApiClient {
     }
     timeout = const Duration(seconds: AppConstants.REQUEST_TIMEOUT);
 
-    log("url => " + appUrl + endpoint);
+    // Utiliser l'URL de base personnalisée si elle est fournie, sinon utiliser l'URL d'application par défaut
+    final baseUrl = customBaseUrl ?? appUrl;
+    log("url => " + baseUrl + endpoint);
     log("headers => " + headers.toString());
     log("method => " + method.name);
     //log("body => " + body != null ? body: '');
@@ -73,23 +77,23 @@ class ApiClientImpl extends ApiClient {
     try {
       switch (method) {
         case HttpMethod.get:
-          response = await get(appUrl + endpoint, headers: headers);
+          response = await get(baseUrl + endpoint, headers: headers);
           break;
         case HttpMethod.post:
-          response = await post(appUrl + endpoint, processedBody, headers: headers);
+          response = await post(baseUrl + endpoint, processedBody, headers: headers);
           break;
         case HttpMethod.patch:
-          response = await patch(appUrl + endpoint, processedBody, headers: headers);
+          response = await patch(baseUrl + endpoint, processedBody, headers: headers);
           break;
         case HttpMethod.put:
-          response = await put(appUrl + endpoint, processedBody, headers: headers);
+          response = await put(baseUrl + endpoint, processedBody, headers: headers);
           break;
         case HttpMethod.delete:
-          response = await delete(appUrl + endpoint, headers: headers);
+          response = await delete(baseUrl + endpoint, headers: headers);
           break;
       }
 
-      log("statusCode ${appUrl + endpoint} => ${response.statusCode}");
+      log("statusCode ${baseUrl + endpoint} => ${response.statusCode}");
       log("bodystring => " + response.bodyString.toString());
 
       resp = _response(response);
@@ -116,13 +120,13 @@ class ApiClientImpl extends ApiClient {
       case 403:
         var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
         throw UnauthorisedException(403, e.debugMessage);
-        //throw UnauthorisedException(403, 'Requête non authorisée');
+    //throw UnauthorisedException(403, 'Requête non authorisée');
       case 409:
         throw ConflictedException(409, 'Conflit survenu');
       case 500:
         throw InternalServerErrorException(500, 'Une erreur interne du serveur est survenue');
       case 900:
-          throw FetchDataException(900, 'Pas de connexion à Internet');
+        throw FetchDataException(900, 'Pas de connexion à Internet');
       default:
         throw FetchDataException(901, 'Une erreur inconnue est survenue');
     }
