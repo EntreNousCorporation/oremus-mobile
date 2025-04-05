@@ -44,7 +44,7 @@ class SearchWidget extends StatelessWidget {
             ),
             errorBorder: InputBorder.none,
             disabledBorder: InputBorder.none,
-            hintText: 'Recherche par nom',
+            hintText: 'Recherche par nom, adresse, nom de la diocèse et la description d\'une paroisse',
             hintStyle: TextStyles.montserratItalic(
                 textColor: colorPurpleLight, textSize: TextSizes.fourteen),
             //prefixIcon: const Icon(Icons.search, color: colorPurpleLight,),
