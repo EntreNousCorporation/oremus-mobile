@@ -141,7 +141,7 @@ class MassRequestController extends GetxController {
       Routes.PAYMENT,
       arguments: {
         'payment_response': massRequestResponse.toJson(),
-        'payment_type': PaymentType.donation,
+        'payment_type': PaymentType.massRequest,
       },
     );
   }
@@ -212,7 +212,6 @@ class MassRequestController extends GetxController {
                 onSurface: colorBlack,
                 primary: colorGreen
             ),
-            dialogBackgroundColor: Colors.white,
             // Personnaliser les boutons du Dialog
             textButtonTheme: TextButtonThemeData(
               style: ButtonStyle(
@@ -243,7 +242,7 @@ class MassRequestController extends GetxController {
                   ),
                 ),
               ),
-            ),
+            ), dialogTheme: const DialogThemeData(backgroundColor: Colors.white),
           ),
           child: child!,
         );
@@ -307,8 +306,7 @@ class MassRequestController extends GetxController {
                 onPrimary: colorWhite,
                 onSurface: colorBlack,
                 primary: colorGreen
-            ),
-            dialogBackgroundColor: Colors.white,
+            ), dialogTheme: const DialogThemeData(backgroundColor: Colors.white),
           ),
           child: Dialog(
             child: Column(
@@ -499,138 +497,6 @@ class MassRequestController extends GetxController {
     checkForm();
   }
 
-  /*
-  void updateRepetitionFilter(DateTime datetime, {bool isFirst = true, Slot? selectHour}) {
-    final now = DateTime.now();
-    final timeRange = _determineTimeRange(now);
-
-    // Normaliser les dates pour la comparaison
-    final todayNormalized = DateTime(now.year, now.month, now.day);
-    final tomorrowNormalized = todayNormalized.add(const Duration(days: 1));
-    final selectedDateNormalized = DateTime(datetime.year, datetime.month, datetime.day);
-
-    // Déterminer la date cible selon les règles
-    DateTime targetDate = datetime;
-
-    // Vérifier si nous devons appliquer les règles de filtrage
-    bool shouldApplyRules = false;
-
-    if (selectedDateNormalized.isAtSameMomentAs(todayNormalized)) {
-      // Pour aujourd'hui, on applique toujours les règles
-      shouldApplyRules = true;
-
-      // Si on est le soir, forcer le passage à demain
-      if (timeRange == TimeRange.evening) {
-        targetDate = tomorrowNormalized;
-      }
-    }
-    // Pour demain, on applique les règles uniquement si on vient de basculer depuis le soir
-    else if (selectedDateNormalized.isAtSameMomentAs(tomorrowNormalized) &&
-        timeRange == TimeRange.evening &&
-        !selectedDateNormalized.isAfter(tomorrowNormalized)) {
-      shouldApplyRules = true;
-    }
-
-    // Formater la date pour l'affichage
-    final formattedDay = targetDate.day.toString().padLeft(2, '0');
-    final formattedMonth = targetDate.month.toString().padLeft(2, '0');
-    final formattedTargetDate = "${targetDate.year}-$formattedMonth-$formattedDay";
-
-    // Récupérer tous les slots disponibles pour cette date
-    List<Slot> allSlots = [];
-
-    // Ajouter les horaires récurrents
-    final recurentHour = worshipRecurrentHours.firstWhereOrNull(
-            (element) => int.parse(element.dayOfWeek ?? '0') == (targetDate.weekday - 1)
-    );
-    if (recurentHour != null) {
-      allSlots.addAll(recurentHour.slots ?? []);
-    }
-
-    // Ajouter les horaires spéciaux
-    final specialHour = worshipSpecialHours.firstWhereOrNull(
-            (element) => element.day == formattedTargetDate
-    );
-    if (specialHour != null) {
-      allSlots.addAll(specialHour.slots ?? []);
-    }
-
-    // Filtrer les slots selon les règles
-    List<Slot> filteredSlots = List.from(allSlots);
-
-    if (shouldApplyRules) {
-      switch (timeRange) {
-        case TimeRange.morning:
-        // Entre 00h01 et 09h00 : messes à partir de 12h le même jour
-          filteredSlots = allSlots.where((slot) {
-            final slotTime = parseTime(slot.startTime ?? '');
-            return slotTime.hour >= 12;
-          }).toList();
-          break;
-
-        case TimeRange.afternoon:
-        // Entre 09h01 et 15h00 : messes à partir de 18h le même jour
-          filteredSlots = allSlots.where((slot) {
-            final slotTime = parseTime(slot.startTime ?? '');
-            return slotTime.hour >= 18;
-          }).toList();
-          break;
-
-        case TimeRange.evening:
-        // Entre 15h01 et 00h00 : messes à partir de 12h le lendemain
-          filteredSlots = allSlots.where((slot) {
-            final slotTime = parseTime(slot.startTime ?? '');
-            return slotTime.hour >= 12;
-          }).toList();
-          break;
-      }
-    }
-
-    // Trier les slots
-    filteredSlots.sort((a, b) {
-      final timeA = parseTime(a.startTime ?? '');
-      final timeB = parseTime(b.startTime ?? '');
-      return compareTimes(timeA, timeB);
-    });
-
-    // Mettre à jour les heures disponibles
-    selectedHours.clear();
-    selectedHours.addAll(filteredSlots);
-    selectedHours.refresh();
-
-    // Sélectionner l'heure
-    if (selectedHours.isNotEmpty) {
-      if (isFirst || selectedHour.value == null) {
-        selectedHour.value = selectedHours.first;
-      } else if (selectHour != null) {
-        selectedHour.value = selectHour;
-      } else if (!selectedHours.contains(selectedHour.value)) {
-        selectedHour.value = selectedHours.first;
-      }
-      selectedHour.refresh();
-    } else {
-      selectedHour.value = null;
-    }
-
-    // Mettre à jour la date sélectionnée
-    selectedDate.value = PriceData(
-      day: formattedTargetDate,
-      dayOfWeek: targetDate.weekday.toString(),
-      isDaySelected: true,
-      dayToDisplay: "$formattedDay-$formattedMonth-${targetDate.year}",
-      slots: selectedHour.value != null ? [selectedHour.value!] : [],
-    );
-    selectedDate.refresh();
-    // Après avoir mis à jour la date et l'heure sélectionnées
-    if (selectedHour.value != null && selectedDate.value != null) {
-      // Mettre à jour datesChoosen avec une seule date
-      datesChoosen.value = [selectedDate.value ?? PriceData()];
-      // Appeler le service de prix
-      doGetMassRequestPrice();
-    }
-    update();
-  }*/
-
   void updateRepetitionFilter(DateTime datetime, {bool isFirst = true, Slot? selectHour}) {
     final now = DateTime.now();
 
@@ -731,8 +597,6 @@ class MassRequestController extends GetxController {
 
       if (nextDate != targetDate) {
         targetDate = nextDate;
-        // Réinitialiser targetHour si on a changé de date
-        targetHour = 0; // Prendra toutes les heures disponibles
         log('Prochaine date avec messes disponibles: ${targetDate.toString()} (${getDay(targetDate.weekday)})');
       }
     }
@@ -770,41 +634,55 @@ class MassRequestController extends GetxController {
 
     log('Nombre total de slots trouvés: ${allSlots.length}');
 
-    // Filtrer les slots selon les règles
-    List<Slot> filteredSlots = [];
-
-    // Si c'est le jour même, appliquer des règles spécifiques
-    if (isSameDay(targetDate, now)) {
-      filteredSlots = allSlots.where((slot) {
-        // Convertir "HH:MM:SS" en heure
-        final slotTime = parseTimeFromString(slot.startTime ?? '00:00:00');
-        return slotTime.hour >= targetHour;
-      }).toList();
-    } else if (targetDate.difference(DateTime(now.year, now.month, now.day)).inDays == 1) {
-      // Si c'est le lendemain, les messes à partir de l'heure minimale
-      filteredSlots = allSlots.where((slot) {
-        final slotTime = parseTimeFromString(slot.startTime ?? '00:00:00');
-        return slotTime.hour >= targetHour;
-      }).toList();
-    } else {
-      // Pour les jours plus loin, toutes les messes sont disponibles
-      filteredSlots = List.from(allSlots);
-    }
-
-    log('Nombre de slots filtrés: ${filteredSlots.length}');
-
-    // Si aucun slot n'est disponible après filtrage, prendre tous les slots
-    if (filteredSlots.isEmpty && allSlots.isNotEmpty) {
-      log('Aucun slot après filtrage, on prend tous les slots disponibles');
-      filteredSlots = List.from(allSlots);
-    }
-
     // Trier les slots par heure
-    filteredSlots.sort((a, b) {
+    allSlots.sort((a, b) {
       final timeA = parseTimeFromString(a.startTime ?? '00:00:00');
       final timeB = parseTimeFromString(b.startTime ?? '00:00:00');
       return timeA.hour * 60 + timeA.minute - (timeB.hour * 60 + timeB.minute);
     });
+
+    // Filtrer les slots selon l'heure cible du tableau
+    List<Slot> filteredSlots = [];
+
+    // Nouvelle logique pour sélectionner le slot le plus proche de l'heure cible
+    Slot? closestSlot;
+    int? minDifference;
+
+    for (var slot in allSlots) {
+      final slotTime = parseTimeFromString(slot.startTime ?? '00:00:00');
+
+      // Si nous avons un créneau exact à l'heure cible, le sélectionner directement
+      if (slotTime.hour == targetHour) {
+        closestSlot = slot;
+        minDifference = 0;
+        break;
+      }
+
+      // Sinon, trouver le créneau le plus proche de l'heure cible
+      // Selon le tableau, nous préférons les créneaux après l'heure cible
+      int difference = slotTime.hour - targetHour;
+
+      // Pour les créneaux avant l'heure cible, augmenter artificiellement la différence
+      // pour favoriser les créneaux après l'heure cible (comme indiqué dans le tableau)
+      if (difference < 0) {
+        difference = difference + 24; // Ajouter 24 pour mettre à la fin de la liste
+      }
+
+      if (minDifference == null || difference < minDifference) {
+        minDifference = difference;
+        closestSlot = slot;
+      }
+    }
+
+    // Si on a trouvé un créneau proche, l'utiliser, sinon prendre tous les créneaux
+    if (closestSlot != null) {
+      filteredSlots = [closestSlot];
+      log('Sélection du créneau le plus proche de ${targetHour}h: ${closestSlot.startTime}');
+    } else if (allSlots.isNotEmpty) {
+      // Si aucun créneau ne correspond à notre logique, prendre tous les créneaux disponibles
+      filteredSlots = List.from(allSlots);
+      log('Aucun créneau proche trouvé, utilisation de tous les créneaux disponibles');
+    }
 
     // Mettre à jour les heures disponibles
     selectedHours.clear();
@@ -923,19 +801,6 @@ class MassRequestController extends GetxController {
 
     // Si aucune messe n'est trouvée, retourner la date de départ
     return startDate;
-  }
-
-  /// Détermine la plage horaire en fonction de l'heure actuelle
-  TimeRange _determineTimeRange(DateTime now) {
-    final currentTime = now.hour * 60 + now.minute;  // Convertir en minutes
-
-    if (currentTime > 0 && currentTime <= 9 * 60) {
-      return TimeRange.morning;     // 00:01-09:00
-    }
-    if (currentTime > 9 * 60 && currentTime <= 15 * 60) {
-      return TimeRange.afternoon;   // 09:01-15:00
-    }
-    return TimeRange.evening;       // 15:01-00:00
   }
 
   doGetMassRequestType() {
@@ -1200,30 +1065,5 @@ class MassRequestController extends GetxController {
     log('removeFavorite 1 => ${paroisse.isFavorite}');
     paroisseRepository.deleteFavorite(paroisse);
     //showMessageFavorite(state);
-  }
-
-  // Fonction pour analyser une heure à partir d'une chaîne (par exemple "12:30")
-  DateTime parseTime(String timeString) {
-    if (timeString.isEmpty) {
-      return DateTime(2000, 1, 1, 0, 0); // Date arbitraire avec heure 00:00
-    }
-
-    final parts = timeString.split(':');
-    if (parts.length < 2) {
-      return DateTime(2000, 1, 1, 0, 0);
-    }
-
-    int hours = int.tryParse(parts[0]) ?? 0;
-    int minutes = int.tryParse(parts[1]) ?? 0;
-
-    return DateTime(2000, 1, 1, hours, minutes);
-  }
-
-// Fonction pour comparer deux heures
-  int compareTimes(DateTime time1, DateTime time2) {
-    if (time1.hour != time2.hour) {
-      return time1.hour.compareTo(time2.hour);
-    }
-    return time1.minute.compareTo(time2.minute);
   }
 }
