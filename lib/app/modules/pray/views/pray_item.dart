@@ -96,6 +96,7 @@ class PrayItem extends StatelessWidget {
                       logic.update();
                     },
                     child: Container(
+                      color: colorTransparent,
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20.0,
