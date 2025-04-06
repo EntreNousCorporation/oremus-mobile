@@ -43,19 +43,23 @@ class CustomHomeNewScreen extends StatelessWidget {
                 screenCurrent = const ParoisseScreen();
                 break;
               case AppConstants.PROFILE:
-                logic.title.value = logic.menus[position].libelle ?? 'Mon Profil';
+                logic.title.value =
+                    logic.menus[position].libelle ?? 'Mon Profil';
                 screenCurrent = const ProfileScreen();
                 break;
               case AppConstants.PRAY:
-                logic.title.value = logic.menus[position].libelle ?? 'Mini Missel';
+                logic.title.value =
+                    logic.menus[position].libelle ?? 'Mini Missel';
                 screenCurrent = const PrayScreen();
                 break;
               case AppConstants.REQUEST_MASS_WITHOUT_WORSHIP:
-                logic.title.value = logic.menus[position].libelle ?? 'Demande de messe';
+                logic.title.value =
+                    logic.menus[position].libelle ?? 'Demande de messe';
                 screenCurrent = const MassRequestMenuScreen();
                 break;
               case AppConstants.DONATION_WITHOUT_WORSHIP:
-                logic.title.value = logic.menus[position].libelle ?? 'Faire un don';
+                logic.title.value =
+                    logic.menus[position].libelle ?? 'Faire un don';
                 screenCurrent = const DonationMenuScreen();
                 break;
               case AppConstants.ROSAIRE:
@@ -63,7 +67,8 @@ class CustomHomeNewScreen extends StatelessWidget {
                 screenCurrent = const RosaryScreen();
                 break;
               case AppConstants.PROMO:
-                logic.title.value = logic.menus[position].libelle ?? 'Codes promo';
+                logic.title.value =
+                    logic.menus[position].libelle ?? 'Codes promo';
                 screenCurrent = const PromoScreen();
                 break;
               case AppConstants.FAQ:
@@ -79,13 +84,15 @@ class CustomHomeNewScreen extends StatelessWidget {
                 screenCurrent = const AboutScreen();
                 break;
               case AppConstants.SETTINGS:
-                logic.title.value = logic.menus[position].libelle ?? 'Paramètres';
+                logic.title.value =
+                    logic.menus[position].libelle ?? 'Paramètres';
                 screenCurrent = const SettingsScreen();
                 break;
             }
 
             // L'écran est-il la page d'accueil principale?
-            final bool isHomePage = logic.menus[position].code == AppConstants.HOME;
+            final bool isHomePage =
+                logic.menus[position].code == AppConstants.HOME;
 
             return Scaffold(
               backgroundColor: colorGrey4,
@@ -110,7 +117,8 @@ class CustomHomeNewScreen extends StatelessWidget {
                       children: [
                         // Custom app bar
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
                           child: Row(
                             children: [
                               Container(
@@ -142,58 +150,63 @@ class CustomHomeNewScreen extends StatelessWidget {
                               ),
                               // Action buttons
                               if (isUserConnected.value &&
-                                  logic.menus[logic.selectedIndex.value].code == AppConstants.PROFILE &&
+                                  logic.menus[logic.selectedIndex.value].code ==
+                                      AppConstants.PROFILE &&
                                   logic.userCanUpdateProfile())
                                 GetBuilder<ProfileController>(
                                     builder: (profileLogic) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.white.withValues(alpha: 0.3),
-                                          borderRadius: BorderRadius.circular(12),
-                                        ),
-                                        child: IconButton(
-                                          icon: const Icon(
-                                            Icons.edit_rounded,
-                                            color: colorWhite,
-                                            size: 20,
-                                          ),
-                                          onPressed: () {
-                                            profileLogic.goToEditProfile();
-                                          },
-                                        ),
-                                      );
-                                    }
-                                ),
-                              if (logic.menus[logic.selectedIndex.value].code == AppConstants.HOME)
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color:
+                                          Colors.white.withValues(alpha: 0.3),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: IconButton(
+                                      icon: const Icon(
+                                        Icons.edit_rounded,
+                                        color: colorWhite,
+                                        size: 20,
+                                      ),
+                                      onPressed: () {
+                                        profileLogic.goToEditProfile();
+                                      },
+                                    ),
+                                  );
+                                })
+                              else if (logic
+                                      .menus[logic.selectedIndex.value].code ==
+                                  AppConstants.HOME)
                                 GetBuilder<CustomHomeController>(
                                     builder: (homeLogic) {
-                                      return Bounce(
-                                        key: homeLogic.basicIconAnimation,
-                                        preferences: AnimationPreferences(
-                                          offset: const Duration(seconds: 3),
-                                          autoPlay: homeLogic.applyAnimation(),
-                                          magnitude: 0.3,
+                                  return Bounce(
+                                    key: homeLogic.basicIconAnimation,
+                                    preferences: AnimationPreferences(
+                                      offset: const Duration(seconds: 3),
+                                      autoPlay: homeLogic.applyAnimation(),
+                                      magnitude: 0.3,
+                                    ),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color:
+                                            Colors.white.withValues(alpha: 0.3),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: IconButton(
+                                        icon: const Icon(
+                                          Icons.favorite_border_outlined,
+                                          color: colorWhite,
+                                          size: 22,
                                         ),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white.withValues(alpha: 0.3),
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                          child: IconButton(
-                                            icon: const Icon(
-                                              Icons.favorite_border_outlined,
-                                              color: colorWhite,
-                                              size: 22,
-                                            ),
-                                            onPressed: () {
-                                              homeLogic.goToFavorites();
-                                            },
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                ),
-                              if (logic.menus[logic.selectedIndex.value].code == AppConstants.ROSAIRE)
+                                        onPressed: () {
+                                          homeLogic.goToFavorites();
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                })
+                              else if (logic
+                                      .menus[logic.selectedIndex.value].code ==
+                                  AppConstants.ROSAIRE)
                                 Visibility(
                                   visible: false,
                                   maintainState: true,
@@ -201,20 +214,46 @@ class CustomHomeNewScreen extends StatelessWidget {
                                   maintainAnimation: true,
                                   child: GetBuilder<RosaryController>(
                                       builder: (rosaireController) {
-                                        return Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white.withValues(alpha: 0.3),
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                          child: IconButton(
-                                            icon: const Icon(Icons.settings_outlined, color: Colors.white),
-                                            onPressed: () {
-                                              rosaireController.showSettingsDialog();
-                                            },
-                                          ),
-                                        );
-                                      }
-                                  ),
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        color:
+                                            Colors.white.withValues(alpha: 0.3),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: IconButton(
+                                        icon: const Icon(
+                                            Icons.settings_outlined,
+                                            color: Colors.white),
+                                        onPressed: () {
+                                          rosaireController
+                                              .showSettingsDialog();
+                                        },
+                                      ),
+                                    );
+                                  }),
+                                )
+                              else
+                                Visibility(
+                                  visible: false,
+                                  maintainState: true,
+                                  maintainSize: true,
+                                  maintainAnimation: true,
+                                  child: GetBuilder<RosaryController>(
+                                      builder: (rosaireController) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        color:
+                                            Colors.white.withValues(alpha: 0.3),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: const IconButton(
+                                        icon: Icon(
+                                            Icons.settings_outlined,
+                                            color: Colors.white),
+                                        onPressed: null,
+                                      ),
+                                    );
+                                  }),
                                 ),
                             ],
                           ),

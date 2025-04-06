@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/text_field.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/editpassword/controller/edit_password_controller.dart';
 
 class EditPasswordScreen extends StatelessWidget {
@@ -25,8 +26,8 @@ class EditPasswordScreen extends StatelessWidget {
                   decoration: const BoxDecoration(
                     color: colorGreen,
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(30),
-                      bottomRight: Radius.circular(30),
+                      bottomLeft: Radius.circular(0),
+                      bottomRight: Radius.circular(0),
                     ),
                   ),
                 ),
@@ -56,7 +57,7 @@ class EditPasswordScreen extends StatelessWidget {
                                 },
                               ),
                             ),
-                            const Expanded(
+                            Expanded(
                               child: Center(
                                 child: Hero(
                                   tag: 'update-password',
@@ -64,10 +65,9 @@ class EditPasswordScreen extends StatelessWidget {
                                     color: Colors.transparent,
                                     child: Text(
                                       'Modifier votre mot de passe',
-                                      style: TextStyle(
-                                        color: colorWhite,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
+                                      style: TextStyles.montserratBold(
+                                        textColor: colorWhite,
+                                        textSize: 20,
                                       ),
                                     ),
                                   ),
@@ -88,7 +88,7 @@ class EditPasswordScreen extends StatelessWidget {
                             child: SingleChildScrollView(
                               physics: const BouncingScrollPhysics(),
                               child: Padding(
-                                padding: const EdgeInsets.all(20),
+                                padding: const EdgeInsets.only(left: 20, right: 20),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [

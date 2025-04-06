@@ -212,6 +212,11 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
           _restoreSpecialMasses(savedSpecialMasses);
         }
 
+        if (savedState['recurringMasses'] != null) {
+          final savedRecurringMasses = List<Map<String, dynamic>>.from(savedState['recurringMasses']);
+          _restoreRecurrentMasses(savedRecurringMasses);
+        }
+
         if (savedState['selectedSlotKeys'] != null) {
           selectedSlotKeys.clear();
           selectedSlotKeys.addAll(List<String>.from(savedState['selectedSlotKeys']));
@@ -335,6 +340,35 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
       // Vérifier si l'heure est disponible pour le jour actuel
       bool isHourAvailable = true;
 
+      // Vérification spécifique pour dimanche et lundi lorsqu'on sélectionne un horaire du mardi
+      if (targetWeekDay == 1) { // Si c'est un mardi
+        // Si aujourd'hui est dimanche (6) ou lundi (0), n'autoriser que les heures à partir de 12h
+        // MAIS SEULEMENT pour le premier mardi après le jour actuel
+        if ((currentWeekDay == 6 || currentWeekDay == 0)) {
+          // Obtenir la date du prochain mardi
+          DateTime nextTuesday = _findNextDayOfWeek(now, 1);
+          // Obtenir la date de fin sélectionnée
+          DateTime endDate = Jiffy.parse(endSelectedDate.value?.day ?? '').dateTime;
+
+          // Si la date de fin est après le prochain mardi, et que la période contient plusieurs mardis,
+          // alors permettre tous les créneaux pour les mardis futurs
+          bool isExtendedPeriod = endDate.isAfter(nextTuesday.add(const Duration(days: 1)));
+
+          // Si nous ne sommes pas dans une période étendue, ou si c'est le premier mardi de la période,
+          // appliquer la restriction
+          if (!isExtendedPeriod) {
+            if (slotTime.hour < 12) {
+              isHourAvailable = false;
+              showNotification(
+                message: 'Le dimanche et le lundi, seules les messes du mardi à partir de 12h sont disponibles',
+                bgColor: colorBlue2,
+              );
+              return;
+            }
+          }
+        }
+      }
+
       // Si une date de fin a été sélectionnée, on ignore certaines règles
       if (endSelectedDate.value?.dayToDisplay == null ||
           endSelectedDate.value?.dayToDisplay == '-') {
@@ -437,6 +471,55 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
     }
   }
 
+  void _restoreRecurrentMasses(List<Map<String, dynamic>> savedRecurrentMasses) {
+    final now = DateTime.now();
+    final currentWeekDay = now.weekday - 1; // 0=lundi, 6=dimanche
+    final isAfternoon = now.hour >= 12;
+
+    for (var savedMass in savedRecurrentMasses) {
+      var mass = worshipRecurrentHours.firstWhereOrNull(
+              (m) => m.dayOfWeek == savedMass['dayOfWeek']
+      );
+
+      if (mass != null) {
+        final savedSlots = List<Map<String, dynamic>>.from(savedMass['slots'] ?? []);
+        final dayOfWeek = int.parse(mass.dayOfWeek ?? '0');
+
+        for (var savedSlot in savedSlots) {
+          if (savedSlot['isHourSelected'] == true) {
+            // Retrouver le slot correspondant
+            var slot = mass.slots?.firstWhereOrNull(
+                    (s) => s.startTime == savedSlot['startTime']
+            );
+
+            if (slot != null) {
+              bool isAvailable = true;
+
+              // Vérification spécifique pour dimanche et lundi quand c'est un mardi
+              if (dayOfWeek == 1) { // Si c'est mardi (1)
+                if ((currentWeekDay == 6 || currentWeekDay == 0)) { // dimanche ou lundi
+                  final slotTime = parseTimeFromString(slot.startTime ?? '');
+                  isAvailable = slotTime.hour >= 12;
+                }
+              }
+
+              if (isAvailable) {
+                // Marquer le slot comme sélectionné
+                slot.isHourSelected = true;
+                // Ajouter la clé au selectedSlotKeys
+                final slotKey = _createSlotKey(mass.dayOfWeek ?? '', slot.startTime ?? '');
+                selectedSlotKeys.add(slotKey);
+                // Mettre à jour l'état global
+                onWorshipRecurrentHoursSelected(mass, true);
+              }
+            }
+          }
+        }
+      }
+    }
+    worshipRecurrentHours.refresh();
+  }
+
   void _restoreSpecialMasses(List<Map<String, dynamic>> savedSpecialMasses) {
     final now = DateTime.now();
     final currentWeekDay = now.weekday - 1; // 0=lundi, 6=dimanche
@@ -455,10 +538,7 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
         for (var savedSlot in savedSlots) {
           if (savedSlot['isHourSelected'] == true) {
             // Retrouver le slot correspondant
-            var slot = mass.slots?.firstWhereOrNull(
-                    (s) => s.startTime == savedSlot['startTime']
-            );
-
+            var slot = mass.slots?.firstWhereOrNull((s) => s.startTime == savedSlot['startTime']);
             if (slot != null) {
               bool isAvailable = true;
 
@@ -586,6 +666,27 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
 
     for (PriceData? i in worshipRecurrentHours) {
       for (Slot l in i?.slots ?? []) {
+
+        if (int.parse(i?.dayOfWeek ?? '0') == 1) { // Si c'est mardi (1)
+          if ((currentWeekDay == 6 || currentWeekDay == 0)) { // Si aujourd'hui est dimanche ou lundi
+            // Obtenir la date du prochain mardi
+            DateTime nextTuesday = _findNextDayOfWeek(now, 1);
+            // Obtenir la date de fin sélectionnée
+            DateTime endDate = Jiffy.parse(endSelectedDate.value?.day ?? '').dateTime;
+
+            // Si la date de fin est après le prochain mardi et contient plusieurs mardis,
+            // permettre tous les créneaux pour les mardis futurs
+            bool isExtendedPeriod = endDate.isAfter(nextTuesday.add(const Duration(days: 1)));
+
+            // Si nous ne sommes pas dans une période étendue, appliquer la restriction
+            if (!isExtendedPeriod && parseTimeFromString(l.startTime ?? '00:00:00').hour < 12) {
+              // Désactiver les créneaux avant 12h uniquement pour le premier mardi
+              l.isHourSelected = false;
+              continue; // Passer au créneau suivant
+            }
+          }
+        }
+
         if (isDayOfWeekInDateRange(
             int.parse(i?.dayOfWeek ?? '0'),
             firstAllowedDate,
@@ -1330,7 +1431,7 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
           dayToDisplay: day.dayToDisplay,
           isDaySelected: true,
         ));
-      }
+      } 
     }
 
     // Traitement des messes spéciales
@@ -1391,5 +1492,19 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
     };
 
     Get.back(result: result);
+  }
+
+  DateTime parseTimeFromString(String timeString) {
+    try {
+      final parts = timeString.split(':');
+      int hour = int.parse(parts[0]);
+      int minute = parts.length > 1 ? int.parse(parts[1]) : 0;
+      int second = parts.length > 2 ? int.parse(parts[2]) : 0;
+
+      return DateTime(2000, 1, 1, hour, minute, second);
+    } catch (e) {
+      log('Erreur lors du parsing de l\'heure: $timeString - $e');
+      return DateTime(2000, 1, 1, 0, 0, 0);
+    }
   }
 }

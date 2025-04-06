@@ -342,24 +342,8 @@ List<PriceData> transformWorshipRecurrentHours(List<LiturgicalCelebrationRespons
   return result;
 }
 
-// Fonction pour obtenir les dates des jours spécifiques
-/*List<DateTime> getNextDatesForDays(List<int> daysOfWeek) {
-  List<DateTime> upcomingDates = [];
-  DateTime today = DateTime.now();
-  int daysInMonth = 365; //AppConstants.END_DATE_LIMIT;
-
-  for (int i = 0; i < daysInMonth; i++) {
-    DateTime futureDate = today.add(Duration(days: i));
-    if (daysOfWeek.contains(futureDate.weekday % 7)) {
-      upcomingDates.add(DateTime(futureDate.year, futureDate.month,
-          futureDate.day)); // Ignorer les heures pour comparaison
-    }
-  }
-  return upcomingDates;
-}*/
-
 List<DateTime> getNextDatesForDays(List<int> daysOfWeek) {
-  log('getNextDatesForDays ::: ${daysOfWeek}');
+  log('getNextDatesForDays ::: $daysOfWeek');
   List<DateTime> upcomingDates = [];
   DateTime now = DateTime.now();
   int daysInMonth = AppConstants.END_DATE_LIMIT;
@@ -534,8 +518,7 @@ bool isDayOfWeekInDateRangeBB(
 
 
 // Fonction pour compter les occurrences des jours autorisés dans la plage de dates
-List<PriceData?> countOccurrencesAndAssignDates(
-    DateTime start, DateTime end, List<PriceData?> allowedDays) {
+List<PriceData?> countOccurrencesAndAssignDates(DateTime start, DateTime end, List<PriceData?> allowedDays) {
 
   // Vider la liste des dates et du repeat pour chaque allowedDay avant de commencer
   for (var allowedDay in allowedDays) {

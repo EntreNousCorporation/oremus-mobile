@@ -356,7 +356,6 @@ class MassRequestHistoryScreen extends StatelessWidget {
 
                                 const SizedBox(height: 30),
 
-                                // Button for new request with enhanced design
                                 Center(
                                   child: GestureDetector(
                                     onTap: () {
@@ -411,15 +410,13 @@ class MassRequestHistoryScreen extends StatelessWidget {
                                   message: "Aucune demande de messe trouvée !",
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                              Center(
                                 child: GestureDetector(
                                   onTap: () {
-                                    _.doNewMassRequest();
+                                    _.moveToMassRequest();
                                   },
                                   child: Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.symmetric(vertical: 18),
+                                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
                                     decoration: BoxDecoration(
                                       color: colorGreenSemiLight,
                                       borderRadius: BorderRadius.circular(16),
@@ -432,25 +429,23 @@ class MassRequestHistoryScreen extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    child: Center(
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const Icon(
-                                            Icons.add_circle_outline_rounded,
-                                            color: Colors.white,
-                                            size: 24,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(
+                                          Icons.add_circle_outline_rounded,
+                                          color: Colors.white,
+                                          size: 22,
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Text(
+                                          'Nouvelle demande de messe',
+                                          style: TextStyles.montserratSemiBold(
+                                            textSize: TextSizes.fifteen,
+                                            textColor: Colors.white,
                                           ),
-                                          const SizedBox(width: 14),
-                                          Text(
-                                            'Créer votre première demande',
-                                            style: TextStyles.montserratSemiBold(
-                                              textSize: TextSizes.sixteen,
-                                              textColor: Colors.white,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),

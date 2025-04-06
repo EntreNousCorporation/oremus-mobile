@@ -196,5 +196,6 @@ class EditProfileController extends GetxController {
     }
 
     isValidForm.value = lastname.isNotEmpty && firstname.isNotEmpty && email.isNotEmpty && isValidEmail && phone.isNotEmpty;
+    update();
   }
 }

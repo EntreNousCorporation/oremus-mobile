@@ -7,8 +7,10 @@ import 'package:oremusapp/app/commons/components/custom_header.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/profile/controller/profile_controller.dart';
+import 'package:oremusapp/generated/assets.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -66,14 +68,13 @@ class ProfileScreen extends StatelessWidget {
                                   },
                                 ),
                               ),
-                              const Expanded(
+                              Expanded(
                                 child: Center(
                                   child: Text(
                                     'Mon profil',
-                                    style: TextStyle(
-                                      color: colorWhite,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
+                                    style: TextStyles.montserratBold(
+                                      textColor: colorWhite,
+                                      textSize: 20,
                                     ),
                                   ),
                                 ),
@@ -160,18 +161,22 @@ class ProfileScreen extends StatelessWidget {
 
               // Profile actions section
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.only(
+                  top: 64.0,
+                  left: 16,
+                  right: 16,
+                  bottom: 16,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 16, bottom: 12),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16, bottom: 12),
                       child: Text(
                         'Paramètres du compte',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: colorGreenSemiLight,
+                        style: TextStyles.montserratBold(
+                          textSize: 16,
+                          textColor: colorGreenSemiLight,
                         ),
                       ),
                     ),
@@ -214,7 +219,8 @@ class ProfileScreen extends StatelessWidget {
                           backgroundColor: Colors.red.withValues(alpha: 0.1),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
-                            side: BorderSide(color: colorRed1.withValues(alpha: 0.3)),
+                            side: BorderSide(
+                                color: colorRed1.withValues(alpha: 0.3)),
                           ),
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 12),
@@ -259,6 +265,54 @@ class ProfileScreen extends StatelessWidget {
         // Top spacing
         const SizedBox(height: 120),
 
+        // User info card
+        Padding(
+          padding: const EdgeInsets.only(top: 60.0),
+          child: Container(
+            width: Get.width,
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.fromLTRB(20, 100, 20, 20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Text(
+                  '${controller.userInfo.value.firstname} ${controller.userInfo.value.lastname}',
+                  style: TextStyles.montserratMedium(
+                    textSize: 20,
+                    textColor: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '${controller.userInfo.value.email}',
+                  style: TextStyles.montserratMedium(
+                    textSize: 16,
+                    textColor: Colors.grey[600]!,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '${controller.userInfo.value.phone?.phoneFormat()}',
+                  style: TextStyles.montserratMedium(
+                    textSize: 16,
+                    textColor: Colors.grey[600]!,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+
         // Avatar
         Positioned(
           top: 0,
@@ -280,58 +334,10 @@ class ProfileScreen extends StatelessWidget {
                     width: 120,
                     height: 120,
                     color: colorGreen1.withValues(alpha: 0.3),
-                    child: SvgPicture.asset('assets/images/avatar.svg'),
+                    child: SvgPicture.asset(Assets.imagesAvatar),
                   ),
                 ),
               ),
-            ),
-          ),
-        ),
-
-        // User info card
-        Padding(
-          padding: const EdgeInsets.only(top: 80.0),
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                Text(
-                  '${controller.userInfo.value.firstname} ${controller.userInfo.value.lastname}',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '${controller.userInfo.value.email}',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '${controller.userInfo.value.phone?.phoneFormat()}',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
             ),
           ),
         ),
@@ -347,10 +353,9 @@ class ProfileScreen extends StatelessWidget {
   }) {
     Widget titleWidget = Text(
       title,
-      style: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-        color: Colors.black87,
+      style: TextStyles.montserratMedium(
+        textSize: 16,
+        textColor: Colors.black87,
       ),
     );
 

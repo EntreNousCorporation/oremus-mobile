@@ -358,7 +358,7 @@ class MassRequestHistoryController extends GetxController {
     );
   }
 
-  moveToMassRequest(MassRequestResponse? massRequestData) {
+  moveToMassRequest([MassRequestResponse? massRequestData]) {
     Get.toNamed(
       Routes.MASS_REQUEST,
       arguments: [

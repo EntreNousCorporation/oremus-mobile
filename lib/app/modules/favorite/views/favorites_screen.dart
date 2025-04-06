@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/favorite/controller/favorite_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/paroisse_item.dart';
 
@@ -65,10 +66,9 @@ class FavoritesScreen extends StatelessWidget {
                                     _.favorites.isNotEmpty
                                         ? 'Mes favoris (${_.favorites.length})'
                                         : 'Mes favoris',
-                                    style: const TextStyle(
-                                      color: colorWhite,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
+                                    style: TextStyles.montserratBold(
+                                      textColor: colorWhite,
+                                      textSize: 20,
                                     ),
                                   ),
                                 ),
@@ -80,7 +80,7 @@ class FavoritesScreen extends StatelessWidget {
 
                         // Subtitle
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
                           child: Text(
                             'Retrouvez vos paroisses préférées',
                             textAlign: TextAlign.center,

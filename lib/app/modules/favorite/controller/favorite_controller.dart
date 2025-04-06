@@ -188,7 +188,7 @@ class FavoriteController extends GetxController {
   }
 
   moveToHome() {
-    Get.back();
+    Get.offAllNamed(Routes.CUSTOM_HOME_NEW);
   }
 
   // Méthode à appeler lors de la déconnexion

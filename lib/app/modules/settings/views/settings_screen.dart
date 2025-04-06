@@ -192,7 +192,7 @@ class SettingsScreen extends StatelessWidget {
                       context,
                       icon: Icons.info_outline_rounded,
                       title: 'Version',
-                      subtitle: 'Oremus $versionName _$versionCode',
+                      subtitle: 'Oremus $versionName''_$versionCode',
                       trailing: null,
                     ),
                   ],
@@ -227,7 +227,7 @@ class SettingsScreen extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             subtitle,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: Colors.grey[600],
                 ),
           ),
@@ -310,7 +310,7 @@ class SettingsScreen extends StatelessWidget {
                       customIcon!,
                       width: 22,
                       height: 22,
-                      color: colorGreenSemiLight,
+                      colorFilter: const ColorFilter.mode(colorGreenSemiLight, BlendMode.srcIn),
                     )
                   : Icon(
                       icon,
@@ -326,13 +326,13 @@ class SettingsScreen extends StatelessWidget {
                   Text(
                     title,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.bold,
                         ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           color: Colors.grey[600],
                         ),
                   ),

@@ -8,7 +8,9 @@ import 'package:oremusapp/app/commons/components/text_field.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/formatters/object_separator_input_formatter.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/profile/controller/edit_profile_controller.dart';
+import 'package:oremusapp/generated/assets.dart';
 
 class EditProfileScreen extends StatelessWidget {
   const EditProfileScreen({Key? key}) : super(key: key);
@@ -42,7 +44,8 @@ class EditProfileScreen extends StatelessWidget {
                     children: [
                       // Custom app bar
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
                         child: Row(
                           children: [
                             Container(
@@ -61,19 +64,20 @@ class EditProfileScreen extends StatelessWidget {
                                 },
                               ),
                             ),
-                            const Expanded(
+                            Expanded(
                               child: Center(
                                 child: Text(
                                   'Modifier votre profil',
-                                  style: TextStyle(
-                                    color: colorWhite,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                                  style: TextStyles.montserratBold(
+                                    textColor: colorWhite,
+                                    textSize: 20,
                                   ),
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 48), // Balancer l'espace pour le bouton de retour
+                            const SizedBox(
+                                width:
+                                    48), // Balancer l'espace pour le bouton de retour
                           ],
                         ),
                       ),
@@ -84,7 +88,8 @@ class EditProfileScreen extends StatelessWidget {
                           physics: const BouncingScrollPhysics(),
                           child: FadeIn(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
                               child: Column(
                                 children: [
                                   const SizedBox(height: 20),
@@ -97,13 +102,15 @@ class EditProfileScreen extends StatelessWidget {
 
                                   // Form card
                                   Container(
-                                    margin: const EdgeInsets.only(top: 20, bottom: 30),
+                                    margin: const EdgeInsets.only(
+                                        top: 20, bottom: 30),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(20),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withValues(alpha: 0.05),
+                                          color: Colors.black
+                                              .withValues(alpha: 0.05),
                                           blurRadius: 10,
                                           offset: const Offset(0, 5),
                                         ),
@@ -113,17 +120,20 @@ class EditProfileScreen extends StatelessWidget {
                                       padding: const EdgeInsets.all(24),
                                       child: Form(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             // Section title
-                                            const Padding(
-                                              padding: EdgeInsets.only(left: 4, bottom: 16),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 4, bottom: 16),
                                               child: Text(
                                                 'Informations personnelles',
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: colorGreenSemiLight,
+                                                style:
+                                                    TextStyles.montserratBold(
+                                                  textSize: 16,
+                                                  textColor:
+                                                      colorGreenSemiLight,
                                                 ),
                                               ),
                                             ),
@@ -134,12 +144,14 @@ class EditProfileScreen extends StatelessWidget {
                                               focusNode: _.lastnameFocusNode,
                                               controller: _.lastnameController,
                                               labelText: 'Nom',
-                                              prefixIcon: "assets/images/icon_user.svg",
-                                              errorText: _.lastnameErrorMessage.value,
-                                              onChanged: (value) => _.checkForm(),
+                                              prefixIcon: Assets.imagesIconUser,
+                                              //errorText: _.lastnameErrorMessage.value,
+                                              onChanged: (value) =>
+                                                  _.checkForm(),
                                               maskInputs: [
-                                                FilteringTextInputFormatter.allow(
-                                                    RegExp(AppConstants.INPUT_NAME_REGEX)),
+                                                FilteringTextInputFormatter
+                                                    .allow(RegExp(AppConstants
+                                                        .INPUT_NAME_REGEX)),
                                               ],
                                             ),
 
@@ -151,13 +163,16 @@ class EditProfileScreen extends StatelessWidget {
                                               focusNode: _.firstnameFocusNode,
                                               controller: _.firstnameController,
                                               labelText: 'Prénom(s)',
-                                              prefixIcon: "assets/images/icon_user.svg",
+                                              prefixIcon: Assets.imagesIconUser,
                                               errorText: _.firstnameErrorMessage.value,
-                                              onChanged: (value) => _.checkForm(),
-                                              textCapitalization: TextCapitalization.words,
+                                              onChanged: (value) =>
+                                                  _.checkForm(),
+                                              textCapitalization:
+                                                  TextCapitalization.words,
                                               maskInputs: [
-                                                FilteringTextInputFormatter.allow(
-                                                    RegExp(AppConstants.INPUT_NAME_REGEX)),
+                                                FilteringTextInputFormatter
+                                                    .allow(RegExp(AppConstants
+                                                        .INPUT_NAME_REGEX)),
                                               ],
                                             ),
 
@@ -169,15 +184,20 @@ class EditProfileScreen extends StatelessWidget {
                                               focusNode: _.phoneFocusNode,
                                               controller: _.phoneController,
                                               labelText: 'Téléphone',
-                                              prefixIcon: "assets/images/icon_phone.svg",
-                                              errorText: _.phoneErrorMessage.value,
-                                              onChanged: (value) => _.checkForm(),
+                                              prefixIcon:
+                                                  Assets.imagesIconPhone,
+                                              errorText:
+                                                  _.phoneErrorMessage.value,
+                                              onChanged: (value) =>
+                                                  _.checkForm(),
                                               keyboardType: TextInputType.phone,
                                               maxLength: 14,
                                               maskInputs: [
-                                                ObjectSeparatorInputFormatter(groupBy: 2),
-                                                FilteringTextInputFormatter.allow(
-                                                    RegExp(AppConstants.INPUT_NUM_REGEX)),
+                                                ObjectSeparatorInputFormatter(
+                                                    groupBy: 2),
+                                                FilteringTextInputFormatter
+                                                    .allow(RegExp(AppConstants
+                                                        .INPUT_NUM_REGEX)),
                                               ],
                                             ),
 
@@ -190,13 +210,20 @@ class EditProfileScreen extends StatelessWidget {
                                                   _buildStyledTextField(
                                                     context: context,
                                                     focusNode: _.emailFocusNode,
-                                                    controller: _.emailController,
+                                                    controller:
+                                                        _.emailController,
                                                     labelText: 'E-mail',
-                                                    prefixIcon: "assets/images/icon_enveloppe.svg",
-                                                    errorText: _.emailErrorMessage.value,
-                                                    onChanged: (value) => _.checkForm(),
-                                                    keyboardType: TextInputType.emailAddress,
-                                                    textCapitalization: TextCapitalization.none,
+                                                    prefixIcon: Assets
+                                                        .imagesIconEnveloppe,
+                                                    errorText: _
+                                                        .emailErrorMessage
+                                                        .value,
+                                                    onChanged: (value) =>
+                                                        _.checkForm(),
+                                                    keyboardType: TextInputType
+                                                        .emailAddress,
+                                                    textCapitalization:
+                                                        TextCapitalization.none,
                                                     readOnly: true,
                                                     enabled: false,
                                                   ),
@@ -254,7 +281,7 @@ class EditProfileScreen extends StatelessWidget {
                       width: 120,
                       height: 120,
                       color: colorGreen1.withValues(alpha: 0.3),
-                      child: SvgPicture.asset('assets/images/avatar.svg'),
+                      child: SvgPicture.asset(Assets.imagesAvatar),
                     ),
                   ),
                 ),
@@ -307,7 +334,7 @@ class EditProfileScreen extends StatelessWidget {
     required TextEditingController controller,
     required String labelText,
     required String prefixIcon,
-    required String errorText,
+    String? errorText = '',
     required Function(String) onChanged,
     TextInputType keyboardType = TextInputType.text,
     TextCapitalization textCapitalization = TextCapitalization.none,
@@ -324,11 +351,11 @@ class EditProfileScreen extends StatelessWidget {
             color: colorGrey4,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: errorText.isNotEmpty
+              color: errorText?.isNotEmpty == true
                   ? Colors.red.shade300
                   : focusNode.hasFocus
-                  ? colorGreenSemiLight.withValues(alpha: 0.5)
-                  : Colors.transparent,
+                      ? colorGreenSemiLight.withValues(alpha: 0.5)
+                      : Colors.transparent,
               width: 1.5,
             ),
           ),
@@ -349,11 +376,11 @@ class EditProfileScreen extends StatelessWidget {
             errorText: errorText,
           ),
         ),
-        if (errorText.isNotEmpty)
+        if (errorText?.isNotEmpty == true)
           Padding(
             padding: const EdgeInsets.only(left: 12, top: 4),
             child: Text(
-              errorText,
+              errorText ?? '',
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.red.shade600,
@@ -374,9 +401,8 @@ class EditProfileScreen extends StatelessWidget {
             ? () => controller.updateProfile()
             : null,
         style: ElevatedButton.styleFrom(
-          backgroundColor: controller.isValidForm.value
-              ? colorGreen
-              : Colors.grey.shade300,
+          backgroundColor:
+              controller.isValidForm.value ? colorGreen : Colors.grey.shade300,
           foregroundColor: Colors.white,
           elevation: controller.isValidForm.value ? 3 : 0,
           shadowColor: Colors.black26,
@@ -390,10 +416,9 @@ class EditProfileScreen extends StatelessWidget {
           children: [
             Text(
               'Mettre à jour',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: controller.isValidForm.value
+              style: TextStyles.montserratBold(
+                textSize: 16,
+                textColor: controller.isValidForm.value
                     ? Colors.white
                     : Colors.grey.shade600,
               ),
