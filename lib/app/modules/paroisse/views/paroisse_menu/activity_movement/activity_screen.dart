@@ -43,13 +43,7 @@ class ActivityScreen extends StatelessWidget {
                       itemCount: logic.activities.length,
                       itemBuilder: (context, index) {
                         var activity = logic.activities[index];
-                        return FadeInUp(
-                          preferences: AnimationPreferences(
-                            duration: const Duration(milliseconds: 400),
-                            offset: Duration(milliseconds: 50 * index),
-                          ),
-                          child: ActivityItem(activity: activity),
-                        );
+                        return ActivityItem(activity: activity);
                       }),
                 ),
               );

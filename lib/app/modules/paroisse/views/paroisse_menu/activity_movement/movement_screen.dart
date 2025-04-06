@@ -59,13 +59,7 @@ class MovementScreen extends StatelessWidget {
         itemCount: logic.movements.length,
         itemBuilder: (context, index) {
           var movement = logic.movements[index];
-          return FadeInUp(
-            preferences: AnimationPreferences(
-              duration: const Duration(milliseconds: 400),
-              offset: Duration(milliseconds: 50 * index),
-            ),
-            child: MovementItem(movement: movement),
-          );
+          return MovementItem(movement: movement);
         },
       ),
     );
