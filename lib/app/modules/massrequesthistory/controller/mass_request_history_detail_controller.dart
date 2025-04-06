@@ -36,6 +36,7 @@ class MassRequestHistoryDetailController extends GetxController {
   var massRequestSelected = MassRequestResponse().obs;
 
   RxList<MassRequestStatusData> massRequestStatuses = RxList<MassRequestStatusData>([]);
+  RxList<MassRequestAvailablesStatusesData> availableStatuses = RxList<MassRequestAvailablesStatusesData>([]);
 
   @override
   void onInit() {
@@ -90,6 +91,48 @@ class MassRequestHistoryDetailController extends GetxController {
     return massRequestSelected.value.status?.code == 'REQUEST_ACCEPTED' || massRequestSelected.value.status?.code == 'ACCEPTED_PAYMENT' || massRequestSelected.value.status?.code == 'REQUEST_REFUSED' || massRequestSelected.value.status?.code == 'REFUSED_PAYMENT';
   }
 
+  doGetAllAvailablesStatuses() {
+    hideKeyboard();
+    var request = SearchCriteria(
+      traceId: massRequestSelected.value.traceId.toString(),
+    );
+    isDataProcessing(true);
+    hasData(false);
+    hasError(false);
+
+    log('request doGetAllAvailablesStatuses ::: ${jsonEncode(request.toJson())}');
+
+    massRequestHistoryRepository.getMassRequestsAvailablesStatuses(page: 0).then((value) {
+      isDataProcessing(false);
+      availableStatuses.value = value;
+      if (availableStatuses.isNotEmpty == true) {
+        hasData(true);
+      } else {
+        hasData(false);
+      }
+      hasError(false);
+    }, onError: (error) {
+      isDataProcessing(false);
+      hasData(false);
+      hasError(false);
+      var err = error as CustomException;
+      if (err.code.toString().contains('401')) {
+        showCustomDialog(
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      } else if (err.code.toString().contains('900')) {
+        showCustomDialog(
+          Get.context!,
+          message: err.message.toString(),
+        );
+      }
+      debugPrint("doGetAllAvailablesStatuses error => ${error.toString()}");
+    });
+  }
+
   doGetMassRequestStatuses() {
     hideKeyboard();
     var request = SearchCriteria(
@@ -108,6 +151,7 @@ class MassRequestHistoryDetailController extends GetxController {
       massRequestStatuses.value = value;
       if (massRequestStatuses.isNotEmpty == true) {
         hasData(true);
+        doGetAllAvailablesStatuses();
       } else {
         hasData(false);
       }

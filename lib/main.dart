@@ -101,7 +101,7 @@ class OremusApp extends StatelessWidget {
       child: NetworkStatusOverlay(
         navigatorKey: navigatorKey,
         config: NetworkOverlayConfig(
-          backgroundColor: Colors.red,
+          backgroundColor: colorRed,
           noConnectionMessage: 'Connexion à Internet limitée\nVeuillez vérifiez votre réseau.',
           onShow: () => log('Overlay shown'),
           onHide: () => log('Overlay hidden'),

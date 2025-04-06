@@ -59,4 +59,23 @@ class MassRequestHistoryRepository implements IMassRequestHistoryRepository {
           .toList();
     }
   }
+
+  @override
+  Future<List<MassRequestAvailablesStatusesData>> getMassRequestsAvailablesStatuses({int? page = 0}) async {
+    Response response = await _apiClient.doRequest(
+      endpoint: "/mass-request-statutes?page=$page&size=${AppConstants.MASS_REQUEST_STATUSES_PAGING_SIZE}&sort=createdAt,desc",
+      method: HttpMethod.get,
+      useBearer: true,
+    );
+    log('resp => ${response.statusCode}');
+
+    if (response.statusCode != 200) {
+      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      throw CustomException(e.debugMessage, e.status);
+    } else {
+      return (jsonDecode(response.bodyString.toString()) as List)
+          .map((i) => MassRequestAvailablesStatusesData.fromJson(i))
+          .toList();
+    }
+  }
 }

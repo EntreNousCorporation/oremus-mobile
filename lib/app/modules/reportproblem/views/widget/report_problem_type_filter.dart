@@ -27,7 +27,7 @@ class ReportProblemTypeFilter extends StatelessWidget {
           isExpanded: true,
           value: logic.reportProblemTypeSelected.value,
           enableFeedback: true,
-          icon: Icon(
+          icon: const Icon(
             Icons.keyboard_arrow_down_rounded,
             size: 24,
             color: colorGreenSemiLight,

@@ -12,6 +12,7 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/controller/mass_request_history_detail_controller.dart';
+import 'package:oremusapp/app/modules/massrequesthistory/views/widget/mass_request_state_view.dart';
 import 'package:oremusapp/generated/assets.dart';
 import 'package:oremusapp/main.dart';
 
@@ -551,16 +552,34 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    'Suivi de la demande',
-                                    style: TextStyles.montserratBold(
-                                      textSize: TextSizes.sixteen,
-                                      textColor: colorBlack,
-                                    ),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: colorGreen.withValues(alpha: 0.1),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(
+                                          Icons.timeline_rounded,
+                                          size: 20,
+                                          color: colorGreen,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        'Suivi de la demande',
+                                        style: TextStyles.montserratBold(
+                                          textSize: TextSizes.sixteen,
+                                          textColor: colorBlack,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(height: 16),
+                                  const SizedBox(height: 20),
 
-                                  Container() // MassRequestStateView()
+                                  // Timeline des statuts
+                                  const MassRequestStateView(),
                                 ],
                               ),
                             ),

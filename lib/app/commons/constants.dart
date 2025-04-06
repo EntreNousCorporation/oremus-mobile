@@ -42,6 +42,7 @@ abstract class AppConstants {
   static const PAGING_SIZE_1000 = 10;
   static const PRAY_PAGING_SIZE = 15;
   static const MASS_REQUEST_PAGING_SIZE = 10;
+  static const MASS_REQUEST_STATUSES_PAGING_SIZE = 50;
 
   static const END_DATE_LIMIT = 365;
 

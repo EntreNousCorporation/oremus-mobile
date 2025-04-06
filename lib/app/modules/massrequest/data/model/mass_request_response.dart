@@ -655,3 +655,27 @@ class MassRequestStatusData {
     return data;
   }
 }
+
+class MassRequestAvailablesStatusesData {
+  String? code;
+  Name? name;
+  List<String>? targets;
+
+  MassRequestAvailablesStatusesData({this.code, this.name, this.targets});
+
+  MassRequestAvailablesStatusesData.fromJson(Map<String, dynamic> json) {
+    code = json['code'];
+    name = json['name'] != null ? Name.fromJson(json['name']) : null;
+    targets = json['targets'].cast<String>();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['code'] = code;
+    if (name != null) {
+      data['name'] = name?.toJson();
+    }
+    data['targets'] = targets;
+    return data;
+  }
+}
