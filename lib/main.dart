@@ -14,6 +14,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:oremusapp/app/commons/components/custom_animation.dart';
+import 'package:oremusapp/app/commons/components/network_status_overlay.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/lang/translation_service.dart';
@@ -28,7 +29,6 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 var appUrl;
-//var byPassAuth;
 var isUserConnected = false.obs;
 var requestMassWithoutWorship = false.obs;
 var donationWithoutWorship = false.obs;
@@ -37,7 +37,7 @@ var versionName;
 var versionCode;
 var phoneId;
 var shareAppLink;
-var canCheckConectivity;
+var canCheckConnectivity;
 var oneSignalAppID;
 
 void main() async {
@@ -60,7 +60,7 @@ void main() async {
       final settings = await _getFlavorSettings();
       appUrl = settings.oremusFlavor.apiBaseUrl.toString() + settings.oremusFlavor.endpoint.toString();
       shareAppLink = settings.oremusFlavor.shareAppLink;
-      canCheckConectivity = settings.oremusFlavor.canCheckConectivity;
+      canCheckConnectivity = settings.oremusFlavor.canCheckConectivity;
       oneSignalAppID = settings.oremusFlavor.oneSignalAppID;
       //byPassAuth = settings.oremusFlavor.byPassAuth;
 
@@ -85,42 +85,54 @@ void main() async {
         zoneService.updatePositionForCurrentRoute();
       });
 
-      runApp(const MyApp());
+      runApp(OremusApp());
     },
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class OremusApp extends StatelessWidget {
+  OremusApp({Key? key}) : super(key: key);
+
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
     return OverlaySupport.global(
-      child: GetMaterialApp(
-        debugShowCheckedModeBanner:
-            (flavor == AppConstants.ENV_DEV) ? true : false,
-        locale: TranslationService.locale,
-        fallbackLocale: TranslationService.fallbackLocale,
-        translations: TranslationService(),
-        translationsKeys: TranslationService().keys,
-        theme: appThemeData,
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-        ],
-        supportedLocales: const [
-          Locale('en', 'EN'), // English
-          Locale('fr', 'FR'), // French
-        ],
-        initialRoute: Routes.SPLASHSCREEN,
-        getPages: AppPages.pages,
-        builder: EasyLoading.init(builder: (context, child) {
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1)),
-            child: MainAppWrapper(child: child!),
-          );
-        }),
+      child: NetworkStatusOverlay(
+        navigatorKey: navigatorKey,
+        config: NetworkOverlayConfig(
+          backgroundColor: Colors.red,
+          noConnectionMessage: 'Connexion à Internet limitée\nVeuillez vérifiez votre réseau.',
+          onShow: () => log('Overlay shown'),
+          onHide: () => log('Overlay hidden'),
+        ),
+        child: GetMaterialApp(
+          navigatorKey: navigatorKey,
+          debugShowCheckedModeBanner:
+              (flavor == AppConstants.ENV_DEV) ? true : false,
+          locale: TranslationService.locale,
+          fallbackLocale: TranslationService.fallbackLocale,
+          translations: TranslationService(),
+          translationsKeys: TranslationService().keys,
+          theme: appThemeData,
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en', 'EN'), // English
+            Locale('fr', 'FR'), // French
+          ],
+          initialRoute: Routes.SPLASHSCREEN,
+          getPages: AppPages.pages,
+          builder: EasyLoading.init(builder: (context, child) {
+            return MediaQuery(
+              data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1)),
+              child: MainAppWrapper(child: child!),
+            );
+          }),
+        ),
       ),
     );
   }
