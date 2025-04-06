@@ -48,8 +48,8 @@ class ApiClientImpl extends ApiClient {
     log("method => " + method.name);
     //log("body => " + body != null ? body: '');
 
-    if (canCheckConectivity) {
-      await checkConectivity();
+    if (canCheckConnectivity) {
+      await checkConnectivity();
     }
 
     Response response;
@@ -133,7 +133,7 @@ class ApiClientImpl extends ApiClient {
   }
 
   ///Vérification de la connectivité avant la d'effectuer la requête
-  checkConectivity() async {
+  checkConnectivity() async {
     bool result = await InternetConnectionChecker().hasConnection;
     if (result == false) {
       throw FetchDataException(900, 'Vous êtes actuellement hors connexion! \nVeuillez vérifier votre connexion à Internet!');

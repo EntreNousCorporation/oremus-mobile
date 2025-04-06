@@ -204,6 +204,8 @@ class MassRequestController extends GetxController {
       },
       cancelText: 'cancel'.tr,
       confirmText: 'confirm'.tr,
+      barrierDismissible: false,
+      locale: const Locale('fr', 'FR'),
       builder: (context, child) {
         return Theme(
           data: ThemeData.light().copyWith(

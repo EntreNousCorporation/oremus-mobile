@@ -326,6 +326,10 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                             : Expanded(
                           child: NotFoundScreen(
                             message: "Aucune paroisse trouvée !",
+                            buttonTitle: 'Rafraîchir',
+                            doAction: () {
+                              _.getParoisses();
+                            },
                           ),
                         ),
                       ],

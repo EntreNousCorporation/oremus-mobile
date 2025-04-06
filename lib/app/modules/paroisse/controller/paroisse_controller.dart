@@ -42,7 +42,6 @@ class ParoisseController extends GetxController {
   var page = 0.obs;
 
   RefreshController get refreshController => RefreshControllerFactory.getController('paroisse_list');
-  //var refreshController = RefreshController();
 
   late TextEditingController searchController;
   var isSearchFieldEmpty = true.obs;
@@ -315,12 +314,12 @@ class ParoisseController extends GetxController {
         ).then((value) {
           doLogout();
         });
-      } else if (err.code.toString().contains('900')) {
+      } /*else if (err.code.toString().contains('900')) {
         showCustomDialog(
           Get.context!,
           message: err.message.toString(),
         );
-      }
+      }*/
       debugPrint("error => ${error.toString()}");
     });
   }

@@ -831,7 +831,7 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
     return date;
   }
 
-  selectDate(BuildContext context, PriceData? item) async {
+  selectEndDate(BuildContext context, PriceData? item) async {
     // Utiliser la date de début comme minimum
     DateTime startDate = Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime;
 
@@ -864,6 +864,8 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
       lastDate: DateTime(startDate.year + 5),
       cancelText: 'cancel'.tr,
       confirmText: 'confirm'.tr,
+      barrierDismissible: false,
+      locale: const Locale('fr', 'FR'),
       builder: (context, child) {
         return Theme(
           data: ThemeData.light().copyWith(
@@ -994,6 +996,8 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
       lastDate: DateTime(now.year + 5),
       cancelText: 'cancel'.tr,
       confirmText: 'confirm'.tr,
+      barrierDismissible: false,
+      locale: const Locale('fr', 'FR'),
       selectableDayPredicate: (date) {
         // Vérifier si la date est éligible selon les règles du tableau
         if (isSameDay(date, now)) {
@@ -1431,7 +1435,7 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
           dayToDisplay: day.dayToDisplay,
           isDaySelected: true,
         ));
-      } 
+      }
     }
 
     // Traitement des messes spéciales

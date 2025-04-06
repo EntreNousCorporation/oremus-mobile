@@ -210,7 +210,7 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                 child: _buildDateBox(
                   'Au',
                   _.endSelectedDate.value?.dayToDisplay ?? '-',
-                  onTap: () => _.selectDate(Get.context!, _.initialSelectedDate.value),
+                  onTap: () => _.selectEndDate(Get.context!, _.initialSelectedDate.value),
                 ),
               ),
             ],
