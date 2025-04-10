@@ -15,6 +15,7 @@ import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/controller/mass_request_history_controller.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/views/widget/history_item.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/views/widget/search_widget.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/generated/assets.dart';
 import 'package:oremusapp/main.dart';
 
@@ -81,14 +82,14 @@ class MassRequestHistoryScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: LikeButton(
-                          isLiked: _.paroisseSelected.value.isFavorite,
+                          isLiked: _.paroisseSelected.value?.isFavorite,
                           onTap: (isLiked) async {
                             log('isLiked => $isLiked');
-                            _.paroisseSelected.value.isFavorite = !isLiked;
+                            _.paroisseSelected.value?.isFavorite = !isLiked;
                             if (isLiked) {
-                              _.removeFavorite(_.paroisseSelected.value, isLiked);
+                              _.removeFavorite(_.paroisseSelected.value ?? ContentPlace(), isLiked);
                             } else {
-                              _.saveFavorite(_.paroisseSelected.value, isLiked);
+                              _.saveFavorite(_.paroisseSelected.value ?? ContentPlace(), isLiked);
                             }
                             return !isLiked;
                           },
@@ -135,7 +136,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
                       title: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
-                          _.paroisseSelected.value.name ?? 'Mes demandes de messes',
+                          _.paroisseSelected.value?.name ?? 'Mes demandes de messes',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
@@ -169,9 +170,9 @@ class MassRequestHistoryScreen extends StatelessWidget {
                             fit: StackFit.expand,
                             children: [
                               // Cover image
-                              (_.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
+                              (_.paroisseSelected.value?.coverImage?.link?.isNotEmpty == true)
                                   ? CachedNetworkImage(
-                                imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                imageUrl: _.paroisseSelected.value?.coverImage?.link ?? '',
                                 fit: BoxFit.cover,
                                 placeholder: (context, url) =>
                                     LottieLoadingView(size: Get.width / 6),
@@ -359,7 +360,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
                                 Center(
                                   child: GestureDetector(
                                     onTap: () {
-                                      _.doNewMassRequest();
+                                      _.moveToMassRequest();
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),

@@ -19,7 +19,7 @@ class MassRequestMenuController extends GetxController {
     required this.paroisseRepository,
   });
 
-  var paroisseSelected = ContentPlace().obs;
+  var paroisseSelected = Rx<ContentPlace?>(null);
 
   RxList<TypeMenu> menus = RxList<TypeMenu>([]);
 

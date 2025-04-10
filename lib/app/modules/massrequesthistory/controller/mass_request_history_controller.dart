@@ -49,7 +49,7 @@ class MassRequestHistoryController extends GetxController {
   var hasData = false.obs;
   var isLiked = false.obs;
 
-  var paroisseSelected = ContentPlace().obs;
+  var paroisseSelected = Rx<ContentPlace?>(null);
 
   var selectedDate = Rx<DateTimeRange>(
       DateTimeRange(start: DateTime.now(), end: DateTime.now()));
@@ -359,6 +359,10 @@ class MassRequestHistoryController extends GetxController {
   }
 
   moveToMassRequest([MassRequestResponse? massRequestData]) {
+    if (paroisseSelected.value?.identifier == null) {
+      doNewMassRequest();
+      return;
+    }
     Get.toNamed(
       Routes.MASS_REQUEST,
       arguments: [
@@ -442,7 +446,7 @@ class MassRequestHistoryController extends GetxController {
     hideKeyboard();
     searchCriteria.value.startDate = startDateApi.value;
     searchCriteria.value.endDate = endDateApi.value;
-    searchCriteria.value.worshipPlace = paroisseSelected.value.identifier;
+    searchCriteria.value.worshipPlace = paroisseSelected.value?.identifier;
     isDataProcessing(true);
 
     log('request getMassRequests ::: ${jsonEncode(searchCriteria.toJson())}');

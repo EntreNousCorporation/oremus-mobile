@@ -21,6 +21,7 @@ import 'package:oremusapp/app/commons/lang/translation_service.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_theme.dart';
 import 'package:oremusapp/app/configs/flavor_settings.dart';
+import 'package:oremusapp/app/modules/initial/initial_binding.dart';
 import 'package:oremusapp/app/modules/rosary/services/audio_player_service.dart';
 import 'package:oremusapp/app/modules/rosary/services/interaction_zone_service.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
@@ -55,39 +56,35 @@ void main() async {
     androidNotificationIcon: 'mipmap/ic_launcher',
   );
 
-  initializeDateFormatting('fr_FR', null).then(
-    (_) async {
-      final settings = await _getFlavorSettings();
-      appUrl = settings.oremusFlavor.apiBaseUrl.toString() + settings.oremusFlavor.endpoint.toString();
-      shareAppLink = settings.oremusFlavor.shareAppLink;
-      canCheckConnectivity = settings.oremusFlavor.canCheckConectivity;
-      oneSignalAppID = settings.oremusFlavor.oneSignalAppID;
-      //byPassAuth = settings.oremusFlavor.byPassAuth;
+  initializeDateFormatting('fr_FR', null).then((_) async {
+    final settings = await _getFlavorSettings();
+    appUrl = settings.oremusFlavor.apiBaseUrl.toString() +
+        settings.oremusFlavor.endpoint.toString();
+    shareAppLink = settings.oremusFlavor.shareAppLink;
+    canCheckConnectivity = settings.oremusFlavor.canCheckConectivity;
+    oneSignalAppID = settings.oremusFlavor.oneSignalAppID;
+    //byPassAuth = settings.oremusFlavor.byPassAuth;
 
-      await DB.initDatabase();
-      await getDeviceInfos();
-      getAppVersion();
+    await DB.initDatabase();
+    await getDeviceInfos();
+    getAppVersion();
 
-      Jiffy.setLocale('fr');
-      configOrientation();
-      configLoading();
+    Jiffy.setLocale('fr');
+    configOrientation();
+    configLoading();
 
-      await Firebase.initializeApp();
-      FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+    await Firebase.initializeApp();
+    FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
-      // Initialiser le service audio player
-      final audioService = Get.put(AudioPlayerService(), permanent: true);
-      final zoneService = Get.put(InteractionZoneService(), permanent: true);
-      Future.delayed(Duration.zero, () {
-        // La première route peut être différente de celle attendue initialement
-        zoneService.currentRoute.value = Get.currentRoute;
-        zoneService.updatePositionForCurrentRoute();
-      });
-
-      runApp(OremusApp());
-    },
-  );
+    Future.delayed(Duration.zero, () {
+      // La première route peut être différente de celle attendue initialement
+      var zoneService = Get.find<InteractionZoneService>();
+      zoneService.currentRoute.value = Get.currentRoute;
+      zoneService.updatePositionForCurrentRoute();
+    });
+    runApp(OremusApp());
+  });
 }
 
 class OremusApp extends StatelessWidget {
@@ -102,7 +99,8 @@ class OremusApp extends StatelessWidget {
         navigatorKey: navigatorKey,
         config: NetworkOverlayConfig(
           backgroundColor: colorRed,
-          noConnectionMessage: 'Connexion à Internet limitée\nVeuillez vérifiez votre réseau.',
+          noConnectionMessage:
+              'Connexion à Internet limitée\nVeuillez vérifiez votre réseau.',
           onShow: () => log('Overlay shown'),
           onHide: () => log('Overlay hidden'),
         ),
@@ -124,11 +122,13 @@ class OremusApp extends StatelessWidget {
             Locale('en', 'EN'), // English
             Locale('fr', 'FR'), // French
           ],
+          initialBinding: InitialBinding(),
           initialRoute: Routes.SPLASHSCREEN,
           getPages: AppPages.pages,
           builder: EasyLoading.init(builder: (context, child) {
             return MediaQuery(
-              data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1)),
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: const TextScaler.linear(1)),
               child: MainAppWrapper(child: child!),
             );
           }),

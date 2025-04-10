@@ -68,7 +68,7 @@ class MassRequestTrackClaimController extends GetxController {
   }
 
   goToWorshipChoice() async {
-    paroisseSelected = await Get.toNamed(
+    paroisseSelected.value = await Get.toNamed(
       Routes.FILTER_CHOOSE_WORSHIP,
       arguments: 'Suivi de réclamation',
     );
