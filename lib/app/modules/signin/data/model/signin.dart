@@ -19,6 +19,10 @@ class Signin {
   String? otp;
   String? status;
 
+  //FOR NOTIFICATIONS
+  String? userId;
+  String? deviceId;
+
   Signin({
     this.id,
     this.username,
@@ -33,6 +37,8 @@ class Signin {
     this.isBoUser,
     this.otp,
     this.status,
+    this.userId,
+    this.deviceId,
   });
 
   factory Signin.fromJson(Map<String, dynamic> json) => Signin(
@@ -49,6 +55,8 @@ class Signin {
     isBoUser: json["isBoUser"],
     otp: json["otp"],
     status: json["status"],
+    userId: json["userId"],
+    deviceId: json["deviceId"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -65,5 +73,7 @@ class Signin {
     "isBoUser": isBoUser,
     "otp": otp,
     "status": status,
+    "userId": userId,
+    "deviceId": deviceId,
   };
 }

@@ -3,4 +3,5 @@ import 'package:oremusapp/app/modules/signin/data/model/signin_response.dart';
 
 abstract class ISigninRepository {
   Future<SigninResponse> loginUser(Signin request);
+  Future<SigninResponse> devices(Signin request);
 }

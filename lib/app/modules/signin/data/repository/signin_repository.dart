@@ -18,7 +18,7 @@ class SigninRepository implements ISigninRepository {
   Future<SigninResponse> loginUser(Signin request) async {
     Response response = await _apiClient.doRequest(
       endpoint: "/auth/login",
-      body: jsonEncode(request.toJson()),
+      body: request.toJson(),
       method: HttpMethod.post,
       useBearer: false,
     );
@@ -30,6 +30,24 @@ class SigninRepository implements ISigninRepository {
     } else {
       log('resp => $resp');
       return SigninResponse.fromJson(json.decode(response.bodyString.toString()));
+    }
+  }
+
+  @override
+  Future<SigninResponse> devices(Signin request) async {
+    Response response = await _apiClient.doRequest(
+      endpoint: "/devices",
+      body: request.toJson(),
+      method: HttpMethod.post,
+      useBearer: true,
+    );
+    final String resp = json.encode(response.bodyString.toString());
+    log('resp => ${response.statusCode}');
+    if (response.statusCode! >= 200 && response.statusCode! <= 205) {
+      log('resp => $resp');
+      return SigninResponse.fromJson(json.decode(response.bodyString.toString()));
+    } else {
+      throw Exception(resp);
     }
   }
 }

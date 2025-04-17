@@ -10,6 +10,7 @@ import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/email_validator.dart';
+import 'package:oremusapp/app/commons/services/os_otification_service.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/customhome/controller/custom_home_controller.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
@@ -43,6 +44,8 @@ class SigninController extends GetxController {
   FocusNode passwordFocusNode = FocusNode();
 
   var tempLogin = false.obs;
+  final OSNotificationService _notificationService = OSNotificationService();
+  final _deviceId = ''.obs;
 
   @override
   void onInit() {
@@ -60,6 +63,9 @@ class SigninController extends GetxController {
       //passwordController = TextEditingController(text: 'Test@123');
       //checkForm();
     } else {}
+
+    _loadDeviceId();
+    _notificationService.deviceId.addListener(_onDeviceIdChanged);
   }
 
   getArgument() {
@@ -67,6 +73,23 @@ class SigninController extends GetxController {
       tempLogin.value = Get.arguments;
     }
     update();
+  }
+
+  // Charger l'ID de l'appareil
+  Future<void> _loadDeviceId() async {
+    try {
+      final id = await _notificationService.getDeviceId();
+      _deviceId.value = id ?? '';
+      log('Device ID loaded: ${_deviceId.value}');
+    } catch (e) {
+      log('Error loading device ID: $e');
+    }
+  }
+
+  // Méthode appelée quand l'ID de l'appareil change
+  void _onDeviceIdChanged() {
+    _deviceId.value = _notificationService.deviceId.value ?? '';
+    log('Device ID changed: ${_deviceId.value}');
   }
 
   connectUser() {
@@ -105,11 +128,11 @@ class SigninController extends GetxController {
       DB.saveUserSigninInfo(userConnection);
       if (tempLogin.value == true) {
         Get.find<CustomHomeController>().onInit();
-        //goToHome();
         Get.back(result: true);
         return;
       }
       goToHome();
+      _sendDeviceId(payload['sub']);
     }, onError: (error) {
       EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;
@@ -126,6 +149,19 @@ class SigninController extends GetxController {
       } else {
         showNotification(message: "Login et/ou mot de passe incorrect");
       }
+    });
+  }
+
+  ///Function to send one signal device id
+  _sendDeviceId(String userId) {
+    hideKeyboard();
+    Signin request = Signin(userId: userId, deviceId: _deviceId.value);
+    log('request _sendDeviceId => ${request.toJson()}');
+
+    signinRepository.devices(request).then((value) {
+      log('_sendDeviceId successfully');
+    }, onError: (error) {
+      debugPrint("error _sendDeviceId => ${error.toString()}");
     });
   }
 
@@ -176,6 +212,7 @@ class SigninController extends GetxController {
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    _notificationService.deviceId.removeListener(_onDeviceIdChanged);
     super.dispose();
   }
 }

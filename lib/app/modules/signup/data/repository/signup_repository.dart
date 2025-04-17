@@ -20,11 +20,10 @@ class SignupRepository implements ISignupRepository {
   Future<SigninResponse> signupUser(Signin request) async {
     Response response = await _apiClient.doRequest(
       endpoint: "/users/fo-agents",
-      body: jsonEncode(request.toJson()),
+      body: request.toJson(),
       method: HttpMethod.post,
       useBearer: false,
     );
-    final String resp = json.encode(response.bodyString.toString());
     log('resp => ${response.statusCode}');
 
     if (response.statusCode! >= 200 && response.statusCode! <= 205) {

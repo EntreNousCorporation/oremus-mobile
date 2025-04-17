@@ -13,6 +13,9 @@ class OSNotificationService {
   final ValueNotifier<bool> isRedirectNotification = ValueNotifier<bool>(false);
   final ValueNotifier<Map<String, dynamic>?> notificationData = ValueNotifier<Map<String, dynamic>?>(null);
 
+  // Device ID related
+  final ValueNotifier<String?> deviceId = ValueNotifier<String?>(null);
+
   // Initialize OneSignal
   Future<void> initializeOneSignal(String appId) async {
     // Enable debug logging for development
@@ -27,7 +30,28 @@ class OSNotificationService {
     // Set notification handlers
     setNotificationHandlers();
 
+    // Get and store device ID
+    await getDeviceId();
+
     log("OneSignal initialized with app ID: $appId");
+  }
+
+  // Get the device ID from OneSignal
+  Future<String?> getDeviceId() async {
+    try {
+      // Get the player/device ID from the device state
+      final deviceState = OneSignal.User.pushSubscription;
+      final id = deviceState.id;
+
+      // Store it in our ValueNotifier for easy access
+      deviceId.value = id;
+
+      log("OneSignal device ID: $id");
+      return id;
+    } catch (e) {
+      log("Error getting device ID: $e");
+      return null;
+    }
   }
 
   // Set up all notification handlers
@@ -67,6 +91,9 @@ class OSNotificationService {
     // When subscription status changes
     OneSignal.User.addObserver((event) {
       log("Push subscription state changed: ${event.current.jsonRepresentation()}");
+
+      // Device ID might change when subscription status changes, so update it
+      getDeviceId();
     });
   }
 
@@ -107,6 +134,17 @@ class OSNotificationService {
     }
   }
 
+  // Use device ID during login process
+  Future<Map<String, String?>> getDeviceInfoForLogin() async {
+    // Make sure we have the latest device ID
+    await getDeviceId();
+
+    return {
+      'device_id': deviceId.value,
+      'device_type': 'mobile', // You could enhance this with platform-specific info
+    };
+  }
+
   // Set user tags for segmentation
   Future<void> setUserTags(Map<String, dynamic> tags) async {
     try {
@@ -122,6 +160,9 @@ class OSNotificationService {
     try {
       await OneSignal.logout();
       log("User logged out from OneSignal");
+
+      // Device ID might change after logout, so update it
+      await getDeviceId();
     } catch (e) {
       log("Error logging out user: $e");
     }
