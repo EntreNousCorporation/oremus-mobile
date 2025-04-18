@@ -26,7 +26,6 @@ import 'package:oremusapp/app/configs/flavor_settings.dart';
 import 'package:oremusapp/app/modules/initial/initial_binding.dart';
 import 'package:oremusapp/app/modules/rosary/services/audio_file_manager_service.dart';
 import 'package:oremusapp/app/modules/rosary/services/audio_player_service.dart';
-import 'package:oremusapp/app/modules/rosary/services/interaction_zone_service.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main_app_wrapper.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -99,14 +98,7 @@ void main() async {
     // Enregistrer les services utilisés par l'application
     Get.put(AudioFileManagerService(), permanent: true);
     Get.put(AudioPlayerService(), permanent: true);
-    Get.put(InteractionZoneService(), permanent: true);
 
-    Future.delayed(Duration.zero, () {
-      // La première route peut être différente de celle attendue initialement
-      var zoneService = Get.find<InteractionZoneService>();
-      zoneService.currentRoute.value = Get.currentRoute;
-      zoneService.updatePositionForCurrentRoute();
-    });
     runApp(OremusApp());
   });
 }

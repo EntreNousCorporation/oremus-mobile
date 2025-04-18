@@ -12,7 +12,7 @@ class FlavorSettings {
           endpoint: '',
           shareAppLink: 'https://download-dev.oremus.ci/store-link',
           byPassAuth: false,
-          canCheckConectivity: false,
+          canCheckConectivity: true,
           envCredentials: EnvCredentials.dev,
           oneSignalAppID: '25d270d6-2c54-4adb-83ea-6004918f7c29',
         );
@@ -28,7 +28,7 @@ class FlavorSettings {
           byPassAuth: true,
           envCredentials: EnvCredentials.prod,
           oneSignalAppID: '0d127e7e-a1dd-4275-b268-bb7cc626e0db',
-        );
+  );
 }
 
 class OremusFlavor {

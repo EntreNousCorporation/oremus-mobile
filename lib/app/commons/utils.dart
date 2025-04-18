@@ -579,20 +579,31 @@ Map<String, dynamic> removeNullFields(Map<String, dynamic> json) {
   return cleanedJson;
 }
 
+/// Prépare le fichier d'image pour l'artwork du lecteur audio
+/// Retourne le chemin du fichier copié dans le stockage local
 Future<String> prepareArtworkFile() async {
-  final directory = await getApplicationDocumentsDirectory();
-  final filePath = '${directory.path}/rosaire_logo.png';
-  final file = File(filePath);
+  try {
+    // Obtenir le répertoire de documents
+    final directory = await getApplicationDocumentsDirectory();
+    final filePath = '${directory.path}/rosary_artwork.png';
 
-  // Vérifier si le fichier existe déjà pour éviter de l'extraire à chaque fois
-  if (!await file.exists()) {
+    // Vérifier si le fichier existe déjà
+    final file = File(filePath);
+    if (await file.exists()) {
+      return filePath;
+    }
+
     // Charger l'image depuis les assets
-    final byteData = await rootBundle.load(Assets.imagesLogoSquare);
-    // Écrire dans le système de fichiers
-    await file.writeAsBytes(byteData.buffer.asUint8List());
-  }
+    final ByteData data = await rootBundle.load(Assets.imagesLogoSquare);
+    final Uint8List bytes = data.buffer.asUint8List();
 
-  return filePath;
+    // Écrire le fichier
+    await file.writeAsBytes(bytes);
+    return filePath;
+  } catch (e) {
+    // En cas d'erreur, retourner un chemin vide
+    return '';
+  }
 }
 
 extension ColorExtension on Color {

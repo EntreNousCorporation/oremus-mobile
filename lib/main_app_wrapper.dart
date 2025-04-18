@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/modules/rosary/services/audio_player_service.dart';
-import 'package:oremusapp/app/modules/rosary/services/interaction_zone_service.dart';
-import 'package:oremusapp/app/modules/rosary/views/widgets/mini_player_widget.dart';
+import 'package:oremusapp/app/modules/rosary/views/widgets/mini_player.dart';
 
 /// Un wrapper pour afficher le mini-lecteur au-dessus de toutes les pages de l'application
 class MainAppWrapper extends StatefulWidget {
@@ -14,52 +13,35 @@ class MainAppWrapper extends StatefulWidget {
   State<MainAppWrapper> createState() => _MainAppWrapperState();
 }
 
-class _MainAppWrapperState extends State<MainAppWrapper> with WidgetsBindingObserver {
+class _MainAppWrapperState extends State<MainAppWrapper> {
   late AudioPlayerService audioService;
-  late InteractionZoneService zoneService;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-
     // Initialiser les services
     audioService = Get.find<AudioPlayerService>();
-    zoneService = Get.find<InteractionZoneService>();
-
-    // S'assurer que la route actuelle est bien initialisée
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      zoneService.currentRoute.value = Get.currentRoute;
-      zoneService.updatePositionForCurrentRoute();
-    });
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Si l'application reprend du premier plan, mettre à jour la route
-    if (state == AppLifecycleState.resumed) {
-      zoneService.currentRoute.value = Get.currentRoute;
-      zoneService.updatePositionForCurrentRoute();
-    }
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        fit: StackFit.expand,
         children: [
-          // Le contenu principal de l'application
-          widget.child,
+          // Contenu principal de l'application prend tout l'espace
+          SizedBox(
+            width: double.infinity,
+            height: double.infinity,
+            child: widget.child,
+          ),
 
-          // Le mini-lecteur avec positionnement intelligent
-          const MiniPlayerWidget(),
+          // Mini lecteur positionné en bas
+          const Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: MiniPlayer(),
+          ),
         ],
       ),
     );

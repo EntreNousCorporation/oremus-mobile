@@ -180,6 +180,28 @@ class CustomHomeController extends GetxController {
     }
   }
 
+  void navigateToRosaryDirectly() {
+    // Trouver l'index du rosaire dans les menus
+    int rosaryIndex = menus.indexWhere((menu) => menu.code == AppConstants.ROSAIRE);
+
+    if (rosaryIndex != -1) {
+      // Mettre à jour l'index sélectionné
+      selectedIndex.value = rosaryIndex;
+
+      // Mettre à jour le titre
+      title.value = menus[rosaryIndex].libelle ?? 'Rosaire';
+
+      // Définir directement la position sélectionnée sans ouvrir le menu
+      drawerController.setSelectedMenuPosition(rosaryIndex, openMenu: false);
+
+      // Désactiver les flags pour les autres écrans
+      requestMassWithoutWorship.value = false;
+      donationWithoutWorship.value = false;
+
+      update();
+    }
+  }
+
   doShareApp() {
     shareApp(
       AppConstants.APP_SHARE_MSG.replaceAll('{link}', shareAppLink),
