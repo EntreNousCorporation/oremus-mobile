@@ -1,9 +1,15 @@
+import 'dart:developer';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:audio_session/audio_session.dart';
+import 'package:oremusapp/app/commons/constants.dart';
+import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/generated/assets.dart';
+import 'package:oremusapp/main.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:oremusapp/app/modules/rosary/services/audio_file_manager_service.dart';
 
 // Classe pour les données de position (comme dans votre code original)
 class PositionData {
@@ -25,6 +31,9 @@ class AudioPlayerService extends GetxService {
   late AudioPlayer _audioPlayer;
   AudioPlayer get audioPlayer => _audioPlayer;
 
+  // Audio file manager service
+  late AudioFileManagerService _fileManagerService;
+
   // État observable
   final isPlaying = false.obs;
   final currentMystereIndex = 0.obs;
@@ -32,6 +41,12 @@ class AudioPlayerService extends GetxService {
   final currentMystereTitle = ''.obs;
   final currentMystereDetailTitle = ''.obs;
   final showMiniPlayer = false.obs;
+
+  // Nouveaux états pour la gestion des téléchargements
+  final isDownloading = false.obs;
+  final downloadProgress = 0.0.obs;
+  final isLoadingAudio = false.obs;
+  final errorMessage = ''.obs;
 
   // Flag pour indiquer si l'audio est terminé
   final isCompleted = false.obs;
@@ -41,88 +56,68 @@ class AudioPlayerService extends GetxService {
       CombineLatestStream.combine3<Duration, Duration, Duration?, PositionData>(
         _audioPlayer.positionStream,
         _audioPlayer.bufferedPositionStream,
-        _audioPlayer.durationStream,
-            (position, bufferedPosition, duration) => PositionData(
-          position: position,
-          bufferedPosition: bufferedPosition,
-          duration: duration ?? Duration.zero,
-        ),
+        _audioPlayer.durationStream, (position, bufferedPosition, duration) => PositionData(
+        position: position,
+        bufferedPosition: bufferedPosition,
+        duration: duration ?? Duration.zero,
+      ),
       );
 
   // Liste des mystères et leurs détails
   final List<String> mysteres = [
     'Mystères Joyeux',
-    //'Mystères Lumineux',
-    //'Mystères Douloureux',
-    //'Mystères Glorieux'
+    'Mystères Lumineux',
+    'Mystères Douloureux',
+    'Mystères Glorieux',
   ];
 
   final List<List<String>> mystereDetails = [
     [
       'L\'Annonciation',
-      /*'La Visitation',
+      'La Visitation',
       'La Nativité',
       'La Présentation au Temple',
-      'Le Recouvrement au Temple',*/
+      'Le Recouvrement au Temple',
     ],
-    /*[
+    [
       'Le Baptême au Jourdain',
       'Les Noces de Cana',
       'L\'Annonce du Royaume',
       'La Transfiguration',
-      'L\'Institution de l\'Eucharistie'
+      'L\'Institution de l\'Eucharistie',
     ],
     [
-      'L\'Agonie de Jésus',
+      'L\'Agonie à Gethsémani',
       'La Flagellation',
       'Le Couronnement d\'épines',
       'Le Portement de la Croix',
-      'La Crucifixion'
+      'La Crucifixion',
     ],
     [
       'La Résurrection',
       'L\'Ascension',
       'La Pentecôte',
-      'L\'Assomption de Marie',
-      'Le Couronnement de Marie'
-    ]*/
+      'L\'Assomption',
+      'Le Couronnement de Marie',
+    ],
   ];
 
-  // Mappez chaque mystère à son fichier audio correspondant
-  final Map<int, Map<int, String>> audioFiles = {
+  // Mappez chaque mystère à son fichier audio de secours
+  final Map<int, Map<int, String>> fallbackAudioFiles = {
     0: { // Mystères Joyeux
-      0: Assets.audiosAnnonciation,
-      /*1: '',
-      2: '',
-      3: '',
-      4: '',*/
+      0: '', //Assets.audiosAnnonciation,
+      // Ajouter d'autres fallbacks si disponibles
     },
-    /*1: { // Mystères Lumineux
-      0: '',
-      1: '',
-      2: '',
-      3: '',
-      4: '',
-    },
-    2: { // Mystères Douloureux
-      0: '',
-      1: '',
-      2: '',
-      3: '',
-      4: '',
-    },
-    3: { // Mystères Glorieux
-      0: '',
-      1: '',
-      2: '',
-      3: '',
-      4: '',
-    },*/
+    // Ajouter d'autres mystères si des fallbacks sont disponibles
   };
 
+  late String _artworkFilePath;
+
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
+    _fileManagerService = Get.find<AudioFileManagerService>();
+    _artworkFilePath = await prepareArtworkFile();
     _initAudioPlayer();
   }
 
@@ -153,47 +148,106 @@ class AudioPlayerService extends GetxService {
         this.isPlaying.value = false; // Assure que le bouton play est affiché
       }
     });
+
+    // Écouter les erreurs du lecteur
+    _audioPlayer.playbackEventStream.listen((event) {},
+      onError: (Object e, StackTrace stackTrace) {
+        log('Erreur de lecture audio: $e');
+        errorMessage.value = 'Erreur de lecture. Veuillez réessayer.';
+      },
+    );
   }
 
-  // Méthode pour charger un audio
+  // Méthode pour charger un audio avec gestion du téléchargement
   Future<void> loadAudio(int mystereIndex, int detailIndex) async {
-    currentMystereIndex.value = mystereIndex;
-    currentMystereDetailIndex.value = detailIndex;
-    currentMystereTitle.value = mysteres[mystereIndex];
-    currentMystereDetailTitle.value = mystereDetails[mystereIndex][detailIndex];
+    try {
+      isLoadingAudio.value = true;
+      errorMessage.value = '';
 
-    // Obtenir le chemin du fichier audio pour le mystère actuel
-    final audioPath = audioFiles[mystereIndex]?[detailIndex];
+      currentMystereIndex.value = mystereIndex;
+      currentMystereDetailIndex.value = detailIndex;
+      currentMystereTitle.value = mysteres[mystereIndex];
+      currentMystereDetailTitle.value = mystereDetails[mystereIndex][detailIndex];
 
-    if (audioPath != null) {
-      try {
-        // Arrêter l'audio en cours s'il y en a un
-        await _audioPlayer.stop();
+      // Arrêter l'audio en cours s'il y en a un
+      await _audioPlayer.stop();
 
-        // Créer la source audio avec les métadonnées pour la notification
-        final audioSource = AudioSource.asset(
-          audioPath,
+      // Vérifier si le fichier est déjà téléchargé
+      String? localFilePath = _fileManagerService.getLocalFilePath(mystereIndex, detailIndex);
+
+      // Si le fichier n'est pas téléchargé, le télécharger
+      if (localFilePath == null) {
+        isDownloading.value = true;
+        localFilePath = await _fileManagerService.downloadFile(mystereIndex, detailIndex);
+        isDownloading.value = false;
+      }
+
+      // Préparer la source audio
+      late AudioSource audioSource;
+
+      if (localFilePath != null) {
+        // Utiliser le fichier téléchargé
+        audioSource = AudioSource.uri(
+          Uri.file(localFilePath),
           tag: MediaItem(
             id: '$mystereIndex-$detailIndex',
             album: 'Rosaire',
             title: mystereDetails[mystereIndex][detailIndex],
             artist: mysteres[mystereIndex],
-            //artUri: Uri.parse('asset:///${Assets.imagesRosaryIcon}'),
-            //artUri: Uri.parse(Assets.imagesRosaryIcon),
+            artUri: Uri.file(_artworkFilePath),
           ),
         );
+      } else {
+        // Utiliser le fichier de secours si disponible
+        final fallbackPath = fallbackAudioFiles[mystereIndex]?[detailIndex];
 
-        // Charger le nouvel audio avec les métadonnées
-        await _audioPlayer.setAudioSource(audioSource);
-
-        // Réinitialiser le flag de complétion
-        isCompleted.value = false;
-
-        // Montrer le mini lecteur
-        showMiniPlayer.value = true;
-      } catch (e) {
-        print("Erreur lors du chargement de l'audio: $e");
+        if (fallbackPath != null) {
+          log('Utilisation du fichier de secours pour $mystereIndex-$detailIndex');
+          audioSource = AudioSource.asset(
+            fallbackPath,
+            tag: MediaItem(
+              id: '$mystereIndex-$detailIndex',
+              album: 'Rosaire',
+              title: mystereDetails[mystereIndex][detailIndex],
+              artist: mysteres[mystereIndex],
+            ),
+          );
+        } else {
+          throw Exception('Aucun fichier audio disponible pour ce mystère');
+        }
       }
+
+      // Charger la source audio
+      await _audioPlayer.setAudioSource(audioSource);
+
+      // Réinitialiser le flag de complétion
+      isCompleted.value = false;
+
+      // Montrer le mini lecteur
+      showMiniPlayer.value = true;
+
+      // Démarrer la lecture automatiquement
+      _audioPlayer.play();
+    } catch (e) {
+      log('Erreur lors du chargement de l\'audio: $e');
+      errorMessage.value = 'Impossible de charger l\'audio. Veuillez réessayer.';
+    } finally {
+      isLoadingAudio.value = false;
+    }
+  }
+
+  // Méthode pour télécharger tous les fichiers audio d'un mystère
+  Future<void> preloadMysteryFiles(int mystereIndex) async {
+    try {
+      final detailsCount = mystereDetails[mystereIndex].length;
+
+      for (int i = 0; i < detailsCount; i++) {
+        if (!_fileManagerService.isFileDownloaded(mystereIndex, i)) {
+          await _fileManagerService.downloadFile(mystereIndex, i);
+        }
+      }
+    } catch (e) {
+      log('Erreur lors du préchargement des fichiers: $e');
     }
   }
 
@@ -209,16 +263,22 @@ class AudioPlayerService extends GetxService {
         await _audioPlayer.seek(Duration.zero);
         await _audioPlayer.play();
       } catch (e) {
-        print("Erreur lors du redémarrage de l'audio: $e");
+        log('Erreur lors du redémarrage de l\'audio: $e');
         isPlaying.value = false;    // En cas d'erreur, réinitialiser l'état de lecture
+        errorMessage.value = 'Erreur lors de la lecture. Veuillez réessayer.';
       }
     }
     // Sinon, comportement normal play/pause
     else {
-      if (_audioPlayer.playing) {
-        _audioPlayer.pause();
-      } else {
-        _audioPlayer.play();
+      try {
+        if (_audioPlayer.playing) {
+          _audioPlayer.pause();
+        } else {
+          _audioPlayer.play();
+        }
+      } catch (e) {
+        log('Erreur lors de la lecture/pause: $e');
+        errorMessage.value = 'Erreur lors de la lecture. Veuillez réessayer.';
       }
     }
   }
@@ -250,6 +310,7 @@ class AudioPlayerService extends GetxService {
     _audioPlayer.stop();
     showMiniPlayer.value = false;
     isCompleted.value = false;
+    errorMessage.value = '';
   }
 
   String formatDuration(Duration duration) {
@@ -257,6 +318,11 @@ class AudioPlayerService extends GetxService {
     final minutes = twoDigits(duration.inMinutes.remainder(60));
     final seconds = twoDigits(duration.inSeconds.remainder(60));
     return "$minutes:$seconds";
+  }
+
+  // Supprimer tous les fichiers téléchargés
+  Future<void> clearAllDownloadedFiles() async {
+    await _fileManagerService.clearAllDownloadedFiles();
   }
 
   // Détruire le service proprement

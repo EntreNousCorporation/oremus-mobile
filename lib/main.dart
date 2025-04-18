@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -20,8 +21,10 @@ import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/lang/translation_service.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_theme.dart';
+import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/configs/flavor_settings.dart';
 import 'package:oremusapp/app/modules/initial/initial_binding.dart';
+import 'package:oremusapp/app/modules/rosary/services/audio_file_manager_service.dart';
 import 'package:oremusapp/app/modules/rosary/services/audio_player_service.dart';
 import 'package:oremusapp/app/modules/rosary/services/interaction_zone_service.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
@@ -40,6 +43,7 @@ var phoneId;
 var shareAppLink;
 var canCheckConnectivity;
 var oneSignalAppID;
+var connectivityStatus = ConnectivityResult.none.obs;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -69,13 +73,33 @@ void main() async {
     await getDeviceInfos();
     getAppVersion();
 
+    // Initialiser la surveillance de la connectivité
+    Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
+      if (result.isNotEmpty) {
+        connectivityStatus.value = result.first;
+        log('Changement de connectivité: ${result.first.toString()}');
+      }
+    });
+
+    // Obtenir l'état initial de la connectivité
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult.isNotEmpty) {
+      connectivityStatus.value = connectivityResult.first;
+    }
+
     Jiffy.setLocale('fr');
     configOrientation();
     configLoading();
+    prepareArtworkFile();
 
     await Firebase.initializeApp();
     FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+
+    // Enregistrer les services utilisés par l'application
+    Get.put(AudioFileManagerService(), permanent: true);
+    Get.put(AudioPlayerService(), permanent: true);
+    Get.put(InteractionZoneService(), permanent: true);
 
     Future.delayed(Duration.zero, () {
       // La première route peut être différente de celle attendue initialement

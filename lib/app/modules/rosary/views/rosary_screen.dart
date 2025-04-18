@@ -14,8 +14,7 @@ class RosaryScreen extends StatefulWidget {
   State<RosaryScreen> createState() => _RosaryScreenState();
 }
 
-class _RosaryScreenState extends State<RosaryScreen>
-    with SingleTickerProviderStateMixin {
+class _RosaryScreenState extends State<RosaryScreen> with SingleTickerProviderStateMixin {
   // Animation controller pour l'effet de pulsation
   late AnimationController _animationController;
 
@@ -30,8 +29,7 @@ class _RosaryScreenState extends State<RosaryScreen>
     _animationController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
-    )
-      ..repeat(reverse: true);
+    )..repeat(reverse: true);
 
     // Obtenir le service audio
     audioService = AudioPlayerService.to;
@@ -54,73 +52,6 @@ class _RosaryScreenState extends State<RosaryScreen>
       builder: (controller) {
         return Column(
           children: [
-            // Mystères Selector
-            Visibility(
-              visible: false,
-              child: Container(
-                height: 120,
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: audioService.mysteres.length,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        audioService.loadAudio(index, 0);
-                      },
-                      child: Container(
-                        width: 130,
-                        margin: const EdgeInsets.only(right: 16),
-                        decoration: BoxDecoration(
-                          color: audioService.currentMystereIndex.value == index
-                              ? colorGreenSemiLight
-                              : Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.05),
-                              blurRadius: 8,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              getMystereIcon(index),
-                              color: audioService.currentMystereIndex.value ==
-                                  index
-                                  ? Colors.white
-                                  : colorGreenSemiLight,
-                              size: 28,
-                            ),
-                            const SizedBox(height: 8),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8),
-                              child: Text(
-                                audioService.mysteres[index],
-                                textAlign: TextAlign.center,
-                                style: TextStyles.montserratSemiBold(
-                                  textSize: TextSizes.twelve,
-                                  textColor: audioService.currentMystereIndex
-                                      .value == index
-                                      ? Colors.white
-                                      : Colors.black87,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-
             // Main content
             Expanded(
               child: ListView(
@@ -144,69 +75,13 @@ class _RosaryScreenState extends State<RosaryScreen>
                         Column(
                           children: [
                             Text(
-                              audioService.mysteres[audioService
-                                  .currentMystereIndex.value],
+                              audioService.mysteres[audioService.currentMystereIndex.value],
                               style: TextStyles.montserratBold(
                                 textSize: TextSizes.eighteen,
                                 textColor: colorGreenSemiLight,
                               ),
                             ),
                             const SizedBox(height: 16),
-
-                            // Mystery detail selection
-                            Visibility(
-                              visible: false,
-                              child: Container(
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[100],
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: audioService
-                                      .mystereDetails[audioService
-                                      .currentMystereIndex.value].length,
-                                  itemBuilder: (context, index) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        audioService.loadAudio(
-                                            audioService.currentMystereIndex
-                                                .value, index);
-                                      },
-                                      child: Container(
-                                        width: 40,
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 5, vertical: 5),
-                                        decoration: BoxDecoration(
-                                          color: audioService
-                                              .currentMystereDetailIndex
-                                              .value == index
-                                              ? colorGreenSemiLight
-                                              : Colors.transparent,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            '${index + 1}',
-                                            style: TextStyles.montserratBold(
-                                              textSize: TextSizes.fourteen,
-                                              textColor: audioService
-                                                  .currentMystereDetailIndex
-                                                  .value == index
-                                                  ? Colors.white
-                                                  : Colors.grey[600]!,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-
-                            //const SizedBox(height: 20),
 
                             // Current Mystery Title
                             Text(
@@ -219,6 +94,68 @@ class _RosaryScreenState extends State<RosaryScreen>
                               ),
                               textAlign: TextAlign.center,
                             ),
+
+                            // Afficher l'état de téléchargement si en cours
+                            if (audioService.isDownloading.value)
+                              Column(
+                                children: [
+                                  const SizedBox(height: 16),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const SizedBox(
+                                        width: 16,
+                                        height: 16,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          valueColor: AlwaysStoppedAnimation<Color>(colorGreenSemiLight),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        'Téléchargement en cours...',
+                                        style: TextStyles.montserratRegular(
+                                          textSize: TextSizes.fourteen,
+                                          textColor: colorGreenSemiLight,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+
+                            // Afficher les messages d'erreur s'il y en a
+                            if (audioService.errorMessage.value.isNotEmpty)
+                              Column(
+                                children: [
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    audioService.errorMessage.value,
+                                    style: TextStyles.montserratRegular(
+                                      textSize: TextSizes.fourteen,
+                                      textColor: Colors.red,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  TextButton(
+                                    onPressed: () {
+                                      audioService.errorMessage.value = '';
+                                      audioService.loadAudio(
+                                          audioService.currentMystereIndex.value,
+                                          audioService.currentMystereDetailIndex.value
+                                      );
+                                    },
+                                    child: Text(
+                                      'Réessayer',
+                                      style: TextStyles.montserratSemiBold(
+                                        textSize: TextSizes.fourteen,
+                                        textColor: colorGreenSemiLight,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                           ],
                         )),
                   ),
@@ -232,8 +169,8 @@ class _RosaryScreenState extends State<RosaryScreen>
                       children: [
                         // Circle representing the rosary
                         Container(
-                          width: Get.width * 0.85,
-                          height: Get.width * 0.85,
+                          width: Get.width * 0.8,
+                          height: Get.width * 0.8,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: Colors.white,
@@ -275,7 +212,6 @@ class _RosaryScreenState extends State<RosaryScreen>
                           ),
                         ),
 
-                        // Center icon that pulses when playing
                         AnimatedBuilder(
                             animation: _animationController,
                             builder: (_, child) {
@@ -285,6 +221,9 @@ class _RosaryScreenState extends State<RosaryScreen>
                                     : 1.0,
                                 child: GestureDetector(
                                   onTap: () {
+                                    // Ne pas permettre la lecture pendant le chargement
+                                    if (audioService.isLoadingAudio.value) return;
+
                                     // Appel à la fonction playPause et forcer une mise à jour
                                     audioService.playPause();
 
@@ -305,8 +244,7 @@ class _RosaryScreenState extends State<RosaryScreen>
                                           color: colorGreenSemiLight, width: 2),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: colorGreenSemiLight.withValues(
-                                              alpha: 0.2),
+                                          color: colorGreenSemiLight.withValues(alpha: 0.2),
                                           blurRadius: 10,
                                           spreadRadius: audioService.isPlaying
                                               .value ? 5 : 0,
@@ -314,15 +252,26 @@ class _RosaryScreenState extends State<RosaryScreen>
                                       ],
                                     ),
                                     child: Center(
-                                      child: Obx(() => Icon(
-                                        audioService.isPlaying.value ? Icons
-                                            .pause_rounded : Icons
-                                            .play_arrow_rounded,
-                                        color: audioService.isPlaying.value
-                                            ? Colors.white
-                                            : colorGreenSemiLight,
-                                        size: 50,
-                                      )),
+                                      child: Obx(() {
+                                        // Afficher un spinner pendant le chargement
+                                        if (audioService.isLoadingAudio.value) {
+                                          return const CircularProgressIndicator(
+                                            valueColor: AlwaysStoppedAnimation<Color>(
+                                                colorGreenSemiLight),
+                                          );
+                                        }
+
+                                        // Sinon afficher le bouton play/pause
+                                        return Icon(
+                                          audioService.isPlaying.value
+                                              ? Icons.pause_rounded
+                                              : Icons.play_arrow_rounded,
+                                          color: audioService.isPlaying.value
+                                              ? Colors.white
+                                              : colorGreenSemiLight,
+                                          size: 50,
+                                        );
+                                      }),
                                     ),
                                   ),
                                 ),
@@ -347,8 +296,7 @@ class _RosaryScreenState extends State<RosaryScreen>
                             );
 
                         // Calculer le pourcentage de progression
-                        final progress = positionData.duration.inMilliseconds >
-                            0
+                        final progress = positionData.duration.inMilliseconds > 0
                             ? positionData.position.inMilliseconds /
                             positionData.duration.inMilliseconds
                             : 0.0;
@@ -357,8 +305,7 @@ class _RosaryScreenState extends State<RosaryScreen>
                           children: [
                             // Barre de progression
                             Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 20),
+                              margin: const EdgeInsets.symmetric(horizontal: 20),
                               height: 6,
                               decoration: BoxDecoration(
                                 color: Colors.grey[200],
@@ -381,23 +328,19 @@ class _RosaryScreenState extends State<RosaryScreen>
 
                             // Durée actuelle / totale
                             Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20),
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    audioService.formatDuration(
-                                        positionData.position),
+                                    audioService.formatDuration(positionData.position),
                                     style: TextStyles.montserratRegular(
                                       textSize: TextSizes.fourteen,
                                       textColor: Colors.grey[600]!,
                                     ),
                                   ),
                                   Text(
-                                    audioService.formatDuration(
-                                        positionData.duration),
+                                    audioService.formatDuration(positionData.duration),
                                     style: TextStyles.montserratRegular(
                                       textSize: TextSizes.fourteen,
                                       textColor: Colors.grey[600]!,
@@ -411,67 +354,76 @@ class _RosaryScreenState extends State<RosaryScreen>
                       }
                   ),
 
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 20),
 
-                  // Audio controls
+                  // Contrôles de navigation
                   Visibility(
                     visible: false,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Previous button
-                        IconButton(
-                          icon: const Icon(
-                            Icons.skip_previous_rounded,
-                            color: colorGreenSemiLight,
-                            size: 36,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          // Bouton précédent
+                          IconButton(
+                            onPressed: () => audioService.navigateToPreviousMystery(),
+                            icon: const Icon(
+                              Icons.skip_previous_rounded,
+                              color: colorGreenSemiLight,
+                              size: 36,
+                            ),
                           ),
-                          onPressed: audioService.navigateToPreviousMystery,
-                        ),
 
-                        const SizedBox(width: 20),
+                          // Espace pour le bouton central
+                          const SizedBox(width: 80),
 
-                        // Play/Pause button
-                        Obx(() =>
-                            GestureDetector(
-                              onTap: audioService.playPause,
-                              child: Container(
-                                width: 64,
-                                height: 64,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: audioService.isPlaying.value
-                                      ? colorGreenSemiLight.withValues(
-                                      alpha: 0.2)
-                                      : Colors.white,
-                                  border: Border.all(
-                                    color: colorGreenSemiLight,
-                                    width: 2,
-                                  ),
-                                ),
-                                child: Icon(
-                                  audioService.isPlaying.value ? Icons
-                                      .pause_rounded : Icons.play_arrow_rounded,
-                                  color: colorGreenSemiLight,
-                                  size: 36,
-                                ),
-                              ),
-                            )),
-
-                        const SizedBox(width: 20),
-
-                        // Next button
-                        IconButton(
-                          icon: const Icon(
-                            Icons.skip_next_rounded,
-                            color: colorGreenSemiLight,
-                            size: 36,
+                          // Bouton suivant
+                          IconButton(
+                            onPressed: () => audioService.navigateToNextMystery(),
+                            icon: const Icon(
+                              Icons.skip_next_rounded,
+                              color: colorGreenSemiLight,
+                              size: 36,
+                            ),
                           ),
-                          onPressed: audioService.navigateToNextMystery,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
+
+                  //const SizedBox(height: 20),
+
+                  // Bouton pour précharger tous les mystères actuels
+                  /*if (!audioService.isDownloading.value)
+                    Center(
+                      child: TextButton.icon(
+                        onPressed: () {
+                          audioService.preloadMysteryFiles(
+                              audioService.currentMystereIndex.value
+                          );
+                          Get.snackbar(
+                            'Téléchargement',
+                            'Téléchargement des fichiers du mystère en cours...',
+                            snackPosition: SnackPosition.BOTTOM,
+                            backgroundColor: colorGreenSemiLight.withValues(alpha: 0.9),
+                            colorText: Colors.white,
+                            duration: const Duration(seconds: 2),
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.download_rounded,
+                          color: colorGreenSemiLight,
+                          size: 20,
+                        ),
+                        label: Text(
+                          'Télécharger ce mystère',
+                          style: TextStyles.montserratMedium(
+                            textSize: TextSizes.fourteen,
+                            textColor: colorGreenSemiLight,
+                          ),
+                        ),
+                      ),
+                    ),*/
                 ],
               ),
             ),
@@ -479,21 +431,5 @@ class _RosaryScreenState extends State<RosaryScreen>
         );
       },
     );
-  }
-
-  // Helper method to get icon for each mystère
-  IconData getMystereIcon(int index) {
-    switch (index) {
-      case 0:
-        return Icons.brightness_5_rounded; // Joyeux
-      case 1:
-        return Icons.lightbulb_outline_rounded; // Lumineux
-      case 2:
-        return Icons.favorite_border_rounded; // Douloureux
-      case 3:
-        return Icons.star_border_rounded; // Glorieux
-      default:
-        return Icons.help_outline_rounded;
-    }
   }
 }

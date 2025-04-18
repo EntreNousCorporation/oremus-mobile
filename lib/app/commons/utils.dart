@@ -11,6 +11,7 @@ import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
+import 'package:oremusapp/generated/assets.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -576,6 +577,22 @@ Map<String, dynamic> removeNullFields(Map<String, dynamic> json) {
     }
   });
   return cleanedJson;
+}
+
+Future<String> prepareArtworkFile() async {
+  final directory = await getApplicationDocumentsDirectory();
+  final filePath = '${directory.path}/rosaire_logo.png';
+  final file = File(filePath);
+
+  // Vérifier si le fichier existe déjà pour éviter de l'extraire à chaque fois
+  if (!await file.exists()) {
+    // Charger l'image depuis les assets
+    final byteData = await rootBundle.load(Assets.imagesLogoSquare);
+    // Écrire dans le système de fichiers
+    await file.writeAsBytes(byteData.buffer.asUint8List());
+  }
+
+  return filePath;
 }
 
 extension ColorExtension on Color {
