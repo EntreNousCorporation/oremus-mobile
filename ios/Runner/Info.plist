@@ -67,5 +67,7 @@
         <string>audio</string>
         <string>processing</string>
     </array>
+    <key>NSDocumentsFolderUsageDescription</key>
+    <string>L'application a besoin d'accéder à vos documents pour stocker les fichiers audio du rosaire.</string>
 </dict>
 </plist>

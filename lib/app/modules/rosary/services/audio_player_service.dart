@@ -1,12 +1,8 @@
 import 'dart:developer';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:audio_session/audio_session.dart';
-import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/utils.dart';
-import 'package:oremusapp/generated/assets.dart';
-import 'package:oremusapp/main.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:oremusapp/app/modules/rosary/services/audio_file_manager_service.dart';
@@ -173,7 +169,7 @@ class AudioPlayerService extends GetxService {
       await _audioPlayer.stop();
 
       // Vérifier si le fichier est déjà téléchargé
-      String? localFilePath = _fileManagerService.getLocalFilePath(mystereIndex, detailIndex);
+      String? localFilePath = await _fileManagerService.getLocalFilePath(mystereIndex, detailIndex);
 
       // Si le fichier n'est pas téléchargé, le télécharger
       if (localFilePath == null) {
@@ -242,7 +238,7 @@ class AudioPlayerService extends GetxService {
       final detailsCount = mystereDetails[mystereIndex].length;
 
       for (int i = 0; i < detailsCount; i++) {
-        if (!_fileManagerService.isFileDownloaded(mystereIndex, i)) {
+        if (!await _fileManagerService.isFileDownloaded(mystereIndex, i)) {
           await _fileManagerService.downloadFile(mystereIndex, i);
         }
       }

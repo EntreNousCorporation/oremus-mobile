@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -9,6 +10,7 @@ import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/modules/rosary/data/model/rosary_file_data.dart';
 
 /// Service qui gère le téléchargement et la mise en cache des fichiers audio pour le rosaire
+/// Version optimisée pour iOS et Android
 class AudioFileManagerService extends GetxService {
   static AudioFileManagerService get to => Get.find<AudioFileManagerService>();
 
@@ -24,7 +26,7 @@ class AudioFileManagerService extends GetxService {
   final currentlyDownloadingKey = ''.obs;
 
   // Clé pour stocker les fichiers téléchargés dans la BD
-  static const String KEY_DOWNLOADED_FILES = 'downloaded_rosary_files';
+  static const String KEY_DOWNLOADED_FILES = 'downloaded_rosary_files_v2';
 
   @override
   void onInit() {
@@ -33,19 +35,29 @@ class AudioFileManagerService extends GetxService {
   }
 
   /// Charger les chemins de fichiers mis en cache depuis la BD
-  void _loadCachedFilePaths() {
+  Future<void> _loadCachedFilePaths() async {
     try {
       String? cachedData = DB.getData(KEY_DOWNLOADED_FILES);
       if (cachedData != null && cachedData.isNotEmpty) {
         Map<String, dynamic> data = json.decode(cachedData);
-        data.forEach((key, value) {
-          // Vérifier que le fichier existe avant de l'ajouter à la map
-          if (File(value).existsSync()) {
-            _downloadedFiles[key] = value;
+
+        for (var entry in data.entries) {
+          final key = entry.key;
+          final filePath = entry.value as String;
+
+          // Vérification robuste de l'existence du fichier
+          final file = File(filePath);
+          final exists = await file.exists();
+          final fileSize = exists ? await file.length() : 0;
+
+          log('Vérification du fichier [${Platform.isIOS ? "iOS" : "Android"}]: $filePath, existe: $exists, taille: $fileSize octets');
+
+          if (exists && fileSize > 0) {
+            _downloadedFiles[key] = filePath;
           } else {
-            log('Fichier en cache non trouvé: $value');
+            log('Fichier en cache non trouvé ou invalide: $filePath');
           }
-        });
+        }
       }
       log('Chargé ${_downloadedFiles.length} chemins de fichiers en cache');
     } catch (e) {
@@ -57,21 +69,56 @@ class AudioFileManagerService extends GetxService {
   void _saveCachedFilePaths() {
     try {
       DB.saveData(KEY_DOWNLOADED_FILES, json.encode(_downloadedFiles));
+      log('Sauvegarde de ${_downloadedFiles.length} chemins de fichiers');
     } catch (e) {
       log('Erreur lors de la sauvegarde des chemins de fichiers en cache: $e');
     }
   }
 
   /// Vérifier si le fichier est déjà téléchargé
-  bool isFileDownloaded(int mystereIndex, int detailIndex) {
+  Future<bool> isFileDownloaded(int mystereIndex, int detailIndex) async {
     String key = _getKey(mystereIndex, detailIndex);
-    return _downloadedFiles.containsKey(key);
+
+    if (!_downloadedFiles.containsKey(key)) {
+      return false;
+    }
+
+    // Double vérification que le fichier existe réellement sur le disque
+    final filePath = _downloadedFiles[key]!;
+    final file = File(filePath);
+    final exists = await file.exists();
+    final fileSize = exists ? await file.length() : 0;
+
+    if (!exists || fileSize <= 0) {
+      // Si le fichier n'existe plus, le retirer de la map
+      log('Fichier marqué comme téléchargé mais introuvable: $filePath');
+      _downloadedFiles.remove(key);
+      _saveCachedFilePaths();
+      return false;
+    }
+
+    return true;
   }
 
   /// Obtenir le chemin du fichier local s'il est téléchargé, null sinon
-  String? getLocalFilePath(int mystereIndex, int detailIndex) {
+  Future<String?> getLocalFilePath(int mystereIndex, int detailIndex) async {
     String key = _getKey(mystereIndex, detailIndex);
-    return _downloadedFiles[key];
+
+    if (!_downloadedFiles.containsKey(key)) {
+      return null;
+    }
+
+    final filePath = _downloadedFiles[key]!;
+    final fileExists = await File(filePath).exists();
+
+    if (!fileExists) {
+      // Si le fichier n'existe plus, le retirer de la map
+      _downloadedFiles.remove(key);
+      _saveCachedFilePaths();
+      return null;
+    }
+
+    return filePath;
   }
 
   /// Obtenir la clé pour le mystère
@@ -84,15 +131,31 @@ class AudioFileManagerService extends GetxService {
   Future<String?> downloadFile(int mystereIndex, int detailIndex) async {
     String key = _getKey(mystereIndex, detailIndex);
 
-    // Vérifier si le fichier est déjà téléchargé
+    // Vérifier si le fichier est déjà téléchargé et valide
     if (_downloadedFiles.containsKey(key)) {
-      return _downloadedFiles[key];
+      final filePath = _downloadedFiles[key]!;
+      final file = File(filePath);
+      final fileExists = await file.exists();
+      final fileSize = fileExists ? await file.length() : 0;
+
+      log('[${Platform.isIOS ? "iOS" : "Android"}] Vérification du fichier existant: $filePath, existe: $fileExists, taille: $fileSize octets');
+
+      if (fileExists && fileSize > 0) {
+        return filePath;
+      } else {
+        // Si le fichier n'existe plus ou est corrompu, le retirer de la map
+        log('Fichier référencé mais non trouvé ou invalide: $filePath');
+        _downloadedFiles.remove(key);
+        _saveCachedFilePaths();
+      }
     }
 
     try {
       isDownloading.value = true;
       currentlyDownloadingKey.value = key;
       downloadProgress.value = 0.0;
+
+      log('[${Platform.isIOS ? "iOS" : "Android"}] Début du téléchargement pour mystère $mystereIndex, détail $detailIndex');
 
       // Récupérer les informations du fichier depuis l'API
       final response = await http.get(
@@ -101,37 +164,76 @@ class AudioFileManagerService extends GetxService {
       );
 
       if (response.statusCode == 200) {
-        final rosaryFileData = RosaryFileData.fromJson(json.decode(response.body));
+        final responseBody = response.body;
+        log('Réponse API reçue: ${responseBody.substring(0, math.min(100, responseBody.length))}...');
+
+        final rosaryFileData = RosaryFileData.fromJson(json.decode(responseBody));
 
         if (rosaryFileData.file?.link == null) {
           throw Exception('Lien de fichier manquant dans la réponse de l\'API');
         }
 
-        // Créer le répertoire de cache s'il n'existe pas
-        final directory = await getApplicationDocumentsDirectory();
-        final rosaryDir = Directory('${directory.path}/rosary_audio');
+        // Obtenir le répertoire approprié selon la plateforme
+        Directory appDocDir;
+        if (Platform.isIOS) {
+          // Sur iOS, utiliser le répertoire de documents qui est plus fiable
+          appDocDir = await getApplicationDocumentsDirectory();
+        } else {
+          // Sur Android, on peut aussi utiliser le répertoire de documents
+          appDocDir = await getApplicationDocumentsDirectory();
+        }
+
+        log('Répertoire de base: ${appDocDir.path}');
+
+        // Créer un sous-répertoire pour les fichiers audio
+        final rosaryDirPath = '${appDocDir.path}/rosary_audio';
+        final rosaryDir = Directory(rosaryDirPath);
+
         if (!await rosaryDir.exists()) {
           await rosaryDir.create(recursive: true);
         }
 
-        // Nom du fichier local
-        final fileName = '${rosaryFileData.bucketName}_$key.mp3';
+        // Nom du fichier local avec horodatage pour éviter les collisions
+        final timestamp = DateTime.now().millisecondsSinceEpoch;
+        final fileName = 'mystere_${key}_${timestamp}_${rosaryFileData.bucketName}.mp3';
         final filePath = '${rosaryDir.path}/$fileName';
-        final file = File(filePath);
 
-        // Télécharger le fichier
-        final fileResponse = await http.get(
-          Uri.parse(rosaryFileData.file!.link!),
-          headers: {'accept': 'application/json'},
-        );
+        log('Téléchargement du fichier depuis: ${rosaryFileData.file!.link}');
+        log('Chemin de destination: $filePath');
 
-        if (fileResponse.statusCode == 200) {
-          await file.writeAsBytes(fileResponse.bodyBytes);
-          _downloadedFiles[key] = filePath;
-          _saveCachedFilePaths();
-          return filePath;
-        } else {
-          throw Exception('Échec du téléchargement du fichier: ${fileResponse.statusCode}');
+        // Télécharger le fichier avec un client HTTP configuré pour de meilleurs délais
+        final client = http.Client();
+        try {
+          final request = http.Request('GET', Uri.parse(rosaryFileData.file!.link!));
+          final streamedResponse = await client.send(request);
+
+          if (streamedResponse.statusCode == 200) {
+            final file = File(filePath);
+
+            // Écrire le fichier par flux pour une meilleure gestion de la mémoire
+            final fileStream = file.openWrite();
+            await streamedResponse.stream.pipe(fileStream);
+            await fileStream.flush();
+            await fileStream.close();
+
+            // Vérifier que le fichier a bien été écrit
+            final fileExists = await file.exists();
+            final fileSize = fileExists ? await file.length() : 0;
+
+            log('Fichier écrit, existe: $fileExists, taille: $fileSize octets');
+
+            if (fileExists && fileSize > 0) {
+              _downloadedFiles[key] = filePath;
+              _saveCachedFilePaths();
+              return filePath;
+            } else {
+              throw Exception('Le fichier téléchargé est vide ou n\'a pas été écrit correctement');
+            }
+          } else {
+            throw Exception('Échec du téléchargement du fichier: ${streamedResponse.statusCode}');
+          }
+        } finally {
+          client.close();
         }
       } else {
         throw Exception('Échec de récupération des informations du fichier: ${response.statusCode}');
@@ -153,10 +255,12 @@ class AudioFileManagerService extends GetxService {
         final file = File(filePath);
         if (await file.exists()) {
           await file.delete();
+          log('Fichier supprimé: $filePath');
         }
       }
       _downloadedFiles.clear();
       _saveCachedFilePaths();
+      log('Tous les fichiers téléchargés ont été supprimés');
     } catch (e) {
       log('Erreur lors de la suppression des fichiers téléchargés: $e');
     }
