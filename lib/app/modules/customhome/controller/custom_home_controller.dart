@@ -34,7 +34,7 @@ class CustomHomeController extends GetxController {
 
   RxList<MenusItem> menus = RxList<MenusItem>([]);
   late SimpleHiddenDrawerController drawerController;
-  var selectedIndex = AppConstants.HOME.obs; //home
+  var selectedIndex = AppConstants.HOME.obs;
   var title = ''.obs;
 
   var applyAnim = true.obs;
