@@ -13,12 +13,20 @@ class MiniPlayer extends StatelessWidget {
   Widget build(BuildContext context) {
     final audioService = AudioPlayerService.to;
 
-    return Obx(() {
-      if (!audioService.showMiniPlayer.value) {
-        return const SizedBox.shrink();
-      }
-
-      return GestureDetector(
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 8,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: GestureDetector(
         onTap: () {
           try {
             // Naviguer vers la vue du rosaire via le CustomHomeController
@@ -33,18 +41,7 @@ class MiniPlayer extends StatelessWidget {
           }
         },
         child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 8,
-                offset: const Offset(0, -2),
-              ),
-            ],
-          ),
+          color: colorTransparent,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -224,8 +221,8 @@ class MiniPlayer extends StatelessWidget {
             ],
           ),
         ),
-      );
-    });
+      ),
+    );
   }
 
   Widget _buildControlButton({
@@ -251,5 +248,4 @@ class MiniPlayer extends StatelessWidget {
       ),
     );
   }
-
 }
