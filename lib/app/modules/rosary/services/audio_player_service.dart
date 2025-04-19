@@ -123,7 +123,7 @@ class AudioPlayerService extends GetxService {
   @override
   Future<void> onInit() async {
     super.onInit();
-    _fileManagerService = Get.find<AudioFileManagerService>();
+    _fileManagerService = Get.isRegistered<AudioPlayerService>() ? Get.find<AudioFileManagerService>() : Get.put<AudioFileManagerService>(AudioFileManagerService(), permanent: true);
     _artworkFilePath = await prepareArtworkFile();
     _initAudioPlayer();
   }

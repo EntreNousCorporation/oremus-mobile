@@ -10,7 +10,7 @@ import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/email_validator.dart';
-import 'package:oremusapp/app/commons/services/os_otification_service.dart';
+import 'package:oremusapp/app/commons/services/os_notification_service.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/customhome/controller/custom_home_controller.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
@@ -129,6 +129,7 @@ class SigninController extends GetxController {
       if (tempLogin.value == true) {
         Get.find<CustomHomeController>().onInit();
         Get.back(result: true);
+        _sendDeviceId(payload['sub']);
         return;
       }
       goToHome();

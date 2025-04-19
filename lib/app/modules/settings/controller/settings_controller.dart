@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/services/notification_consent_manager.dart';
-import 'package:oremusapp/app/commons/services/os_otification_service.dart';
+import 'package:oremusapp/app/commons/services/os_notification_service.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
 class SettingsController extends GetxController {
