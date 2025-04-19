@@ -18,6 +18,7 @@ class FilterMassRequestHistoryScreen extends StatelessWidget {
     return Container(
       color: colorGreen,
       child: SafeArea(
+        bottom: false,
         child: GetX<FilterMassRequestHistoryController>(builder: (_) {
           return PopScope(
             canPop: false,

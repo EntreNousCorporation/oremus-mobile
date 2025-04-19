@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:oremusapp/app/commons/components/notifications/notification_popup.dart';
 
 class OSNotificationService {
   // Singleton pattern
@@ -59,15 +61,6 @@ class OSNotificationService {
     // When a notification is received while the app is in foreground
     OneSignal.Notifications.addForegroundWillDisplayListener((event) {
       log("Notification received in foreground: ${event.notification.additionalData}");
-
-      // You can prevent notification from displaying
-      // event.preventDefault();
-
-      // Or modify it before display
-      // event.notification.additionalData?['custom_key'] = 'modified_value';
-
-      // Complete the event to display the notification
-      //event.complete(event.notification);
     });
 
     // When a notification is opened
@@ -99,21 +92,47 @@ class OSNotificationService {
 
   // Handle navigation based on notification content
   void _handleNotificationNavigation(OSNotification notification) {
-    // Extract routing information from notification data
+    // Extraire les informations de la notification
     final data = notification.additionalData;
     if (data == null) return;
 
-    // Example: Navigate based on notification type
-    String? notificationType = data['type'];
-    String? targetId = data['target_id'];
+    // Récupérer les informations pour le popup
+    String title = notification.title ?? "Notification";
+    String contents = data['contents'] ?? notification.body ?? "";
+    String? notificationType = data['notificationType'];
 
-    if (notificationType != null && targetId != null) {
-      // Navigation logic here - implement using your app's navigation system
-      // For example with GetX:
-      // Get.toNamed('/details/$targetId');
+    // Vérifier que nous avons un contexte valide
+    if (Get.context != null) {
+      // Légère temporisation pour permettre à l'application de se stabiliser
+      Future.delayed(const Duration(milliseconds: 300), () {
+        NotificationPopup.show(
+          context: Get.context!,
+          title: title,
+          contents: contents,
+          notificationType: notificationType,
+          onDismiss: () {
+            log("Notification fermée");
+            resetRedirectFlag();
+          },
+          /*onAction: () {
+            log("Action sur la notification");
 
-      log("Should navigate to: $notificationType with ID: $targetId");
+            // Navigation supplémentaire si nécessaire
+            String? targetId = data['target_id'];
+            String? targetScreen = data['target_screen'];
+
+            if (targetScreen != null) {
+              Get.toNamed(targetScreen, arguments: targetId);
+            }
+
+            resetRedirectFlag();
+          },*/
+        );
+      });
     }
+
+    log("Notification gérée: ${notification.notificationId}");
+    log("Données: $data");
   }
 
   // Reset redirection flag (call this after navigation is complete)

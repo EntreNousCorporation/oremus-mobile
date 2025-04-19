@@ -46,6 +46,7 @@ class SigninScreen extends StatelessWidget {
                         children: [
                           // Main Content
                           SafeArea(
+                            bottom: false,
                             child: Center(
                               child: SingleChildScrollView(
                                 physics: const BouncingScrollPhysics(),

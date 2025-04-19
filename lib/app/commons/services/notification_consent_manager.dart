@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:oremusapp/app/commons/services/os_otification_service.dart';
+import 'package:oremusapp/app/commons/services/os_notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationConsentManager {

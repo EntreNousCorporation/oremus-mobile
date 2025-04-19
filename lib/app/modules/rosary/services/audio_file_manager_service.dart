@@ -86,7 +86,7 @@ class AudioFileManagerService extends GetxService {
     }
 
     // Double vérification que le fichier existe réellement sur le disque
-    final filePath = _downloadedFiles[key]!;
+    final filePath = _downloadedFiles[key] ?? '';
     final file = File(filePath);
     final exists = await file.exists();
     final fileSize = exists ? await file.length() : 0;

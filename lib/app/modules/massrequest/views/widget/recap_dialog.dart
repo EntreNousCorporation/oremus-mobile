@@ -25,11 +25,6 @@ Future recapDialog() {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: GetBuilder<FilterMassRequestDateController>(
           builder: (_) {
-            List<PriceData?> allDates = [
-              ..._.datesChoosenForWorshipRecurrentHours,
-              ..._.datesChoosenWorshipSpecialHours,
-            ];
-
             return Container(
               padding: const EdgeInsets.all(20),
               child: Column(

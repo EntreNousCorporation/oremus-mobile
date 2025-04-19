@@ -35,6 +35,7 @@ class FaqScreen extends StatelessWidget {
 
               // Main content
               SafeArea(
+                bottom: false,
                 child: Column(
                   children: [
                     // Custom app bar

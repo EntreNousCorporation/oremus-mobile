@@ -55,6 +55,7 @@ class _MenuState extends State<DrawerMenu> with TickerProviderStateMixin {
           height: double.maxFinite,
         ),
         SafeArea(
+          bottom: false,
           child: FadeTransition(
             opacity: _animationController,
             child: Padding(

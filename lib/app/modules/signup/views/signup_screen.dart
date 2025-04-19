@@ -41,6 +41,7 @@ class SignupScreen extends StatelessWidget {
                   backgroundColor: Colors.black.withValues(alpha:0.3),
                   resizeToAvoidBottomInset: true,
                   body: SafeArea(
+                    bottom: false,
                     child: PopScope(
                       canPop: _.unlockBackButton.value,
                       child: AbsorbPointer(

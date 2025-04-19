@@ -119,6 +119,7 @@ class OtpScreen extends StatelessWidget {
 
                           // Main Content
                           SafeArea(
+                            bottom: false,
                             child: Center(
                               child: SingleChildScrollView(
                                 physics: const BouncingScrollPhysics(),

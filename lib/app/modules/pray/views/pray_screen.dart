@@ -20,6 +20,7 @@ class PrayScreen extends StatelessWidget {
     return Container(
       color: colorWhite,
       child: SafeArea(
+        bottom: false,
         child: GetX<PrayController>(builder: (_) {
           return PopScope(
             canPop: _.unlockBackButton.value,

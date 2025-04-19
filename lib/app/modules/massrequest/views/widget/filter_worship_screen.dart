@@ -21,6 +21,7 @@ class FilterWorshipScreen extends StatelessWidget {
     return Container(
       color: colorGreen,
       child: SafeArea(
+        bottom: false,
         child: GetX<FilterWorshipController>(builder: (_) {
           return PopScope(
             canPop: false,

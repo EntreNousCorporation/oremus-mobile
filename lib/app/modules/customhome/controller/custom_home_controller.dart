@@ -18,6 +18,7 @@ import 'package:oremusapp/app/modules/favorite/controller/favorite_controller.da
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
+import 'package:oremusapp/app/remote/api_client.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/generated/assets.dart';
 import 'package:oremusapp/main.dart';
@@ -226,7 +227,7 @@ class CustomHomeController extends GetxController {
 
     // Notifier le FavoriteController si disponible
     try {
-      final favoriteController = Get.find<FavoriteController>();
+      final favoriteController = Get.isRegistered<FavoriteController>() ? Get.find<FavoriteController>() : Get.put<FavoriteController>(FavoriteController(paroisseRepository: ParoisseRepository(ApiClientImpl())));
       favoriteController.handleLogout();
     } catch (e) {
       // Le contrôleur n'est pas disponible, rien à faire
@@ -235,7 +236,7 @@ class CustomHomeController extends GetxController {
 
     // Effacer les données de connexion
     DB.saveData(AppConstants.KEY_USER_LOG_INFOS, null);
-    Get.deleteAll(force: true);
+    Get.deleteAll(force: false);
     isUserConnected.value = false;
     Get.offAllNamed(Routes.SIGNIN);
   }
