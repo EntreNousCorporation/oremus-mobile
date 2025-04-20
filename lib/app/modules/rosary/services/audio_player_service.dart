@@ -2,12 +2,16 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:math' as math;
+import 'dart:typed_data';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:audio_session/audio_session.dart';
+import 'package:just_waveform/just_waveform.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/rosary/data/model/rosary_file_data.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:rxdart/rxdart.dart' as rxdart;
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:oremusapp/app/modules/rosary/services/audio_file_manager_service.dart';
 import 'package:http/http.dart' as http;
@@ -35,6 +39,10 @@ class AudioPlayerService extends GetxService {
   // Audio file manager service
   late AudioFileManagerService _fileManagerService;
 
+  final waveformData = Rx<Uint8List?>(null);
+  final isWaveformLoading = true.obs;
+  final waveformProgressStream = rxdart.BehaviorSubject<WaveformProgress>();
+
   // État observable
   final isPlaying = false.obs;
   final currentMystereIndex = 0.obs;
@@ -53,16 +61,25 @@ class AudioPlayerService extends GetxService {
   // Flag pour indiquer si l'audio est terminé
   final isCompleted = false.obs;
 
+  // Constante pour le nombre de secondes à avancer/reculer
+  static const int seekDurationInSeconds = 10;
+  static const int continuousSeekInterval = 300; // en millisecondes
+
+  // Pour la fonction de recherche continue
+  Timer? _continuousSeekTimer;
+  bool _isContinuousSeekActive = false;
+
   // Créer un stream combiné pour obtenir des mises à jour de position
-  Stream<PositionData> get positionDataStream =>
-      CombineLatestStream.combine3<Duration, Duration, Duration?, PositionData>(
+  Stream<PositionData> get positionDataStream => rxdart.CombineLatestStream
+          .combine3<Duration, Duration, Duration?, PositionData>(
         _audioPlayer.positionStream,
         _audioPlayer.bufferedPositionStream,
-        _audioPlayer.durationStream, (position, bufferedPosition, duration) => PositionData(
-        position: position,
-        bufferedPosition: bufferedPosition,
-        duration: duration ?? Duration.zero,
-      ),
+        _audioPlayer.durationStream,
+        (position, bufferedPosition, duration) => PositionData(
+          position: position,
+          bufferedPosition: bufferedPosition,
+          duration: duration ?? Duration.zero,
+        ),
       );
 
   // Liste des mystères et leurs détails
@@ -106,7 +123,8 @@ class AudioPlayerService extends GetxService {
 
   // Mappez chaque mystère à son fichier audio de secours
   final Map<int, Map<int, String>> fallbackAudioFiles = {
-    0: { // Mystères Joyeux
+    0: {
+      // Mystères Joyeux
       0: '', //Assets.audiosAnnonciation,
       // Ajouter d'autres fallbacks si disponibles
     },
@@ -123,7 +141,10 @@ class AudioPlayerService extends GetxService {
   @override
   Future<void> onInit() async {
     super.onInit();
-    _fileManagerService = Get.isRegistered<AudioPlayerService>() ? Get.find<AudioFileManagerService>() : Get.put<AudioFileManagerService>(AudioFileManagerService(), permanent: true);
+    _fileManagerService = Get.isRegistered<AudioPlayerService>()
+        ? Get.find<AudioFileManagerService>()
+        : Get.put<AudioFileManagerService>(AudioFileManagerService(),
+            permanent: true);
     _artworkFilePath = await prepareArtworkFile();
     _initAudioPlayer();
   }
@@ -142,7 +163,8 @@ class AudioPlayerService extends GetxService {
       final processingState = playerState.processingState;
 
       // Mettre à jour l'état
-      this.isPlaying.value = isPlaying && processingState == ProcessingState.ready;
+      this.isPlaying.value =
+          isPlaying && processingState == ProcessingState.ready;
 
       // Afficher le mini lecteur si l'audio est en cours de lecture ou en pause
       if (isPlaying || processingState == ProcessingState.ready) {
@@ -155,17 +177,20 @@ class AudioPlayerService extends GetxService {
         this.isPlaying.value = false; // Assure que le bouton play est affiché
 
         // Si nous étions en mode streaming, télécharger le fichier complètement pour la prochaine fois
-        if (isStreamingMode.value && _currentDownloadUrl != null && _currentDownloadKey != null) {
+        if (isStreamingMode.value &&
+            _currentDownloadUrl != null &&
+            _currentDownloadKey != null) {
           _completeBackgroundDownload();
         }
       }
     });
 
     // Écouter les erreurs du lecteur
-    _audioPlayer.playbackEventStream.listen((event) {},
+    _audioPlayer.playbackEventStream.listen(
+      (event) {},
       onError: (Object e, StackTrace stackTrace) {
         log('Erreur de lecture audio: $e');
-        errorMessage.value = 'Erreur de lecture. Veuillez réessayer.';
+        errorMessage.value = 'Erreur de lecture. Veuillez réessayer svp';
       },
     );
   }
@@ -180,7 +205,8 @@ class AudioPlayerService extends GetxService {
       currentMystereIndex.value = mystereIndex;
       currentMystereDetailIndex.value = detailIndex;
       currentMystereTitle.value = mysteres[mystereIndex];
-      currentMystereDetailTitle.value = mystereDetails[mystereIndex][detailIndex];
+      currentMystereDetailTitle.value =
+          mystereDetails[mystereIndex][detailIndex];
 
       // Arrêter l'audio en cours s'il y en a un
       await _audioPlayer.stop();
@@ -190,7 +216,8 @@ class AudioPlayerService extends GetxService {
       _currentDownloadKey = null;
 
       // Vérifier si le fichier est déjà téléchargé
-      String? localFilePath = await _fileManagerService.getLocalFilePath(mystereIndex, detailIndex);
+      String? localFilePath =
+          await _fileManagerService.getLocalFilePath(mystereIndex, detailIndex);
 
       if (localFilePath != null) {
         log('Utilisation du fichier local: $localFilePath');
@@ -204,75 +231,95 @@ class AudioPlayerService extends GetxService {
         );
 
         if (response.statusCode == 200) {
-          final rosaryFileData = RosaryFileData.fromJson(json.decode(response.body));
+          final rosaryFileData =
+              RosaryFileData.fromJson(json.decode(response.body));
 
           if (rosaryFileData.file?.link != null) {
             final audioUrl = rosaryFileData.file?.link ?? '';
-            final mysteryKey = _fileManagerService.getKey(mystereIndex, detailIndex);
+            final mysteryKey =
+                _fileManagerService.getKey(mystereIndex, detailIndex);
 
-            log('Streaming du fichier depuis: $audioUrl');
+            // S'assurer que l'URL est correctement encodée
+            final encodedUrl = Uri.encodeFull(audioUrl);
+            log('URL encodée: $encodedUrl');
 
             // Stocker l'URL pour téléchargement en arrière-plan
-            _currentDownloadUrl = audioUrl;
+            _currentDownloadUrl = encodedUrl;
             _currentDownloadKey = mysteryKey;
 
             // Sur iOS, télécharger d'abord le fichier puis le lire localement
             if (Platform.isIOS) {
               isDownloading.value = true;
-              log('iOS détecté: téléchargement complet avant la lecture');
-
-              // Télécharger le fichier complet
-              final filePath = await _fileManagerService.downloadFile(mystereIndex, detailIndex);
+              String? filePath;
+              try {
+                filePath = await _fileManagerService.downloadFile(
+                    mystereIndex, detailIndex);
+              } catch (e) {
+                log('Erreur pendant le téléchargement sur iOS: $e');
+                errorMessage.value =
+                    'Erreur de téléchargement. Veuillez réessayer.';
+                isDownloading.value = false;
+                return;
+              }
 
               isDownloading.value = false;
-
               if (filePath != null) {
-                log('Fichier téléchargé sur iOS, lecture locale: $filePath');
-                await _playLocalFile(mystereIndex, detailIndex, filePath);
+                try {
+                  await _playLocalFile(mystereIndex, detailIndex, filePath);
+                } catch (e) {
+                  log('Erreur lors de la lecture du fichier local sur iOS: $e');
+                  errorMessage.value = 'Erreur de lecture. Veuillez réessayer.';
+                }
               } else {
-                throw Exception('Échec du téléchargement du fichier sur iOS');
+                errorMessage.value =
+                    'Échec du téléchargement. Veuillez réessayer.';
               }
             }
             // Sur Android, utiliser le streaming
             else {
-              // S'assurer que l'URL est correctement encodée
-              final encodedUrl = Uri.encodeFull(audioUrl);
-              log('URL encodée pour streaming: $encodedUrl');
-
               // Configurer la source en mode streaming
-              final audioSource = AudioSource.uri(
-                Uri.parse(encodedUrl),
-                tag: MediaItem(
-                  id: '$mystereIndex-$detailIndex',
-                  album: 'Rosaire',
-                  title: mystereDetails[mystereIndex][detailIndex],
-                  artist: mysteres[mystereIndex],
-                  artUri: Uri.file(_artworkFilePath),
-                ),
-              );
+              try {
+                final audioSource = AudioSource.uri(
+                  Uri.parse(encodedUrl),
+                  tag: MediaItem(
+                    id: '$mystereIndex-$detailIndex',
+                    album: 'Rosaire',
+                    title: mystereDetails[mystereIndex][detailIndex],
+                    artist: mysteres[mystereIndex],
+                    artUri: Uri.file(_artworkFilePath),
+                  ),
+                );
 
-              // Charger et démarrer la lecture en streaming
-              await _audioPlayer.setAudioSource(audioSource);
-              isStreamingMode.value = true;
-              showMiniPlayer.value = true;
-              isCompleted.value = false;
+                // Charger et démarrer la lecture en streaming
+                await _audioPlayer.setAudioSource(audioSource);
+                isStreamingMode.value = true;
+                showMiniPlayer.value = true;
+                isCompleted.value = false;
 
-              // Démarrer le téléchargement en arrière-plan pendant la lecture
-              _startBackgroundDownload(audioUrl, mysteryKey, mystereIndex, detailIndex);
+                // Démarrer le téléchargement en arrière-plan pendant la lecture
+                _startBackgroundDownload(
+                    encodedUrl, mysteryKey, mystereIndex, detailIndex);
 
-              // Commencer la lecture
-              _audioPlayer.play();
+                // Commencer la lecture
+                _audioPlayer.play();
+              } catch (e) {
+                log('Erreur lors de la configuration du streaming: $e');
+                errorMessage.value = 'Erreur de streaming. Veuillez réessayer.';
+              }
             }
           } else {
-            throw Exception('Lien de fichier manquant dans la réponse de l\'API');
+            throw Exception(
+                'Lien de fichier manquant dans la réponse de l\'API');
           }
         } else {
-          throw Exception('Échec de récupération des informations du fichier: ${response.statusCode}');
+          throw Exception(
+              'Échec de récupération des informations du fichier: ${response.statusCode}');
         }
       }
     } catch (e) {
       log('Erreur lors du chargement de l\'audio: $e');
-      errorMessage.value = 'Impossible de charger l\'audio. Veuillez réessayer.';
+      errorMessage.value =
+          'Impossible de charger l\'audio. Veuillez réessayer.';
     } finally {
       isLoadingAudio.value = false;
     }
@@ -281,8 +328,41 @@ class AudioPlayerService extends GetxService {
   // Jouer un fichier local
   Future<void> _playLocalFile(int mystereIndex, int detailIndex, String filePath) async {
     try {
+      // Vérification supplémentaire du fichier avant la lecture
+      final file = File(filePath);
+      final exists = await file.exists();
+      final fileSize = exists ? await file.length() : 0;
+
+      if (!exists || fileSize <= 0) {
+        throw Exception('Fichier introuvable ou vide: $filePath');
+      }
+
+      // Sur iOS, faire une vérification supplémentaire que le fichier peut être lu
+      if (Platform.isIOS) {
+        try {
+          final testBytes = await file.readAsBytes().timeout(
+                const Duration(seconds: 5),
+                onTimeout: () => throw TimeoutException(
+                    'Lecture du fichier dépassé le délai imparti'),
+              );
+
+          if (testBytes.isEmpty) {
+            throw Exception(
+                'Le fichier existe mais ne peut pas être lu correctement sur iOS');
+          }
+          log('Vérification de lecture réussie avant la configuration de l\'audio source');
+        } catch (e) {
+          log('Erreur lors de la vérification de lecture sur iOS: $e');
+          throw Exception('Vérification de lecture échouée: $e');
+        }
+      }
+
+      // Utiliser un URI encodé pour la lecture
+      final audioUri = Uri.file(filePath);
+      log('URI du fichier pour lecture: ${audioUri.toString()}');
+
       final audioSource = AudioSource.uri(
-        Uri.file(filePath),
+        audioUri,
         tag: MediaItem(
           id: '$mystereIndex-$detailIndex',
           album: 'Rosaire',
@@ -293,6 +373,8 @@ class AudioPlayerService extends GetxService {
       );
 
       await _audioPlayer.setAudioSource(audioSource);
+      loadWaveform(filePath);
+
       isStreamingMode.value = false;
       showMiniPlayer.value = true;
       isCompleted.value = false;
@@ -326,7 +408,9 @@ class AudioPlayerService extends GetxService {
 
   // Compléter le téléchargement en arrière-plan à la fin de la lecture
   void _completeBackgroundDownload() async {
-    if (_isBackgroundDownloadInProgress || _currentDownloadUrl == null || _currentDownloadKey == null) return;
+    if (_isBackgroundDownloadInProgress ||
+        _currentDownloadUrl == null ||
+        _currentDownloadKey == null) return;
 
     final parts = _currentDownloadKey!.split('-');
     if (parts.length == 2) {
@@ -335,7 +419,8 @@ class AudioPlayerService extends GetxService {
 
       if (mystereIndex != null && detailIndex != null) {
         // Vérifier si le fichier a déjà été téléchargé entre temps
-        final localPath = await _fileManagerService.getLocalFilePath(mystereIndex, detailIndex);
+        final localPath = await _fileManagerService.getLocalFilePath(
+            mystereIndex, detailIndex);
         if (localPath == null) {
           log('Début du téléchargement complet après la lecture');
           try {
@@ -364,28 +449,102 @@ class AudioPlayerService extends GetxService {
     }
   }
 
-  // Constante pour le nombre de secondes à avancer/reculer
-  static const int seekDurationInSeconds = 10;
-  static const int continuousSeekInterval = 300; // en millisecondes
+  Future<void> loadWaveform(String filePath) async {
+    try {
+      isWaveformLoading.value = true;
+      waveformData.value = null;
 
-  // Pour la fonction de recherche continue
-  Timer? _continuousSeekTimer;
-  bool _isContinuousSeekActive = false;
+      // Vérifier que le fichier existe
+      final file = File(filePath);
+      if (!await file.exists()) {
+        log('Fichier audio introuvable pour la forme d\'onde: $filePath');
+        return;
+      }
+
+      final appDocDir = await getApplicationDocumentsDirectory();
+      final waveformPath = '${appDocDir.path}/waveform-${DateTime.now().millisecondsSinceEpoch}.wave';
+      final waveFile = File(waveformPath);
+
+      // Attention: extract renvoie un Stream<WaveformProgress>
+      // On ne peut pas utiliser await directement
+      JustWaveform.extract(
+        audioInFile: file,
+        waveOutFile: waveFile,
+      ).listen(
+            (progress) {
+          // Mettre à jour le flux de progression
+          waveformProgressStream.add(progress);
+
+          // Si le traitement est terminé et que nous avons une forme d'onde
+          if (progress.progress == 1.0 && progress.waveform != null) {
+            // Convertir en Uint8List pour l'affichage simplifié
+            final waveform = progress.waveform!;
+            const sampleCount = 50; // Nombre d'échantillons que nous voulons
+
+            // Créer un tableau d'échantillons normalisés
+            final bytes = Uint8List(sampleCount);
+            final duration = waveform.duration;
+
+            for (var i = 0; i < sampleCount; i++) {
+              // Calculer la position en millisecondes dans le fichier audio
+              final position = Duration(milliseconds: (i * duration.inMilliseconds ~/ sampleCount));
+
+              // Calculer l'index de pixel correspondant dans la forme d'onde
+              final pixelIndex = waveform.positionToPixel(position).toInt();
+
+              // Obtenir les valeurs min et max pour ce pixel
+              final minVal = waveform.getPixelMin(pixelIndex);
+              final maxVal = waveform.getPixelMax(pixelIndex);
+
+              // Utiliser la valeur absolue la plus grande
+              final amplitude = math.max(minVal.abs(), maxVal.abs());
+
+              // Normaliser entre 0 et 255
+              // La normalisation dépend du type de forme d'onde (flags)
+              if (waveform.flags == 0) {
+                // Normalisation 16 bits
+                bytes[i] = ((amplitude / 32768) * 255).clamp(0, 255).toInt();
+              } else {
+                // Normalisation 8 bits
+                bytes[i] = ((amplitude / 128) * 255).clamp(0, 255).toInt();
+              }
+            }
+
+            // Assigner les données
+            waveformData.value = bytes;
+            log('Forme d\'onde générée avec succès: $sampleCount échantillons');
+          }
+        },
+        onError: (e) {
+          log('Erreur lors de la génération de la forme d\'onde: $e');
+          isWaveformLoading.value = false;
+        },
+        onDone: () {
+          isWaveformLoading.value = false;
+        },
+      );
+    } catch (e) {
+      log('Erreur lors de la génération de la forme d\'onde: $e');
+      isWaveformLoading.value = false;
+    }
+  }
 
   // Méthode pour gérer la lecture/pause avec gestion correcte de la fin d'audio
   void playPause() async {
     // Si l'audio est terminé, le repositionner au début et lancer la lecture immédiatement
     if (isCompleted.value) {
       try {
-        isCompleted.value = false;  // Désactiver le statut "complété"
-        isPlaying.value = true;     // Prérégler l'état de lecture pour un feedback UI immédiat
+        isCompleted.value = false; // Désactiver le statut "complété"
+        isPlaying.value =
+            true; // Prérégler l'état de lecture pour un feedback UI immédiat
 
         // Repositionner au début et lancer la lecture
         await _audioPlayer.seek(Duration.zero);
         await _audioPlayer.play();
       } catch (e) {
         log('Erreur lors du redémarrage de l\'audio: $e');
-        isPlaying.value = false;    // En cas d'erreur, réinitialiser l'état de lecture
+        isPlaying.value =
+            false; // En cas d'erreur, réinitialiser l'état de lecture
         errorMessage.value = 'Erreur lors de la lecture. Veuillez réessayer.';
       }
     }
@@ -411,7 +570,8 @@ class AudioPlayerService extends GetxService {
       final duration = _audioPlayer.duration ?? Duration.zero;
 
       // Calculer la nouvelle position
-      final newPosition = position + const Duration(seconds: seekDurationInSeconds);
+      final newPosition =
+          position + const Duration(seconds: seekDurationInSeconds);
 
       // Vérifier que la nouvelle position ne dépasse pas la durée totale
       if (newPosition < duration) {
@@ -431,7 +591,8 @@ class AudioPlayerService extends GetxService {
       final position = _audioPlayer.position;
 
       // Calculer la nouvelle position
-      final newPosition = position - const Duration(seconds: seekDurationInSeconds);
+      final newPosition =
+          position - const Duration(seconds: seekDurationInSeconds);
 
       // Vérifier que la nouvelle position n'est pas négative
       if (newPosition > Duration.zero) {
@@ -454,7 +615,8 @@ class AudioPlayerService extends GetxService {
     seekForward();
 
     // Puis démarrer un timer pour répéter
-    _continuousSeekTimer = Timer.periodic(const Duration(milliseconds: continuousSeekInterval), (timer) {
+    _continuousSeekTimer = Timer.periodic(
+        const Duration(milliseconds: continuousSeekInterval), (timer) {
       seekForward();
     });
   }
@@ -468,7 +630,8 @@ class AudioPlayerService extends GetxService {
     seekBackward();
 
     // Puis démarrer un timer pour répéter
-    _continuousSeekTimer = Timer.periodic(const Duration(milliseconds: continuousSeekInterval), (timer) {
+    _continuousSeekTimer = Timer.periodic(
+        const Duration(milliseconds: continuousSeekInterval), (timer) {
       seekBackward();
     });
   }
@@ -482,7 +645,8 @@ class AudioPlayerService extends GetxService {
 
   void navigateToPreviousMystery() async {
     if (currentMystereDetailIndex.value > 0) {
-      await loadAudio(currentMystereIndex.value, currentMystereDetailIndex.value - 1);
+      await loadAudio(
+          currentMystereIndex.value, currentMystereDetailIndex.value - 1);
     } else {
       if (currentMystereIndex.value > 0) {
         final previousIndex = currentMystereIndex.value - 1;
@@ -493,8 +657,10 @@ class AudioPlayerService extends GetxService {
   }
 
   void navigateToNextMystery() async {
-    if (currentMystereDetailIndex.value < mystereDetails[currentMystereIndex.value].length - 1) {
-      await loadAudio(currentMystereIndex.value, currentMystereDetailIndex.value + 1);
+    if (currentMystereDetailIndex.value <
+        mystereDetails[currentMystereIndex.value].length - 1) {
+      await loadAudio(
+          currentMystereIndex.value, currentMystereDetailIndex.value + 1);
     } else {
       if (currentMystereIndex.value < mysteres.length - 1) {
         await loadAudio(currentMystereIndex.value + 1, 0);

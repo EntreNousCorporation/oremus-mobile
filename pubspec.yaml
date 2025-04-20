@@ -72,9 +72,12 @@ dependencies:
   custom_input_formatter: ^2.0.1
 
   #AUDIO
-  just_audio: ^0.9.46
+  #just_audio: ^0.9.46
+  just_audio: ^0.10.0
   audio_session: ^0.1.25
   just_audio_background: ^0.0.1-beta.15
+  just_waveform: ^0.0.7
+  audio_video_progress_bar: ^2.0.3
 
 dev_dependencies:
   flutter_test:

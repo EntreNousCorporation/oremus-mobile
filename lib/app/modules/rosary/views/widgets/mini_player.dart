@@ -77,17 +77,17 @@ class MiniPlayer extends StatelessWidget {
                       Container(
                         height: 3,
                         width: MediaQuery.of(context).size.width * buffered,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[400],
-                          borderRadius: const BorderRadius.horizontal(right: Radius.circular(20)),
+                        decoration: const BoxDecoration(
+                          color: colorOrangeLight3,
+                          borderRadius: BorderRadius.horizontal(right: Radius.circular(20)),
                         ),
                       ),
-                      // Partie lue (en vert)
+                      // Partie lue (en rouge)
                       Container(
                         height: 3,
                         width: MediaQuery.of(context).size.width * progress,
                         decoration: const BoxDecoration(
-                          color: colorGreenSemiLight,
+                          color: colorRed,
                           borderRadius: BorderRadius.horizontal(right: Radius.circular(20)),
                         ),
                       ),

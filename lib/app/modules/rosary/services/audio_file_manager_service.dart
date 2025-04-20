@@ -42,24 +42,46 @@ class AudioFileManagerService extends GetxService {
       String? cachedData = DB.getData(KEY_DOWNLOADED_FILES);
       if (cachedData != null && cachedData.isNotEmpty) {
         Map<String, dynamic> data = json.decode(cachedData);
+        int filesChecked = 0;
+        int validFiles = 0;
 
         for (var entry in data.entries) {
           final key = entry.key;
           final filePath = entry.value as String;
+          filesChecked++;
 
           // Vérification robuste de l'existence du fichier
           final file = File(filePath);
-          final exists = await file.exists();
-          final fileSize = exists ? await file.length() : 0;
+          bool exists = false;
+          int fileSize = 0;
+
+          try {
+            exists = await file.exists();
+            fileSize = exists ? await file.length() : 0;
+
+            // Sur iOS, vérifier également que le fichier peut être lu
+            if (exists && Platform.isIOS) {
+              final testBytes = await file.readAsBytes();
+              if (testBytes.isEmpty && fileSize > 0) {
+                log('Fichier existe mais ne peut pas être lu correctement sur iOS: $filePath');
+                exists = false;
+              }
+            }
+          } catch (e) {
+            log('Erreur lors de la vérification du fichier: $e');
+            exists = false;
+          }
 
           log('Vérification du fichier [${Platform.isIOS ? "iOS" : "Android"}]: $filePath, existe: $exists, taille: $fileSize octets');
 
           if (exists && fileSize > 0) {
             _downloadedFiles[key] = filePath;
+            validFiles++;
           } else {
             log('Fichier en cache non trouvé ou invalide: $filePath');
           }
         }
+        log('Vérification terminée: $validFiles fichiers valides sur $filesChecked fichiers en cache');
       }
       log('Chargé ${_downloadedFiles.length} chemins de fichiers en cache');
     } catch (e) {
@@ -177,7 +199,7 @@ class AudioFileManagerService extends GetxService {
       final fileExists = await file.exists();
       final fileSize = fileExists ? await file.length() : 0;
 
-      log('[${Platform.isIOS ? "iOS" : "Android"}] Vérification du fichier existant: $filePath, existe: $fileExists, taille: $fileSize octets');
+      print('[${Platform.isIOS ? "iOS" : "Android"}] Vérification du fichier existant: $filePath, existe: $fileExists, taille: $fileSize octets');
 
       if (fileExists && fileSize > 0) {
         return filePath;
@@ -194,7 +216,7 @@ class AudioFileManagerService extends GetxService {
       currentlyDownloadingKey.value = key;
       downloadProgress.value = 0.0;
 
-      log('[${Platform.isIOS ? "iOS" : "Android"}] Début du téléchargement pour mystère $mystereIndex, détail $detailIndex');
+      print('[${Platform.isIOS ? "iOS" : "Android"}] Début du téléchargement pour mystère $mystereIndex, détail $detailIndex');
 
       // Récupérer les informations du fichier depuis l'API
       final rosaryFileData = await getFileInfo();
@@ -203,16 +225,9 @@ class AudioFileManagerService extends GetxService {
         throw Exception('Lien de fichier manquant dans la réponse de l\'API');
       }
 
-      // Obtenir le répertoire approprié selon la plateforme
-      Directory appDocDir;
-      if (Platform.isIOS) {
-        // Sur iOS, utiliser le répertoire de documents qui est plus fiable
-        appDocDir = await getApplicationDocumentsDirectory();
-      } else {
-        // Sur Android, on peut aussi utiliser le répertoire de documents
-        appDocDir = await getApplicationDocumentsDirectory();
-      }
-
+      // Simplification : utiliser getApplicationDocumentsDirectory pour toutes les plateformes
+      // Le répertoire de documents est fiable sur iOS et Android
+      final appDocDir = await getApplicationDocumentsDirectory();
       log('Répertoire de base: ${appDocDir.path}');
 
       // Créer un sous-répertoire pour les fichiers audio
@@ -223,26 +238,51 @@ class AudioFileManagerService extends GetxService {
         await rosaryDir.create(recursive: true);
       }
 
-      // Nom du fichier local avec horodatage pour éviter les collisions
+      // Nom du fichier local - Utiliser un format de nom plus fiable pour iOS
+      // Éviter les caractères spéciaux et espaces dans les noms de fichiers
       final timestamp = DateTime.now().millisecondsSinceEpoch;
-      final fileName = 'mystere_${key}_${timestamp}_${rosaryFileData.bucketName}.mp3';
+      final sanitizedBucketName = (rosaryFileData.bucketName ?? 'rosary').replaceAll(RegExp(r'[^\w]'), '_');
+      final fileName = 'mystere_${key}_${timestamp}_$sanitizedBucketName.mp3';
       final filePath = '${rosaryDir.path}/$fileName';
 
       log('Téléchargement du fichier depuis: ${rosaryFileData.file!.link}');
       log('Chemin de destination: $filePath');
 
+      // S'assurer que l'URL est correctement encodée (important pour iOS)
+      final encodedUrl = Uri.encodeFull(rosaryFileData.file!.link!);
+      log('URL encodée pour téléchargement: $encodedUrl');
+
       // Télécharger le fichier avec un client HTTP configuré pour de meilleurs délais
       final client = http.Client();
       try {
-        final request = http.Request('GET', Uri.parse(rosaryFileData.file!.link!));
+        final request = http.Request('GET', Uri.parse(encodedUrl));
         final streamedResponse = await client.send(request);
 
         if (streamedResponse.statusCode == 200) {
           final file = File(filePath);
 
+          // Vérifier si un ancien fichier existe déjà à cet emplacement et le supprimer
+          if (await file.exists()) {
+            await file.delete();
+            log('Ancien fichier supprimé pour éviter les conflits');
+          }
+
           // Écrire le fichier par flux pour une meilleure gestion de la mémoire
           final fileStream = file.openWrite();
-          await streamedResponse.stream.pipe(fileStream);
+
+          // Ajouter un suivi de progression et une gestion du timeout
+          int totalBytes = 0;
+          final contentLength = streamedResponse.contentLength ?? 0;
+
+          await streamedResponse.stream.asyncMap((bytes) {
+            totalBytes += bytes.length;
+            if (contentLength > 0) {
+              downloadProgress.value = totalBytes / contentLength;
+            }
+            return bytes;
+          }).pipe(fileStream);
+
+          // Assurez-vous que tout est correctement écrit et fermé
           await fileStream.flush();
           await fileStream.close();
 
@@ -253,6 +293,21 @@ class AudioFileManagerService extends GetxService {
           log('Fichier écrit, existe: $fileExists, taille: $fileSize octets');
 
           if (fileExists && fileSize > 0) {
+            // Sur iOS, s'assurer que le fichier est accessible avec les bonnes permissions
+            if (Platform.isIOS) {
+              try {
+                // Vérification supplémentaire de lecture sur iOS
+                final testRead = await file.readAsBytes();
+                if (testRead.isEmpty) {
+                  throw Exception('Le fichier existe mais ne peut pas être lu correctement sur iOS');
+                }
+                log('Vérification de lecture sur iOS réussie, taille: ${testRead.length} octets');
+              } catch (e) {
+                log('Erreur lors de la vérification de lecture sur iOS: $e');
+                return null;
+              }
+            }
+
             _downloadedFiles[key] = filePath;
             _saveCachedFilePaths();
             return filePath;
@@ -262,11 +317,24 @@ class AudioFileManagerService extends GetxService {
         } else {
           throw Exception('Échec du téléchargement du fichier: ${streamedResponse.statusCode}');
         }
+      } catch (e) {
+        log('Erreur lors du téléchargement du fichier: $e');
+        // En cas d'erreur, essayer de nettoyer les fichiers partiels
+        final file = File(filePath);
+        if (await file.exists()) {
+          try {
+            await file.delete();
+            log('Fichier partiel supprimé après erreur');
+          } catch (cleanupError) {
+            log('Impossible de supprimer le fichier partiel: $cleanupError');
+          }
+        }
+        rethrow; // Propager l'erreur pour une meilleure gestion
       } finally {
         client.close();
       }
     } catch (e) {
-      log('Erreur lors du téléchargement du fichier: $e');
+      log('Erreur générale lors du téléchargement du fichier: $e');
       return null;
     } finally {
       isDownloading.value = false;

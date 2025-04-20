@@ -7,6 +7,7 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/splashscreen/controller/splashscreen_controller.dart';
+import 'package:oremusapp/generated/assets.dart';
 
 class SplashscreenScreen extends StatelessWidget {
   const SplashscreenScreen({Key? key}) : super(key: key);
@@ -16,6 +17,7 @@ class SplashscreenScreen extends StatelessWidget {
     return KeyboardDismisser(
       child: GetBuilder<SplashscreenController>(builder: (logic) {
         return SafeArea(
+          bottom: false,
           child: Scaffold(
             backgroundColor: Colors.transparent,
             body: Stack(
@@ -37,7 +39,7 @@ class SplashscreenScreen extends StatelessWidget {
                           duration: const Duration(seconds: 3),
                         ),
                         child: SvgPicture.asset(
-                          'assets/images/logo.svg',
+                          Assets.assetsImagesLogo,
                           height: 60,
                         ),
                       ),
@@ -63,7 +65,7 @@ class SplashscreenScreen extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  bottom: 24,
+                  bottom: 32,
                   child: Text(
                     'Powered by YPY it',
                     textAlign: TextAlign.center,

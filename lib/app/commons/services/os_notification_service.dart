@@ -4,12 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:oremusapp/app/commons/components/notifications/notification_popup.dart';
+import 'package:oremusapp/app/commons/services/notification_queue_service.dart'; // Importer le nouveau service
 
 class OSNotificationService {
   // Singleton pattern
   static final OSNotificationService _instance = OSNotificationService._internal();
   factory OSNotificationService() => _instance;
   OSNotificationService._internal();
+
+  // Service de file d'attente de notifications
+  final NotificationQueueService _queueService = NotificationQueueService();
 
   // Observable values
   final ValueNotifier<bool> isRedirectNotification = ValueNotifier<bool>(false);
@@ -61,6 +65,10 @@ class OSNotificationService {
     // When a notification is received while the app is in foreground
     OneSignal.Notifications.addForegroundWillDisplayListener((event) {
       log("Notification received in foreground: ${event.notification.additionalData}");
+
+      // Optionnellement, vous pourriez ajouter la notification à la file d'attente ici aussi
+      // si on souhaite afficher automatiquement les notifications reçues en premier plan
+      // _queueService.enqueueNotification(event.notification);
     });
 
     // When a notification is opened
@@ -72,8 +80,10 @@ class OSNotificationService {
       log("isRedirect: ${isRedirectNotification.value}");
       log("Notification data: ${notificationData.value}");
 
-      // Handle navigation based on notification data
-      _handleNotificationNavigation(event.notification);
+      // Ajouter la notification à la file d'attente au lieu de la traiter directement
+      if (notificationData.value != null) {
+        _queueService.enqueueNotification(event.notification);
+      }
     });
 
     // When permission changes
@@ -90,7 +100,7 @@ class OSNotificationService {
     });
   }
 
-  // Handle navigation based on notification content
+  // Cette méthode n'est plus utilisée directement, mais conservée pour référence
   void _handleNotificationNavigation(OSNotification notification) {
     // Extraire les informations de la notification
     final data = notification.additionalData;
@@ -114,19 +124,6 @@ class OSNotificationService {
             log("Notification fermée");
             resetRedirectFlag();
           },
-          /*onAction: () {
-            log("Action sur la notification");
-
-            // Navigation supplémentaire si nécessaire
-            String? targetId = data['target_id'];
-            String? targetScreen = data['target_screen'];
-
-            if (targetScreen != null) {
-              Get.toNamed(targetScreen, arguments: targetId);
-            }
-
-            resetRedirectFlag();
-          },*/
         );
       });
     }
@@ -180,54 +177,16 @@ class OSNotificationService {
       await OneSignal.logout();
       log("User logged out from OneSignal");
 
+      // Vider la file d'attente des notifications lors de la déconnexion
+      _queueService.clearQueue();
+
       // Device ID might change after logout, so update it
       await getDeviceId();
     } catch (e) {
       log("Error logging out user: $e");
     }
   }
-}
 
-// Example of how to use the service in a widget
-class NotificationListener extends StatefulWidget {
-  final Widget child;
-
-  const NotificationListener({Key? key, required this.child}) : super(key: key);
-
-  @override
-  _NotificationListenerState createState() => _NotificationListenerState();
-}
-
-class _NotificationListenerState extends State<NotificationListener> {
-  final OSNotificationService _notificationService = OSNotificationService();
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Listen for notification redirects
-    _notificationService.isRedirectNotification.addListener(_handleRedirect);
-  }
-
-  void _handleRedirect() {
-    if (_notificationService.isRedirectNotification.value) {
-      // Handle the redirect here
-      final data = _notificationService.notificationData.value;
-      log("Handling notification redirect with data: $data");
-
-      // Reset the flag after handling
-      _notificationService.resetRedirectFlag();
-    }
-  }
-
-  @override
-  void dispose() {
-    _notificationService.isRedirectNotification.removeListener(_handleRedirect);
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return widget.child;
-  }
+  // Méthode pour obtenir le nombre de notifications en attente
+  int get pendingNotificationsCount => _queueService.queueSize;
 }

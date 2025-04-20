@@ -48,8 +48,7 @@ class CustomHomeNewScreen extends StatelessWidget {
                 screenCurrent = const ProfileScreen();
                 break;
               case AppConstants.PRAY:
-                logic.title.value =
-                    logic.menus[position].libelle ?? 'Mini Missel';
+                logic.title.value = logic.menus[position].libelle ?? 'Mini Missel';
                 screenCurrent = const PrayScreen();
                 break;
               case AppConstants.REQUEST_MASS_WITHOUT_WORSHIP:
@@ -91,8 +90,7 @@ class CustomHomeNewScreen extends StatelessWidget {
             }
 
             // L'écran est-il la page d'accueil principale?
-            final bool isHomePage =
-                logic.menus[position].code == AppConstants.HOME;
+            final bool isHomePage = logic.menus[position].code == AppConstants.HOME;
 
             return Scaffold(
               backgroundColor: colorGrey4,
@@ -118,8 +116,7 @@ class CustomHomeNewScreen extends StatelessWidget {
                       children: [
                         // Custom app bar
                         Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           child: Row(
                             children: [
                               Container(
