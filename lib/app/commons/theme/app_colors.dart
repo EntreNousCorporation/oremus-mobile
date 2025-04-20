@@ -39,5 +39,6 @@ const Color colorGreyBorder = Color(0x4D2E1322);
 const Color colorPurpleLight1 = Color(0xFFF9F5FF);
 const Color colorPurpleLight2 = Color(0xFF7896E4);
 const Color colorGreenLight = Color(0xFFEDFCF2);
+const Color colorGold = Color(0xFFD4AF37);
 const Color colorTransparent = Colors.transparent;
 //const Color colorGreyBorder = const Color(0x07060621);

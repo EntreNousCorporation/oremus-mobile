@@ -259,10 +259,11 @@ class _RosaryScreenState extends State<RosaryScreen>
 
                                   return CustomPaint(
                                     painter: RosaryPainter(
-                                      crossColor: colorBlack,
-                                      activeBeadIndex: (progress * ROSARY_COUNT_NUT).round(), // 59 est le maximum (0-59 = 60 éléments)
-                                      activeColor: colorGreenSemiLight,
+                                      crossColor: Colors.brown[800]!, //colorGold,
+                                      activeBeadIndex: (progress * ROSARY_COUNT_NUT).round(),
+                                      activeColor: colorGreenSemiLight.withValues(alpha: 0.9),  // Légèrement transparent pour plus d'élégance
                                       inactiveColor: Colors.grey[300]!,
+                                      useElegantStyle: true,  // Activer le style élégant
                                     ),
                                   );
                                 }),
