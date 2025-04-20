@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math' as math;
 
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,7 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/rosary/controller/rosary_controller.dart';
 import 'package:oremusapp/app/modules/rosary/services/audio_player_service.dart';
-import 'package:oremusapp/app/modules/rosary/views/widgets/rosary_painter.dart';
+import 'package:oremusapp/app/modules/rosary/views/widgets/rosary_painter_variant.dart';
 import 'package:oremusapp/app/modules/rosary/views/widgets/waveform_painter.dart';
 
 class RosaryScreen extends StatefulWidget {
@@ -37,8 +36,7 @@ class _RosaryScreenState extends State<RosaryScreen>
     _animationController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
-    )
-      ..repeat(reverse: true);
+    )..repeat(reverse: true);
 
     // Obtenir le service audio
     audioService = AudioPlayerService.to;
@@ -89,13 +87,11 @@ class _RosaryScreenState extends State<RosaryScreen>
                           ),
                         ],
                       ),
-                      child: Obx(() =>
-                          Column(
+                      child: Obx(() => Column(
                             children: [
                               Text(
-                                audioService
-                                    .mysteres[audioService.currentMystereIndex
-                                    .value],
+                                audioService.mysteres[
+                                    audioService.currentMystereIndex.value],
                                 style: TextStyles.montserratBold(
                                   textSize: TextSizes.eighteen,
                                   textColor: colorGreenSemiLight,
@@ -106,8 +102,9 @@ class _RosaryScreenState extends State<RosaryScreen>
                               // Current Mystery Title
                               Text(
                                 audioService.mystereDetails[
-                                audioService.currentMystereIndex.value]
-                                [audioService.currentMystereDetailIndex.value],
+                                        audioService.currentMystereIndex.value][
+                                    audioService
+                                        .currentMystereDetailIndex.value],
                                 style: TextStyles.montserratSemiBold(
                                   textSize: TextSizes.sixteen,
                                   textColor: Colors.black87,
@@ -124,8 +121,7 @@ class _RosaryScreenState extends State<RosaryScreen>
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10, vertical: 4),
                                       decoration: BoxDecoration(
-                                        color:
-                                        colorGreenSemiLight.withValues(
+                                        color: colorGreenSemiLight.withValues(
                                             alpha: 0.1),
                                         borderRadius: BorderRadius.circular(12),
                                       ),
@@ -157,16 +153,17 @@ class _RosaryScreenState extends State<RosaryScreen>
                                   children: [
                                     const SizedBox(height: 16),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         const SizedBox(
                                           width: 16,
                                           height: 16,
                                           child: CircularProgressIndicator(
                                             strokeWidth: 2,
-                                            valueColor: AlwaysStoppedAnimation<
-                                                Color>(
-                                                colorGreenSemiLight),
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    colorGreenSemiLight),
                                           ),
                                         ),
                                         const SizedBox(width: 8),
@@ -200,10 +197,11 @@ class _RosaryScreenState extends State<RosaryScreen>
                                       onPressed: () {
                                         audioService.errorMessage.value = '';
                                         audioService.loadAudio(
-                                            audioService.currentMystereIndex
-                                                .value,
                                             audioService
-                                                .currentMystereDetailIndex.value);
+                                                .currentMystereIndex.value,
+                                            audioService
+                                                .currentMystereDetailIndex
+                                                .value);
                                       },
                                       child: Text(
                                         'Réessayer',
@@ -228,8 +226,12 @@ class _RosaryScreenState extends State<RosaryScreen>
                         children: [
                           // Circle representing the rosary
                           Container(
-                            width: Platform.isAndroid ? Get.width * 0.8 : Get.width * 0.85,
-                            height: Platform.isAndroid ? Get.width * 0.8 : Get.width * 0.85,
+                            width: Platform.isAndroid
+                                ? Get.width * 0.8
+                                : Get.width * 0.85,
+                            height: Platform.isAndroid
+                                ? Get.width * 0.8
+                                : Get.width * 0.85,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.white,
@@ -253,17 +255,20 @@ class _RosaryScreenState extends State<RosaryScreen>
                                       );
 
                                   // Calculer le pourcentage pour le rosaire
-                                  final progress = positionData.duration.inMilliseconds > 0
-                                      ? positionData.position.inMilliseconds / positionData.duration.inMilliseconds
+                                  final progress = positionData
+                                              .duration.inMilliseconds >
+                                          0
+                                      ? positionData.position.inMilliseconds /
+                                          positionData.duration.inMilliseconds
                                       : 0.0;
 
                                   return CustomPaint(
                                     painter: RosaryPainter(
-                                      crossColor: Colors.brown[800]!, //colorGold,
-                                      activeBeadIndex: (progress * ROSARY_COUNT_NUT).round(),
-                                      activeColor: colorGreenSemiLight.withValues(alpha: 0.9),  // Légèrement transparent pour plus d'élégance
-                                      inactiveColor: Colors.grey[300]!,
-                                      useElegantStyle: true,  // Activer le style élégant
+                                      activeBeadIndex:
+                                          (progress * ROSARY_COUNT_NUT).round(),
+                                      style: controller.currentStyle.value,
+                                      colorTheme:
+                                          controller.currentColorTheme.value,
                                     ),
                                   );
                                 }),
@@ -296,8 +301,8 @@ class _RosaryScreenState extends State<RosaryScreen>
                                     color: Colors.white,
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withValues(
-                                            alpha: 0.1),
+                                        color:
+                                            Colors.black.withValues(alpha: 0.1),
                                         blurRadius: 5,
                                         offset: const Offset(0, 2),
                                       ),
@@ -323,12 +328,13 @@ class _RosaryScreenState extends State<RosaryScreen>
                                     return Transform.scale(
                                       scale: audioService.isPlaying.value
                                           ? 1.0 +
-                                          (_animationController.value * 0.1)
+                                              (_animationController.value * 0.1)
                                           : 1.0,
                                       child: GestureDetector(
                                         onTap: () {
                                           // Ne pas permettre la lecture pendant le chargement
-                                          if (audioService.isLoadingAudio.value) {
+                                          if (audioService
+                                              .isLoadingAudio.value) {
                                             return;
                                           }
 
@@ -354,25 +360,25 @@ class _RosaryScreenState extends State<RosaryScreen>
                                             boxShadow: [
                                               BoxShadow(
                                                 color: colorGreenSemiLight
-                                                    .withValues(
-                                                    alpha: 0.2),
+                                                    .withValues(alpha: 0.2),
                                                 blurRadius: 10,
                                                 spreadRadius:
-                                                audioService.isPlaying.value
-                                                    ? 5
-                                                    : 0,
+                                                    audioService.isPlaying.value
+                                                        ? 5
+                                                        : 0,
                                               ),
                                             ],
                                           ),
                                           child: Center(
                                             child: Obx(() {
                                               // Afficher un spinner pendant le chargement
-                                              if (audioService.isLoadingAudio
-                                                  .value) {
+                                              if (audioService
+                                                  .isLoadingAudio.value) {
                                                 return const CircularProgressIndicator(
                                                   valueColor:
-                                                  AlwaysStoppedAnimation<Color>(
-                                                      colorGreenSemiLight),
+                                                      AlwaysStoppedAnimation<
+                                                              Color>(
+                                                          colorGreenSemiLight),
                                                 );
                                               }
 
@@ -381,10 +387,10 @@ class _RosaryScreenState extends State<RosaryScreen>
                                                 audioService.isPlaying.value
                                                     ? Icons.pause_rounded
                                                     : Icons.play_arrow_rounded,
-                                                color: audioService.isPlaying
-                                                    .value
-                                                    ? Colors.white
-                                                    : colorGreenSemiLight,
+                                                color:
+                                                    audioService.isPlaying.value
+                                                        ? Colors.white
+                                                        : colorGreenSemiLight,
                                                 size: 40,
                                               );
                                             }),
@@ -420,8 +426,8 @@ class _RosaryScreenState extends State<RosaryScreen>
                                     color: Colors.white,
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withValues(
-                                            alpha: 0.1),
+                                        color:
+                                            Colors.black.withValues(alpha: 0.1),
                                         blurRadius: 5,
                                         offset: const Offset(0, 2),
                                       ),
@@ -457,7 +463,8 @@ class _RosaryScreenState extends State<RosaryScreen>
                               height: 24,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(colorGreenSemiLight),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    colorGreenSemiLight),
                               ),
                             ),
                           ),
@@ -485,23 +492,24 @@ class _RosaryScreenState extends State<RosaryScreen>
                                       duration: Duration.zero,
                                     );
 
-                                final progress = positionData.duration
-                                    .inMilliseconds > 0
-                                    ? positionData.position.inMilliseconds /
-                                    positionData.duration.inMilliseconds
-                                    : 0.0;
+                                final progress =
+                                    positionData.duration.inMilliseconds > 0
+                                        ? positionData.position.inMilliseconds /
+                                            positionData.duration.inMilliseconds
+                                        : 0.0;
 
                                 return CustomPaint(
                                   size: const Size(double.infinity, 40),
                                   painter: WaveformPainter(
                                     waveform: waveformBytes,
                                     progress: progress,
-                                    activeColor: colorGreenSemiLight.withValues(alpha: 0.6),
-                                    inactiveColor: Colors.grey[300]!,
+                                    activeColor: _getWaveformActiveColor(
+                                        controller.currentColorTheme.value),
+                                    inactiveColor: _getWaveformInactiveColor(
+                                        controller.currentColorTheme.value),
                                   ),
                                 );
-                              }
-                          ),
+                              }),
                         ),
                       );
                     }),
@@ -523,23 +531,30 @@ class _RosaryScreenState extends State<RosaryScreen>
                             return IgnorePointer(
                               ignoring: audioService.isLoadingAudio.value,
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
                                 child: ProgressBar(
                                   progress: positionData.position,
                                   buffered: positionData.bufferedPosition,
                                   total: positionData.duration,
-                                  progressBarColor: colorGreenSemiLight,
-                                  baseBarColor: Colors.grey[200],
-                                  bufferedBarColor: Colors.grey[400],
-                                  thumbColor: colorGreenSemiLight,
+                                  progressBarColor: RosaryTheme.getTheme(
+                                          controller.currentColorTheme.value)
+                                      .activeColor,
+                                  baseBarColor: Colors.grey[100],
+                                  bufferedBarColor: RosaryTheme.getTheme(
+                                          controller.currentColorTheme.value)
+                                      .inactiveColor
+                                      .withValues(alpha: 0.6),
+                                  thumbColor: RosaryTheme.getTheme(
+                                          controller.currentColorTheme.value)
+                                      .activeColor,
                                   barHeight: 6.0,
                                   thumbRadius: 8.0,
                                   timeLabelType: TimeLabelType.remainingTime,
-                                  timeLabelTextStyle: TextStyles
-                                      .montserratRegular(
+                                  timeLabelTextStyle:
+                                      TextStyles.montserratRegular(
                                     textSize: TextSizes.fourteen,
-                                    textColor: Colors.grey[600]!,
+                                    textColor: Colors.grey[700]!,
                                   ),
                                   timeLabelPadding: 8.0,
                                   onSeek: (duration) {
@@ -549,8 +564,7 @@ class _RosaryScreenState extends State<RosaryScreen>
                               ),
                             );
                           });
-                        }
-                    ),
+                        }),
 
                     const SizedBox(height: 20),
 
@@ -598,5 +612,16 @@ class _RosaryScreenState extends State<RosaryScreen>
         );
       },
     );
+  }
+
+  // Méthode pour obtenir les couleurs appropriées selon le thème
+  Color _getWaveformActiveColor(RosaryColorTheme theme) {
+    final rosaryTheme = RosaryTheme.getTheme(theme);
+    return rosaryTheme.activeColor.withValues(alpha: 0.75);
+  }
+
+  Color _getWaveformInactiveColor(RosaryColorTheme theme) {
+    final rosaryTheme = RosaryTheme.getTheme(theme);
+    return rosaryTheme.inactiveColor;
   }
 }

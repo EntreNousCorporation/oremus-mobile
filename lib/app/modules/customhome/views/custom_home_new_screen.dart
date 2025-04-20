@@ -206,7 +206,7 @@ class CustomHomeNewScreen extends StatelessWidget {
                                       .menus[logic.selectedIndex.value].code ==
                                   AppConstants.ROSAIRE)
                                 Visibility(
-                                  visible: false,
+                                  visible: true,
                                   maintainState: true,
                                   maintainSize: true,
                                   maintainAnimation: true,
@@ -220,11 +220,10 @@ class CustomHomeNewScreen extends StatelessWidget {
                                       ),
                                       child: IconButton(
                                         icon: const Icon(
-                                            Icons.settings_outlined,
+                                            Icons.color_lens_rounded,
                                             color: Colors.white),
                                         onPressed: () {
-                                          rosaireController
-                                              .showSettingsDialog();
+                                          rosaireController.showSettingsDialog();
                                         },
                                       ),
                                     );
