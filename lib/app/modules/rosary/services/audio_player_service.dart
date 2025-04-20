@@ -4,17 +4,18 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
-import 'package:get/get.dart';
-import 'package:just_audio/just_audio.dart';
+
 import 'package:audio_session/audio_session.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:just_waveform/just_waveform.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/rosary/data/model/rosary_file_data.dart';
+import 'package:oremusapp/app/modules/rosary/services/audio_file_manager_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
-import 'package:just_audio_background/just_audio_background.dart';
-import 'package:oremusapp/app/modules/rosary/services/audio_file_manager_service.dart';
-import 'package:http/http.dart' as http;
 
 // Classe pour les données de position (comme dans votre code original)
 class PositionData {

@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 // Énumération des différents styles disponibles
@@ -7,16 +8,18 @@ enum RosaryStyle {
   elegant,
   minimalist,
   luxurious,
+  modern,
 }
 
 // Énumération des différents thèmes de couleurs
 enum RosaryColorTheme {
   original,
   monochrome,
-  aurora,
+  //aurora,
   serenity,
   amber,
   vegetal,
+  contemporain,
 }
 
 class RosaryTheme {
@@ -75,20 +78,29 @@ class RosaryTheme {
     backgroundColor: Color(0xFFF7FAF7),
   );
 
+  static const RosaryTheme contemporain = RosaryTheme(
+    crossColor: Color(0xFF2D3047),
+    activeColor: Color(0xFF5E60CE),
+    inactiveColor: Color(0xFFE9ECEF),
+    backgroundColor: Color(0xFFF8F9FA),
+  );
+
   static RosaryTheme getTheme(RosaryColorTheme theme) {
     switch (theme) {
       case RosaryColorTheme.original:
         return original;
       case RosaryColorTheme.monochrome:
         return monochrome;
-      case RosaryColorTheme.aurora:
-        return aurora;
+      /*case RosaryColorTheme.aurora:
+        return aurora;*/
       case RosaryColorTheme.serenity:
         return serenity;
       case RosaryColorTheme.amber:
         return amber;
       case RosaryColorTheme.vegetal:
         return vegetal;
+      case RosaryColorTheme.contemporain:
+        return contemporain;
     }
   }
 }
@@ -115,7 +127,7 @@ class RosaryPainter extends CustomPainter {
     final radius = size.width / 2 - 20;
 
     // Dessiner l'arrière-plan si nécessaire (styles élégant et luxueux)
-    if (style == RosaryStyle.elegant || style == RosaryStyle.luxurious) {
+    if (style == RosaryStyle.elegant || style == RosaryStyle.luxurious || style == RosaryStyle.modern) {
       _drawBackground(canvas, center, radius, theme);
     }
 
@@ -186,6 +198,31 @@ class RosaryPainter extends CustomPainter {
         ..style = PaintingStyle.fill;
 
       canvas.drawCircle(center, radius + 2, bgPaint);
+    } else if (style == RosaryStyle.modern) {
+      // Fond moderne avec motif géométrique
+      final bgPaint = Paint()
+        ..color = theme.backgroundColor.withValues(alpha: 0.4)
+        ..style = PaintingStyle.fill;
+
+      canvas.drawCircle(center, radius + 2, bgPaint);
+
+      // Ajouter une grille de points discrète
+      final dotPaint = Paint()
+        ..color = theme.crossColor.withValues(alpha: 0.05)
+        ..style = PaintingStyle.fill;
+
+      const dotSpacing = 20.0;
+      final rect = Rect.fromCircle(center: center, radius: radius);
+
+      for (double x = rect.left; x <= rect.right; x += dotSpacing) {
+        for (double y = rect.top; y <= rect.bottom; y += dotSpacing) {
+          final dotPos = Offset(x, y);
+          // Ne dessiner que les points à l'intérieur du cercle
+          if ((dotPos - center).distance <= radius) {
+            canvas.drawCircle(dotPos, 1, dotPaint);
+          }
+        }
+      }
     }
   }
 
@@ -224,6 +261,9 @@ class RosaryPainter extends CustomPainter {
         break;
       case RosaryStyle.luxurious:
         _drawLuxuriousCross(canvas, position, color);
+        break;
+      case RosaryStyle.modern:
+        _drawModernCross(canvas, position, color);
         break;
     }
   }
@@ -359,6 +399,41 @@ class RosaryPainter extends CustomPainter {
     canvas.drawCircle(position, 14, haloPaint);
   }
 
+  void _drawModernCross(Canvas canvas, Offset position, Color color) {
+    // Dessiner une croix avec des lignes épurées et un style géométrique
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0
+      ..strokeCap = StrokeCap.square;
+
+    // Ligne verticale avec un petit espace au milieu
+    canvas.drawLine(
+      Offset(position.dx, position.dy - 6),
+      Offset(position.dx, position.dy - 2),
+      paint,
+    );
+
+    canvas.drawLine(
+      Offset(position.dx, position.dy + 2),
+      Offset(position.dx, position.dy + 15),
+      paint,
+    );
+
+    // Ligne horizontale
+    canvas.drawLine(
+      Offset(position.dx - 6, position.dy),
+      Offset(position.dx + 6, position.dy),
+      paint,
+    );
+
+    // Contour carré autour de la croix
+    canvas.drawRect(
+      Rect.fromCenter(center: position, width: 20, height: 30),
+      paint,
+    );
+  }
+
   void _drawLargeBead(Canvas canvas, Offset position, bool isActive,
       RosaryTheme theme, RosaryStyle style) {
     final color = isActive ? theme.activeColor : theme.inactiveColor;
@@ -375,6 +450,9 @@ class RosaryPainter extends CustomPainter {
         break;
       case RosaryStyle.luxurious:
         _drawLuxuriousLargeBead(canvas, position, color);
+        break;
+      case RosaryStyle.modern:
+        _drawModernLargeBead(canvas, position, color);
         break;
     }
   }
@@ -484,6 +562,34 @@ class RosaryPainter extends CustomPainter {
     canvas.drawCircle(Offset(position.dx - 3, position.dy - 3), 2.5, highlightPaint);
   }
 
+  void _drawModernLargeBead(Canvas canvas, Offset position, Color color) {
+    // Utiliser une forme carrée avec des coins arrondis pour un look moderne
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final borderPaint = Paint()
+      ..color = color.withValues(alpha: 0.8)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+
+    // Dessiner un carré avec coins arrondis
+    final rect = Rect.fromCenter(center: position, width: 14, height: 14);
+    const radius = Radius.circular(4);
+    final rrect = RRect.fromRectAndRadius(rect, radius);
+
+    canvas.drawRRect(rrect, paint);
+    canvas.drawRRect(rrect, borderPaint);
+
+    // Détail géométrique interne
+    final innerPaint = Paint()
+      ..color = Color.lerp(color, Colors.white, 0.3)!
+      ..style = PaintingStyle.fill;
+
+    final innerRect = Rect.fromCenter(center: position, width: 6, height: 6);
+    canvas.drawRect(innerRect, innerPaint);
+  }
+
   void _drawSmallBead(Canvas canvas, Offset position, bool isActive,
       RosaryTheme theme, RosaryStyle style) {
     final color = isActive ? theme.activeColor : theme.inactiveColor;
@@ -500,6 +606,9 @@ class RosaryPainter extends CustomPainter {
         break;
       case RosaryStyle.luxurious:
         _drawLuxuriousSmallBead(canvas, position, color);
+        break;
+      case RosaryStyle.modern:
+        _drawModernSmallBead(canvas, position, color);
         break;
     }
   }
@@ -607,6 +716,31 @@ class RosaryPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(Offset(position.dx - 1.5, position.dy - 1.5), 1.5, highlightPaint);
+  }
+
+  void _drawModernSmallBead(Canvas canvas, Offset position, Color color) {
+    // Utiliser une forme de losange pour un look moderne et géométrique
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    // Créer un losange
+    final path = Path();
+    path.moveTo(position.dx, position.dy - 5);  // Haut
+    path.lineTo(position.dx + 5, position.dy);  // Droite
+    path.lineTo(position.dx, position.dy + 5);  // Bas
+    path.lineTo(position.dx - 5, position.dy);  // Gauche
+    path.close();
+
+    canvas.drawPath(path, paint);
+
+    // Contour fin
+    final borderPaint = Paint()
+      ..color = color.withValues(alpha: 0.6)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.5;
+
+    canvas.drawPath(path, borderPaint);
   }
 
   @override

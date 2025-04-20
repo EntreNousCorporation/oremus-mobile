@@ -4,9 +4,9 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/modules/rosary/data/model/rosary_file_data.dart';
+import 'package:path_provider/path_provider.dart';
 
 /// Service qui gère le téléchargement et la mise en cache des fichiers audio pour le rosaire
 /// Version optimisée pour iOS et Android avec support pour le streaming
