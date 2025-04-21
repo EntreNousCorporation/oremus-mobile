@@ -85,10 +85,10 @@ class AudioPlayerService extends GetxService {
 
   // Liste des mystères et leurs détails
   final List<String> mysteres = [
-    'Mystères Joyeux',
-    'Mystères Lumineux',
-    'Mystères Douloureux',
-    'Mystères Glorieux',
+    'Joyeux',
+    'Lumineux',
+    'Douloureux',
+    'Glorieux',
   ];
 
   final List<List<String>> mystereDetails = [
@@ -698,6 +698,45 @@ class AudioPlayerService extends GetxService {
   // Supprimer tous les fichiers téléchargés
   Future<void> clearAllDownloadedFiles() async {
     await _fileManagerService.clearAllDownloadedFiles();
+  }
+
+  int getMysteryIndexForCurrentDay() {
+    // Obtenir le jour de la semaine (1 = lundi, 7 = dimanche)
+    final weekday = DateTime.now().weekday;
+
+    switch (weekday) {
+      case 1: // Lundi
+      case 6: // Samedi
+        return 0; // Mystères Joyeux
+
+      case 2: // Mardi
+      case 5: // Vendredi
+        return 2; // Mystères Douloureux
+
+      case 3: // Mercredi
+      case 7: // Dimanche
+        return 3; // Mystères Glorieux
+
+      case 4: // Jeudi
+        return 1; // Mystères Lumineux
+
+      default:
+        return 0; // Par défaut, mystères Joyeux (ne devrait jamais arriver)
+    }
+  }
+
+  String getCurrentDayName() {
+    final weekday = DateTime.now().weekday;
+    switch (weekday) {
+      case 1: return 'Lundi';
+      case 2: return 'Mardi';
+      case 3: return 'Mercredi';
+      case 4: return 'Jeudi';
+      case 5: return 'Vendredi';
+      case 6: return 'Samedi';
+      case 7: return 'Dimanche';
+      default: return '';
+    }
   }
 
   @override

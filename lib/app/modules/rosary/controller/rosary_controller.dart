@@ -27,7 +27,6 @@ class RosaryController extends GetxController {
     RosaryStyle.classic: 'Classique',
     RosaryStyle.elegant: 'Élégant',
     RosaryStyle.minimalist: 'Minimaliste',
-    //RosaryStyle.luxurious: 'Luxueux',
     RosaryStyle.modern: 'Moderne',
     RosaryStyle.artistique: 'Artistique',
     RosaryStyle.prestigieux: 'Prestigieux',
@@ -78,8 +77,7 @@ class RosaryController extends GetxController {
 
   void savePreferences() async {
     DB.saveData(KEY_ROSARY_STYLE, currentStyle.value.index.toString());
-    DB.saveData(
-        KEY_ROSARY_COLOR_THEME, currentColorTheme.value.index.toString());
+    DB.saveData(KEY_ROSARY_COLOR_THEME, currentColorTheme.value.index.toString());
   }
 
   // Chargement des préférences
@@ -173,7 +171,7 @@ class RosaryController extends GetxController {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: colorGreenSemiLight,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                         ),

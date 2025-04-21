@@ -43,7 +43,9 @@ class _RosaryScreenState extends State<RosaryScreen>
 
     // Charger l'audio initial si nécessaire
     if (!audioService.showMiniPlayer.value) {
-      audioService.loadAudio(0, 0);
+      // Utiliser le mystère correspondant au jour actuel
+      final mysteryIndex = audioService.getMysteryIndexForCurrentDay();
+      audioService.loadAudio(mysteryIndex, 0);
     }
   }
 
@@ -89,27 +91,24 @@ class _RosaryScreenState extends State<RosaryScreen>
                       ),
                       child: Obx(() => Column(
                             children: [
-                              Text(
-                                audioService.mysteres[
-                                    audioService.currentMystereIndex.value],
-                                style: TextStyles.montserratBold(
-                                  textSize: TextSizes.eighteen,
-                                  textColor: colorGreenSemiLight,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-
                               // Current Mystery Title
                               Text(
-                                audioService.mystereDetails[
-                                        audioService.currentMystereIndex.value][
-                                    audioService
-                                        .currentMystereDetailIndex.value],
+                                //audioService.mystereDetails[audioService.currentMystereIndex.value][audioService.currentMystereDetailIndex.value],
+                                'Méditation des mystères',
                                 style: TextStyles.montserratSemiBold(
                                   textSize: TextSizes.sixteen,
                                   textColor: Colors.black87,
                                 ),
                                 textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                audioService.mysteres[
+                                audioService.currentMystereIndex.value],
+                                style: TextStyles.montserratBold(
+                                  textSize: TextSizes.eighteen,
+                                  textColor: colorGreenSemiLight,
+                                ),
                               ),
 
                               // Afficher l'indicateur de streaming si actif
@@ -119,7 +118,9 @@ class _RosaryScreenState extends State<RosaryScreen>
                                     const SizedBox(height: 8),
                                     Container(
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 10, vertical: 4),
+                                        horizontal: 10,
+                                        vertical: 4,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: colorGreenSemiLight.withValues(
                                             alpha: 0.1),
