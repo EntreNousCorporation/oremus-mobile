@@ -9,7 +9,7 @@ import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/rosary/views/widgets/rosary_painter_variant.dart';
+import 'package:oremusapp/app/modules/rosary/views/painters/rosary_painter_variant.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
 class RosaryController extends GetxController {

@@ -8,7 +8,7 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/rosary/controller/rosary_controller.dart';
 import 'package:oremusapp/app/modules/rosary/services/audio_player_service.dart';
-import 'package:oremusapp/app/modules/rosary/views/widgets/rosary_painter_variant.dart';
+import 'package:oremusapp/app/modules/rosary/views/painters/rosary_painter_variant.dart';
 import 'package:oremusapp/app/modules/rosary/views/widgets/waveform_painter.dart';
 
 class RosaryScreen extends StatefulWidget {
