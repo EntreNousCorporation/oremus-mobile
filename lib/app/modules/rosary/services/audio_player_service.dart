@@ -285,7 +285,8 @@ class AudioPlayerService extends GetxService {
                   tag: MediaItem(
                     id: '$mystereIndex-$detailIndex',
                     album: 'Rosaire',
-                    title: mystereDetails[mystereIndex][detailIndex],
+                    //title: mystereDetails[mystereIndex][detailIndex],
+                    title: 'Méditation des mystères',
                     artist: mysteres[mystereIndex],
                     artUri: Uri.file(_artworkFilePath),
                   ),
@@ -367,7 +368,8 @@ class AudioPlayerService extends GetxService {
         tag: MediaItem(
           id: '$mystereIndex-$detailIndex',
           album: 'Rosaire',
-          title: mystereDetails[mystereIndex][detailIndex],
+          //title: mystereDetails[mystereIndex][detailIndex],
+          title: 'Méditation des mystères',
           artist: mysteres[mystereIndex],
           artUri: Uri.file(_artworkFilePath),
         ),
