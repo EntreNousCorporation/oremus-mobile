@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/constants.dart';
@@ -228,6 +230,7 @@ class ModernPlayer extends StatelessWidget {
                 ],
               ),
             ),
+            Platform.isIOS ? Separators.minimunVertical() : const SizedBox.shrink(),
           ],
         ),
       ),
