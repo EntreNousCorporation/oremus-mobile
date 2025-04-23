@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as math;
-import 'dart:typed_data';
 
 import 'package:audio_session/audio_session.dart';
 import 'package:get/get.dart';
@@ -16,6 +15,8 @@ import 'package:oremusapp/app/modules/rosary/data/model/rosary_file_data.dart';
 import 'package:oremusapp/app/modules/rosary/services/audio_file_manager_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
+import 'package:flutter/foundation.dart';
+import 'package:crypto/crypto.dart';
 
 // Classe pour les données de position (comme dans votre code original)
 class PositionData {
@@ -28,6 +29,14 @@ class PositionData {
     required this.bufferedPosition,
     required this.duration,
   });
+}
+
+// Paramètres pour le traitement de waveform en arrière-plan
+class WaveformProcessParams {
+  final String filePath;
+  final int sampleCount;
+
+  WaveformProcessParams({required this.filePath, this.sampleCount = 50});
 }
 
 class AudioPlayerService extends GetxService {
@@ -70,18 +79,22 @@ class AudioPlayerService extends GetxService {
   Timer? _continuousSeekTimer;
   bool _isContinuousSeekActive = false;
 
+  // Nouveau: pour la génération de waveform en arrière-plan
+  bool _isWaveformGenerationInProgress = false;
+  Completer<void>? _waveformGenerationCompleter;
+
   // Créer un stream combiné pour obtenir des mises à jour de position
   Stream<PositionData> get positionDataStream => rxdart.CombineLatestStream
-          .combine3<Duration, Duration, Duration?, PositionData>(
-        _audioPlayer.positionStream,
-        _audioPlayer.bufferedPositionStream,
-        _audioPlayer.durationStream,
+      .combine3<Duration, Duration, Duration?, PositionData>(
+    _audioPlayer.positionStream,
+    _audioPlayer.bufferedPositionStream,
+    _audioPlayer.durationStream,
         (position, bufferedPosition, duration) => PositionData(
-          position: position,
-          bufferedPosition: bufferedPosition,
-          duration: duration ?? Duration.zero,
-        ),
-      );
+      position: position,
+      bufferedPosition: bufferedPosition,
+      duration: duration ?? Duration.zero,
+    ),
+  );
 
   // Liste des mystères et leurs détails
   final List<String> mysteres = [
@@ -145,9 +158,25 @@ class AudioPlayerService extends GetxService {
     _fileManagerService = Get.isRegistered<AudioPlayerService>()
         ? Get.find<AudioFileManagerService>()
         : Get.put<AudioFileManagerService>(AudioFileManagerService(),
-            permanent: true);
+        permanent: true);
     _artworkFilePath = await prepareArtworkFile();
     _initAudioPlayer();
+
+    // Nouveau: créer le dossier de cache pour les waveforms
+    _createWaveformCacheDir();
+  }
+
+  // Nouveau: Créer un répertoire pour stocker les fichiers waveform en cache
+  Future<String> _createWaveformCacheDir() async {
+    final appDocDir = await getApplicationDocumentsDirectory();
+    final cacheDirPath = '${appDocDir.path}/waveform_cache';
+
+    final cacheDir = Directory(cacheDirPath);
+    if (!await cacheDir.exists()) {
+      await cacheDir.create(recursive: true);
+    }
+
+    return cacheDirPath;
   }
 
   Future<void> _initAudioPlayer() async {
@@ -188,7 +217,7 @@ class AudioPlayerService extends GetxService {
 
     // Écouter les erreurs du lecteur
     _audioPlayer.playbackEventStream.listen(
-      (event) {},
+          (event) {},
       onError: (Object e, StackTrace stackTrace) {
         log('Erreur de lecture audio: $e');
         errorMessage.value = 'Erreur de lecture. Veuillez réessayer svp';
@@ -207,7 +236,7 @@ class AudioPlayerService extends GetxService {
       currentMystereDetailIndex.value = detailIndex;
       currentMystereTitle.value = mysteres[mystereIndex];
       currentMystereDetailTitle.value =
-          mystereDetails[mystereIndex][detailIndex];
+      mystereDetails[mystereIndex][detailIndex];
 
       // Arrêter l'audio en cours s'il y en a un
       await _audioPlayer.stop();
@@ -218,7 +247,7 @@ class AudioPlayerService extends GetxService {
 
       // Vérifier si le fichier est déjà téléchargé
       String? localFilePath =
-          await _fileManagerService.getLocalFilePath(mystereIndex, detailIndex);
+      await _fileManagerService.getLocalFilePath(mystereIndex, detailIndex);
 
       if (localFilePath != null) {
         log('Utilisation du fichier local: $localFilePath');
@@ -233,12 +262,12 @@ class AudioPlayerService extends GetxService {
 
         if (response.statusCode == 200) {
           final rosaryFileData =
-              RosaryFileData.fromJson(json.decode(response.body));
+          RosaryFileData.fromJson(json.decode(response.body));
 
           if (rosaryFileData.file?.link != null) {
             final audioUrl = rosaryFileData.file?.link ?? '';
             final mysteryKey =
-                _fileManagerService.getKey(mystereIndex, detailIndex);
+            _fileManagerService.getKey(mystereIndex, detailIndex);
 
             // S'assurer que l'URL est correctement encodée
             final encodedUrl = Uri.encodeFull(audioUrl);
@@ -258,7 +287,7 @@ class AudioPlayerService extends GetxService {
               } catch (e) {
                 log('Erreur pendant le téléchargement sur iOS: $e');
                 errorMessage.value =
-                    'Erreur de téléchargement. Veuillez réessayer.';
+                'Erreur de téléchargement. Veuillez réessayer.';
                 isDownloading.value = false;
                 return;
               }
@@ -273,7 +302,7 @@ class AudioPlayerService extends GetxService {
                 }
               } else {
                 errorMessage.value =
-                    'Échec du téléchargement. Veuillez réessayer.';
+                'Échec du téléchargement. Veuillez réessayer.';
               }
             }
             // Sur Android, utiliser le streaming
@@ -321,13 +350,13 @@ class AudioPlayerService extends GetxService {
     } catch (e) {
       log('Erreur lors du chargement de l\'audio: $e');
       errorMessage.value =
-          'Impossible de charger l\'audio. Veuillez réessayer.';
+      'Impossible de charger l\'audio. Veuillez réessayer.';
     } finally {
       isLoadingAudio.value = false;
     }
   }
 
-  // Jouer un fichier local
+  // Jouer un fichier local avec génération optimisée du waveform
   Future<void> _playLocalFile(int mystereIndex, int detailIndex, String filePath) async {
     try {
       // Vérification supplémentaire du fichier avant la lecture
@@ -343,10 +372,10 @@ class AudioPlayerService extends GetxService {
       if (Platform.isIOS) {
         try {
           final testBytes = await file.readAsBytes().timeout(
-                const Duration(seconds: 5),
-                onTimeout: () => throw TimeoutException(
-                    'Lecture du fichier dépassé le délai imparti'),
-              );
+            const Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException(
+                'Lecture du fichier dépassé le délai imparti'),
+          );
 
           if (testBytes.isEmpty) {
             throw Exception(
@@ -376,7 +405,10 @@ class AudioPlayerService extends GetxService {
       );
 
       await _audioPlayer.setAudioSource(audioSource);
-      loadWaveform(filePath);
+
+      // Déclencher le chargement du waveform en arrière-plan après avoir configuré la source audio
+      // mais sans attendre que ce soit terminé pour démarrer la lecture
+      _loadWaveformInBackground(filePath);
 
       isStreamingMode.value = false;
       showMiniPlayer.value = true;
@@ -386,6 +418,14 @@ class AudioPlayerService extends GetxService {
       log('Erreur lors de la lecture du fichier local: $e');
       rethrow;
     }
+  }
+
+  // Charger le waveform en arrière-plan pour ne pas bloquer l'interface
+  void _loadWaveformInBackground(String filePath) {
+    // On utilise un timer court pour éviter de bloquer le thread UI
+    Timer(const Duration(milliseconds: 50), () {
+      loadWaveform(filePath);
+    });
   }
 
   // Démarrer le téléchargement en arrière-plan pendant la lecture
@@ -413,7 +453,9 @@ class AudioPlayerService extends GetxService {
   void _completeBackgroundDownload() async {
     if (_isBackgroundDownloadInProgress ||
         _currentDownloadUrl == null ||
-        _currentDownloadKey == null) return;
+        _currentDownloadKey == null) {
+      return;
+    }
 
     final parts = _currentDownloadKey!.split('-');
     if (parts.length == 2) {
@@ -452,8 +494,28 @@ class AudioPlayerService extends GetxService {
     }
   }
 
+  // Générer un hash MD5 pour le cache du waveform
+  Future<String> _getFileHash(String filePath) async {
+    final file = File(filePath);
+    // Pour les gros fichiers, utiliser juste le chemin, la taille et la date de modification est plus rapide
+    final size = await file.length();
+    final modified = await file.lastModified();
+    final hashInput = '$filePath-$size-${modified.millisecondsSinceEpoch}';
+    return md5.convert(utf8.encode(hashInput)).toString();
+  }
+
+  // Version optimisée de loadWaveform avec mise en cache
   Future<void> loadWaveform(String filePath) async {
+    // Si un waveform est déjà en cours de génération, attendre qu'il soit terminé
+    if (_isWaveformGenerationInProgress) {
+      await _waveformGenerationCompleter?.future;
+      return;
+    }
+
     try {
+      _isWaveformGenerationInProgress = true;
+      _waveformGenerationCompleter = Completer<void>();
+
       isWaveformLoading.value = true;
       waveformData.value = null;
 
@@ -461,18 +523,50 @@ class AudioPlayerService extends GetxService {
       final file = File(filePath);
       if (!await file.exists()) {
         log('Fichier audio introuvable pour la forme d\'onde: $filePath');
+        isWaveformLoading.value = false;
+        _isWaveformGenerationInProgress = false;
+        _waveformGenerationCompleter?.complete();
         return;
       }
 
-      final appDocDir = await getApplicationDocumentsDirectory();
-      final waveformPath = '${appDocDir.path}/waveform-${DateTime.now().millisecondsSinceEpoch}.wave';
-      final waveFile = File(waveformPath);
+      // Générer un hash pour le fichier audio pour l'utiliser comme clé de cache
+      final fileHash = await _getFileHash(filePath);
+      final cacheDirPath = await _createWaveformCacheDir();
+      final waveformCachePath = '$cacheDirPath/waveform-$fileHash.wave';
+      final waveformCacheFile = File(waveformCachePath);
 
-      // Attention: extract renvoie un Stream<WaveformProgress>
-      // On ne peut pas utiliser await directement
+      // Vérifier si le waveform est déjà en cache
+      if (await waveformCacheFile.exists()) {
+        log('Chargement du waveform depuis le cache: $waveformCachePath');
+        try {
+
+          // Traiter le waveform en arrière-plan
+          final params = WaveformProcessParams(
+              filePath: waveformCachePath,
+              sampleCount: 50
+          );
+
+          final processedData = await compute(_processWaveform, params);
+          waveformData.value = processedData;
+          isWaveformLoading.value = false;
+          log('Waveform chargé depuis le cache avec succès');
+
+          _isWaveformGenerationInProgress = false;
+          _waveformGenerationCompleter?.complete();
+          return;
+        } catch (e) {
+          log('Erreur lors du chargement du waveform depuis le cache: $e');
+          // Si le cache est corrompu, supprimer le fichier cache et continuer avec la génération
+          try {
+            await waveformCacheFile.delete();
+          } catch (_) {}
+        }
+      }
+
       JustWaveform.extract(
         audioInFile: file,
-        waveOutFile: waveFile,
+        waveOutFile: waveformCacheFile,
+        // Pas besoin de paramètres options ici car JustWaveform utilise ses propres valeurs par défaut
       ).listen(
             (progress) {
           // Mettre à jour le flux de progression
@@ -480,55 +574,90 @@ class AudioPlayerService extends GetxService {
 
           // Si le traitement est terminé et que nous avons une forme d'onde
           if (progress.progress == 1.0 && progress.waveform != null) {
-            // Convertir en Uint8List pour l'affichage simplifié
-            final waveform = progress.waveform!;
-            const sampleCount = 50; // Nombre d'échantillons que nous voulons
+            // Traiter le waveform en arrière-plan
+            compute(_processWaveform, WaveformProcessParams(
+                filePath: waveformCachePath,
+                sampleCount: 50
+            )).then((processedData) {
+              waveformData.value = processedData;
+              isWaveformLoading.value = false;
+              log('Waveform généré et traité avec succès');
 
-            // Créer un tableau d'échantillons normalisés
-            final bytes = Uint8List(sampleCount);
-            final duration = waveform.duration;
+              _isWaveformGenerationInProgress = false;
+              _waveformGenerationCompleter?.complete();
+            }).catchError((e) {
+              log('Erreur lors du traitement du waveform: $e');
+              isWaveformLoading.value = false;
 
-            for (var i = 0; i < sampleCount; i++) {
-              // Calculer la position en millisecondes dans le fichier audio
-              final position = Duration(milliseconds: (i * duration.inMilliseconds ~/ sampleCount));
-
-              // Calculer l'index de pixel correspondant dans la forme d'onde
-              final pixelIndex = waveform.positionToPixel(position).toInt();
-
-              // Obtenir les valeurs min et max pour ce pixel
-              final minVal = waveform.getPixelMin(pixelIndex);
-              final maxVal = waveform.getPixelMax(pixelIndex);
-
-              // Utiliser la valeur absolue la plus grande
-              final amplitude = math.max(minVal.abs(), maxVal.abs());
-
-              // Normaliser entre 0 et 255
-              // La normalisation dépend du type de forme d'onde (flags)
-              if (waveform.flags == 0) {
-                // Normalisation 16 bits
-                bytes[i] = ((amplitude / 32768) * 255).clamp(0, 255).toInt();
-              } else {
-                // Normalisation 8 bits
-                bytes[i] = ((amplitude / 128) * 255).clamp(0, 255).toInt();
-              }
-            }
-
-            // Assigner les données
-            waveformData.value = bytes;
-            log('Forme d\'onde générée avec succès: $sampleCount échantillons');
+              _isWaveformGenerationInProgress = false;
+              _waveformGenerationCompleter?.complete();
+            });
           }
         },
         onError: (e) {
           log('Erreur lors de la génération de la forme d\'onde: $e');
           isWaveformLoading.value = false;
+          _isWaveformGenerationInProgress = false;
+          _waveformGenerationCompleter?.complete();
         },
         onDone: () {
-          isWaveformLoading.value = false;
+          // Ne pas mettre isWaveformLoading à false ici car c'est fait après le traitement
+          if (!waveformProgressStream.hasValue ||
+              waveformProgressStream.value.progress < 1.0 ||
+              waveformProgressStream.value.waveform == null) {
+            isWaveformLoading.value = false;
+            _isWaveformGenerationInProgress = false;
+            _waveformGenerationCompleter?.complete();
+          }
         },
       );
     } catch (e) {
       log('Erreur lors de la génération de la forme d\'onde: $e');
       isWaveformLoading.value = false;
+      _isWaveformGenerationInProgress = false;
+      _waveformGenerationCompleter?.complete();
+    }
+  }
+
+  // Traitement du waveform à exécuter dans un isolate
+  static Future<Uint8List> _processWaveform(WaveformProcessParams params) async {
+    try {
+      final waveFile = File(params.filePath);
+      final waveform = await JustWaveform.parse(waveFile);
+
+      final sampleCount = params.sampleCount;
+      final bytes = Uint8List(sampleCount);
+      final duration = waveform.duration;
+
+      for (var i = 0; i < sampleCount; i++) {
+        // Calculer la position en millisecondes dans le fichier audio
+        final position = Duration(milliseconds: (i * duration.inMilliseconds ~/ sampleCount));
+
+        // Calculer l'index de pixel correspondant dans la forme d'onde
+        final pixelIndex = waveform.positionToPixel(position).toInt();
+
+        // Obtenir les valeurs min et max pour ce pixel
+        final minVal = waveform.getPixelMin(pixelIndex);
+        final maxVal = waveform.getPixelMax(pixelIndex);
+
+        // Utiliser la valeur absolue la plus grande
+        final amplitude = math.max(minVal.abs(), maxVal.abs());
+
+        // Normaliser entre 0 et 255 selon le type de format audio
+        if (waveform.flags == 0) {
+          // Normalisation 16 bits
+          bytes[i] = ((amplitude / 32768) * 255).clamp(0, 255).toInt();
+        } else {
+          // Normalisation 8 bits
+          bytes[i] = ((amplitude / 128) * 255).clamp(0, 255).toInt();
+        }
+      }
+
+      return bytes;
+    } catch (e) {
+      // En cas d'erreur, retourner un tableau vide
+      log('Erreur dans l\'isolate _processWaveform: $e');
+      return Uint8List(params.sampleCount);
     }
   }
 
@@ -539,7 +668,7 @@ class AudioPlayerService extends GetxService {
       try {
         isCompleted.value = false; // Désactiver le statut "complété"
         isPlaying.value =
-            true; // Prérégler l'état de lecture pour un feedback UI immédiat
+        true; // Prérégler l'état de lecture pour un feedback UI immédiat
 
         // Repositionner au début et lancer la lecture
         await _audioPlayer.seek(Duration.zero);
@@ -547,7 +676,7 @@ class AudioPlayerService extends GetxService {
       } catch (e) {
         log('Erreur lors du redémarrage de l\'audio: $e');
         isPlaying.value =
-            false; // En cas d'erreur, réinitialiser l'état de lecture
+        false; // En cas d'erreur, réinitialiser l'état de lecture
         errorMessage.value = 'Erreur lors de la lecture. Veuillez réessayer.';
       }
     }
@@ -700,6 +829,23 @@ class AudioPlayerService extends GetxService {
   // Supprimer tous les fichiers téléchargés
   Future<void> clearAllDownloadedFiles() async {
     await _fileManagerService.clearAllDownloadedFiles();
+
+    // Supprimer également les fichiers de waveform en cache
+    try {
+      final cacheDirPath = await _createWaveformCacheDir();
+      final cacheDir = Directory(cacheDirPath);
+      if (await cacheDir.exists()) {
+        final files = await cacheDir.list().toList();
+        for (var entity in files) {
+          if (entity is File) {
+            await entity.delete();
+          }
+        }
+      }
+      log('Cache des waveforms nettoyé avec succès');
+    } catch (e) {
+      log('Erreur lors du nettoyage du cache des waveforms: $e');
+    }
   }
 
   int getMysteryIndexForCurrentDay() {

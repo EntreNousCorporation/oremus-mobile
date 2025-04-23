@@ -9,6 +9,7 @@ import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/rosary/controller/rosary_controller.dart';
 import 'package:oremusapp/app/modules/rosary/services/audio_player_service.dart';
 import 'package:oremusapp/app/modules/rosary/views/painters/rosary_painter_variant.dart';
+import 'package:oremusapp/app/modules/rosary/views/widgets/animated_placeholder_waveform.dart';
 import 'package:oremusapp/app/modules/rosary/views/widgets/waveform_painter.dart';
 
 class RosaryScreen extends StatefulWidget {
@@ -453,64 +454,58 @@ class _RosaryScreenState extends State<RosaryScreen>
 
                     //WAVE
                     Obx(() {
-                      if (audioService.isWaveformLoading.value) {
+                      final waveformBytes = audioService.waveformData.value;
+
+                      // Si aucune donnée waveform n'est disponible mais qu'on est en chargement
+                      if (waveformBytes == null) {
                         return Container(
                           height: 40,
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          child: const Center(
-                            child: SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    colorGreenSemiLight),
-                              ),
-                            ),
+                          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: Colors.grey[100],
                           ),
+                          child: audioService.isWaveformLoading.value
+                              ? AnimatedPlaceholderWaveform(
+                            activeColor: _getWaveformActiveColor(controller.currentColorTheme.value).withOpacity(0.3),
+                            inactiveColor: _getWaveformInactiveColor(controller.currentColorTheme.value).withOpacity(0.1),
+                          )
+                              : const SizedBox(), // Espace vide si pas en chargement et pas de données
                         );
                       }
 
-                      final waveformBytes = audioService.waveformData.value;
-                      if (waveformBytes == null) {
-                        return const SizedBox(height: 40);
-                      }
-
+                      // Si on a des données waveform, on les affiche
                       return Container(
                         height: 40,
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
+                        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(4),
                           child: StreamBuilder<PositionData>(
-                              stream: audioService.positionDataStream,
-                              builder: (context, snapshot) {
-                                final positionData = snapshot.data ??
-                                    PositionData(
-                                      position: Duration.zero,
-                                      bufferedPosition: Duration.zero,
-                                      duration: Duration.zero,
-                                    );
+                            stream: audioService.positionDataStream,
+                            builder: (context, snapshot) {
+                              final positionData = snapshot.data ??
+                                  PositionData(
+                                    position: Duration.zero,
+                                    bufferedPosition: Duration.zero,
+                                    duration: Duration.zero,
+                                  );
 
-                                final progress =
-                                    positionData.duration.inMilliseconds > 0
-                                        ? positionData.position.inMilliseconds /
-                                            positionData.duration.inMilliseconds
-                                        : 0.0;
+                              final progress = positionData.duration.inMilliseconds > 0
+                                  ? positionData.position.inMilliseconds /
+                                  positionData.duration.inMilliseconds
+                                  : 0.0;
 
-                                return CustomPaint(
-                                  size: const Size(double.infinity, 40),
-                                  painter: WaveformPainter(
-                                    waveform: waveformBytes,
-                                    progress: progress,
-                                    activeColor: _getWaveformActiveColor(
-                                        controller.currentColorTheme.value),
-                                    inactiveColor: _getWaveformInactiveColor(
-                                        controller.currentColorTheme.value),
-                                  ),
-                                );
-                              }),
+                              return CustomPaint(
+                                size: const Size(double.infinity, 40),
+                                painter: WaveformPainter(
+                                  waveform: waveformBytes,
+                                  progress: progress,
+                                  activeColor: _getWaveformActiveColor(controller.currentColorTheme.value),
+                                  inactiveColor: _getWaveformInactiveColor(controller.currentColorTheme.value),
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       );
                     }),
