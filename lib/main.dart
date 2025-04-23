@@ -68,7 +68,11 @@ void main() async {
     oneSignalAppID = settings.oremusFlavor.oneSignalAppID;
     //byPassAuth = settings.oremusFlavor.byPassAuth;
 
-    await DB.initDatabase();
+    // Initialiser la base de données avec gestion d'erreur
+    bool dbInitSuccess = await DB.initDatabase();
+    if (!dbInitSuccess) {
+      log('AVERTISSEMENT: Échec de l\'initialisation de la base de données, l\'application fonctionnera sans persistance');
+    }
     await getDeviceInfos();
     getAppVersion();
 

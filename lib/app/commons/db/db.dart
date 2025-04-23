@@ -14,21 +14,57 @@ class DB {
   static const String KEY_UNSYNCHRONIZED_FAVORITES = 'unsynchronized_favorites';
   static const String KEY_SYNCED_FAVORITES = 'synced_favorites';
 
-  static initDatabase() async {
-    Hive.initFlutter();
+  static bool _isInitializing = false;
+  static bool _isInitialized = false;
 
-    final sharePrefs = await SharedPreferences.getInstance();
-    var containsEncryption = sharePrefs.getString(AppConstants.STORAGE_KEY);
-
-    if (containsEncryption == null) {
-      var key = Hive.generateSecureKey();
-      log('key $key');
-      await sharePrefs.setString(AppConstants.STORAGE_KEY, base64UrlEncode(key));
+  static Future<bool> initDatabase() async {
+    // Éviter les initialisations multiples simultanées
+    if (_isInitialized) return true;
+    if (_isInitializing) {
+      // Attendre que l'initialisation en cours se termine
+      int attempts = 0;
+      while (_isInitializing && attempts < 50) {
+        await Future.delayed(const Duration(milliseconds: 100));
+        attempts++;
+      }
+      return _isInitialized;
     }
-    log('containsEncryption $containsEncryption');
-    var encryptionKey = base64Url.decode(sharePrefs.getString(AppConstants.STORAGE_KEY) ?? '');
-    log('encryptionKey $encryptionKey');
-    encryptedBox = await Hive.openBox(AppConstants.BOX_NAME, encryptionCipher: HiveAesCipher(encryptionKey));
+
+    _isInitializing = true;
+    try {
+      log('Initialisation de Hive...');
+      await Hive.initFlutter();
+      log('Hive initialisé, obtention des SharedPreferences...');
+
+      final sharePrefs = await SharedPreferences.getInstance();
+      var containsEncryption = sharePrefs.getString(AppConstants.STORAGE_KEY);
+
+      if (containsEncryption == null) {
+        var key = Hive.generateSecureKey();
+        log('Nouvelle clé générée');
+        await sharePrefs.setString(AppConstants.STORAGE_KEY, base64UrlEncode(key));
+        containsEncryption = sharePrefs.getString(AppConstants.STORAGE_KEY);
+      }
+
+      log('containsEncryption $containsEncryption');
+      var encryptionKey = base64Url.decode(sharePrefs.getString(AppConstants.STORAGE_KEY) ?? '');
+      log('encryptionKey obtenue, ouverture de la box...');
+
+      encryptedBox = await Hive.openBox(
+          AppConstants.BOX_NAME,
+          encryptionCipher: HiveAesCipher(encryptionKey)
+      );
+
+      log('Box Hive ouverte avec succès');
+      _isInitialized = true;
+      return true;
+    } catch (e) {
+      log('Erreur lors de l\'initialisation de la base de données: $e');
+      _isInitialized = false;
+      return false;
+    } finally {
+      _isInitializing = false;
+    }
   }
 
   static _save(String key, String? value) {
