@@ -93,6 +93,7 @@ class FavoritesScreen extends StatelessWidget {
                           ),
                         ),
 
+                        Separators.normalVertical(),
                         // Favorites list, loading state, or empty state
                         Expanded(
                           child: _.isLoading.isTrue
@@ -106,24 +107,27 @@ class FavoritesScreen extends StatelessWidget {
                   ),
 
                   // Pull to refresh
-                  Positioned(
-                    right: 16,
-                    top: 150 - 20,
-                    child: Material(
-                      elevation: 4,
-                      shape: const CircleBorder(),
-                      color: colorWhite,
-                      child: InkWell(
-                        customBorder: const CircleBorder(),
-                        onTap: () {
-                          _.getAllFavorites();
-                        },
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(
-                            Icons.refresh,
-                            color: colorGreen,
-                            size: 24,
+                  Visibility(
+                    visible: false,
+                    child: Positioned(
+                      right: 16,
+                      top: 150 - 20,
+                      child: Material(
+                        elevation: 4,
+                        shape: const CircleBorder(),
+                        color: colorWhite,
+                        child: InkWell(
+                          customBorder: const CircleBorder(),
+                          onTap: () {
+                            _.getAllFavorites();
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.refresh,
+                              color: colorGreen,
+                              size: 24,
+                            ),
                           ),
                         ),
                       ),
@@ -148,11 +152,11 @@ class FavoritesScreen extends StatelessWidget {
 
   Widget _buildFavoritesList(FavoriteController controller) {
     return Container(
-      margin: const EdgeInsets.only(top: 24),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: FadeIn(
         child: AnimatedList(
           key: controller.key,
+          padding: const EdgeInsets.only(top: 24),
           physics: const BouncingScrollPhysics(),
           initialItemCount: controller.favorites.length,
           itemBuilder: (context, index, animation) {
