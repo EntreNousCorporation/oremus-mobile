@@ -202,11 +202,9 @@ class CustomHomeNewScreen extends StatelessWidget {
                                     ),
                                   );
                                 })
-                              else if (logic
-                                      .menus[logic.selectedIndex.value].code ==
-                                  AppConstants.ROSAIRE)
+                              else if (logic.menus[logic.selectedIndex.value].code == AppConstants.ROSAIRE)
                                 Visibility(
-                                  visible: true,
+                                  visible: false,
                                   maintainState: true,
                                   maintainSize: true,
                                   maintainAnimation: true,

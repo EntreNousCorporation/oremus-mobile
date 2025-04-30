@@ -50,11 +50,13 @@ class Assets {
   static const String imagesConfessionIcon = 'assets/images/confession_icon.svg';
   static const String imagesContacts = 'assets/images/contacts.svg';
   static const String imagesDeleteFriend = 'assets/images/delete-friend.png';
+  static const String imagesDouloureux = 'assets/images/douloureux.png';
   static const String imagesDowntime = 'assets/images/downtime.svg';
   static const String imagesError = 'assets/images/error.json';
   static const String imagesEvent = 'assets/images/event.svg';
   static const String imagesFacebookLogo = 'assets/images/facebook_logo.svg';
   static const String imagesFaqIcon = 'assets/images/faq_icon.svg';
+  static const String imagesGlorieux = 'assets/images/glorieux.png';
   static const String imagesGoogleLogo = 'assets/images/google_logo.svg';
   static const String imagesGroup = 'assets/images/group.svg';
   static const String imagesIconArrowRight = 'assets/images/icon_arrow_right.svg';
@@ -83,6 +85,7 @@ class Assets {
   static const String imagesIconPray = 'assets/images/icon_pray.svg';
   static const String imagesIconSettings = 'assets/images/icon_settings.svg';
   static const String imagesIconUser = 'assets/images/icon_user.svg';
+  static const String imagesJoyeux = 'assets/images/joyeux.png';
   static const String imagesLiconDefaultPin = 'assets/images/licon_default_pin.svg';
   static const String imagesLogo = 'assets/images/logo.png';
   static const String imagesLogoSquare = 'assets/images/logo_square.png';
@@ -90,6 +93,7 @@ class Assets {
   static const String imagesLottieEmptySearch = 'assets/images/lottie_empty_search.json';
   static const String imagesLottieSuccess = 'assets/images/lottie-success.zip';
   static const String imagesLottieSuccess1 = 'assets/images/lottie-success-1.zip';
+  static const String imagesLumineux = 'assets/images/lumineux.png';
   static const String imagesMesse = 'assets/images/messe.svg';
   static const String imagesMovement = 'assets/images/movement.svg';
   static const String imagesPriestIcon = 'assets/images/priest_icon.svg';

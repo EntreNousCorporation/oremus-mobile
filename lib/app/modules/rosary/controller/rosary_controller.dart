@@ -19,8 +19,8 @@ class RosaryController extends GetxController {
   static const String KEY_ROSARY_COLOR_THEME = 'rosary_color_theme';
 
   // Thème actuel (observable)
-  final Rx<RosaryStyle> currentStyle = RosaryStyle.classic.obs;
-  final Rx<RosaryColorTheme> currentColorTheme = RosaryColorTheme.original.obs;
+  final Rx<RosaryStyle> currentStyle = RosaryStyle.prestigieux.obs;
+  final Rx<RosaryColorTheme> currentColorTheme = RosaryColorTheme.vegetal.obs;
 
   // Map de noms lisibles pour l'interface utilisateur
   final Map<RosaryStyle, String> styleNames = {
