@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:just_waveform/just_waveform.dart';
+import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/rosary/data/model/rosary_file_data.dart';
 import 'package:oremusapp/app/modules/rosary/services/audio_file_manager_service.dart';
@@ -152,6 +153,12 @@ class AudioPlayerService extends GetxService {
   String? _currentDownloadKey;
   bool _isBackgroundDownloadInProgress = false;
 
+  final playbackSpeed = 1.0.obs;
+  final List<double> speedOptions = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
+
+  // Clé pour la sauvegarde de la vitesse dans la BD
+  static const String KEY_PLAYBACK_SPEED = 'playback_speed';
+
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -164,6 +171,65 @@ class AudioPlayerService extends GetxService {
 
     // Nouveau: créer le dossier de cache pour les waveforms
     _createWaveformCacheDir();
+
+    // Charger la vitesse sauvegardée
+    _loadSavedSpeed();
+
+    // Écouter les changements de vitesse
+    ever(playbackSpeed, (double speed) => _onSpeedChanged(speed));
+  }
+
+  void _loadSavedSpeed() {
+    try {
+      String? savedSpeed = DB.getData(KEY_PLAYBACK_SPEED);
+      if (savedSpeed != null && savedSpeed.isNotEmpty) {
+        double speed = double.tryParse(savedSpeed) ?? 1.0;
+        if (speedOptions.contains(speed)) {
+          playbackSpeed.value = speed;
+        }
+      }
+    } catch (e) {
+      log('Erreur lors du chargement de la vitesse: $e');
+    }
+  }
+
+  // Sauvegarder la vitesse
+  void _saveSpeed(double speed) {
+    try {
+      DB.saveData(KEY_PLAYBACK_SPEED, speed.toString());
+    } catch (e) {
+      log('Erreur lors de la sauvegarde de la vitesse: $e');
+    }
+  }
+
+  // Gérer les changements de vitesse
+  Future<void> _onSpeedChanged(double speed) async {
+    try {
+      await _audioPlayer.setSpeed(speed);
+      _saveSpeed(speed);
+      log('Vitesse de lecture changée: ${speed}x');
+    } catch (e) {
+      log('Erreur lors du changement de vitesse: $e');
+    }
+  }
+
+  // Méthode publique pour changer la vitesse
+  void setPlaybackSpeed(double speed) {
+    if (speedOptions.contains(speed)) {
+      playbackSpeed.value = speed;
+    }
+  }
+
+  // NOUVEAU: Passer à la vitesse suivante (cycle)
+  void cycleSpeed() {
+    int currentIndex = speedOptions.indexOf(playbackSpeed.value);
+    int nextIndex = (currentIndex + 1) % speedOptions.length;
+    setPlaybackSpeed(speedOptions[nextIndex]);
+  }
+
+  // NOUVEAU: Réinitialiser à la vitesse normale
+  void resetToNormalSpeed() {
+    setPlaybackSpeed(1.0);
   }
 
   // Nouveau: Créer un répertoire pour stocker les fichiers waveform en cache
@@ -323,6 +389,10 @@ class AudioPlayerService extends GetxService {
 
                 // Charger et démarrer la lecture en streaming
                 await _audioPlayer.setAudioSource(audioSource);
+
+                // Appliquer la vitesse pour le streaming
+                await _audioPlayer.setSpeed(playbackSpeed.value);
+
                 isStreamingMode.value = true;
                 showMiniPlayer.value = true;
                 isCompleted.value = false;
@@ -405,6 +475,8 @@ class AudioPlayerService extends GetxService {
       );
 
       await _audioPlayer.setAudioSource(audioSource);
+      // Appliquer la vitesse courante après le chargement
+      await _audioPlayer.setSpeed(playbackSpeed.value);
 
       // Déclencher le chargement du waveform en arrière-plan après avoir configuré la source audio
       // mais sans attendre que ce soit terminé pour démarrer la lecture

@@ -55,8 +55,8 @@ class SigninController extends GetxController {
     passwordController = TextEditingController(text: '');
 
     if (flavor == AppConstants.ENV_DEV) {
-      emailController = TextEditingController(text: 'amourssou11@gmail.com');
-      passwordController = TextEditingController(text: 'test');
+      //emailController = TextEditingController(text: 'amourssou11@gmail.com');
+      //passwordController = TextEditingController(text: 'test');
       //emailController = TextEditingController(text: '');
       //passwordController = TextEditingController(text: '');
       //emailController = TextEditingController(text: 'test#@gmail.com');
@@ -102,7 +102,7 @@ class SigninController extends GetxController {
       unlockBackButton.value = false;
     });
 
-    String login = emailController.text.trim().toString().replaceAll(' ', '');
+    String login = emailController.text.trim().toString().replaceAll(RegExp(r'\s'), '');
     String password = passwordController.text.trim().toString();
 
     loading(true);

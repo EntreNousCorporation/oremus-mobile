@@ -9,6 +9,7 @@ import 'package:oremusapp/app/modules/rosary/services/audio_player_service.dart'
 import 'package:oremusapp/app/modules/rosary/views/painters/rosary_painter_variant.dart';
 import 'package:oremusapp/app/modules/rosary/views/widgets/animated_image_displayer.dart';
 import 'package:oremusapp/app/modules/rosary/views/widgets/animated_placeholder_waveform.dart';
+import 'package:oremusapp/app/modules/rosary/views/widgets/speed_control_widget.dart';
 import 'package:oremusapp/app/modules/rosary/views/widgets/waveform_painter.dart';
 import 'package:oremusapp/generated/assets.dart';
 
@@ -68,8 +69,8 @@ class _RosaryScreenState extends State<RosaryScreen> {
                     _buildMysteryInfoCard(controller),
 
                     // Information sur le jour actuel
-                    const SizedBox(height: 24),
-                    _buildDailyInfo(),
+                    //const SizedBox(height: 24),
+                    //_buildDailyInfo(),
 
                     const SizedBox(height: 20),
 
@@ -85,6 +86,15 @@ class _RosaryScreenState extends State<RosaryScreen> {
 
                     // Audio progress avec boutons avance/recul rapide
                     _buildAudioProgressBar(controller),
+
+                    // Contrôle de vitesse
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildSimpleSpeedButton(),
+                        //SpeedControlWidget(),
+                      ],
+                    ),
 
                     // Espace supplémentaire en bas pour éviter que le bouton flottant ne cache du contenu
                     const SizedBox(height: 0),
@@ -136,6 +146,7 @@ class _RosaryScreenState extends State<RosaryScreen> {
 
           // Menu déroulant pour choisir le mystère
           Container(
+            height: 40,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
@@ -553,5 +564,42 @@ class _RosaryScreenState extends State<RosaryScreen> {
         ),
       ),
     );
+  }
+
+  Widget _buildSimpleSpeedButton() {
+    return Obx(() => GestureDetector(
+      onTap: () => audioService.cycleSpeed(),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: audioService.playbackSpeed.value != 1.0
+              ? colorGreenSemiLight
+              : Colors.grey[100],
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.speed,
+              size: 20,
+              color: audioService.playbackSpeed.value != 1.0
+                  ? Colors.white
+                  : colorGreenSemiLight,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              '${audioService.playbackSpeed.value}x',
+              style: TextStyles.montserratSemiBold(
+                textSize: TextSizes.fourteen,
+                textColor: audioService.playbackSpeed.value != 1.0
+                    ? Colors.white
+                    : colorGreenSemiLight,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ));
   }
 }
