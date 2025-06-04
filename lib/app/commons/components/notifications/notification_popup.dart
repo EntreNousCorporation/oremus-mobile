@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:developer';
 
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -86,8 +87,7 @@ class NotificationPopup extends StatelessWidget {
                 children: [
                   OutlinedButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
-                      if (onDismiss != null) onDismiss!();
+                      _handleDismiss(context);
                     },
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -97,8 +97,7 @@ class NotificationPopup extends StatelessWidget {
                   if (onAction != null)
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
-                        onAction!();
+                        _handleAction(context);
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -126,6 +125,95 @@ class NotificationPopup extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  // Gestion sécurisée de la fermeture
+  void _handleDismiss(BuildContext context) {
+    try {
+      log("🔻 Tentative de fermeture du popup de notification");
+
+      // Fermer le dialog de manière sécurisée
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+        log("✅ Dialog fermé avec succès");
+      } else {
+        log("⚠️ Impossible de fermer le dialog - pas dans la pile de navigation");
+      }
+
+      // Appeler le callback de fermeture après un délai pour s'assurer que le dialog est fermé
+      Future.delayed(const Duration(milliseconds: 100), () {
+        if (onDismiss != null) {
+          try {
+            onDismiss!();
+            log("✅ Callback onDismiss exécuté");
+          } catch (e) {
+            log("❌ Erreur lors de l'exécution du callback onDismiss: $e");
+          }
+        }
+      });
+    } catch (e) {
+      log("❌ Erreur lors de la fermeture du popup: $e");
+      // Appeler quand même le callback en cas d'erreur
+      if (onDismiss != null) {
+        try {
+          onDismiss!();
+        } catch (callbackError) {
+          log("❌ Erreur lors de l'exécution du callback de fallback: $callbackError");
+        }
+      }
+    }
+  }
+
+  // Gestion sécurisée de l'action
+  void _handleAction(BuildContext context) {
+    try {
+      log("🎯 Tentative d'exécution de l'action du popup");
+
+      // Fermer le dialog d'abord
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+        log("✅ Dialog fermé avant l'action");
+      }
+
+      // Exécuter l'action après un délai
+      Future.delayed(const Duration(milliseconds: 100), () {
+        if (onAction != null) {
+          try {
+            onAction!();
+            log("✅ Callback onAction exécuté");
+          } catch (e) {
+            log("❌ Erreur lors de l'exécution du callback onAction: $e");
+          }
+        }
+
+        // Appeler aussi onDismiss pour nettoyer l'état
+        if (onDismiss != null) {
+          try {
+            onDismiss!();
+            log("✅ Callback onDismiss exécuté après l'action");
+          } catch (e) {
+            log("❌ Erreur lors de l'exécution du callback onDismiss après l'action: $e");
+          }
+        }
+      });
+    } catch (e) {
+      log("❌ Erreur lors de l'exécution de l'action: $e");
+      // Callbacks de fallback
+      if (onAction != null) {
+        try {
+          onAction!();
+        } catch (actionError) {
+          log("❌ Erreur lors de l'exécution du callback d'action de fallback: $actionError");
+        }
+      }
+      if (onDismiss != null) {
+        try {
+          onDismiss!();
+        } catch (dismissError) {
+          log("❌ Erreur lors de l'exécution du callback de fermeture de fallback: $dismissError");
+        }
+      }
+    }
   }
 
   Widget _getNotificationIcon() {
@@ -161,23 +249,48 @@ class NotificationPopup extends StatelessWidget {
     VoidCallback? onDismiss,
     VoidCallback? onAction,
   }) async {
-    return showModal(
-      context: context,
-      configuration: const FadeScaleTransitionConfiguration(
-        transitionDuration: Duration(milliseconds: 350),
-        reverseTransitionDuration: Duration(milliseconds: 100),
-        barrierDismissible: false,
-      ),
-      filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-      builder: (BuildContext context) {
-        return NotificationPopup(
-          title: title,
-          contents: contents,
-          notificationType: notificationType,
-          onDismiss: onDismiss,
-          onAction: onAction,
-        );
-      },
-    );
+    try {
+      log("🎯 Tentative d'affichage du popup de notification");
+      log("📋 Titre: $title");
+      log("📋 Type: $notificationType");
+
+      // Vérifier que le contexte est valide
+      if (!context.mounted) {
+        log("❌ Contexte non monté, impossible d'afficher le popup");
+        if (onDismiss != null) onDismiss();
+        return;
+      }
+
+      await showModal(
+        context: context,
+        configuration: const FadeScaleTransitionConfiguration(
+          transitionDuration: Duration(milliseconds: 350),
+          reverseTransitionDuration: Duration(milliseconds: 100),
+          barrierDismissible: false,
+        ),
+        filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+        builder: (BuildContext context) {
+          return NotificationPopup(
+            title: title,
+            contents: contents,
+            notificationType: notificationType,
+            onDismiss: onDismiss,
+            onAction: onAction,
+          );
+        },
+      );
+
+      log("✅ Popup affiché avec succès");
+    } catch (e) {
+      log("❌ Erreur lors de l'affichage du popup: $e");
+      // Appeler onDismiss en cas d'erreur pour éviter de bloquer la file d'attente
+      if (onDismiss != null) {
+        try {
+          onDismiss();
+        } catch (callbackError) {
+          log("❌ Erreur lors de l'exécution du callback de fallback dans show(): $callbackError");
+        }
+      }
+    }
   }
 }
