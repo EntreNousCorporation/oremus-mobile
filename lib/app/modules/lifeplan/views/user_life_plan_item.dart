@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
+import 'package:oremusapp/app/modules/lifeplan/controller/life_plan_controller.dart';
 import 'package:oremusapp/app/modules/lifeplan/data/model/time_slots_grid.dart';
 import 'package:oremusapp/app/modules/lifeplan/data/model/user_life_plan.dart';
-
 
 class UserLifePlanItem extends StatelessWidget {
   final UserLifePlan? userLifePlan;
@@ -20,6 +21,8 @@ class UserLifePlanItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<LifePlanController>();
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -27,7 +30,7 @@ class UserLifePlanItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -41,7 +44,7 @@ class UserLifePlanItem extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: colorGreenSemiLight.withOpacity(0.1),
+                  color: colorGreenSemiLight.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
@@ -74,10 +77,18 @@ class UserLifePlanItem extends StatelessWidget {
               ),
               PopupMenuButton<String>(
                 onSelected: (value) {
-                  if (value == 'edit') {
-                    onEdit();
-                  } else if (value == 'delete') {
-                    onDelete();
+                  switch (value) {
+                    case 'edit':
+                      onEdit();
+                      break;
+                    case 'sync_calendar':
+                      if (userLifePlan != null) {
+                        controller.syncPlanWithCalendar(userLifePlan!);
+                      }
+                      break;
+                    case 'delete':
+                      onDelete();
+                      break;
                   }
                 },
                 itemBuilder: (context) => [
@@ -91,6 +102,26 @@ class UserLifePlanItem extends StatelessWidget {
                           'Modifier',
                           style: TextStyles.montserratRegular(
                             textSize: TextSizes.fourteen,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'sync_calendar',
+                    child: Row(
+                      children: [
+                        const Icon(
+                            Icons.calendar_today,
+                            size: 20,
+                            color: colorGreenSemiLight
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Synchroniser calendrier',
+                          style: TextStyles.montserratRegular(
+                            textSize: TextSizes.fourteen,
+                            textColor: colorGreenSemiLight,
                           ),
                         ),
                       ],
@@ -123,6 +154,39 @@ class UserLifePlanItem extends StatelessWidget {
             slots: userLifePlan?.slots ?? [],
             showActions: false,
           ),
+
+          // Indication calendrier si activé
+          if (controller.addToCalendarByDefault.value) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: colorGreenSemiLight.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: colorGreenSemiLight.withValues(alpha: 0.3),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.event_note,
+                    size: 14,
+                    color: colorGreenSemiLight,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Rappels actifs',
+                    style: TextStyles.montserratRegular(
+                      textSize: TextSizes.twelve,
+                      textColor: colorGreenSemiLight,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );

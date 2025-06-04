@@ -12,12 +12,14 @@ import 'package:oremusapp/app/modules/lifeplan/data/model/create_life_plan_reque
 import 'package:oremusapp/app/modules/lifeplan/data/model/life_plan.dart';
 import 'package:oremusapp/app/modules/lifeplan/data/model/user_life_plan.dart';
 import 'package:oremusapp/app/modules/lifeplan/data/repository/life_plan_repository.dart';
+import 'package:oremusapp/app/modules/lifeplan/service/calendar_service.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class LifePlanController extends GetxController {
   final LifePlanRepository lifePlanRepository;
+  final CalendarService _calendarService = CalendarService();
 
   LifePlanController({required this.lifePlanRepository});
 
@@ -42,10 +44,24 @@ class LifePlanController extends GetxController {
   // Plan sélectionné pour modification
   Rx<UserLifePlan?> selectedUserPlan = Rx<UserLifePlan?>(null);
 
+  // Paramètres calendrier
+  var addToCalendarByDefault = true.obs;
+
   @override
   void onInit() {
     super.onInit();
+    _loadCalendarPreference();
     loadInitialData();
+  }
+
+  void _loadCalendarPreference() {
+    final saved = DB.getData(AppConstants.KEY_ADD_TO_CALENDAR);
+    addToCalendarByDefault.value = saved ?? true;
+  }
+
+  void saveCalendarPreference(bool value) {
+    addToCalendarByDefault.value = value;
+    DB.saveBoolData(AppConstants.KEY_ADD_TO_CALENDAR, value);
   }
 
   void loadInitialData() {
@@ -102,47 +118,61 @@ class LifePlanController extends GetxController {
   }
 
   // Créer un nouveau plan de vie
-  void createLifePlan(LifePlan lifePlan, List<TimeSlot> customSlots) async {
+  void createLifePlan(LifePlan lifePlan, List<TimeSlot> customSlots, {bool addToCalendar = true}) async {
     EasyLoading.show(
       status: 'Création en cours...',
       maskType: EasyLoadingMaskType.black,
       indicator: LottieLoadingView(),
     );
 
-    // Convertir les TimeSlot en format string attendu par l'API
-    List<String> slotsAsStrings = customSlots.map((slot) {
-      final h = (slot.hour ?? 0).toString().padLeft(2, '0');
-      final m = (slot.minute ?? 0).toString().padLeft(2, '0');
-      final s = (slot.second ?? 0).toString().padLeft(2, '0');
-      return '$h:$m:$s';
-    }).toList();
+    try {
+      // Convertir les TimeSlot en format string attendu par l'API
+      List<String> slotsAsStrings = customSlots.map((slot) {
+        final h = (slot.hour ?? 0).toString().padLeft(2, '0');
+        final m = (slot.minute ?? 0).toString().padLeft(2, '0');
+        final s = (slot.second ?? 0).toString().padLeft(2, '0');
+        return '$h:$m:$s';
+      }).toList();
 
-    var request = CreateLifePlanRequest(
-      code: lifePlan.code ?? '',
-      slots: slotsAsStrings,
-    );
+      var request = CreateLifePlanRequest(
+        code: lifePlan.code ?? '',
+        slots: slotsAsStrings,
+      );
 
-    log('createLifePlan request => ${request.toJson()}');
+      log('createLifePlan request => ${request.toJson()}');
 
-    lifePlanRepository.createUserLifePlan(request: request).then((response) {
-      EasyLoading.dismiss();
+      final response = await lifePlanRepository.createUserLifePlan(request: request);
 
       userLifePlans.insert(0, response);
       hasUserPlans.value = true;
 
+      // Ajouter au calendrier si demandé
+      if (addToCalendar) {
+        final calendarSuccess = await _calendarService.addLifePlanToCalendar(response);
+        if (calendarSuccess) {
+          log('Plan ajouté au calendrier avec succès');
+        } else {
+          log('Échec ajout au calendrier');
+        }
+      }
+
+      EasyLoading.dismiss();
       Get.back();
+
       showNotification(
-        message: 'Plan de vie créé avec succès',
+        message: addToCalendar
+            ? 'Plan de vie créé et ajouté au calendrier'
+            : 'Plan de vie créé avec succès',
         bgColor: colorGreenSemiLight,
       );
-    }, onError: (error) {
+    } catch (error) {
       EasyLoading.dismiss();
       _handleError(error);
-    });
+    }
   }
 
   // Mettre à jour un plan de vie
-  void updateLifePlan(UserLifePlan userLifePlan, List<TimeSlot> newSlots) async {
+  void updateLifePlan(UserLifePlan userLifePlan, List<TimeSlot> newSlots, {bool updateCalendar = true}) async {
     if (userLifePlan.identifier == null) return;
 
     EasyLoading.show(
@@ -151,25 +181,25 @@ class LifePlanController extends GetxController {
       indicator: LottieLoadingView(),
     );
 
-    // Convertir les TimeSlot en format string attendu par l'API
-    List<String> slotsAsStrings = newSlots.map((slot) {
-      final h = (slot.hour ?? 0).toString().padLeft(2, '0');
-      final m = (slot.minute ?? 0).toString().padLeft(2, '0');
-      final s = (slot.second ?? 0).toString().padLeft(2, '0');
-      return '$h:$m:$s';
-    }).toList();
+    try {
+      // Convertir les TimeSlot en format string attendu par l'API
+      List<String> slotsAsStrings = newSlots.map((slot) {
+        final h = (slot.hour ?? 0).toString().padLeft(2, '0');
+        final m = (slot.minute ?? 0).toString().padLeft(2, '0');
+        final s = (slot.second ?? 0).toString().padLeft(2, '0');
+        return '$h:$m:$s';
+      }).toList();
 
-    var request = UpdateLifePlanRequest(
-      slots: slotsAsStrings,
-    );
+      var request = UpdateLifePlanRequest(
+        slots: slotsAsStrings,
+      );
 
-    log('updateLifePlan request => ${request.toJson()}');
+      log('updateLifePlan request => ${request.toJson()}');
 
-    lifePlanRepository.updateUserLifePlan(
-      id: userLifePlan.identifier!,
-      request: request,
-    ).then((response) {
-      EasyLoading.dismiss();
+      final response = await lifePlanRepository.updateUserLifePlan(
+        id: userLifePlan.identifier!,
+        request: request,
+      );
 
       // Mettre à jour la liste
       int index = userLifePlans.indexWhere((p) => p?.identifier == userLifePlan.identifier);
@@ -177,15 +207,29 @@ class LifePlanController extends GetxController {
         userLifePlans[index] = response;
       }
 
+      // Mettre à jour le calendrier si demandé
+      if (updateCalendar) {
+        final calendarSuccess = await _calendarService.updateLifePlanInCalendar(response);
+        if (calendarSuccess) {
+          log('Plan mis à jour dans le calendrier');
+        } else {
+          log('Échec mise à jour calendrier');
+        }
+      }
+
+      EasyLoading.dismiss();
       Get.back();
+
       showNotification(
-        message: 'Plan de vie modifié avec succès',
+        message: updateCalendar
+            ? 'Plan de vie modifié et calendrier mis à jour'
+            : 'Plan de vie modifié avec succès',
         bgColor: colorGreenSemiLight,
       );
-    }, onError: (error) {
+    } catch (error) {
       EasyLoading.dismiss();
       _handleError(error);
-    });
+    }
   }
 
   // Supprimer un plan de vie
@@ -194,7 +238,7 @@ class LifePlanController extends GetxController {
 
     showCustomDialog(
       Get.context!,
-      message: 'Êtes-vous sûr de vouloir supprimer ce plan de vie ?',
+      message: 'Êtes-vous sûr de vouloir supprimer ce plan de vie ?\n\nCela supprimera aussi les rappels du calendrier.',
       positiveLabel: 'Supprimer',
       negativeLabel: 'Annuler',
       positiveCallBack: () {
@@ -203,27 +247,67 @@ class LifePlanController extends GetxController {
     );
   }
 
-  void _performDelete(UserLifePlan? userLifePlan) {
+  void _performDelete(UserLifePlan? userLifePlan) async {
     EasyLoading.show(
       status: 'Suppression en cours...',
       maskType: EasyLoadingMaskType.black,
       indicator: LottieLoadingView(),
     );
 
-    lifePlanRepository.deleteUserLifePlan(id: userLifePlan?.identifier ?? -1).then((_) {
-      EasyLoading.dismiss();
+    try {
+      await lifePlanRepository.deleteUserLifePlan(id: userLifePlan?.identifier ?? -1);
+
+      // Supprimer du calendrier
+      if (userLifePlan?.identifier != null) {
+        final calendarSuccess = await _calendarService.removeLifePlanFromCalendar(
+            userLifePlan!.identifier!
+        );
+        if (calendarSuccess) {
+          log('Événements supprimés du calendrier');
+        }
+      }
 
       userLifePlans.removeWhere((p) => p?.identifier == userLifePlan?.identifier);
       hasUserPlans.value = userLifePlans.isNotEmpty;
 
+      EasyLoading.dismiss();
       showNotification(
-        message: 'Plan de vie supprimé avec succès',
+        message: 'Plan de vie et rappels supprimés avec succès',
         bgColor: colorGreenSemiLight,
       );
-    }, onError: (error) {
+    } catch (error) {
       EasyLoading.dismiss();
       _handleError(error);
-    });
+    }
+  }
+
+  // Méthode pour synchroniser un plan existant avec le calendrier
+  void syncPlanWithCalendar(UserLifePlan userLifePlan) async {
+    EasyLoading.show(
+      status: 'Synchronisation avec le calendrier...',
+      maskType: EasyLoadingMaskType.black,
+      indicator: LottieLoadingView(),
+    );
+
+    try {
+      final success = await _calendarService.addLifePlanToCalendar(userLifePlan);
+      EasyLoading.dismiss();
+
+      if (success) {
+        showNotification(
+          message: 'Plan synchronisé avec le calendrier',
+          bgColor: colorGreenSemiLight,
+        );
+      } else {
+        showNotification(
+          message: 'Échec de la synchronisation. Vérifiez les permissions.',
+          bgColor: Colors.orange,
+        );
+      }
+    } catch (error) {
+      EasyLoading.dismiss();
+      _handleError(error);
+    }
   }
 
   // Rafraîchir les données
@@ -248,15 +332,28 @@ class LifePlanController extends GetxController {
     });
   }
 
-  // Navigation vers la création/modification
+  // Navigation vers la sélection d'activités ou création/modification
   void goToCreateOrEditPlan({UserLifePlan? userPlan, LifePlan? lifePlan}) {
-    Get.toNamed(
-      Routes.LIFE_PLAN_FORM,
-      arguments: {
-        'userLifePlan': userPlan?.toJson(),
-        'lifePlan': lifePlan?.toJson(),
-      },
-    );
+    if (userPlan != null) {
+      // Mode édition d'un plan existant
+      Get.toNamed(
+        Routes.LIFE_PLAN_FORM,
+        arguments: {
+          'userLifePlan': userPlan.toJson(),
+        },
+      );
+    } else if (lifePlan != null) {
+      // Mode création avec une activité spécifique (ancien workflow)
+      Get.toNamed(
+        Routes.LIFE_PLAN_FORM,
+        arguments: {
+          'lifePlan': lifePlan.toJson(),
+        },
+      );
+    } else {
+      // Mode sélection multiple d'activités (nouveau workflow)
+      Get.toNamed(Routes.ACTIVITY_SELECTION);
+    }
   }
 
   // Gestion des erreurs

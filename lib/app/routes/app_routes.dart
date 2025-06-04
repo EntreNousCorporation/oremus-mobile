@@ -75,4 +75,5 @@ abstract class Routes {
 
   static const LIFE_PLAN = '/life-plan';
   static const LIFE_PLAN_FORM = '/life-plan-form';
+  static const ACTIVITY_SELECTION = '/life-plan-activities';
 }

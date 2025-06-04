@@ -10,6 +10,7 @@ abstract class AppConstants {
   static const KEY_USER_LOG_INFOS = 'USER_LOG_INFO';
   static const KEY_USER_INFOS = 'USER_INFOS';
   static const FCM_TOKEN = 'FCM_TOKEN';
+  static const String KEY_ADD_TO_CALENDAR = "add_to_calendar_preference";
 
   static const APP_NAME = 'OREMUS';
 

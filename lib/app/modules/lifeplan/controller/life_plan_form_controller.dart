@@ -4,19 +4,28 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/lifeplan/controller/life_plan_controller.dart';
 import 'package:oremusapp/app/modules/lifeplan/data/model/life_plan.dart';
 import 'package:oremusapp/app/modules/lifeplan/data/model/user_life_plan.dart';
+import 'package:oremusapp/app/modules/lifeplan/service/calendar_service.dart';
 
 class LifePlanFormController extends GetxController {
   final LifePlanController lifePlanController = Get.find<LifePlanController>();
+  final CalendarService _calendarService = CalendarService();
 
   Rx<LifePlan?> selectedPlan = Rx<LifePlan?>(null);
   Rx<UserLifePlan?> userLifePlan = Rx<UserLifePlan?>(null);
   RxList<TimeSlot> timeSlots = RxList<TimeSlot>([]);
   RxBool isEditMode = false.obs;
 
+  // Options calendrier
+  RxBool addToCalendar = true.obs;
+  RxBool hasCalendarPermission = false.obs;
+  RxBool isCheckingPermission = false.obs;
+
   @override
   void onInit() {
     super.onInit();
     _loadArguments();
+    _checkCalendarPermission();
+    _loadCalendarPreference();
   }
 
   void _loadArguments() {
@@ -35,6 +44,74 @@ class LifePlanFormController extends GetxController {
       }
       // Trier les créneaux
       _sortTimeSlots();
+    }
+  }
+
+  void _loadCalendarPreference() {
+    addToCalendar.value = lifePlanController.addToCalendarByDefault.value;
+  }
+
+  Future<void> _checkCalendarPermission() async {
+    isCheckingPermission.value = true;
+    try {
+      hasCalendarPermission.value = await _calendarService.requestCalendarPermission();
+    } catch (e) {
+      hasCalendarPermission.value = false;
+    } finally {
+      isCheckingPermission.value = false;
+    }
+  }
+
+  void onCalendarToggleChanged(bool value) {
+    if (!hasCalendarPermission.value && value) {
+      // Demander les permissions
+      _requestCalendarPermission();
+    } else {
+      addToCalendar.value = value;
+      // Sauvegarder la préférence
+      lifePlanController.saveCalendarPreference(value);
+    }
+  }
+
+  Future<void> _requestCalendarPermission() async {
+    isCheckingPermission.value = true;
+
+    try {
+      final granted = await _calendarService.requestCalendarPermission();
+      hasCalendarPermission.value = granted;
+
+      if (granted) {
+        addToCalendar.value = true;
+        lifePlanController.saveCalendarPreference(true);
+        Get.snackbar(
+          'Permissions accordées',
+          'Vous pouvez maintenant ajouter vos plans au calendrier',
+          backgroundColor: colorGreenSemiLight,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2),
+        );
+      } else {
+        addToCalendar.value = false;
+        Get.snackbar(
+          'Permissions refusées',
+          'Activez les permissions calendrier dans les paramètres pour utiliser cette fonctionnalité',
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+      }
+    } catch (e) {
+      hasCalendarPermission.value = false;
+      addToCalendar.value = false;
+      Get.snackbar(
+        'Erreur',
+        'Impossible d\'accéder au calendrier',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+      );
+    } finally {
+      isCheckingPermission.value = false;
     }
   }
 
@@ -156,9 +233,17 @@ class LifePlanFormController extends GetxController {
     }
 
     if (isEditMode.value && userLifePlan.value != null) {
-      lifePlanController.updateLifePlan(userLifePlan.value!, timeSlots);
+      lifePlanController.updateLifePlan(
+        userLifePlan.value!,
+        timeSlots,
+        updateCalendar: addToCalendar.value && hasCalendarPermission.value,
+      );
     } else if (selectedPlan.value != null) {
-      lifePlanController.createLifePlan(selectedPlan.value!, timeSlots);
+      lifePlanController.createLifePlan(
+        selectedPlan.value!,
+        timeSlots,
+        addToCalendar: addToCalendar.value && hasCalendarPermission.value,
+      );
     } else {
       Get.snackbar(
         'Erreur',
@@ -186,5 +271,17 @@ class LifePlanFormController extends GetxController {
   // Méthode utilitaire pour vérifier si on peut sauvegarder
   bool get canSave {
     return timeSlots.isNotEmpty && selectedPlan.value != null;
+  }
+
+  // Méthode utilitaire pour le texte du bouton sauvegarder
+  String get saveButtonText {
+    if (isEditMode.value) {
+      return addToCalendar.value && hasCalendarPermission.value
+          ? 'Modifier et synchroniser'
+          : 'Modifier';
+    }
+    return addToCalendar.value && hasCalendarPermission.value
+        ? 'Créer et ajouter au calendrier'
+        : 'Créer';
   }
 }

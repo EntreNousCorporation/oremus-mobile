@@ -79,6 +79,14 @@ class DB {
     _save(key, value);
   }
 
+  static getBoolData(String key) {
+    return encryptedBox?.get(key);
+  }
+
+  static void saveBoolData(String key, bool? value) {
+    encryptedBox?.put(key, value);
+  }
+
   static String getCurrentLanguage() {
     return getData(AppConstants.KEY_LANGUAGE) ?? '';
   }

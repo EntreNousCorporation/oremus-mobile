@@ -23,10 +23,12 @@ import 'package:oremusapp/app/modules/faq/binding/faq_binding.dart';
 import 'package:oremusapp/app/modules/faq/views/faq_screen.dart';
 import 'package:oremusapp/app/modules/favorite/binding/favorite_binding.dart';
 import 'package:oremusapp/app/modules/favorite/views/favorites_screen.dart';
+import 'package:oremusapp/app/modules/lifeplan/binding/activity_selection_binding.dart';
 import 'package:oremusapp/app/modules/lifeplan/binding/life_plan_binding.dart';
 import 'package:oremusapp/app/modules/lifeplan/binding/life_plan_form_binding.dart';
-import 'package:oremusapp/app/modules/lifeplan/views/life_plan_form_screen.dart';
+import 'package:oremusapp/app/modules/lifeplan/views/activity_selection_screen.dart';
 import 'package:oremusapp/app/modules/lifeplan/views/life_plan_screen.dart';
+import 'package:oremusapp/app/modules/lifeplan/views/multi_activity_form_screen.dart';
 import 'package:oremusapp/app/modules/massrequest/binding/filter_mass_request_date_binding.dart';
 import 'package:oremusapp/app/modules/massrequest/binding/filter_worship_binding.dart';
 import 'package:oremusapp/app/modules/massrequest/binding/mass_request_binding.dart';
@@ -435,6 +437,11 @@ class AppPages {
       transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
+      name: Routes.ACTIVITY_SELECTION,
+      page: () => const ActivitySelectionScreen(),
+      binding: ActivitySelectionBinding(),
+    ),
+    GetPage(
       name: Routes.LIFE_PLAN,
       page: () => const LifePlanScreen(),
       binding: LifePlanBinding(),
@@ -442,9 +449,20 @@ class AppPages {
     ),
     GetPage(
       name: Routes.LIFE_PLAN_FORM,
-      page: () => const LifePlanFormScreen(),
-      binding: LifePlanFormBinding(),
+      page: () => const MultiActivityFormScreen(),
+      bindings: [
+        LifePlanBinding(),
+        LifePlanFormBinding(),
+      ],
       transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: Routes.ACTIVITY_SELECTION,
+      page: () => const ActivitySelectionScreen(),
+      bindings: [
+        LifePlanBinding(),
+        ActivitySelectionBinding(),
+      ],
     ),
   ];
 }

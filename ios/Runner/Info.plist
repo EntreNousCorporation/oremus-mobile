@@ -69,6 +69,8 @@
     </array>
     <key>NSDocumentsFolderUsageDescription</key>
     <string>L'application a besoin d'accéder à vos documents pour stocker les fichiers audio du rosaire.</string>
+    <key>NSCalendarsUsageDescription</key>
+    <string>Oremus souhaite accéder à votre calendrier pour créer des rappels pour vos plans de vie spirituels.</string>
     <key>NSAppTransportSecurity</key>
     <dict>
         <key>NSAllowsArbitraryLoads</key>

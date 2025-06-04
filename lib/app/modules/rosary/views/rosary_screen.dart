@@ -91,8 +91,8 @@ class _RosaryScreenState extends State<RosaryScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _buildSimpleSpeedButton(),
-                        //SpeedControlWidget(),
+                        //_buildSimpleSpeedButton(),
+                        SpeedControlWidget(),
                       ],
                     ),
 

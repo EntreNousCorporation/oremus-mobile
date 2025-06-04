@@ -34,8 +34,8 @@ class LifePlanScreen extends StatelessWidget {
                       textSize: TextSizes.fourteen,
                     ),
                     tabs: const [
-                      Tab(text: 'Mes plans'),
-                      Tab(text: 'Plans suggérés'),
+                      Tab(text: 'Mon plan de vie'),
+                      Tab(text: 'Activités suggérées'),
                     ],
                     onTap: (index) {
                       controller.selectedTab.value = index;
