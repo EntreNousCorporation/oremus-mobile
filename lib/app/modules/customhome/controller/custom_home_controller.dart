@@ -15,6 +15,7 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/customhome/data/model/menu_item.dart';
 import 'package:oremusapp/app/modules/favorite/controller/favorite_controller.dart';
+import 'package:oremusapp/app/modules/lifeplan/binding/life_plan_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
@@ -97,8 +98,8 @@ class CustomHomeController extends GetxController {
       ),
       MenusItem(
         code: AppConstants.LIFE_PLAN,
-        libelle: "Plans de vie",
-        icon: Assets.imagesRosary,
+        libelle: "Plan de vie",
+        icon: Assets.imagesAssignment,
         isVisible: true,
       ),
       MenusItem(

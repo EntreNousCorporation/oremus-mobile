@@ -8,6 +8,8 @@ import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/commons/theme/app_dimension.dart';
+import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/lifeplan/data/model/create_life_plan_request.dart';
 import 'package:oremusapp/app/modules/lifeplan/data/model/life_plan.dart';
 import 'package:oremusapp/app/modules/lifeplan/data/model/user_life_plan.dart';
@@ -15,6 +17,7 @@ import 'package:oremusapp/app/modules/lifeplan/data/repository/life_plan_reposit
 import 'package:oremusapp/app/modules/lifeplan/service/calendar_service.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
+import 'package:oremusapp/main.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class LifePlanController extends GetxController {
@@ -51,7 +54,9 @@ class LifePlanController extends GetxController {
   void onInit() {
     super.onInit();
     _loadCalendarPreference();
-    loadInitialData();
+    if (isUserConnected.value) {
+      loadInitialData();
+    }
   }
 
   void _loadCalendarPreference() {
@@ -65,12 +70,189 @@ class LifePlanController extends GetxController {
   }
 
   void loadInitialData() {
+    if (!isUserConnected.value) {
+      return;
+    }
     getAvailableLifePlans();
     getUserLifePlans();
   }
 
+  // Vérifier l'authentification avant d'accéder aux fonctionnalités
+  void checkAndLoadUserPlans() {
+    if (!isUserConnected.value) {
+      checkIfUserIsConnected('USER_PLANS');
+      return;
+    }
+    getUserLifePlans();
+  }
+
+  void checkAndLoadAvailablePlans() {
+    if (!isUserConnected.value) {
+      checkIfUserIsConnected('AVAILABLE_PLANS');
+      return;
+    }
+    getAvailableLifePlans();
+  }
+
+  void checkAndCreatePlan({UserLifePlan? userPlan, LifePlan? lifePlan}) {
+    if (!isUserConnected.value) {
+      checkIfUserIsConnected('CREATE_PLAN');
+      return;
+    }
+    goToCreateOrEditPlan(userPlan: userPlan, lifePlan: lifePlan);
+  }
+
+  checkIfUserIsConnected(String code) {
+    Get.bottomSheet(
+      Container(
+        height: Get.height * 0.32,
+        decoration: BoxDecoration(
+          color: colorWhite,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              // Indicateur de dialogue en haut
+              Container(
+                width: 50,
+                height: 5,
+                margin: const EdgeInsets.only(bottom: 15),
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
+              Text(
+                'Authentification requise',
+                style: TextStyles.montserratBold(
+                  textSize: TextSizes.twenty,
+                  textColor: colorBlack,
+                ),
+              ),
+              const SizedBox(height: 8),
+              // Icône pour renforcer le message
+              Icon(
+                Icons.lock_outline_rounded,
+                size: 48,
+                color: colorGreen.withValues(alpha: 0.8),
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Veuillez vous connecter pour accéder à vos plans de vie',
+                      textAlign: TextAlign.center,
+                      style: TextStyles.montserratMedium(
+                        textSize: TextSizes.sixteen,
+                        textColor: Colors.grey[800]!,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Text(
+                          "Annuler",
+                          style: TextStyles.montserratMedium(
+                            textSize: TextSizes.sixteen,
+                            textColor: colorGreen,
+                          ),
+                        ),
+                      ),
+                      style: TextButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(color: colorGreen.withValues(alpha: 0.7), width: 1),
+                        ),
+                      ),
+                      onPressed: Get.back,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: TextButton(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Text(
+                          "Se connecter",
+                          style: TextStyles.montserratBold(
+                            textSize: TextSizes.sixteen,
+                            textColor: colorWhite,
+                          ),
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: colorGreen,
+                        elevation: 2,
+                        shadowColor: colorGreen.withValues(alpha: 0.5),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () {
+                        Get.back();
+                        Future.delayed(const Duration(milliseconds: 250), () {
+                          moveToLogin(code);
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+      enableDrag: false,
+      isDismissible: false,
+    );
+  }
+
+  moveToLogin(String code) async {
+    var result = await Get.toNamed(
+      Routes.SIGNIN,
+      arguments: true,
+    );
+    if (result == true) {
+      log('back moveToLogin');
+      switch (code) {
+        case 'USER_PLANS':
+          getUserLifePlans();
+          break;
+        case 'AVAILABLE_PLANS':
+          getAvailableLifePlans();
+          break;
+        case 'CREATE_PLAN':
+          goToCreateOrEditPlan();
+          break;
+      }
+    }
+  }
+
   // Récupérer les plans disponibles
   void getAvailableLifePlans() {
+    if (!isUserConnected.value) return;
+
     isLoadingAvailable(true);
 
     lifePlanRepository.getAvailableLifePlans(page: availablePage.value).then((response) {
@@ -95,6 +277,8 @@ class LifePlanController extends GetxController {
 
   // Récupérer les plans de l'utilisateur
   void getUserLifePlans() {
+    if (!isUserConnected.value) return;
+
     isLoadingUser(true);
 
     lifePlanRepository.getUserLifePlans(page: userPage.value).then((response) {
@@ -119,6 +303,11 @@ class LifePlanController extends GetxController {
 
   // Créer un nouveau plan de vie
   void createLifePlan(LifePlan lifePlan, List<TimeSlot> customSlots, {bool addToCalendar = true}) async {
+    if (!isUserConnected.value) {
+      checkIfUserIsConnected('CREATE_PLAN');
+      return;
+    }
+
     EasyLoading.show(
       status: 'Création en cours...',
       maskType: EasyLoadingMaskType.black,
@@ -173,6 +362,11 @@ class LifePlanController extends GetxController {
 
   // Mettre à jour un plan de vie
   void updateLifePlan(UserLifePlan userLifePlan, List<TimeSlot> newSlots, {bool updateCalendar = true}) async {
+    if (!isUserConnected.value) {
+      checkIfUserIsConnected('CREATE_PLAN');
+      return;
+    }
+
     if (userLifePlan.identifier == null) return;
 
     EasyLoading.show(
@@ -234,6 +428,11 @@ class LifePlanController extends GetxController {
 
   // Supprimer un plan de vie
   void deleteLifePlan(UserLifePlan? userLifePlan) async {
+    if (!isUserConnected.value) {
+      checkIfUserIsConnected('USER_PLANS');
+      return;
+    }
+
     if (userLifePlan?.identifier == null) return;
 
     showCustomDialog(
@@ -283,6 +482,11 @@ class LifePlanController extends GetxController {
 
   // Méthode pour synchroniser un plan existant avec le calendrier
   void syncPlanWithCalendar(UserLifePlan userLifePlan) async {
+    if (!isUserConnected.value) {
+      checkIfUserIsConnected('USER_PLANS');
+      return;
+    }
+
     EasyLoading.show(
       status: 'Synchronisation avec le calendrier...',
       maskType: EasyLoadingMaskType.black,
@@ -312,6 +516,11 @@ class LifePlanController extends GetxController {
 
   // Rafraîchir les données
   void onRefresh() {
+    if (!isUserConnected.value) {
+      refreshController.refreshCompleted();
+      return;
+    }
+
     availablePage.value = 0;
     userPage.value = 0;
 
@@ -334,6 +543,11 @@ class LifePlanController extends GetxController {
 
   // Navigation vers la sélection d'activités ou création/modification
   void goToCreateOrEditPlan({UserLifePlan? userPlan, LifePlan? lifePlan}) {
+    if (!isUserConnected.value) {
+      checkIfUserIsConnected('CREATE_PLAN');
+      return;
+    }
+
     if (userPlan != null) {
       // Mode édition d'un plan existant
       Get.toNamed(
@@ -356,19 +570,15 @@ class LifePlanController extends GetxController {
     }
   }
 
-  // Gestion des erreurs
+  // Gestion des erreurs avec option de réauthentification pour 401
   void _handleError(dynamic error) {
     debugPrint("Error type: ${error.runtimeType}");
     debugPrint("Error details: ${error.toString()}");
 
     if (error is CustomException) {
       if (error.code == 401) {
-        showCustomDialog(
-          Get.context!,
-          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-        ).then((value) {
-          doLogout();
-        });
+        // Au lieu de faire un logout direct, proposer de se reconnecter
+        checkIfUserIsConnected('USER_PLANS');
       } else {
         showNotification(
           message: error.message ?? 'Une erreur est survenue',

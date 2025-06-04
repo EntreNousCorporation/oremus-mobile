@@ -437,11 +437,6 @@ class AppPages {
       transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
-      name: Routes.ACTIVITY_SELECTION,
-      page: () => const ActivitySelectionScreen(),
-      binding: ActivitySelectionBinding(),
-    ),
-    GetPage(
       name: Routes.LIFE_PLAN,
       page: () => const LifePlanScreen(),
       binding: LifePlanBinding(),

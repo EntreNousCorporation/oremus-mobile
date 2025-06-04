@@ -42,6 +42,7 @@ class Assets {
   static const String fontsMontserratThin = 'assets/fonts/Montserrat_Thin.otf';
   static const String fontsMontserratThinItalic = 'assets/fonts/Montserrat_ThinItalic.otf';
   static const String imagesAdmin = 'assets/images/admin.svg';
+  static const String imagesAssignment = 'assets/images/assignment.svg';
   static const String imagesAvatar = 'assets/images/avatar.svg';
   static const String imagesBgLogin = 'assets/images/bg_login.jpg';
   static const String imagesCalendar = 'assets/images/calendar.svg';

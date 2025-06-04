@@ -6,9 +6,10 @@ import 'package:oremusapp/app/remote/api_client.dart';
 class LifePlanBinding implements Bindings {
   @override
   void dependencies() {
-    Get.put<LifePlanController>(LifePlanController(
+    Get.lazyPut<LifePlanController>(() => LifePlanController(
         lifePlanRepository: LifePlanRepository(ApiClientImpl()),
       ),
+      fenix: true,
     );
   }
 }

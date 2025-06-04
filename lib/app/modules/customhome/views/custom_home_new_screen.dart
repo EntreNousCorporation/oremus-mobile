@@ -12,6 +12,7 @@ import 'package:oremusapp/app/modules/customhome/controller/custom_home_controll
 import 'package:oremusapp/app/modules/customhome/views/widget/drawer_menu.dart';
 import 'package:oremusapp/app/modules/donation/views/donation_menu_screen.dart';
 import 'package:oremusapp/app/modules/faq/views/faq_screen.dart';
+import 'package:oremusapp/app/modules/lifeplan/binding/life_plan_binding.dart';
 import 'package:oremusapp/app/modules/lifeplan/views/life_plan_screen.dart';
 import 'package:oremusapp/app/modules/massrequest/views/mass_request_menu_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_screen.dart';
@@ -67,7 +68,7 @@ class CustomHomeNewScreen extends StatelessWidget {
                 screenCurrent = const RosaryScreen();
                 break;
               case AppConstants.LIFE_PLAN:
-                logic.title.value = logic.menus[position].libelle ?? 'Plans de vie';
+                logic.title.value = logic.menus[position].libelle ?? 'Plan de vie';
                 screenCurrent = const LifePlanScreen();
                 break;
               case AppConstants.PROMO:
