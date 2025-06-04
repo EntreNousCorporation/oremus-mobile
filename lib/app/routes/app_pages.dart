@@ -23,6 +23,10 @@ import 'package:oremusapp/app/modules/faq/binding/faq_binding.dart';
 import 'package:oremusapp/app/modules/faq/views/faq_screen.dart';
 import 'package:oremusapp/app/modules/favorite/binding/favorite_binding.dart';
 import 'package:oremusapp/app/modules/favorite/views/favorites_screen.dart';
+import 'package:oremusapp/app/modules/lifeplan/binding/life_plan_binding.dart';
+import 'package:oremusapp/app/modules/lifeplan/binding/life_plan_form_binding.dart';
+import 'package:oremusapp/app/modules/lifeplan/views/life_plan_form_screen.dart';
+import 'package:oremusapp/app/modules/lifeplan/views/life_plan_screen.dart';
 import 'package:oremusapp/app/modules/massrequest/binding/filter_mass_request_date_binding.dart';
 import 'package:oremusapp/app/modules/massrequest/binding/filter_worship_binding.dart';
 import 'package:oremusapp/app/modules/massrequest/binding/mass_request_binding.dart';
@@ -117,6 +121,7 @@ class AppPages {
         PrayBinding(),
         SettingsBinding(),
         RosaryBinding(),
+        LifePlanBinding(),
       ],
       transition: Transition.circularReveal,
     ),
@@ -131,6 +136,7 @@ class AppPages {
         PrayBinding(),
         SettingsBinding(),
         RosaryBinding(),
+        LifePlanBinding(),
       ],
       transition: Transition.circularReveal,
     ),
@@ -427,6 +433,18 @@ class AppPages {
       binding: AboutBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.LIFE_PLAN,
+      page: () => const LifePlanScreen(),
+      binding: LifePlanBinding(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: Routes.LIFE_PLAN_FORM,
+      page: () => const LifePlanFormScreen(),
+      binding: LifePlanFormBinding(),
+      transition: Transition.rightToLeft,
     ),
   ];
 }

@@ -62,6 +62,7 @@ abstract class AppConstants {
   static const DONATION_WITHOUT_WORSHIP = 10;
   static const SETTINGS = 11;
   static const ROSAIRE = 12;
+  static const LIFE_PLAN = 13;
 
   static const MIN_AMOUNT = 100;
 

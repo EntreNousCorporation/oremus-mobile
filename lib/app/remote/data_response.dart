@@ -1,4 +1,6 @@
 import 'package:oremusapp/app/modules/donation/data/model/donation_response.dart';
+import 'package:oremusapp/app/modules/lifeplan/data/model/life_plan.dart';
+import 'package:oremusapp/app/modules/lifeplan/data/model/user_life_plan.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/massrequestclaim/data/model/claim_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
@@ -54,6 +56,10 @@ class DataResponse<T extends ToJsonInterface> {
               return ContentPlace.fromJson(x) as T;
             case DonationResponse:
               return DonationResponse.fromJson(x) as T;
+            case LifePlan:
+              return LifePlan.fromJson(x) as T;
+            case UserLifePlan:
+              return UserLifePlan.fromJson(x) as T;
             default:
               return null;
           }
@@ -70,6 +76,10 @@ class DataResponse<T extends ToJsonInterface> {
                   return ContentPlace.fromJson(x) as T;
                 case DonationResponse:
                   return DonationResponse.fromJson(x) as T;
+                case LifePlan:
+                  return LifePlan.fromJson(x) as T;
+                case UserLifePlan:
+                  return UserLifePlan.fromJson(x) as T;
                 default:
                   return null;
               }

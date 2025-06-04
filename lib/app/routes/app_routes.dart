@@ -72,4 +72,7 @@ abstract class Routes {
 
   static const FAQ = '/faq';
   static const ABOUT = '/about';
+
+  static const LIFE_PLAN = '/life-plan';
+  static const LIFE_PLAN_FORM = '/life-plan-form';
 }
