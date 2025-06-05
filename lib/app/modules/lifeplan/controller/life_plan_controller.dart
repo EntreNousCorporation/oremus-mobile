@@ -437,7 +437,7 @@ class LifePlanController extends GetxController {
 
     showCustomDialog(
       Get.context!,
-      message: 'Êtes-vous sûr de vouloir supprimer ce plan de vie ?\n\nCela supprimera aussi les rappels du calendrier.',
+      message: 'Êtes-vous sûr de vouloir supprimer cette activité de votre plan de vie ?\n\nCela supprimera aussi les rappels du calendrier.',
       positiveLabel: 'Supprimer',
       negativeLabel: 'Annuler',
       positiveCallBack: () {
