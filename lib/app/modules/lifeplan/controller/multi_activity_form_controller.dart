@@ -174,14 +174,25 @@ class MultiActivityFormController extends GetxController {
     final TimeOfDay? picked = await showTimePicker(
       context: Get.context!,
       initialTime: TimeOfDay.now(),
+      helpText: 'Sélectionner l\'heure',
+      cancelText: 'Annuler',
+      confirmText: 'OK',
+      hourLabelText: 'Heure',
+      minuteLabelText: 'Minute',
       builder: (context, child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: colorGreenSemiLight,
-            ),
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            alwaysUse24HourFormat: true,
           ),
-          child: child!,
+          child: Theme(
+            data: ThemeData.light().copyWith(
+              colorScheme: const ColorScheme.light(
+                primary: colorGreenSemiLight,
+                onPrimary: Colors.white,
+              ),
+            ),
+            child: child!,
+          ),
         );
       },
     );

@@ -137,7 +137,6 @@ class ActivityConfigurationCard extends StatelessWidget {
                             ),
                           ),
 
-                        // Flèche d'expansion
                         Icon(
                           isExpanded ? Icons.expand_less : Icons.expand_more,
                           color: Colors.grey[600],
@@ -254,7 +253,7 @@ class ActivityConfigurationCard extends StatelessWidget {
                             Wrap(
                               spacing: 8,
                               runSpacing: 4,
-                              children: config.activity.slots!.map((slot) =>
+                              children: config.activity.slots?.map((slot) =>
                                   GestureDetector(
                                     onTap: () {
                                       // Ajouter le créneau suggéré
@@ -288,7 +287,7 @@ class ActivityConfigurationCard extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                              ).toList(),
+                              ).toList() ?? [],
                             ),
                           ],
                         ),

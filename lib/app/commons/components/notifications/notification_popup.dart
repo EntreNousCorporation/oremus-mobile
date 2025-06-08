@@ -5,6 +5,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NotificationPopup extends StatelessWidget {
   final String title;
@@ -56,16 +57,7 @@ class NotificationPopup extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: 40),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 16),
-              // Utilisation de Html pour rendre le contenu HTML
+              // Widget Html configuré pour les liens cliquables
               SizedBox(
                 width: double.infinity,
                 child: Html(
@@ -73,11 +65,23 @@ class NotificationPopup extends StatelessWidget {
                   style: {
                     '#': Style(
                       fontFamily: 'montserrat_bold',
-                      fontSize: FontSize(
-                        TextSizes.sixteen,
-                      ),
+                      fontSize: FontSize(TextSizes.sixteen),
                       margin: Margins.zero,
-                    )
+                    ),
+                    // Style pour les liens
+                    'a': Style(
+                      color: Theme.of(context).primaryColor,
+                      textDecoration: TextDecoration.underline,
+                      textDecorationColor: Theme.of(context).primaryColor,
+                    ),
+                  },
+                  // Gestion des clics sur les liens
+                  onLinkTap: (url, renderContext, attributes, element) {
+                    _handleLinkTap(url);
+                  },
+                  // Alternative pour les anciennes versions
+                  onAnchorTap: (url, renderContext, attributes, element) {
+                    _handleLinkTap(url);
                   },
                 ),
               ),
@@ -127,6 +131,43 @@ class NotificationPopup extends StatelessWidget {
     );
   }
 
+  // Nouvelle méthode pour gérer les clics sur les liens
+  void _handleLinkTap(String? url) async {
+    if (url == null || url.isEmpty) {
+      log("❌ URL vide ou null");
+      return;
+    }
+
+    try {
+      log("🔗 Tentative d'ouverture du lien: $url");
+
+      // Vérifier si l'URL est valide
+      final uri = Uri.parse(url);
+
+      // Vérifier si l'application peut ouvrir ce lien
+      if (await canLaunchUrl(uri)) {
+        // Ouvrir le lien dans le navigateur externe
+        await launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication, // Force l'ouverture dans le navigateur
+        );
+        log("✅ Lien ouvert avec succès: $url");
+      } else {
+        log("❌ Impossible d'ouvrir le lien: $url");
+      }
+    } catch (e) {
+      log("❌ Erreur lors de l'ouverture du lien: $e");
+
+      // En cas d'erreur, on peut toujours essayer d'ouvrir avec launchUrl
+      try {
+        final uri = Uri.parse(url);
+        await launchUrl(uri);
+      } catch (fallbackError) {
+        log("❌ Erreur lors du fallback d'ouverture: $fallbackError");
+      }
+    }
+  }
+
   // Gestion sécurisée de la fermeture
   void _handleDismiss(BuildContext context) {
     try {
@@ -169,7 +210,6 @@ class NotificationPopup extends StatelessWidget {
     try {
       log("🎯 Tentative d'exécution de l'action du popup");
 
-      // Fermer le dialog d'abord
       if (Navigator.of(context).canPop()) {
         Navigator.of(context).pop();
         log("✅ Dialog fermé avant l'action");

@@ -483,20 +483,13 @@ class SignupScreen extends StatelessWidget {
                                   child: Container(
                                     padding: const EdgeInsets.all(12),
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withValues(alpha:0.95),
+                                      color: Colors.transparent,
                                       borderRadius: BorderRadius.circular(16),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withValues(alpha:0.15),
-                                          blurRadius: 12,
-                                          offset: const Offset(0, 4),
-                                        ),
-                                      ],
                                     ),
                                     child: const Icon(
                                       Icons.arrow_back_rounded,
                                       color: colorGreen,
-                                      size: 24,
+                                      size: 40,
                                     ),
                                   ),
                                 ),

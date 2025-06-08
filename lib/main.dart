@@ -128,7 +128,7 @@ class OremusApp extends StatelessWidget {
           navigatorKey: navigatorKey,
           debugShowCheckedModeBanner:
               (flavor == AppConstants.ENV_DEV) ? true : false,
-          locale: TranslationService.locale,
+          locale: TranslationService.fallbackLocale,
           fallbackLocale: TranslationService.fallbackLocale,
           translations: TranslationService(),
           translationsKeys: TranslationService().keys,

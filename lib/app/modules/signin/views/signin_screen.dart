@@ -68,29 +68,20 @@ class SigninScreen extends StatelessWidget {
                                             height: 80,
                                             width: 80,
                                             margin: const EdgeInsets.only(bottom: 20),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              shape: BoxShape.circle,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: colorGreen.withValues(alpha:0.3),
-                                                  blurRadius: 20,
-                                                  spreadRadius: 5,
-                                                ),
-                                              ],
+                                            decoration: const BoxDecoration(
+                                              color: Colors.transparent,
                                             ),
                                             child: Center(
                                               child: SvgPicture.asset(
                                                 'assets/images/logo.svg',
-                                                height: 40,
-                                                width: 40,
+                                                height: 50,
+                                                width: 50,
                                                 fit: BoxFit.contain,
                                               ),
                                             ),
                                           ),
                                         ),
 
-                                        // Sign-in Title with elegant styling
                                         Center(
                                           child: Container(
                                             padding: const EdgeInsets.symmetric(
@@ -118,7 +109,6 @@ class SigninScreen extends StatelessWidget {
 
                                         const SizedBox(height: 30),
 
-                                        // Form Container with elegant styling and subtle animation
                                         SlideInUp(
                                           preferences: const AnimationPreferences(
                                             duration: Duration(milliseconds: 800),
@@ -417,22 +407,15 @@ class SigninScreen extends StatelessWidget {
                                 child: Container(
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha:0.95),
+                                    color: Colors.transparent,
                                     borderRadius: BorderRadius.circular(16),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withValues(alpha:0.15),
-                                        blurRadius: 12,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
                                   ),
                                   child: Icon(
                                     _.tempLogin.value
                                         ? Icons.arrow_back_rounded
                                         : Icons.home_rounded,
                                     color: colorGreen,
-                                    size: 24,
+                                    size: 40,
                                   ),
                                 ),
                               ),

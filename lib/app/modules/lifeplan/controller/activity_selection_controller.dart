@@ -143,30 +143,33 @@ class ActivitySelectionController extends GetxController {
                 lifePlanController.goToCreateOrEditPlan(userPlan: existingPlan);
               }
             },
-            child: Text(
+            child: const Text(
               'Modifier existante',
-              style: TextStyle(color: Colors.blue[700]),
+              style: TextStyle(color: colorGreenSemiLight),
             ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Get.back();
-              // Ajouter quand même (permettre les doublons)
-              selectedActivities.add(activity);
-              Get.snackbar(
-                'Activité ajoutée',
-                'Vous pouvez créer plusieurs configurations pour la même activité',
+          Visibility(
+            visible: false,
+            child: ElevatedButton(
+              onPressed: () {
+                Get.back();
+                // Ajouter quand même (permettre les doublons)
+                selectedActivities.add(activity);
+                Get.snackbar(
+                  'Activité ajoutée',
+                  'Vous pouvez créer plusieurs configurations pour la même activité',
+                  backgroundColor: colorGreenSemiLight,
+                  colorText: Colors.white,
+                  duration: const Duration(seconds: 2),
+                );
+              },
+              style: ElevatedButton.styleFrom(
                 backgroundColor: colorGreenSemiLight,
-                colorText: Colors.white,
-                duration: const Duration(seconds: 2),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: colorGreenSemiLight,
-            ),
-            child: const Text(
-              'Ajouter quand même',
-              style: TextStyle(color: Colors.white),
+              ),
+              child: const Text(
+                'Ajouter quand même',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ),
         ],

@@ -79,25 +79,9 @@ class _RosaryScreenState extends State<RosaryScreen> {
 
                     const SizedBox(height: 20),
 
-                    // WAVE
-                    _buildWaveform(controller),
-
-                    //const SizedBox(height: 20),
-
-                    // Audio progress avec boutons avance/recul rapide
-                    _buildAudioProgressBar(controller),
-
-                    // Contrôle de vitesse
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        //_buildSimpleSpeedButton(),
-                        SpeedControlWidget(),
-                      ],
-                    ),
-
                     // Espace supplémentaire en bas pour éviter que le bouton flottant ne cache du contenu
                     const SizedBox(height: 0),
+                    //SizedBox(height: MediaQuery.of(context).size.height < 600 ? 100 : 80),
                   ],
                 ),
               ),
@@ -106,9 +90,28 @@ class _RosaryScreenState extends State<RosaryScreen> {
             // Bouton de lecture/pause flottant
             Positioned(
               bottom: 25,
-              right: 0,
-              left: 0,
-              child: _buildFloatingPlayButton(),
+              right: 20,
+              left: 20,
+              child: Column(
+                children: [
+                  // WAVE
+                  _buildWaveform(controller),
+
+                  // Audio progress avec boutons avance/recul rapide
+                  _buildAudioProgressBar(controller),
+
+                  // Contrôle de vitesse
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      //_buildSimpleSpeedButton(),
+                      SpeedControlWidget(),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  _buildFloatingPlayButton(),
+                ],
+              ),
             ),
           ],
         );
