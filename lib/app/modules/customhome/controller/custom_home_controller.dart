@@ -18,6 +18,7 @@ import 'package:oremusapp/app/modules/favorite/controller/favorite_controller.da
 import 'package:oremusapp/app/modules/lifeplan/binding/life_plan_binding.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
+import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
 import 'package:oremusapp/app/remote/api_client.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
@@ -59,6 +60,27 @@ class CustomHomeController extends GetxController {
   initNotification() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await notificationService.initializeWithConsent(oneSignalAppID, Get.context!);
+      if (!isUserConnected.value) {
+        var deviceId = await notificationService.getDeviceId();
+        if (deviceId?.isNotEmpty == true) {
+          log('deviceId is NOT NULL');
+          _sendDeviceId(deviceId);
+        } else {
+          log('deviceId is NULL');
+        }
+      }
+    });
+  }
+  ///Function to send one signal device id
+  _sendDeviceId(String? deviceId) {
+    SigninRepository signinRepository = Get.put<SigninRepository>(SigninRepository(ApiClientImpl()));
+    Signin request = Signin(deviceId: deviceId);
+    log('request annonymous _sendDeviceId => ${request.toJson()}');
+
+    signinRepository.devices(request).then((value) {
+      log('_sendDeviceId annonymous successfully');
+    }, onError: (error) {
+      debugPrint("error annonymous _sendDeviceId => ${error.toString()}");
     });
   }
 

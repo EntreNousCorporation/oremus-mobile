@@ -169,12 +169,189 @@ class MultiActivityFormController extends GetxController {
     }
   }
 
+  // Vérifier si tous les créneaux suggérés ont été utilisés (pour info seulement)
+  bool areAllSuggestedSlotsUsed(ActivityConfiguration config) {
+    if (config.activity.slots == null || config.activity.slots!.isEmpty) {
+      return true; // Pas de créneaux suggérés, donc tous sont "utilisés"
+    }
+
+    for (final suggestedSlot in config.activity.slots!) {
+      bool isUsed = config.timeSlots.any((slot) =>
+      slot.hour == suggestedSlot.hour && slot.minute == suggestedSlot.minute);
+      if (!isUsed) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // Obtenir les créneaux suggérés non utilisés
+  List<TimeSlot> getUnusedSuggestedSlots(ActivityConfiguration config) {
+    if (config.activity.slots == null || config.activity.slots!.isEmpty) {
+      return [];
+    }
+
+    return config.activity.slots!.where((suggestedSlot) {
+      return !config.timeSlots.any((slot) =>
+      slot.hour == suggestedSlot.hour && slot.minute == suggestedSlot.minute);
+    }).toList();
+  }
+
   // Gestion des créneaux pour une activité spécifique
   void addTimeSlot(ActivityConfiguration config) async {
+    final hasSuggestedSlots = config.activity.slots?.isNotEmpty == true;
+
+    if (hasSuggestedSlots) {
+      // Si l'activité a des créneaux suggérés, on ne peut QUE choisir parmi eux
+      final unusedSuggestedSlots = getUnusedSuggestedSlots(config);
+
+      if (unusedSuggestedSlots.isNotEmpty) {
+        // Afficher un dialogue pour choisir parmi les créneaux suggérés
+        _showSuggestedSlotsDialog(config, unusedSuggestedSlots);
+      } else {
+        // Tous les créneaux suggérés sont déjà utilisés
+        Get.snackbar(
+          'Tous les créneaux utilisés',
+          'Tous les créneaux suggérés pour ${config.activity.name?.fr} sont déjà sélectionnés',
+          backgroundColor: Colors.blue[600],
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2),
+          icon: const Icon(Icons.info, color: Colors.white),
+        );
+      }
+    } else {
+      // Si l'activité n'a pas de créneaux suggérés, permettre l'ajout de créneaux personnalisés
+      await _showTimePickerForCustomSlot(config);
+    }
+  }
+
+  void _showSuggestedSlotsDialog(ActivityConfiguration config, List<TimeSlot> unusedSlots) {
+    showDialog(
+      context: Get.context!,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.schedule, color: colorGreenSemiLight, size: 24),
+            SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Créneaux disponibles',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: colorGreenSemiLight,
+                ),
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Sélectionnez parmi les créneaux disponibles pour "${config.activity.name?.fr}" :',
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              constraints: const BoxConstraints(maxHeight: 200),
+              child: SingleChildScrollView(
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: unusedSlots.map((slot) => GestureDetector(
+                    onTap: () {
+                      config.timeSlots.add(slot);
+                      _sortTimeSlots(config);
+                      Get.back();
+
+                      // Message de confirmation avec animation
+                      Get.snackbar(
+                        'Créneau ajouté ✅',
+                        '${slot.getFormattedTime()} ajouté à ${config.activity.name?.fr}',
+                        backgroundColor: colorGreenSemiLight,
+                        colorText: Colors.white,
+                        duration: const Duration(seconds: 2),
+                        icon: const Icon(Icons.access_time, color: Colors.white),
+                        animationDuration: const Duration(milliseconds: 300),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: colorGreenSemiLight.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: colorGreenSemiLight),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            slot.getFormattedTime(),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: colorGreenSemiLight,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          const Icon(
+                            Icons.add_circle,
+                            size: 18,
+                            color: colorGreenSemiLight,
+                          ),
+                        ],
+                      ),
+                    ),
+                  )).toList(),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.blue[50],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline, size: 16, color: Colors.blue[700]),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Cette activité utilise uniquement les créneaux prédéfinis. Vous ne pouvez pas ajouter de créneaux personnalisés.',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.blue[700],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text(
+              'Fermer',
+              style: TextStyle(color: Colors.grey[600]),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showTimePickerForCustomSlot(ActivityConfiguration config) async {
     final TimeOfDay? picked = await showTimePicker(
       context: Get.context!,
       initialTime: TimeOfDay.now(),
-      helpText: 'Sélectionner l\'heure',
+      helpText: 'Ajouter un créneau pour ${config.activity.name?.fr}',
       cancelText: 'Annuler',
       confirmText: 'OK',
       hourLabelText: 'Heure',
@@ -221,6 +398,17 @@ class MultiActivityFormController extends GetxController {
         nano: 0,
       ));
       _sortTimeSlots(config);
+
+      // Message de confirmation amélioré
+      Get.snackbar(
+        'Créneau ajouté ✅',
+        '${picked.format(Get.context!)} ajouté à ${config.activity.name?.fr}',
+        backgroundColor: colorGreenSemiLight,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+        icon: const Icon(Icons.schedule, color: Colors.white),
+        animationDuration: const Duration(milliseconds: 300),
+      );
     }
   }
 
@@ -272,12 +460,56 @@ class MultiActivityFormController extends GetxController {
         nano: 0,
       );
       _sortTimeSlots(config);
+
+      // Message de confirmation
+      Get.snackbar(
+        'Créneau modifié ✅',
+        'Nouveau horaire : ${picked.format(Get.context!)}',
+        backgroundColor: colorGreenSemiLight,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+        icon: const Icon(Icons.edit, color: Colors.white),
+      );
     }
   }
 
   void removeTimeSlot(ActivityConfiguration config, int index) {
     if (index >= 0 && index < config.timeSlots.length) {
+      final removedSlot = config.timeSlots[index];
       config.timeSlots.removeAt(index);
+
+      // Message de confirmation
+      Get.snackbar(
+        'Créneau supprimé 🗑️',
+        '${removedSlot.getFormattedTime()} retiré de ${config.activity.name?.fr}',
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+        icon: const Icon(Icons.delete, color: Colors.white),
+      );
+    }
+  }
+
+  // Ajouter un créneau suggéré spécifique
+  void addSuggestedTimeSlot(ActivityConfiguration config, TimeSlot slot) {
+    // Vérifier si le créneau existe déjà
+    bool exists = config.timeSlots.any((existingSlot) =>
+    existingSlot.hour == slot.hour && existingSlot.minute == slot.minute);
+
+    if (!exists) {
+      config.timeSlots.add(slot);
+      _sortTimeSlots(config);
+
+      // Message de confirmation avec animation
+      Get.snackbar(
+        'Créneau ajouté ✅',
+        '${slot.getFormattedTime()} ajouté à ${config.activity.name?.fr}',
+        backgroundColor: colorGreenSemiLight,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+        icon: const Icon(Icons.schedule_outlined, color: Colors.white),
+        animationDuration: const Duration(milliseconds: 300),
+      );
     }
   }
 
@@ -299,6 +531,16 @@ class MultiActivityFormController extends GetxController {
   void removeActivity(ActivityConfiguration config) {
     if (activityConfigurations.length > 1) {
       activityConfigurations.remove(config);
+
+      // Message de confirmation
+      Get.snackbar(
+        'Activité supprimée',
+        '${config.activity.name?.fr} retirée de la configuration',
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+        icon: const Icon(Icons.remove_circle, color: Colors.white),
+      );
     } else {
       Get.snackbar(
         'Impossible de supprimer',
@@ -353,7 +595,7 @@ class MultiActivityFormController extends GetxController {
     int totalCount = activityConfigurations.length;
     List<String> errors = [];
 
-    // Afficher le loading global
+    // Afficher le loading global amélioré
     Get.dialog(
       AlertDialog(
         content: Column(
@@ -363,13 +605,27 @@ class MultiActivityFormController extends GetxController {
             const SizedBox(height: 16),
             Text(
               'Création de $totalCount activité${totalCount > 1 ? 's' : ''}...',
-              style: const TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
-              'Veuillez patienter',
+              'Configuration des créneaux et synchronisation',
               style: TextStyle(fontSize: 14, color: Colors.grey[600]),
             ),
+            if (addToCalendar.value && hasCalendarPermission.value) ...[
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.calendar_today, size: 16, color: Colors.grey[600]),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Ajout au calendrier inclus',
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
@@ -426,15 +682,74 @@ class MultiActivityFormController extends GetxController {
       lifePlanController.hasUserPlans.value = true;
     }
 
-    // Message de résultat
+    // Messages de résultat améliorés avec animations
     if (successCount == totalCount) {
-      Get.snackbar(
-        'Succès ! ✅',
-        '$successCount activité${successCount > 1 ? 's' : ''} configurée${successCount > 1 ? 's' : ''} avec succès',
-        backgroundColor: colorGreenSemiLight,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 3),
-        icon: const Icon(Icons.check_circle, color: Colors.white),
+      // Afficher un dialogue de succès complet au lieu d'un simple snackbar
+      Get.dialog(
+        AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: colorGreenSemiLight.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.check_circle,
+                  color: colorGreenSemiLight,
+                  size: 40,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Succès ! 🎉',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: colorGreenSemiLight,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '$successCount activité${successCount > 1 ? 's' : ''} configurée${successCount > 1 ? 's' : ''} avec succès',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16),
+              ),
+              if (addToCalendar.value && hasCalendarPermission.value) ...[
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.calendar_today, size: 16, color: colorGreenSemiLight),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Rappels ajoutés au calendrier',
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                    ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back(); // Fermer le dialogue
+                Get.back(); // Retourner à l'écran principal
+              },
+              child: const Text(
+                'Parfait !',
+                style: TextStyle(
+                  color: colorGreenSemiLight,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
       );
     } else if (successCount > 0) {
       Get.snackbar(
@@ -465,6 +780,11 @@ class MultiActivityFormController extends GetxController {
           );
         });
       }
+
+      // Retourner quand même car certaines activités ont été créées
+      Future.delayed(const Duration(seconds: 2), () {
+        Get.back();
+      });
     } else {
       Get.snackbar(
         'Échec ❌',
@@ -474,11 +794,6 @@ class MultiActivityFormController extends GetxController {
         duration: const Duration(seconds: 4),
         icon: const Icon(Icons.error, color: Colors.white),
       );
-    }
-
-    // Retourner à l'écran précédent seulement si au moins une activité créée
-    if (successCount > 0) {
-      Get.back(); // Retourner à l'écran principal
     }
   }
 

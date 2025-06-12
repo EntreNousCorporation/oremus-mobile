@@ -23,17 +23,20 @@ class ActivityConfigurationCard extends StatelessWidget {
     return Obx(() {
       final isExpanded = config.isExpanded.value;
       final hasSlots = config.timeSlots.isNotEmpty;
+      final hasSuggestedSlots = config.activity.slots?.isNotEmpty == true;
+      final unusedSuggestedSlots = controller.getUnusedSuggestedSlots(config);
+      final allSuggestedSlotsUsed = controller.areAllSuggestedSlotsUsed(config);
 
       return Container(
         decoration: BoxDecoration(
           color: colorWhite,
           borderRadius: BorderRadius.circular(12),
           border: hasSlots
-              ? Border.all(color: colorGreenSemiLight.withOpacity(0.3), width: 1)
+              ? Border.all(color: colorGreenSemiLight.withValues(alpha: 0.3), width: 1)
               : null,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),
@@ -58,7 +61,7 @@ class ActivityConfigurationCard extends StatelessWidget {
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: hasSlots
-                            ? colorGreenSemiLight.withOpacity(0.1)
+                            ? colorGreenSemiLight.withValues(alpha: 0.1)
                             : Colors.grey[100],
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -93,6 +96,26 @@ class ActivityConfigurationCard extends StatelessWidget {
                               textColor: hasSlots ? colorGreenSemiLight : Colors.grey[600]!,
                             ),
                           ),
+                          // Indication sur les créneaux disponibles
+                          if (hasSuggestedSlots && unusedSuggestedSlots.isNotEmpty) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              '${unusedSuggestedSlots.length} créneau${unusedSuggestedSlots.length > 1 ? 'x' : ''} disponible${unusedSuggestedSlots.length > 1 ? 's' : ''}',
+                              style: TextStyles.montserratRegular(
+                                textSize: TextSizes.eleven,
+                                textColor: Colors.blue[600]!,
+                              ),
+                            ),
+                          ] else if (hasSuggestedSlots && unusedSuggestedSlots.isEmpty && !hasSlots) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              'Aucun créneau disponible',
+                              style: TextStyles.montserratRegular(
+                                textSize: TextSizes.eleven,
+                                textColor: Colors.grey[500]!,
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ),
@@ -106,12 +129,12 @@ class ActivityConfigurationCard extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: hasSlots
-                                ? colorGreenSemiLight.withOpacity(0.1)
+                                ? colorGreenSemiLight.withValues(alpha: 0.1)
                                 : Colors.grey[200],
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: hasSlots
-                                  ? colorGreenSemiLight.withOpacity(0.3)
+                                  ? colorGreenSemiLight.withValues(alpha: 0.3)
                                   : Colors.grey[400]!,
                             ),
                           ),
@@ -168,15 +191,104 @@ class ActivityConfigurationCard extends StatelessWidget {
                         ),
                         IconButton(
                           onPressed: () => controller.addTimeSlot(config),
-                          icon: const Icon(
-                            Icons.add_circle_outline,
-                            color: colorGreenSemiLight,
+                          icon: Icon(
+                            hasSuggestedSlots
+                                ? (unusedSuggestedSlots.isNotEmpty ? Icons.schedule : Icons.check_circle)
+                                : Icons.add_circle_outline,
+                            color: hasSuggestedSlots
+                                ? (unusedSuggestedSlots.isNotEmpty ? Colors.blue[600] : Colors.grey[400])
+                                : colorGreenSemiLight,
                           ),
+                          tooltip: hasSuggestedSlots
+                              ? (unusedSuggestedSlots.isNotEmpty
+                              ? 'Choisir parmi les créneaux disponibles'
+                              : 'Tous les créneaux sont déjà sélectionnés')
+                              : 'Ajouter un créneau',
                         ),
                       ],
                     ),
 
-                    // Grille des créneaux
+                    // Créneaux suggérés disponibles (si applicable)
+                    if (hasSuggestedSlots && unusedSuggestedSlots.isNotEmpty) ...[
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.blue[50],
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.schedule_outlined,
+                                  size: 18,
+                                  color: Colors.blue[700],
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Créneaux disponibles pour cette activité',
+                                  style: TextStyles.montserratSemiBold(
+                                    textSize: TextSizes.thirteen,
+                                    textColor: Colors.blue[700]!,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Sélectionnez parmi ces créneaux prédéfinis :',
+                              style: TextStyles.montserratRegular(
+                                textSize: TextSizes.twelve,
+                                textColor: Colors.blue[600]!,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 6,
+                              children: unusedSuggestedSlots.map((slot) =>
+                                  GestureDetector(
+                                    onTap: () => controller.addSuggestedTimeSlot(config, slot),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                      decoration: BoxDecoration(
+                                        color: Colors.blue[100],
+                                        borderRadius: BorderRadius.circular(20),
+                                        border: Border.all(color: Colors.blue[400]!),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            slot.getFormattedTime(),
+                                            style: TextStyles.montserratSemiBold(
+                                              textSize: TextSizes.twelve,
+                                              textColor: Colors.blue[700]!,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Icon(
+                                            Icons.add_circle,
+                                            size: 16,
+                                            color: Colors.blue[700],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                              ).toList(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+
+                    // Grille des créneaux configurés
                     if (config.timeSlots.isEmpty) ...[
                       SizedBox(
                         height: 120,
@@ -198,7 +310,9 @@ class ActivityConfigurationCard extends StatelessWidget {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'Appuyez sur + pour ajouter',
+                                hasSuggestedSlots
+                                    ? 'Sélectionnez les créneaux ci-dessus'
+                                    : 'Appuyez sur + pour ajouter',
                                 style: TextStyles.montserratRegular(
                                   textSize: TextSizes.twelve,
                                   textColor: Colors.grey[400]!,
@@ -218,76 +332,63 @@ class ActivityConfigurationCard extends StatelessWidget {
                       ),
                     ],
 
-                    // Créneaux suggérés (si disponibles et aucun créneau configuré)
-                    if (config.timeSlots.isEmpty && config.activity.slots?.isNotEmpty == true) ...[
-                      const SizedBox(height: 16),
+                    // Information sur le type de créneaux (suggérés vs personnalisés)
+                    if (hasSlots && hasSuggestedSlots) ...[
+                      const SizedBox(height: 12),
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: Colors.blue[50],
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.blue.withOpacity(0.2)),
+                          color: colorGreenSemiLight.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: colorGreenSemiLight.withValues(alpha: 0.3)),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
                           children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.lightbulb_outline,
-                                  size: 16,
-                                  color: Colors.blue[700],
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  'Créneaux suggérés pour cette activité',
-                                  style: TextStyles.montserratMedium(
-                                    textSize: TextSizes.twelve,
-                                    textColor: Colors.blue[700]!,
-                                  ),
-                                ),
-                              ],
+                            const Icon(
+                              Icons.info_outline,
+                              size: 16,
+                              color: colorGreenSemiLight,
                             ),
-                            const SizedBox(height: 8),
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 4,
-                              children: config.activity.slots?.map((slot) =>
-                                  GestureDetector(
-                                    onTap: () {
-                                      // Ajouter le créneau suggéré
-                                      config.timeSlots.add(slot);
-                                      controller.sortTimeSlots(config);
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                      decoration: BoxDecoration(
-                                        color: Colors.blue[100],
-                                        borderRadius: BorderRadius.circular(16),
-                                        border: Border.all(color: Colors.blue[300]!),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            slot.getFormattedTime(),
-                                            style: TextStyles.montserratMedium(
-                                              textSize: TextSizes.twelve,
-                                              textColor: Colors.blue[700]!,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Icon(
-                                            Icons.add,
-                                            size: 14,
-                                            color: Colors.blue[700],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                              ).toList() ?? [],
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Cette activité utilise uniquement les créneaux prédéfinis.',
+                                style: TextStyles.montserratRegular(
+                                  textSize: TextSizes.eleven,
+                                  textColor: colorGreenSemiLight,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ] else if (hasSlots && !hasSuggestedSlots) ...[
+                      const SizedBox(height: 12),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: colorGreenSemiLight.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: colorGreenSemiLight.withValues(alpha: 0.3)),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.schedule,
+                              size: 16,
+                              color: colorGreenSemiLight,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Créneaux personnalisés configurés.',
+                                style: TextStyles.montserratRegular(
+                                  textSize: TextSizes.eleven,
+                                  textColor: colorGreenSemiLight,
+                                ),
+                              ),
                             ),
                           ],
                         ),

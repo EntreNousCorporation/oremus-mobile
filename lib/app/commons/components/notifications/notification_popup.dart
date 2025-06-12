@@ -57,7 +57,6 @@ class NotificationPopup extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: 40),
-              // Widget Html configuré pour les liens cliquables
               SizedBox(
                 width: double.infinity,
                 child: Html(

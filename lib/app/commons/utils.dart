@@ -547,31 +547,19 @@ List<PriceData?> countOccurrencesAndAssignDates(DateTime start, DateTime end, Li
   return allowedDays;
 }
 
+
 Map<String, dynamic> removeNullFields(Map<String, dynamic> json) {
   Map<String, dynamic> cleanedJson = {};
   json.forEach((key, value) {
     if (value != null) {
       if (value is Map<String, dynamic>) {
-        // Traitement récursif des objets imbriqués
-        var cleaned = removeNullFields(value);
-        if (cleaned.isNotEmpty) {
-          cleanedJson[key] = cleaned;
-        }
+        cleanedJson[key] = removeNullFields(value);
       } else if (value is List) {
-        // Traitement des listes
-        var cleanedList = value.map((item) {
-          if (item == null) return null;
-          if (item is Map<String, dynamic>) {
-            return removeNullFields(item);
-          }
-          return item;
-        }).where((item) => item != null).toList();
-
-        if (cleanedList.isNotEmpty) {
-          cleanedJson[key] = cleanedList;
-        }
+        cleanedJson[key] = value
+            .where((element) => element != null)
+            .map((e) => e is Map<String, dynamic> ? removeNullFields(e) : e)
+            .toList();
       } else {
-        // Valeurs simples non nulles
         cleanedJson[key] = value;
       }
     }

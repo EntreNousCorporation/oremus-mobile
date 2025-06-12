@@ -39,7 +39,7 @@ class SigninRepository implements ISigninRepository {
       endpoint: "/devices",
       body: request.toJson(),
       method: HttpMethod.post,
-      useBearer: true,
+      useBearer: false,
     );
     final String resp = json.encode(response.bodyString.toString());
     log('resp => ${response.statusCode}');

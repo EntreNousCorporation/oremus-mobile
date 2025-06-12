@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -38,16 +39,47 @@ class SigninScreen extends StatelessWidget {
                 child: Scaffold(
                   backgroundColor: Colors.black.withValues(alpha:0.3),
                   resizeToAvoidBottomInset: false,
-                  body: PopScope(
-                    canPop: _.unlockBackButton.value,
-                    child: AbsorbPointer(
-                      absorbing: _.lockScreen.value,
-                      child: Stack(
-                        children: [
-                          // Main Content
-                          SafeArea(
-                            bottom: false,
-                            child: Center(
+                  body: SafeArea(
+                    child: PopScope(
+                      canPop: _.unlockBackButton.value,
+                      child: AbsorbPointer(
+                        absorbing: _.lockScreen.value,
+                        child: Column(
+                          children: [
+                            // Back/Home Button
+                            Row(
+                              children: [
+                                ZoomIn(
+                                  preferences: const AnimationPreferences(
+                                    duration: Duration(milliseconds: 600),
+                                    offset: Duration(milliseconds: 200),
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _.tempLogin.value ? Get.back() : _.goToHome();
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: Colors.transparent,
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child: Icon(
+                                        _.tempLogin.value
+                                            ? Icons.arrow_back_rounded
+                                            : Icons.home_rounded,
+                                        color: colorGreen,
+                                        size: 40,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const Spacer(),
+                              ],
+                            ),
+
+                            // Main Content
+                            Expanded(
                               child: SingleChildScrollView(
                                 physics: const BouncingScrollPhysics(),
                                 child: Padding(
@@ -59,7 +91,7 @@ class SigninScreen extends StatelessWidget {
                                       offset: Duration(milliseconds: 400),
                                     ),
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         // Logo section with animation
@@ -389,39 +421,39 @@ class SigninScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                          ),
 
-                          // Back/Home Button with animation
-                          Positioned(
-                            top: Get.mediaQuery.padding.top + 20,
-                            left: 24,
-                            child: ZoomIn(
-                              preferences: const AnimationPreferences(
-                                duration: Duration(milliseconds: 600),
-                                offset: Duration(milliseconds: 200),
-                              ),
-                              child: GestureDetector(
-                                onTap: () {
-                                  _.tempLogin.value ? Get.back() : _.goToHome();
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: Colors.transparent,
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: Icon(
-                                    _.tempLogin.value
-                                        ? Icons.arrow_back_rounded
-                                        : Icons.home_rounded,
-                                    color: colorGreen,
-                                    size: 40,
+                            // Back/Home Button with animation
+                            /*Positioned(
+                              top: Get.mediaQuery.padding.top + 20,
+                              left: 24,
+                              child: ZoomIn(
+                                preferences: const AnimationPreferences(
+                                  duration: Duration(milliseconds: 600),
+                                  offset: Duration(milliseconds: 200),
+                                ),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    _.tempLogin.value ? Get.back() : _.goToHome();
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.transparent,
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Icon(
+                                      _.tempLogin.value
+                                          ? Icons.arrow_back_rounded
+                                          : Icons.home_rounded,
+                                      color: colorGreen,
+                                      size: 40,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                        ],
+                            ),*/
+                          ],
+                        ),
                       ),
                     ),
                   ),

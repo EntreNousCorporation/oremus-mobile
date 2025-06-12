@@ -336,8 +336,9 @@ class LifePlanController extends GetxController {
       hasUserPlans.value = true;
 
       // Ajouter au calendrier si demandé
+      bool calendarSuccess = false;
       if (addToCalendar) {
-        final calendarSuccess = await _calendarService.addLifePlanToCalendar(response);
+        calendarSuccess = await _calendarService.addLifePlanToCalendar(response);
         if (calendarSuccess) {
           log('Plan ajouté au calendrier avec succès');
         } else {
@@ -348,11 +349,86 @@ class LifePlanController extends GetxController {
       EasyLoading.dismiss();
       Get.back();
 
-      showNotification(
-        message: addToCalendar
-            ? 'Plan de vie créé et ajouté au calendrier'
-            : 'Plan de vie créé avec succès',
-        bgColor: colorGreenSemiLight,
+      // Afficher un dialogue de succès complet au lieu d'un simple snackbar
+      Get.dialog(
+        AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: colorGreenSemiLight.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.check_circle,
+                  color: colorGreenSemiLight,
+                  size: 40,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Plan créé avec succès ! 🎉',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: colorGreenSemiLight,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '${lifePlan.name?.fr ?? 'Votre activité'} a été ajoutée à votre plan de vie',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 14),
+              ),
+              if (customSlots.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(
+                  '${customSlots.length} créneau${customSlots.length > 1 ? 'x' : ''} configuré${customSlots.length > 1 ? 's' : ''}',
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                ),
+              ],
+              if (addToCalendar) ...[
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      calendarSuccess ? Icons.calendar_today : Icons.warning,
+                      size: 16,
+                      color: calendarSuccess ? colorGreenSemiLight : Colors.orange,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      calendarSuccess
+                          ? 'Rappels ajoutés au calendrier'
+                          : 'Erreur ajout calendrier',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: calendarSuccess ? colorGreenSemiLight : Colors.orange,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(),
+              child: const Text(
+                'Parfait !',
+                style: TextStyle(
+                  color: colorGreenSemiLight,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
       );
     } catch (error) {
       EasyLoading.dismiss();
@@ -402,8 +478,9 @@ class LifePlanController extends GetxController {
       }
 
       // Mettre à jour le calendrier si demandé
+      bool calendarSuccess = false;
       if (updateCalendar) {
-        final calendarSuccess = await _calendarService.updateLifePlanInCalendar(response);
+        calendarSuccess = await _calendarService.updateLifePlanInCalendar(response);
         if (calendarSuccess) {
           log('Plan mis à jour dans le calendrier');
         } else {
@@ -414,11 +491,86 @@ class LifePlanController extends GetxController {
       EasyLoading.dismiss();
       Get.back();
 
-      showNotification(
-        message: updateCalendar
-            ? 'Plan de vie modifié et calendrier mis à jour'
-            : 'Plan de vie modifié avec succès',
-        bgColor: colorGreenSemiLight,
+      // Afficher un dialogue de succès pour la modification
+      Get.dialog(
+        AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: colorGreenSemiLight.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.edit_calendar,
+                  color: colorGreenSemiLight,
+                  size: 40,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Modifications enregistrées ! ✏️',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: colorGreenSemiLight,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '${userLifePlan.lifePlan?.name?.fr ?? 'Votre activité'} a été mise à jour',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 14),
+              ),
+              if (newSlots.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(
+                  '${newSlots.length} créneau${newSlots.length > 1 ? 'x' : ''} configuré${newSlots.length > 1 ? 's' : ''}',
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                ),
+              ],
+              if (updateCalendar) ...[
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      calendarSuccess ? Icons.sync : Icons.warning,
+                      size: 16,
+                      color: calendarSuccess ? colorGreenSemiLight : Colors.orange,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      calendarSuccess
+                          ? 'Calendrier synchronisé'
+                          : 'Erreur synchronisation',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: calendarSuccess ? colorGreenSemiLight : Colors.orange,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(),
+              child: const Text(
+                'Parfait !',
+                style: TextStyle(
+                  color: colorGreenSemiLight,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
       );
     } catch (error) {
       EasyLoading.dismiss();
@@ -457,8 +609,9 @@ class LifePlanController extends GetxController {
       await lifePlanRepository.deleteUserLifePlan(id: userLifePlan?.identifier ?? -1);
 
       // Supprimer du calendrier
+      bool calendarSuccess = false;
       if (userLifePlan?.identifier != null) {
-        final calendarSuccess = await _calendarService.removeLifePlanFromCalendar(
+        calendarSuccess = await _calendarService.removeLifePlanFromCalendar(
             userLifePlan!.identifier!
         );
         if (calendarSuccess) {
@@ -470,9 +623,16 @@ class LifePlanController extends GetxController {
       hasUserPlans.value = userLifePlans.isNotEmpty;
 
       EasyLoading.dismiss();
-      showNotification(
-        message: 'Plan de vie et rappels supprimés avec succès',
-        bgColor: colorGreenSemiLight,
+
+      // Message de confirmation amélioré pour la suppression
+      Get.snackbar(
+        'Activité supprimée 🗑️',
+        '${userLifePlan?.lifePlan?.name?.fr ?? 'L\'activité'} et ses rappels ont été supprimés',
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+        icon: const Icon(Icons.delete_sweep, color: Colors.white),
+        animationDuration: const Duration(milliseconds: 300),
       );
     } catch (error) {
       EasyLoading.dismiss();
@@ -498,14 +658,62 @@ class LifePlanController extends GetxController {
       EasyLoading.dismiss();
 
       if (success) {
-        showNotification(
-          message: 'Plan synchronisé avec le calendrier',
-          bgColor: colorGreenSemiLight,
+        // Dialogue de succès pour la synchronisation
+        Get.dialog(
+          AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: colorGreenSemiLight.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.sync,
+                    color: colorGreenSemiLight,
+                    size: 30,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Synchronisation réussie ! 📅',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: colorGreenSemiLight,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '${userLifePlan.lifePlan?.name?.fr ?? 'L\'activité'} a été synchronisée avec votre calendrier',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 14),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Get.back(),
+                child: const Text(
+                  'OK',
+                  style: TextStyle(color: colorGreenSemiLight),
+                ),
+              ),
+            ],
+          ),
         );
       } else {
-        showNotification(
-          message: 'Échec de la synchronisation. Vérifiez les permissions.',
-          bgColor: Colors.orange,
+        Get.snackbar(
+          'Échec de synchronisation',
+          'Vérifiez les permissions calendrier dans les paramètres',
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+          icon: const Icon(Icons.warning, color: Colors.white),
         );
       }
     } catch (error) {
