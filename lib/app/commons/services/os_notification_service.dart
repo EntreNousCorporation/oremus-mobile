@@ -1,14 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:oremusapp/app/commons/components/notifications/notification_popup.dart';
 import 'package:oremusapp/app/commons/services/notification_queue_service.dart';
-import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
-import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
-import 'package:oremusapp/app/remote/api_client.dart';
-import 'package:oremusapp/main.dart';
 
 class OSNotificationService {
   // Singleton pattern

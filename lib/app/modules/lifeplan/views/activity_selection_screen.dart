@@ -93,10 +93,10 @@ class ActivitySelectionScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: colorGreenSemiLight.withOpacity(0.1),
+                          color: colorGreenSemiLight.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                            color: colorGreenSemiLight.withOpacity(0.3),
+                            color: colorGreenSemiLight.withValues(alpha: 0.3),
                           ),
                         ),
                         child: Row(
@@ -137,7 +137,7 @@ class ActivitySelectionScreen extends StatelessWidget {
                       Expanded(
                         child: OutlinedButton.icon(
                           onPressed: controller.selectAllAvailable,
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.select_all,
                             size: 18,
                             color: colorGreenSemiLight,
@@ -150,7 +150,7 @@ class ActivitySelectionScreen extends StatelessWidget {
                             ),
                           ),
                           style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: colorGreenSemiLight),
+                            side: const BorderSide(color: colorGreenSemiLight),
                             padding: const EdgeInsets.symmetric(vertical: 8),
                           ),
                         ),
@@ -227,9 +227,9 @@ class ActivitySelectionScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -279,11 +279,11 @@ class ActivitySelectionCard extends StatelessWidget {
           border: isSelected
               ? Border.all(color: colorGreenSemiLight, width: 2)
               : (isUsed
-              ? Border.all(color: Colors.blue.withOpacity(0.5), width: 1)
+              ? Border.all(color: Colors.blue.withValues(alpha: 0.5), width: 1)
               : null),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),
@@ -324,7 +324,7 @@ class ActivitySelectionCard extends StatelessWidget {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? colorGreenSemiLight.withOpacity(0.1)
+                        ? colorGreenSemiLight.withValues(alpha: 0.1)
                         : (isUsed
                         ? Colors.blue[50]
                         : Colors.grey[100]),
@@ -367,7 +367,7 @@ class ActivitySelectionCard extends StatelessWidget {
                               decoration: BoxDecoration(
                                 color: Colors.blue[50],
                                 borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                                border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
                               ),
                               child: Text(
                                 'Configurée',
@@ -381,9 +381,9 @@ class ActivitySelectionCard extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
-                                color: colorGreenSemiLight.withOpacity(0.1),
+                                color: colorGreenSemiLight.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: colorGreenSemiLight.withOpacity(0.3)),
+                                border: Border.all(color: colorGreenSemiLight.withValues(alpha: 0.3)),
                               ),
                               child: Text(
                                 'Sélectionnée',
@@ -439,7 +439,7 @@ class ActivitySelectionCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.blue[50],
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.blue.withOpacity(0.2)),
+                  border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
                 ),
                 child: Row(
                   children: [

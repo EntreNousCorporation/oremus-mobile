@@ -7,6 +7,7 @@ import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:oremusapp/app/commons/components/custom_header.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/components/not_found_page.dart';
+import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
@@ -119,8 +120,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                   borderRadius: BorderRadius.circular(10.0),
                                   elevation: 10,
                                   color: colorWhite,
-                                  shadowColor:
-                                  colorGrey2.withValues(alpha: 0.5),
+                                  shadowColor: colorGrey2.withValues(alpha: 0.5),
                                   child: SizedBox(
                                     height: (Get.width / 9),
                                     width: (Get.width / 9),
@@ -139,44 +139,117 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                 ),
                               ),
                               Separators.normalHorizontal(),
+                              // Recherche par horaire
+                              Obx(() => GestureDetector(
+                                onTap: () {
+                                  _.doSearchBySchedule();
+                                },
+                                child: Material(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  elevation: 10,
+                                  color: _.isTimeFormatSearch.value
+                                      ? colorGreen  // Vert si format d'heure détecté
+                                      : colorWhite, // Blanc sinon
+                                  shadowColor: colorGrey2.withValues(alpha: 0.5),
+                                  child: SizedBox(
+                                    height: (Get.width / 9),
+                                    width: (Get.width / 9),
+                                    child: Icon(
+                                      Icons.schedule_rounded,
+                                      color: _.isTimeFormatSearch.value
+                                          ? colorWhite      // Blanc si format d'heure
+                                          : colorPurpleLight, // Violet sinon
+                                    ),
+                                  ),
+                                ),
+                              )),
+                              Separators.normalHorizontal(),
                               GestureDetector(
                                 onTap: () {
                                   _.goToAdvancedSearch();
                                 },
                                 child: Material(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    elevation: 10,
-                                    color: colorWhite,
-                                    shadowColor:
-                                    colorGrey2.withValues(alpha: 0.5),
-                                    child: b.Badge(
-                                      showBadge: (_.searchCriteria.value
-                                          .isCriteriaEmpty ==
-                                          false)
-                                          ? true
-                                          : false,
-                                      position: b.BadgePosition.topEnd(
-                                          top: -10, end: -5),
-                                      badgeContent: Text(
-                                        '${_.searchCriteria.value.countCriteria}',
-                                        style: TextStyles.montserratRegular(
-                                            textColor: colorWhite,
-                                            textSize: TextSizes.thirteen),
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  elevation: 10,
+                                  color: colorWhite,
+                                  shadowColor: colorGrey2.withValues(alpha: 0.5),
+                                  child: b.Badge(
+                                    showBadge: (_.searchCriteria.value.isCriteriaEmpty == false)
+                                        ? true
+                                        : false,
+                                    position: b.BadgePosition.topEnd(top: -10, end: -5),
+                                    badgeContent: Text(
+                                      '${_.searchCriteria.value.countCriteria}',
+                                      style: TextStyles.montserratRegular(
+                                        textColor: colorWhite,
+                                        textSize: TextSizes.thirteen,
                                       ),
-                                      child: SizedBox(
-                                        height: (Get.width / 9),
-                                        width: (Get.width / 9),
-                                        child: const Icon(
-                                          Icons.filter_list_rounded,
-                                          color: colorPurpleLight,
-                                        ),
+                                    ),
+                                    child: SizedBox(
+                                      height: (Get.width / 9),
+                                      width: (Get.width / 9),
+                                      child: const Icon(
+                                        Icons.filter_list_rounded,
+                                        color: colorPurpleLight,
                                       ),
-                                    )),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
                         ),
                         Separators.minimunVertical(),
+                        // Indicateur de recherche par horaire actuelle
+                        Obx(() => _.isTimeFormatSearch.value &&
+                            _.searchController.text.trim().isNotEmpty
+                            ? Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: colorGreen.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: colorGreen.withValues(alpha: 0.3)),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.schedule_rounded,
+                                color: colorGreen,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Recherche par horaire : ${_.searchController.text.trim()}',
+                                  style: TextStyles.montserratMedium(
+                                    textSize: TextSizes.thirteen,
+                                    textColor: colorGreen,
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () => _.switchToNormalSearch(),
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: colorGreen.withValues(alpha: 0.2),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: const Icon(
+                                    Icons.close,
+                                    color: colorGreen,
+                                    size: 16,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                            : const SizedBox.shrink(),
+                        ),
+
+
                         _.isDataProcessing.isTrue
                             ? Expanded(
                           child: Center(

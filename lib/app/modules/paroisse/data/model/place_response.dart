@@ -55,21 +55,30 @@ class ContentPlace extends ToJsonInterface {
     isArchDiocese = json['isArchDiocese'];
     isFavorite = json['isFavorite'] ?? false;
     isUserFavorite = json['isUserFavorite'] ?? false;
-    type = json['type'] != null
-        ? TypeContent.fromJson(json['type'])
-        : null;
-    address = json['address'] != null
-        ? Address.fromJson(json['address'])
-        : null;
-    diocese = json['diocese'] != null
-        ? Diocese.fromJson(json['diocese'])
-        : null;
+    type = json['type'] != null ? TypeContent.fromJson(json['type']) : null;
+    if (json['address'] != null && json['address'] is Map) {
+      address = Address.fromJson(json['address']);
+    } else if (json['address'] != null && json['address'] is String) {
+      // Parser la string d'adresse pour extraire les informations
+      address = _parseAddressString(json['address']);
+    }
+    if (json['diocese'] != null && json['diocese'] is Map) {
+      diocese = Diocese.fromJson(json['diocese']);
+    } else if (json['dioceseName'] != null && json['dioceseName'] is String) {
+      // Créer un objet Diocese à partir du nom
+      diocese = Diocese(name: json['dioceseName']);
+    }
     localisation = json['localisation'] != null
         ? Localisation.fromJson(json['localisation'])
         : null;
-    coverImage = json['coverImage'] != null
-        ? CoverImage.fromJson(json['coverImage'])
-        : null;
+    if (json['coverImage'] != null) {
+      if (json['coverImage'] is Map) {
+        coverImage = CoverImage.fromJson(json['coverImage']);
+      } else if (json['coverImage'] is String) {
+        // Créer un objet CoverImage à partir de l'URL
+        coverImage = CoverImage(link: json['coverImage']);
+      }
+    }
   }
 
   @override
@@ -93,6 +102,26 @@ class ContentPlace extends ToJsonInterface {
     data['localisation'] = localisation?.toJson();
     data['coverImage'] = coverImage?.toJson();
     return data;
+  }
+}
+
+// Méthode helper pour parser la string d'adresse
+Address? _parseAddressString(String addressString) {
+  try {
+    // Parser "Abidjan Cocody Djibi 8e Tranche"
+    List<String> parts = addressString.split(RegExp(r'\s'));
+    if (parts.length >= 2) {
+      return Address(
+        city: parts[0], // "Abidjan"
+        municipality: parts.length > 1 ? parts[1] : null, // "Cocody"
+        neighbourhood: parts.length > 2
+            ? parts.sublist(2).join(' ')
+            : null, // "Djibi 8e Tranche"
+      );
+    }
+    return Address(city: addressString);
+  } catch (e) {
+    return Address(city: addressString);
   }
 }
 
@@ -321,5 +350,3 @@ class CoverImage {
     return data;
   }
 }
-
-

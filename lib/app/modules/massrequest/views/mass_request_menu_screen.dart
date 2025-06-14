@@ -73,7 +73,7 @@ class MassRequestMenuScreen extends StatelessWidget {
                   child: GridView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: 4/3.5,
+                      childAspectRatio: 4/3.2,
                       crossAxisCount: 2,
                       crossAxisSpacing: 16.0,
                       mainAxisSpacing: 16.0,

@@ -41,3 +41,8 @@ enum PaymentType {
   donation,
   none,
 }
+
+enum SearchType {
+  advanced,  // Recherche avancée avec filtres (utilise /places-of-worship)
+  simple     // Recherche simple par texte/horaire (utilise /worship-places)
+}

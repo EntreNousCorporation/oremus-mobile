@@ -7,6 +7,7 @@ import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/activity_response.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/favorite_check_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/favorite_data.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/movement_response.dart';
@@ -19,6 +20,7 @@ import 'package:oremusapp/app/remote/api_client.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/remote/data_response.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
+import 'package:oremusapp/app/remote/schedule_response.dart';
 
 class ParoisseRepository implements IParoisseRepository {
   final ApiClient _apiClient;
@@ -64,6 +66,125 @@ class ParoisseRepository implements IParoisseRepository {
       }
 
       return result;
+    }
+  }
+
+  @override
+  Future<DataResponse<ContentPlace>> getParoissesBySchedule({
+    int? page = 0,
+    required String query,
+  }) async {
+    bool isUserLoggedIn = DB.getUserSigninInfo()?.id != null && DB.getUserSigninInfo()?.id?.isNotEmpty == true;
+    String? currentUserId = DB.getUserSigninInfo()?.id;
+
+    Response response = await _apiClient.doRequest(
+      customBaseUrl: 'https://report-dev.oremus.ci',
+      endpoint: '/worship-places?query=$query&page=$page&size=${AppConstants.PAGING_SIZE_1000}',
+      method: HttpMethod.get,
+      useBearer: false,
+    );
+
+    log('resp getParoissesBySchedule => ${response.statusCode}');
+
+    if (response.statusCode != 200) {
+      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      throw CustomException(e.debugMessage, e.status);
+    } else {
+      // Parser d'abord avec ScheduleApiResponse
+      var scheduleResponse = ScheduleApiResponse.fromJson(json.decode(response.bodyString.toString()));
+
+      // Convertir vers DataResponse
+      var result = DataResponse<ContentPlace>();
+      result.contents = scheduleResponse.content;
+      result.last = scheduleResponse.page?.isLast ?? true;
+
+      log('isUserLoggedIn ::: $isUserLoggedIn');
+
+      // Traiter les favoris en fonction de l'état de connexion
+      if (isUserLoggedIn && result.contents != null && result.contents!.isNotEmpty) {
+        try {
+          // Extraire les IDs des paroisses
+          List<dynamic> worshipPlaceIds = result.contents!
+              .where((place) => place?.identifier != null)
+              .map((place) => place!.identifier!)
+              .toList();
+
+          log('Checking favorites for ${worshipPlaceIds.length} places: $worshipPlaceIds');
+
+          // Récupérer l'état des favoris pour ces paroisses
+          List<FavoriteCheckResponse> favoritesStatus = await getUserFavoritesForPlaces(worshipPlaceIds);
+
+          log('Received favorites status for ${favoritesStatus.length} places');
+
+          // Merger les informations de favoris avec les paroisses
+          for (var paroisse in result.contents ?? []) {
+            if (paroisse?.identifier != null) {
+              // Chercher l'état du favori pour cette paroisse
+              var favoriteInfo = favoritesStatus.firstWhere(
+                    (fav) => fav.identifier == paroisse!.identifier,
+                orElse: () => FavoriteCheckResponse(identifier: paroisse!.identifier, isUserFavorite: false),
+              );
+
+              // Mettre à jour les propriétés de favori
+              paroisse?.isUserFavorite = favoriteInfo.isUserFavorite ?? false;
+              paroisse?.isFavorite = favoriteInfo.isUserFavorite ?? false;
+
+              log('Parish ${paroisse?.identifier} (${paroisse?.name}) - isUserFavorite: ${paroisse?.isUserFavorite}');
+            }
+          }
+        } catch (e) {
+          log('Error fetching favorites status: $e');
+          // En cas d'erreur, utiliser les favoris locaux comme fallback
+          var localFavorites = DB.getUnsynchronizedFavorites();
+          for (var paroisse in result.contents ?? []) {
+            paroisse?.isFavorite = localFavorites.any((element) => element.identifier == paroisse?.identifier);
+          }
+        }
+      } else if (!isUserLoggedIn) {
+        // Pour utilisateur non connecté, vérifier dans les favoris locaux non synchronisés
+        var localFavorites = DB.getUnsynchronizedFavorites();
+        for (var paroisse in result.contents ?? []) {
+          paroisse?.isFavorite = localFavorites.any((element) => element.identifier == paroisse?.identifier);
+        }
+      }
+
+      return result;
+    }
+  }
+
+  @override
+  Future<List<FavoriteCheckResponse>> getUserFavoritesForPlaces(List<dynamic> worshipPlaceIds) async {
+    bool isUserLoggedIn = DB.getUserSigninInfo()?.id != null && DB.getUserSigninInfo()?.id?.isNotEmpty == true;
+
+    if (!isUserLoggedIn || worshipPlaceIds.isEmpty) {
+      return [];
+    }
+
+    try {
+      // Construire les paramètres de query
+      String queryParams = worshipPlaceIds
+          .map((id) => 'worshipPlaceIds=$id')
+          .join('&');
+
+      Response response = await _apiClient.doRequest(
+        endpoint: "/users/full-text-search-likes?$queryParams",
+        method: HttpMethod.get,
+        useBearer: true,
+      );
+
+      log('resp getUserFavoritesForPlaces => ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        return (jsonDecode(response.bodyString.toString()) as List)
+            .map((i) => FavoriteCheckResponse.fromJson(i))
+            .toList();
+      } else {
+        log('Error getting user favorites: ${response.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      log('Exception getting user favorites: $e');
+      return [];
     }
   }
 

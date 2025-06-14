@@ -90,7 +90,7 @@ class _MenuGridItemState extends State<MenuGridItem> with SingleTickerProviderSt
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Icône avec fond coloré
+                      const Spacer(),
                       Container(
                         width: 60,
                         height: 60,
@@ -128,6 +128,7 @@ class _MenuGridItemState extends State<MenuGridItem> with SingleTickerProviderSt
                           ),
                         ),
                       ),
+                      const Spacer(),
                     ],
                   ),
                 ),

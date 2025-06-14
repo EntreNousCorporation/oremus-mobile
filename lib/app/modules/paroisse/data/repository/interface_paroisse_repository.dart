@@ -1,4 +1,5 @@
 import 'package:oremusapp/app/modules/paroisse/data/model/activity_response.dart';
+import 'package:oremusapp/app/modules/paroisse/data/model/favorite_check_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/movement_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
@@ -17,6 +18,8 @@ abstract class IParoisseRepository {
   Future<List<PlaceType>> getPlaceOfWorshipTypes({int? page = 0});
   Future<List<LiturgicalCelebrationResponse>> getOfficeTimes(int idParoisse);
   Future<List<Contact>> getPlaceOfWorshipContacts(int idParoisse);
+  Future<DataResponse<ContentPlace>> getParoissesBySchedule({int? page = 0, required String query});
+  Future<List<FavoriteCheckResponse>> getUserFavoritesForPlaces(List<int> worshipPlaceIds);
 
   //For DB
   List<ContentPlace> getAllFavorites();
