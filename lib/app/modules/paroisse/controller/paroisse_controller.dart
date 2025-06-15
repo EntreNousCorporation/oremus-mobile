@@ -341,7 +341,28 @@ class ParoisseController extends GetxController {
               onTap: () async {
                 TimeOfDay? time = await showTimePicker(
                   context: Get.context!,
+                  helpText: 'Sélectionner l\'heure',
                   initialTime: TimeOfDay.now(),
+                  cancelText: 'Annuler',
+                  confirmText: 'OK',
+                  hourLabelText: 'Heure',
+                  minuteLabelText: 'Minute',
+                  builder: (context, child) {
+                    return MediaQuery(
+                      data: MediaQuery.of(context).copyWith(
+                        alwaysUse24HourFormat: true,
+                      ),
+                      child: Theme(
+                        data: ThemeData.light().copyWith(
+                          colorScheme: const ColorScheme.light(
+                            primary: colorGreenSemiLight,
+                            onPrimary: Colors.white,
+                          ),
+                        ),
+                        child: child!,
+                      ),
+                    );
+                  },
                 );
                 if (time != null) {
                   String displayTime = "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
