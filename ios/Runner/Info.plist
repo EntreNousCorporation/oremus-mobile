@@ -29,6 +29,39 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Oremus souhaite accéder à votre calendrier pour créer des rappels pour vos plans de vie spirituels.</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>L'application a besoin d'accéder à vos documents pour stocker les fichiers audio du rosaire.</string>
+	<key>NSExceptionDomains</key>
+	<dict>
+		<key>api.oremus.ci</key>
+		<dict>
+			<key>NSExceptionAllowsInsecureHTTPLoads</key>
+			<true/>
+			<key>NSIncludesSubdomains</key>
+			<true/>
+		</dict>
+		<key>api.storage-dev.oremus.ci</key>
+		<dict>
+			<key>NSExceptionAllowsInsecureHTTPLoads</key>
+			<true/>
+			<key>NSIncludesSubdomains</key>
+			<true/>
+		</dict>
+		<key>api.storage.oremus.ci</key>
+		<dict>
+			<key>NSExceptionAllowsInsecureHTTPLoads</key>
+			<true/>
+			<key>NSIncludesSubdomains</key>
+			<true/>
+		</dict>
+	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Afin de trouver l'itinéraire des paroisses proche de vous</string>
 	<key>Oremus - Flavor</key>
@@ -37,6 +70,8 @@
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>audio</string>
+		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
@@ -62,50 +97,5 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
-	<key>UIBackgroundModes</key>
-    <array>
-        <string>audio</string>
-        <string>processing</string>
-    </array>
-    <key>NSDocumentsFolderUsageDescription</key>
-    <string>L'application a besoin d'accéder à vos documents pour stocker les fichiers audio du rosaire.</string>
-    <key>NSCalendarsUsageDescription</key>
-    <string>Oremus souhaite accéder à votre calendrier pour créer des rappels pour vos plans de vie spirituels.</string>
-    <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsArbitraryLoads</key>
-        <true/>
-    </dict>
-    <key>NSExceptionDomains</key>
-    <dict>
-        <key>api.oremus.ci</key>
-        <dict>
-            <key>NSExceptionAllowsInsecureHTTPLoads</key>
-            <true/>
-            <key>NSIncludesSubdomains</key>
-            <true/>
-        </dict>
-        <key>api.storage.oremus.ci</key>
-        <dict>
-            <key>NSExceptionAllowsInsecureHTTPLoads</key>
-            <true/>
-            <key>NSIncludesSubdomains</key>
-            <true/>
-        </dict>
-        <key>api.storage-dev.oremus.ci</key>
-        <dict>
-            <key>NSExceptionAllowsInsecureHTTPLoads</key>
-            <true/>
-            <key>NSIncludesSubdomains</key>
-            <true/>
-        </dict>
-        <key>api.storage-dev.oremus.ci</key>
-        <dict>
-            <key>NSExceptionAllowsInsecureHTTPLoads</key>
-            <true/>
-            <key>NSIncludesSubdomains</key>
-            <true/>
-        </dict>
-    </dict>
 </dict>
 </plist>

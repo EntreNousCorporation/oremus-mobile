@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
@@ -348,7 +349,7 @@ class MultiActivityFormController extends GetxController {
   }
 
   Future<void> _showTimePickerForCustomSlot(ActivityConfiguration config) async {
-    final TimeOfDay? picked = await showTimePicker(
+    /*final TimeOfDay? picked = await showTimePicker(
       context: Get.context!,
       initialTime: TimeOfDay.now(),
       helpText: 'Ajouter un créneau pour ${config.activity.name?.fr}',
@@ -370,6 +371,43 @@ class MultiActivityFormController extends GetxController {
             ),
             child: child!,
           ),
+        );
+      },
+    );*/
+
+    TimeOfDay? picked = await showCupertinoDialog<TimeOfDay>(
+      context: Get.context!,
+      builder: (BuildContext context) {
+        DateTime selectedTime = DateTime.now();
+        return CupertinoAlertDialog(
+          title: Text('Ajouter un créneau pour ${config.activity.name?.fr}'),
+          content: SizedBox(
+            height: 200,
+            child: CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.time,
+              use24hFormat: true,
+              initialDateTime: selectedTime,
+              onDateTimeChanged: (DateTime dateTime) {
+                selectedTime = dateTime;
+              },
+            ),
+          ),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Returns null
+              },
+            ),
+            CupertinoDialogAction(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(
+                  TimeOfDay.fromDateTime(selectedTime),
+                );
+              },
+            ),
+          ],
         );
       },
     );

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'package:device_calendar/device_calendar.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -329,7 +330,7 @@ class CalendarService {
         log('🗑️ Suppression: ${event.eventId}');
         final result = await _calendar.deleteEvent(calendar.id!, event.eventId!);
 
-        if (result.isSuccess) {
+        if (result.isSuccess ?? false) {
           deletedCount++;
           log('✅ Événement supprimé: ${event.eventId}');
         } else {
@@ -448,7 +449,56 @@ class CalendarService {
     }
   }
 
-  /// Debug: liste tous les calendriers disponibles
+  /// Nettoyage rapide des événements Oremus (pour déblocage d'urgence)
+  Future<bool> quickCleanupOremusEvents() async {
+    try {
+      log('🧹 Nettoyage rapide des événements Oremus...');
+
+      if (!await requestCalendarPermission()) {
+        return false;
+      }
+
+      final calendar = await _getDefaultCalendar();
+      if (calendar == null) {
+        return false;
+      }
+
+      // Recherche sur une période très courte
+      final eventsResult = await _calendar.retrieveEvents(
+        calendar.id!,
+        RetrieveEventsParams(
+          startDate: DateTime.now().subtract(const Duration(days: 1)),
+          endDate: DateTime.now().add(const Duration(days: 7)),
+        ),
+      ).timeout(const Duration(seconds: 5));
+
+      if (!eventsResult.isSuccess) {
+        return false;
+      }
+
+      final events = eventsResult.data ?? [];
+      final oremusEvents = events.where(
+              (event) => event.eventId?.startsWith(EVENT_PREFIX) == true
+      ).take(10).toList(); // Limiter à 10 événements max
+
+      log('🧹 Suppression rapide de ${oremusEvents.length} événements Oremus');
+
+      for (final event in oremusEvents) {
+        try {
+          await _calendar.deleteEvent(calendar.id!, event.eventId!).timeout(
+            const Duration(seconds: 2),
+          );
+        } catch (e) {
+          // Ignorer les erreurs individuelles
+        }
+      }
+
+      return true;
+    } catch (e) {
+      log('❌ Erreur nettoyage rapide: $e');
+      return false;
+    }
+  }
   Future<void> debugListCalendars() async {
     try {
       log('🔍 === DEBUG: Liste des calendriers ===');

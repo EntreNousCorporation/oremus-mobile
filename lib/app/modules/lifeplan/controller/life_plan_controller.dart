@@ -5,6 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
+import 'package:oremusapp/app/commons/components/notifications/notification_popup.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
@@ -29,6 +30,9 @@ class LifePlanController extends GetxController {
   // Listes observables
   RxList<LifePlan?> availableLifePlans = RxList<LifePlan?>([]);
   RxList<UserLifePlan?> userLifePlans = RxList<UserLifePlan?>([]);
+
+  // Gestion des opérations en arrière-plan
+  final RxMap<int, String> backgroundOperations = <int, String>{}.obs;
 
   // Controllers
   var refreshController = RefreshController();
@@ -100,6 +104,38 @@ class LifePlanController extends GetxController {
       return;
     }
     goToCreateOrEditPlan(userPlan: userPlan, lifePlan: lifePlan);
+  }
+
+  void testLongNotification(BuildContext context) {
+    const longContent = '''
+    <h3>Titre de notification très importante</h3>
+    <p>Ceci est un exemple de notification avec beaucoup de contenu pour tester le comportement du scroll.</p>
+    
+    <p><strong>Section 1 :</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+    
+    <p><strong>Section 2 :</strong> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    
+    <p><strong>Section 3 :</strong> Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+    
+    <p><strong>Section 4 :</strong> Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+    
+    <p><strong>Lien de test :</strong> <a href="https://www.example.com">Cliquez ici pour tester les liens</a></p>
+    
+    <p><strong>Section finale :</strong> Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
+    
+    <br><br>
+    <p><em>Cette notification devrait être scrollable et les boutons toujours accessibles en bas.</em></p>
+  ''';
+
+    NotificationPopup.show(
+      context: context,
+      title: "Test Notification Longue",
+      contents: longContent,
+      notificationType: "BROADCAST_MESSAGE",
+      onDismiss: () {
+        print("✅ Notification fermée");
+      },
+    );
   }
 
   checkIfUserIsConnected(String code) {
@@ -359,7 +395,7 @@ class LifePlanController extends GetxController {
                 width: 60,
                 height: 60,
                 decoration: BoxDecoration(
-                  color: colorGreenSemiLight.withOpacity(0.1),
+                  color: colorGreenSemiLight.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -369,9 +405,9 @@ class LifePlanController extends GetxController {
                 ),
               ),
               const SizedBox(height: 16),
-              Text(
+              const Text(
                 'Plan créé avec succès ! 🎉',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: colorGreenSemiLight,
@@ -501,7 +537,7 @@ class LifePlanController extends GetxController {
                 width: 60,
                 height: 60,
                 decoration: BoxDecoration(
-                  color: colorGreenSemiLight.withOpacity(0.1),
+                  color: colorGreenSemiLight.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -511,9 +547,9 @@ class LifePlanController extends GetxController {
                 ),
               ),
               const SizedBox(height: 16),
-              Text(
+              const Text(
                 'Modifications enregistrées ! ✏️',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: colorGreenSemiLight,
@@ -598,6 +634,16 @@ class LifePlanController extends GetxController {
     );
   }
 
+  /// Vérifie si une opération est en cours pour un plan
+  bool isBackgroundOperationRunning(int planId) {
+    return backgroundOperations.containsKey(planId);
+  }
+
+  /// Obtient le statut de l'opération en arrière-plan
+  String? getBackgroundOperationStatus(int planId) {
+    return backgroundOperations[planId];
+  }
+
   void _performDelete(UserLifePlan? userLifePlan) async {
     EasyLoading.show(
       status: 'Suppression en cours...',
@@ -605,38 +651,108 @@ class LifePlanController extends GetxController {
       indicator: LottieLoadingView(),
     );
 
+    final planId = userLifePlan?.identifier;
+
     try {
-      await lifePlanRepository.deleteUserLifePlan(id: userLifePlan?.identifier ?? -1);
+      // 1. Suppression API en priorité
+      await lifePlanRepository.deleteUserLifePlan(id: planId ?? -1);
 
-      // Supprimer du calendrier
-      bool calendarSuccess = false;
-      if (userLifePlan?.identifier != null) {
-        calendarSuccess = await _calendarService.removeLifePlanFromCalendar(
-            userLifePlan!.identifier!
-        );
-        if (calendarSuccess) {
-          log('Événements supprimés du calendrier');
-        }
-      }
-
-      userLifePlans.removeWhere((p) => p?.identifier == userLifePlan?.identifier);
+      // 2. Mise à jour immédiate de l'UI
+      userLifePlans.removeWhere((p) => p?.identifier == planId);
       hasUserPlans.value = userLifePlans.isNotEmpty;
 
+      // 3. Fermer le loading immédiatement
       EasyLoading.dismiss();
 
-      // Message de confirmation amélioré pour la suppression
+      // 4. Message de succès immédiat avec indication des prochaines étapes
       Get.snackbar(
-        'Activité supprimée 🗑️',
-        '${userLifePlan?.lifePlan?.name?.fr ?? 'L\'activité'} et ses rappels ont été supprimés',
-        backgroundColor: Colors.orange,
+        'Activité supprimée ✅',
+        '${userLifePlan?.lifePlan?.name?.fr ?? 'L\'activité'} supprimée\n📅 Suppression des rappels en cours...',
+        backgroundColor: colorGreenSemiLight,
         colorText: Colors.white,
         duration: const Duration(seconds: 3),
-        icon: const Icon(Icons.delete_sweep, color: Colors.white),
+        icon: const Icon(Icons.check_circle, color: Colors.white),
         animationDuration: const Duration(milliseconds: 300),
       );
+
+      // 5. Suppression calendrier en arrière-plan
+      if (planId != null) {
+        _deleteCalendarEventsInBackground(planId, userLifePlan?.lifePlan?.name?.fr);
+      }
+
     } catch (error) {
       EasyLoading.dismiss();
       _handleError(error);
+    }
+  }
+
+  /// Supprime les événements du calendrier en arrière-plan avec gestion d'état
+  void _deleteCalendarEventsInBackground(int planId, String? planName) async {
+    // Marquer l'opération comme en cours
+    backgroundOperations[planId] = 'Suppression calendrier...';
+
+    try {
+      log('🔄 Suppression calendrier en arrière-plan pour le plan $planId');
+
+      final calendarSuccess = await _calendarService.removeLifePlanFromCalendar(planId)
+          .timeout(const Duration(seconds: 30)); // Timeout pour éviter les blocages
+
+      // Retirer de la liste des opérations en cours
+      backgroundOperations.remove(planId);
+
+      if (calendarSuccess) {
+        log('✅ Événements calendrier supprimés en arrière-plan');
+        _showBackgroundCalendarSuccess(planName);
+      } else {
+        log('⚠️ Échec suppression calendrier en arrière-plan');
+        _showBackgroundCalendarError(planName, retry: () =>
+            _deleteCalendarEventsInBackground(planId, planName));
+      }
+    } catch (error) {
+      // Retirer de la liste des opérations en cours
+      backgroundOperations.remove(planId);
+
+      log('❌ Erreur suppression calendrier en arrière-plan: $error');
+      _showBackgroundCalendarError(planName, retry: () =>
+          _deleteCalendarEventsInBackground(planId, planName));
+    }
+  }
+
+  /// Affiche une notification discrète de succès calendrier
+  void _showBackgroundCalendarSuccess(String? planName) {
+    if (Get.currentRoute.contains('life_plan')) {
+      Get.rawSnackbar(
+        message: '✅ Rappels calendrier supprimés',
+        backgroundColor: Colors.green.withValues(alpha: 0.9),
+        duration: const Duration(seconds: 2),
+        margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
+        borderRadius: 8,
+        animationDuration: const Duration(milliseconds: 200),
+      );
+    }
+  }
+
+  /// Affiche une notification discrète d'erreur calendrier avec option retry
+  void _showBackgroundCalendarError(String? planName, {VoidCallback? retry}) {
+    if (Get.currentRoute.contains('life_plan')) {
+      Get.rawSnackbar(
+        message: '⚠️ Erreur suppression rappels calendrier',
+        backgroundColor: Colors.orange.withValues(alpha: 0.9),
+        duration: const Duration(seconds: 4),
+        margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
+        borderRadius: 8,
+        animationDuration: const Duration(milliseconds: 200),
+        mainButton: retry != null ? TextButton(
+          onPressed: () {
+            Get.closeCurrentSnackbar();
+            retry();
+          },
+          child: const Text(
+            'Réessayer',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        ) : null,
+      );
     }
   }
 
@@ -668,7 +784,7 @@ class LifePlanController extends GetxController {
                   width: 50,
                   height: 50,
                   decoration: BoxDecoration(
-                    color: colorGreenSemiLight.withOpacity(0.1),
+                    color: colorGreenSemiLight.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -678,9 +794,9 @@ class LifePlanController extends GetxController {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Text(
+                const Text(
                   'Synchronisation réussie ! 📅',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: colorGreenSemiLight,
@@ -810,5 +926,21 @@ class LifePlanController extends GetxController {
     DB.saveData(AppConstants.KEY_USER_LOG_INFOS, null);
     Get.deleteAll(force: true);
     Get.offAllNamed(Routes.SIGNIN);
+  }
+
+  @override
+  void onClose() {
+    backgroundOperations.clear();
+    super.onClose();
+  }
+
+  /// Méthode pour réessayer une suppression calendrier manuellement
+  void retryCalendarDeletion(UserLifePlan userLifePlan) {
+    if (userLifePlan.identifier != null) {
+      _deleteCalendarEventsInBackground(
+          userLifePlan.identifier!,
+          userLifePlan.lifePlan?.name?.fr
+      );
+    }
   }
 }

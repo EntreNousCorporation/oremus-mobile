@@ -36,9 +36,18 @@ class NotificationPopup extends StatelessWidget {
   }
 
   Widget _buildDialogContent(BuildContext context) {
+    // Calculer la hauteur maximale disponible
+    final screenHeight = MediaQuery.of(context).size.height;
+    final maxHeight = screenHeight * 0.8; // 80% de la hauteur d'écran
+    final contentMaxHeight = maxHeight - 160; // Soustraire l'espace pour l'icône et les boutons
+
     return Stack(
       children: [
         Container(
+          constraints: BoxConstraints(
+            maxHeight: maxHeight,
+            maxWidth: MediaQuery.of(context).size.width * 0.9,
+          ),
           padding: const EdgeInsets.all(20),
           margin: const EdgeInsets.only(top: 45),
           decoration: BoxDecoration(
@@ -57,65 +66,98 @@ class NotificationPopup extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: 40),
-              SizedBox(
-                width: double.infinity,
-                child: Html(
-                  data: contents,
-                  style: {
-                    '#': Style(
-                      fontFamily: 'montserrat_bold',
-                      fontSize: FontSize(TextSizes.sixteen),
-                      margin: Margins.zero,
+
+              // 🎯 CONTENU SCROLLABLE avec hauteur flexible
+              Flexible(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: contentMaxHeight,
+                  ),
+                  child: Scrollbar(
+                    thumbVisibility: true, // Afficher la scrollbar
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.only(right: 8), // Espace pour la scrollbar
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Html(
+                          data: contents,
+                          style: {
+                            '#': Style(
+                              fontFamily: 'montserrat_bold',
+                              fontSize: FontSize(TextSizes.sixteen),
+                              margin: Margins.zero,
+                            ),
+                            // Style pour les liens
+                            'a': Style(
+                              color: Theme.of(context).primaryColor,
+                              textDecoration: TextDecoration.underline,
+                              textDecorationColor: Theme.of(context).primaryColor,
+                            ),
+                            // Améliorer l'espacement pour les longs contenus
+                            'p': Style(
+                              margin: Margins.only(bottom: 8),
+                            ),
+                            'br': Style(
+                              margin: Margins.only(bottom: 4),
+                            ),
+                          },
+                          // Gestion des clics sur les liens
+                          onLinkTap: (url, renderContext, attributes, element) {
+                            _handleLinkTap(url);
+                          },
+                          // Alternative pour les anciennes versions
+                          onAnchorTap: (url, renderContext, attributes, element) {
+                            _handleLinkTap(url);
+                          },
+                        ),
+                      ),
                     ),
-                    // Style pour les liens
-                    'a': Style(
-                      color: Theme.of(context).primaryColor,
-                      textDecoration: TextDecoration.underline,
-                      textDecorationColor: Theme.of(context).primaryColor,
-                    ),
-                  },
-                  // Gestion des clics sur les liens
-                  onLinkTap: (url, renderContext, attributes, element) {
-                    _handleLinkTap(url);
-                  },
-                  // Alternative pour les anciennes versions
-                  onAnchorTap: (url, renderContext, attributes, element) {
-                    _handleLinkTap(url);
-                  },
+                  ),
                 ),
               ),
+
               const SizedBox(height: 24),
+
+              // 🎯 BOUTONS TOUJOURS VISIBLES EN BAS
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  OutlinedButton(
-                    onPressed: () {
-                      _handleDismiss(context);
-                    },
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    ),
-                    child: const Text("Fermer"),
-                  ),
-                  if (onAction != null)
-                    ElevatedButton(
+                  Expanded(
+                    child: OutlinedButton(
                       onPressed: () {
-                        _handleAction(context);
+                        _handleDismiss(context);
                       },
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                        backgroundColor: Theme.of(context).primaryColor,
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
-                      child: const Text(
-                        "Voir plus",
-                        style: TextStyle(color: Colors.white),
+                      child: const Text("Fermer"),
+                    ),
+                  ),
+                  if (onAction != null) ...[
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _handleAction(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          backgroundColor: Theme.of(context).primaryColor,
+                        ),
+                        child: const Text(
+                          "Voir plus",
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
+                  ],
                 ],
               ),
             ],
           ),
         ),
+
+        // 🎯 ICÔNE POSITIONNÉE AU-DESSUS
         Positioned(
           left: 0,
           right: 0,

@@ -229,7 +229,8 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                 ),
                               ),
                               GestureDetector(
-                                onTap: () => _.switchToNormalSearch(),
+                                //onTap: () => _.switchToNormalSearch(),
+                                onTap: () => _.clearSearch(),
                                 child: Container(
                                   padding: const EdgeInsets.all(4),
                                   decoration: BoxDecoration(

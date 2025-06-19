@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
@@ -339,7 +340,7 @@ class ParoisseController extends GetxController {
               ),
               readOnly: true,
               onTap: () async {
-                TimeOfDay? time = await showTimePicker(
+                /*TimeOfDay? time = await showTimePicker(
                   context: Get.context!,
                   helpText: 'Sélectionner l\'heure',
                   initialTime: TimeOfDay.now(),
@@ -361,6 +362,42 @@ class ParoisseController extends GetxController {
                         ),
                         child: child!,
                       ),
+                    );
+                  },
+                );*/
+                TimeOfDay? time = await showCupertinoDialog<TimeOfDay>(
+                  context: Get.context!,
+                  builder: (BuildContext context) {
+                    DateTime selectedTime = DateTime.now();
+                    return CupertinoAlertDialog(
+                      title: const Text('Sélectionner l\'heure'),
+                      content: SizedBox(
+                        height: 200,
+                        child: CupertinoDatePicker(
+                          mode: CupertinoDatePickerMode.time,
+                          use24hFormat: true,
+                          initialDateTime: selectedTime,
+                          onDateTimeChanged: (DateTime dateTime) {
+                            selectedTime = dateTime;
+                          },
+                        ),
+                      ),
+                      actions: [
+                        CupertinoDialogAction(
+                          child: const Text('Cancel'),
+                          onPressed: () {
+                            Navigator.of(context).pop(); // Returns null
+                          },
+                        ),
+                        CupertinoDialogAction(
+                          child: const Text('OK'),
+                          onPressed: () {
+                            Navigator.of(context).pop(
+                              TimeOfDay.fromDateTime(selectedTime),
+                            );
+                          },
+                        ),
+                      ],
                     );
                   },
                 );
@@ -514,7 +551,7 @@ class ParoisseController extends GetxController {
           doLogout();
         });
       } else {
-        showNotification(message: 'Erreur lors du chargement des données');
+        showNotification(message: 'Erreur lors du chargement des données: ${err.code.toString()}');
       }
       debugPrint("error => ${error.toString()}");
     });
@@ -843,7 +880,7 @@ class ParoisseController extends GetxController {
   }
 
   void switchToNormalSearch() {
-    currentSearchType.value = SearchType.simple;
+    currentSearchType.value = SearchType.advanced;
     isTimeFormatSearch.value = false;
 
     // Si on avait une recherche par heure, on la convertit en recherche texte normale

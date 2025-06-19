@@ -61,7 +61,6 @@ class SearchWidget extends StatelessWidget {
                 ? FadeIn(
               child: IconButton(
                 onPressed: () {
-                  // Utiliser clearSearch() au lieu de resetSearch()
                   logic.clearSearch();
                 },
                 icon: const Icon(Icons.cancel,

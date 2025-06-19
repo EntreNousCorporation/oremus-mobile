@@ -9,6 +9,7 @@ import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/lifeplan/controller/life_plan_controller.dart';
 import 'package:oremusapp/app/modules/lifeplan/views/life_plan_item.dart';
 import 'package:oremusapp/app/modules/lifeplan/views/user_life_plan_item.dart';
+import 'package:oremusapp/app/modules/lifeplan/views/widgets/background_operations_indicator.dart';
 import 'package:oremusapp/generated/assets.dart';
 import 'package:oremusapp/main.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -32,6 +33,7 @@ class LifePlanScreen extends StatelessWidget {
               backgroundColor: Colors.grey[50],
               body: Column(
                 children: [
+                  BackgroundOperationsIndicator(controller: controller),
                   // Tab Bar
                   Container(
                     color: colorWhite,
@@ -83,6 +85,7 @@ class LifePlanScreen extends StatelessWidget {
               floatingActionButton: Obx(() => controller.selectedTab.value == 0
                   ? FloatingActionButton(
                       onPressed: () {
+                        //controller.testLongNotification(context);
                         controller.checkAndCreatePlan();
                       },
                       backgroundColor: colorGreenSemiLight,
