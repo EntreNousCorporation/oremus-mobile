@@ -1,11 +1,9 @@
 import 'package:oremusapp/app/modules/profile/data/model/profile.dart';
 import 'package:oremusapp/app/remote/to_json_interface.dart';
 
-import 'package:oremusapp/app/modules/profile/data/model/profile.dart';
-import 'package:oremusapp/app/remote/to_json_interface.dart';
-
 class LifePlan extends ToJsonInterface {
-  final int? identifier;
+  final dynamic identifier;
+  final bool? isExtendable;
   final String? code;
   final Translate? name;
   final List<TimeSlot>? slots;
@@ -15,6 +13,7 @@ class LifePlan extends ToJsonInterface {
     this.code,
     this.name,
     this.slots,
+    this.isExtendable,
   });
 
   factory LifePlan.fromJson(Map<String, dynamic> json) {
@@ -36,6 +35,7 @@ class LifePlan extends ToJsonInterface {
 
     return LifePlan(
       identifier: json['identifier'],
+      isExtendable: json['isExtendable'],
       code: json['code'],
       name: json['name'] != null ? Translate.fromJson(json['name']) : null,
       slots: parsedSlots,
@@ -46,6 +46,7 @@ class LifePlan extends ToJsonInterface {
   Map<String, dynamic> toJson() {
     return {
       'identifier': identifier,
+      'isExtendable': isExtendable,
       'code': code,
       'name': name?.toJson(),
       'slots': slots?.map((e) => e.toJson()).toList(),

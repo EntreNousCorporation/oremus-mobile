@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
+import 'package:oremusapp/app/modules/customhome/controller/custom_home_controller.dart';
 import 'package:oremusapp/app/modules/lifeplan/controller/life_plan_controller.dart';
 import 'package:oremusapp/app/modules/lifeplan/data/model/create_life_plan_request.dart';
 import 'package:oremusapp/app/modules/lifeplan/data/model/life_plan.dart';
@@ -201,42 +203,50 @@ class MultiActivityFormController extends GetxController {
   // Gestion des créneaux pour une activité spécifique
   void addTimeSlot(ActivityConfiguration config) async {
     final hasSuggestedSlots = config.activity.slots?.isNotEmpty == true;
+    final isExtendable = config.activity.isExtendable ?? false;
 
-    if (hasSuggestedSlots) {
-      // Si l'activité a des créneaux suggérés, on ne peut QUE choisir parmi eux
+    if (hasSuggestedSlots && !isExtendable) {
+      // Cas 1: A des créneaux suggérés mais n'est pas extensible
+      // -> L'utilisateur ne peut QUE choisir parmi les créneaux suggérés
       final unusedSuggestedSlots = getUnusedSuggestedSlots(config);
 
       if (unusedSuggestedSlots.isNotEmpty) {
-        // Afficher un dialogue pour choisir parmi les créneaux suggérés
         _showSuggestedSlotsDialog(config, unusedSuggestedSlots);
       } else {
         // Tous les créneaux suggérés sont déjà utilisés
         Get.snackbar(
           'Tous les créneaux utilisés',
-          'Tous les créneaux suggérés pour ${config.activity.name?.fr} sont déjà sélectionnés',
+          'Tous les créneaux disponibles pour ${config.activity.name?.fr} sont déjà sélectionnés',
           backgroundColor: Colors.blue[600],
           colorText: Colors.white,
           duration: const Duration(seconds: 2),
           icon: const Icon(Icons.info, color: Colors.white),
         );
       }
+    } else if (hasSuggestedSlots && isExtendable) {
+      // Cas 2: A des créneaux suggérés ET est extensible
+      // -> L'utilisateur peut choisir parmi les suggérés OU créer un personnalisé
+      _showExtendableOptionsDialog(config);
     } else {
-      // Si l'activité n'a pas de créneaux suggérés, permettre l'ajout de créneaux personnalisés
+      // Cas 3: Pas de créneaux suggérés (peu importe isExtendable)
+      // -> L'utilisateur peut créer des créneaux personnalisés
       await _showTimePickerForCustomSlot(config);
     }
   }
 
-  void _showSuggestedSlotsDialog(ActivityConfiguration config, List<TimeSlot> unusedSlots) {
+  void _showExtendableOptionsDialog(ActivityConfiguration config) {
+    final unusedSuggestedSlots = getUnusedSuggestedSlots(config);
+
     showDialog(
       context: Get.context!,
       builder: (context) => AlertDialog(
         title: const Row(
           children: [
-            Icon(Icons.schedule, color: colorGreenSemiLight, size: 24),
+            Icon(Icons.schedule_outlined, color: colorGreenSemiLight, size: 24),
             SizedBox(width: 8),
             Expanded(
               child: Text(
-                'Créneaux disponibles',
+                'Ajouter un créneau',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -251,95 +261,169 @@ class MultiActivityFormController extends GetxController {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Sélectionnez parmi les créneaux disponibles pour "${config.activity.name?.fr}" :',
+              'Comment souhaitez-vous ajouter un créneau pour "${config.activity.name?.fr}" ?',
               style: const TextStyle(fontSize: 16),
             ),
-            const SizedBox(height: 16),
-            Container(
-              constraints: const BoxConstraints(maxHeight: 200),
-              child: SingleChildScrollView(
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: unusedSlots.map((slot) => GestureDetector(
-                    onTap: () {
-                      config.timeSlots.add(slot);
-                      _sortTimeSlots(config);
-                      Get.back();
+            const SizedBox(height: 20),
 
-                      // Message de confirmation avec animation
-                      Get.snackbar(
-                        'Créneau ajouté ✅',
-                        '${slot.getFormattedTime()} ajouté à ${config.activity.name?.fr}',
-                        backgroundColor: colorGreenSemiLight,
-                        colorText: Colors.white,
-                        duration: const Duration(seconds: 2),
-                        icon: const Icon(Icons.access_time, color: Colors.white),
-                        animationDuration: const Duration(milliseconds: 300),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: colorGreenSemiLight.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: colorGreenSemiLight),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
+            // Option 1: Créneaux suggérés
+            if (unusedSuggestedSlots.isNotEmpty) ...[
+              InkWell(
+                onTap: () {
+                  Get.back();
+                  _showSuggestedSlotsDialog(config, unusedSuggestedSlots);
+                },
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.blue[50],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
-                          Text(
-                            slot.getFormattedTime(),
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: colorGreenSemiLight,
-                            ),
-                          ),
+                          Icon(Icons.schedule, color: Colors.blue[700], size: 20),
                           const SizedBox(width: 8),
-                          const Icon(
-                            Icons.add_circle,
-                            size: 18,
-                            color: colorGreenSemiLight,
+                          Text(
+                            'Créneaux suggérés',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue[700],
+                            ),
                           ),
                         ],
                       ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '${unusedSuggestedSlots.length} créneau${unusedSuggestedSlots.length > 1 ? 'x' : ''} disponible${unusedSuggestedSlots.length > 1 ? 's' : ''}',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.blue[600],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 4,
+                        children: unusedSuggestedSlots.take(3).map((slot) =>
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.blue[100],
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                slot.getFormattedTime(),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.blue[700],
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                        ).toList(),
+                      ),
+                      if (unusedSuggestedSlots.length > 3)
+                        Text(
+                          '   ... et ${unusedSuggestedSlots.length - 3} autre${unusedSuggestedSlots.length - 3 > 1 ? 's' : ''}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.blue[600],
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
+
+            // Option 2: Créneau personnalisé
+            InkWell(
+              onTap: () async {
+                Get.back();
+                await _showTimePickerForCustomSlot(config);
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  border: Border.all(color: colorGreenSemiLight.withValues(alpha: 0.3)),
+                  borderRadius: BorderRadius.circular(8),
+                  color: colorGreenSemiLight.withValues(alpha: 0.1),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      children: [
+                        Icon(Icons.access_time, color: colorGreenSemiLight, size: 20),
+                        SizedBox(width: 8),
+                        Text(
+                          'Créneau personnalisé',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: colorGreenSemiLight,
+                          ),
+                        ),
+                      ],
                     ),
-                  )).toList(),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Définir un horaire qui vous convient',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.blue[50],
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.info_outline, size: 16, color: Colors.blue[700]),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Cette activité utilise uniquement les créneaux prédéfinis. Vous ne pouvez pas ajouter de créneaux personnalisés.',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.blue[700],
+
+            // Note pour les créneaux suggérés épuisés
+            if (unusedSuggestedSlots.isEmpty) ...[
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.orange[50],
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.info_outline, size: 16, color: Colors.orange[700]),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Tous les créneaux suggérés sont déjà utilisés',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.orange[700],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+            ],
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
             child: Text(
-              'Fermer',
+              'Annuler',
               style: TextStyle(color: Colors.grey[600]),
             ),
           ),
@@ -348,33 +432,210 @@ class MultiActivityFormController extends GetxController {
     );
   }
 
-  Future<void> _showTimePickerForCustomSlot(ActivityConfiguration config) async {
-    /*final TimeOfDay? picked = await showTimePicker(
+  void _showSuggestedSlotsDialog(ActivityConfiguration config, List<TimeSlot> unusedSlots) {
+    showDialog(
       context: Get.context!,
-      initialTime: TimeOfDay.now(),
-      helpText: 'Ajouter un créneau pour ${config.activity.name?.fr}',
-      cancelText: 'Annuler',
-      confirmText: 'OK',
-      hourLabelText: 'Heure',
-      minuteLabelText: 'Minute',
-      builder: (context, child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            alwaysUse24HourFormat: true,
-          ),
-          child: Theme(
-            data: ThemeData.light().copyWith(
-              colorScheme: const ColorScheme.light(
-                primary: colorGreenSemiLight,
-                onPrimary: Colors.white,
-              ),
-            ),
-            child: child!,
-          ),
-        );
-      },
-    );*/
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          // Recalculer les créneaux disponibles à chaque rebuild
+          final currentUnusedSlots = getUnusedSuggestedSlots(config);
 
+          return AlertDialog(
+            title: const Row(
+              children: [
+                Icon(Icons.schedule, color: colorGreenSemiLight, size: 24),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Créneaux disponibles',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: colorGreenSemiLight,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Sélectionnez parmi les créneaux disponibles pour "${config.activity.name?.fr}" :',
+                  style: const TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 16),
+
+                // Vérifier s'il reste des créneaux disponibles
+                if (currentUnusedSlots.isEmpty) ...[
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        const Icon(
+                          Icons.check_circle,
+                          size: 48,
+                          color: colorGreenSemiLight,
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Tous les créneaux ont été ajoutés !',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: colorGreenSemiLight,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          '${config.timeSlots.length} créneau${config.timeSlots.length > 1 ? 'x' : ''} configuré${config.timeSlots.length > 1 ? 's' : ''}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                ] else ...[
+                  Container(
+                    constraints: const BoxConstraints(maxHeight: 200),
+                    child: SingleChildScrollView(
+                      child: Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        // ⚠️ CORRECTION : Utiliser currentUnusedSlots au lieu de unusedSlots
+                        children: currentUnusedSlots.map((slot) => GestureDetector(
+                          onTap: () {
+                            // Ajouter le créneau
+                            config.timeSlots.add(slot);
+                            _sortTimeSlots(config);
+
+                            // ⚠️ CORRECTION : Mettre à jour l'interface du dialog
+                            setState(() {});
+
+                            // Message de confirmation plus court
+                            Get.snackbar(
+                              'Créneau ajouté ✅',
+                              '${slot.getFormattedTime()} ajouté à ${config.activity.name?.fr}',
+                              backgroundColor: colorGreenSemiLight,
+                              colorText: Colors.white,
+                              duration: const Duration(seconds: 1), // Plus court
+                              icon: const Icon(Icons.access_time, color: Colors.white),
+                              animationDuration: const Duration(milliseconds: 300),
+                            );
+
+                            // ⚠️ CORRECTION : Si plus de créneaux disponibles, fermer automatiquement
+                            Future.delayed(const Duration(milliseconds: 500), () {
+                              final remainingSlots = getUnusedSuggestedSlots(config);
+                              if (remainingSlots.isEmpty) {
+                                Get.back();
+                                Get.snackbar(
+                                  'Configuration terminée 🎉',
+                                  'Tous les créneaux suggérés ont été ajoutés !',
+                                  backgroundColor: colorGreenSemiLight,
+                                  colorText: Colors.white,
+                                  duration: const Duration(seconds: 2),
+                                  icon: const Icon(Icons.celebration, color: Colors.white),
+                                );
+                              }
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: colorGreenSemiLight.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: colorGreenSemiLight),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  slot.getFormattedTime(),
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: colorGreenSemiLight,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                const Icon(
+                                  Icons.add_circle,
+                                  size: 18,
+                                  color: colorGreenSemiLight,
+                                ),
+                              ],
+                            ),
+                          ),
+                        )).toList(),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[50],
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.info_outline, size: 16, color: Colors.blue[700]),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            config.activity.isExtendable == true
+                                ? 'Vous pouvez aussi créer des créneaux personnalisés pour cette activité.'
+                                : 'Cette activité utilise uniquement les créneaux prédéfinis.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.blue[700],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Get.back(),
+                child: Text(
+                  currentUnusedSlots.isEmpty ? 'Parfait !' : 'Fermer',
+                  style: TextStyle(
+                    color: currentUnusedSlots.isEmpty ? colorGreenSemiLight : Colors.grey[600],
+                    fontWeight: currentUnusedSlots.isEmpty ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
+              ),
+              // Bouton pour créneau personnalisé (si activité extensible)
+              if (currentUnusedSlots.isNotEmpty && config.activity.isExtendable == true)
+                TextButton(
+                  onPressed: () async {
+                    Get.back();
+                    await _showTimePickerForCustomSlot(config);
+                  },
+                  child: const Text(
+                    'Créneau personnalisé',
+                    style: TextStyle(color: colorGreenSemiLight),
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _showTimePickerForCustomSlot(ActivityConfiguration config) async {
     TimeOfDay? picked = await showCupertinoDialog<TimeOfDay>(
       context: Get.context!,
       builder: (BuildContext context) {
@@ -448,6 +709,35 @@ class MultiActivityFormController extends GetxController {
         animationDuration: const Duration(milliseconds: 300),
       );
     }
+  }
+
+  String getActivityTypeDescription(ActivityConfiguration config) {
+    final hasSuggestedSlots = config.activity.slots?.isNotEmpty == true;
+    final isExtendable = config.activity.isExtendable ?? false;
+
+    if (hasSuggestedSlots && !isExtendable) {
+      return 'Créneaux prédéfinis uniquement';
+    } else if (hasSuggestedSlots && isExtendable) {
+      return 'Créneaux suggérés + personnalisés';
+    } else {
+      return 'Créneaux personnalisés';
+    }
+  }
+
+  // Méthode pour vérifier si on peut ajouter des créneaux personnalisés
+  bool canAddCustomSlots(ActivityConfiguration config) {
+    final hasSuggestedSlots = config.activity.slots?.isNotEmpty == true;
+    final isExtendable = config.activity.isExtendable ?? false;
+
+    return !hasSuggestedSlots || isExtendable;
+  }
+
+  // Méthode pour vérifier si on peut ajouter des créneaux suggérés
+  bool canAddSuggestedSlots(ActivityConfiguration config) {
+    final hasSuggestedSlots = config.activity.slots?.isNotEmpty == true;
+    final unusedSuggestedSlots = getUnusedSuggestedSlots(config);
+
+    return hasSuggestedSlots && unusedSuggestedSlots.isNotEmpty;
   }
 
   void editTimeSlot(ActivityConfiguration config, int index) async {
@@ -620,11 +910,19 @@ class MultiActivityFormController extends GetxController {
     if (editingUserPlan.value == null || activityConfigurations.isEmpty) return;
 
     final config = activityConfigurations.first;
+
+    // Appeler la méthode de mise à jour
     lifePlanController.updateLifePlan(
       editingUserPlan.value!,
       config.timeSlots,
       updateCalendar: addToCalendar.value && hasCalendarPermission.value,
     );
+
+    // Attendre que le dialog de succès du LifePlanController se ferme
+    // puis naviguer vers l'écran Plan de vie
+    Future.delayed(const Duration(milliseconds: 2000), () {
+      _returnToLifePlanScreen();
+    });
   }
 
   Future<void> _createUserPlans() async {
@@ -633,7 +931,7 @@ class MultiActivityFormController extends GetxController {
     int totalCount = activityConfigurations.length;
     List<String> errors = [];
 
-    // Afficher le loading global amélioré
+    // Afficher le loading
     Get.dialog(
       AlertDialog(
         content: Column(
@@ -670,10 +968,11 @@ class MultiActivityFormController extends GetxController {
       barrierDismissible: false,
     );
 
+    // Créer chaque activité
     for (int i = 0; i < activityConfigurations.length; i++) {
       final config = activityConfigurations[i];
       try {
-        // Convertir les TimeSlot en format string attendu par l'API
+        // Convertir les TimeSlot en format string
         List<String> slotsAsStrings = config.timeSlots.map((slot) {
           final h = (slot.hour ?? 0).toString().padLeft(2, '0');
           final m = (slot.minute ?? 0).toString().padLeft(2, '0');
@@ -686,12 +985,10 @@ class MultiActivityFormController extends GetxController {
           slots: slotsAsStrings,
         );
 
-        print('Creating plan ${i + 1}/$totalCount: ${config.activity.name?.fr}');
-
-        // Appel API pour créer le plan
+        // Appel API
         final response = await lifePlanController.lifePlanRepository.createUserLifePlan(request: request);
 
-        // Ajouter à la liste locale immédiatement
+        // Ajouter à la liste locale
         lifePlanController.userLifePlans.insert(0, response);
 
         // Ajouter au calendrier si demandé
@@ -700,19 +997,17 @@ class MultiActivityFormController extends GetxController {
             await _calendarService.addLifePlanToCalendar(response);
           } catch (e) {
             print('Erreur ajout calendrier pour ${config.activity.name?.fr}: $e');
-            // Ne pas faire échouer la création pour une erreur de calendrier
           }
         }
 
         successCount++;
       } catch (e) {
-        // Logger l'erreur mais continuer avec les autres
         print('Erreur création ${config.activity.name?.fr}: $e');
         errors.add('${config.activity.name?.fr}: ${e.toString()}');
       }
     }
 
-    // Fermer le dialog de loading
+    // Fermer le loading
     Get.back();
 
     // Mettre à jour l'état global
@@ -720,9 +1015,9 @@ class MultiActivityFormController extends GetxController {
       lifePlanController.hasUserPlans.value = true;
     }
 
-    // Messages de résultat améliorés avec animations
+    // Afficher le résultat et naviguer
     if (successCount == totalCount) {
-      // Afficher un dialogue de succès complet au lieu d'un simple snackbar
+      // Succès complet
       Get.dialog(
         AlertDialog(
           content: Column(
@@ -776,10 +1071,10 @@ class MultiActivityFormController extends GetxController {
             TextButton(
               onPressed: () {
                 Get.back(); // Fermer le dialogue
-                Get.back(); // Retourner à l'écran principal
+                _returnToLifePlanScreen(); // Retourner à l'écran Plan de vie
               },
               child: const Text(
-                'Parfait !',
+                'Voir mes activités',
                 style: TextStyle(
                   color: colorGreenSemiLight,
                   fontWeight: FontWeight.bold,
@@ -788,42 +1083,25 @@ class MultiActivityFormController extends GetxController {
             ),
           ],
         ),
+        barrierDismissible: false,
       );
     } else if (successCount > 0) {
+      // Succès partiel
       Get.snackbar(
         'Partiellement réussi ⚠️',
         '$successCount/$totalCount activités créées avec succès',
         backgroundColor: Colors.orange,
         colorText: Colors.white,
-        duration: const Duration(seconds: 4),
+        duration: const Duration(seconds: 3),
         icon: const Icon(Icons.warning, color: Colors.white),
       );
 
-      // Afficher les erreurs détaillées
-      if (errors.isNotEmpty) {
-        Future.delayed(const Duration(seconds: 2), () {
-          Get.dialog(
-            AlertDialog(
-              title: const Text('Détails des erreurs'),
-              content: SingleChildScrollView(
-                child: Text(errors.join('\n\n')),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Get.back(),
-                  child: const Text('OK'),
-                ),
-              ],
-            ),
-          );
-        });
-      }
-
-      // Retourner quand même car certaines activités ont été créées
+      // Retourner après un délai
       Future.delayed(const Duration(seconds: 2), () {
-        Get.back();
+        _returnToLifePlanScreen();
       });
     } else {
+      // Échec complet
       Get.snackbar(
         'Échec ❌',
         'Aucune activité n\'a pu être créée',
@@ -833,6 +1111,22 @@ class MultiActivityFormController extends GetxController {
         icon: const Icon(Icons.error, color: Colors.white),
       );
     }
+  }
+
+  void _returnToLifePlanScreen() {
+    print('isEditMode ::: ${isEditMode.value}');
+    if (isEditMode.value) {
+      Get.back();
+    } else {
+      Get.back();
+      Get.back();
+    }
+
+    // S'assurer que l'onglet "Mon plan de vie" est sélectionné
+    lifePlanController.selectedTab.value = 0;
+
+    // Rafraîchir les données utilisateur
+    lifePlanController.getUserLifePlans();
   }
 
   // Utilitaires
