@@ -4,6 +4,6 @@ import 'package:oremusapp/app/modules/settings/controller/settings_controller.da
 class SettingsBinding implements Bindings {
   @override
   void dependencies() {
-    Get.put(SettingsController());
+    Get.lazyPut(() => SettingsController(), fenix: true,);
   }
 }

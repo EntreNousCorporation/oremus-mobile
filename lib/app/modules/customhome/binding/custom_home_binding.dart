@@ -7,14 +7,11 @@ import 'package:oremusapp/app/remote/api_client.dart';
 class CustomHomeBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<CustomHomeController>(
-      () {
-        return CustomHomeController(
+    Get.put<CustomHomeController>(
+      CustomHomeController(
           signinRepository: SigninRepository(ApiClientImpl()),
-          paroisseRepository: ParoisseRepository(ApiClientImpl()),
-        );
-      },
-      fenix: true,
+          paroisseRepository: ParoisseRepository(ApiClientImpl())),
+      permanent: true,
     );
   }
 }

@@ -6,10 +6,11 @@ import 'package:oremusapp/app/remote/api_client.dart';
 class DonationMenuBinding implements Bindings {
   @override
   void dependencies() {
-    Get.put(
+    Get.lazyPut(() =>
       DonationMenuController(
           paroisseRepository: ParoisseRepository(ApiClientImpl()),
         ),
+      fenix: true,
     );
   }
 }

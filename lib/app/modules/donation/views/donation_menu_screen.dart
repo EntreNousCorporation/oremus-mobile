@@ -24,6 +24,7 @@ class DonationMenuScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                         width: 40,
@@ -45,14 +46,14 @@ class DonationMenuScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Soutenir la paroisse',
+                            'Services de dons & offrandes',
                             style: TextStyles.montserratBold(
                               textSize: TextSizes.seventeen,
                               textColor: colorGreenSemiLight,
                             ),
                           ),
                           Text(
-                            'Choisissez une action à effectuer',
+                            'Soutenez Orémus et vos paroisses en toute confiance. Chaque don est reversé sous 7 jours maximum après un traitement sécurisé. Une commission de 10% est prélevée pour les frais de service. Merci de votre générosité.',
                             style: TextStyles.montserratRegular(
                               textSize: TextSizes.thirteen,
                               textColor: Colors.grey[600]!,
@@ -87,45 +88,6 @@ class DonationMenuScreen extends StatelessWidget {
                       var menu = _.menus[index];
                       return MenuGridItem(item: menu);
                     },
-                  ),
-                ),
-              ),
-
-              // Section d'information en bas
-              Visibility(
-                visible: false,
-                child: Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.all(16),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: colorGreenSemiLight.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: colorGreenSemiLight.withValues(alpha: 0.2),
-                      width: 1,
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        "Vos dons sont déductibles des impôts",
-                        style: TextStyles.montserratSemiBold(
-                          textSize: TextSizes.fourteen,
-                          textColor: colorGreenSemiLight,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        "Un reçu fiscal vous sera envoyé pour tout don effectué",
-                        style: TextStyles.montserratRegular(
-                          textSize: TextSizes.twelve,
-                          textColor: Colors.grey[700]!,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
                   ),
                 ),
               ),

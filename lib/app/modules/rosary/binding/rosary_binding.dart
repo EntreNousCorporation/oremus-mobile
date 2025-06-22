@@ -5,7 +5,7 @@ import 'package:oremusapp/app/modules/rosary/services/audio_player_service.dart'
 class RosaryBinding implements Bindings {
   @override
   void dependencies() {
-    Get.put(RosaryController());
+    Get.lazyPut(() => RosaryController(), fenix: true);
     Get.lazyPut<AudioPlayerService>(() => AudioPlayerService(), fenix: true);
   }
 }

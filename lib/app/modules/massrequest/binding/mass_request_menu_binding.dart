@@ -6,10 +6,11 @@ import 'package:oremusapp/app/remote/api_client.dart';
 class MassRequestMenuBinding implements Bindings {
   @override
   void dependencies() {
-    Get.put(
+    Get.lazyPut(() =>
       MassRequestMenuController(
           paroisseRepository: ParoisseRepository(ApiClientImpl()),
         ),
+      fenix: true,
     );
   }
 }

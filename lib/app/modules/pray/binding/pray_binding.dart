@@ -6,6 +6,9 @@ import 'package:oremusapp/app/remote/api_client.dart';
 class PrayBinding implements Bindings {
   @override
   void dependencies() {
-    Get.put(PrayController(prayRepository: PrayRepository(ApiClientImpl())));
+    Get.lazyPut(
+      () => PrayController(prayRepository: PrayRepository(ApiClientImpl())),
+      fenix: true,
+    );
   }
 }

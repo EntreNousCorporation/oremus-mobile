@@ -12,7 +12,6 @@ import 'package:oremusapp/app/modules/customhome/controller/custom_home_controll
 import 'package:oremusapp/app/modules/customhome/views/widget/drawer_menu.dart';
 import 'package:oremusapp/app/modules/donation/views/donation_menu_screen.dart';
 import 'package:oremusapp/app/modules/faq/views/faq_screen.dart';
-import 'package:oremusapp/app/modules/lifeplan/binding/life_plan_binding.dart';
 import 'package:oremusapp/app/modules/lifeplan/views/life_plan_screen.dart';
 import 'package:oremusapp/app/modules/massrequest/views/mass_request_menu_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_screen.dart';
@@ -229,29 +228,6 @@ class CustomHomeNewScreen extends StatelessWidget {
                                         onPressed: () {
                                           rosaireController.showSettingsDialog();
                                         },
-                                      ),
-                                    );
-                                  }),
-                                )
-                              else
-                                Visibility(
-                                  visible: false,
-                                  maintainState: true,
-                                  maintainSize: true,
-                                  maintainAnimation: true,
-                                  child: GetBuilder<RosaryController>(
-                                      builder: (rosaireController) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        color:
-                                            Colors.white.withValues(alpha: 0.3),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: const IconButton(
-                                        icon: Icon(
-                                            Icons.settings_outlined,
-                                            color: Colors.white),
-                                        onPressed: null,
                                       ),
                                     );
                                   }),

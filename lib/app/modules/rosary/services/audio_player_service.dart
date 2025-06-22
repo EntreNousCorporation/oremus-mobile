@@ -162,7 +162,7 @@ class AudioPlayerService extends GetxService {
   @override
   Future<void> onInit() async {
     super.onInit();
-    _fileManagerService = Get.isRegistered<AudioPlayerService>()
+    _fileManagerService = Get.isRegistered<AudioFileManagerService>()
         ? Get.find<AudioFileManagerService>()
         : Get.put<AudioFileManagerService>(AudioFileManagerService(),
         permanent: true);

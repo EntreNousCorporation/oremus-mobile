@@ -36,6 +36,7 @@ class ApiClientImpl extends ApiClient {
     headers[HttpHeaders.contentTypeHeader] = 'application/json; charset=utf-8';
     headers[HttpHeaders.acceptHeader] = 'application/json';
     headers['dId'] = phoneId;
+    headers['platform'] = Platform.isAndroid ? 'Android' : 'iOS';
     if (useBearer) {
       headers[HttpHeaders.authorizationHeader] = 'Bearer ${DB.getData(AppConstants.KEY_TOKEN)}';
     }
