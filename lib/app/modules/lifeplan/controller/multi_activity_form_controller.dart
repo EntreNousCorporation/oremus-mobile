@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
-import 'package:oremusapp/app/modules/customhome/controller/custom_home_controller.dart';
 import 'package:oremusapp/app/modules/lifeplan/controller/life_plan_controller.dart';
 import 'package:oremusapp/app/modules/lifeplan/data/model/create_life_plan_request.dart';
 import 'package:oremusapp/app/modules/lifeplan/data/model/life_plan.dart';
@@ -1074,7 +1072,7 @@ class MultiActivityFormController extends GetxController {
                 _returnToLifePlanScreen(); // Retourner à l'écran Plan de vie
               },
               child: const Text(
-                'Voir mes activités',
+                'Voir mon plan de vie',
                 style: TextStyle(
                   color: colorGreenSemiLight,
                   fontWeight: FontWeight.bold,

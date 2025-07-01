@@ -54,8 +54,7 @@ class PaymentController extends GetxController {
       paymentType.value = Get.arguments['payment_type'];
       if (paymentType.value == PaymentType.donation) {
         if (arguments.containsKey('payment_response')) {
-          donationSelected.value =
-              DonationResponse.fromJson(Get.arguments['payment_response']);
+          donationSelected.value = DonationResponse.fromJson(Get.arguments['payment_response']);
           initWebview();
         }
       }
@@ -188,7 +187,7 @@ class PaymentController extends GetxController {
       // Gérer les erreurs (timeout, erreurs de liens profonds, etc.)
       timeoutTimer?.cancel();
       await subscription?.cancel();
-      print('Erreur lors de l\'attente du retour de paiement: $e');
+      log('Erreur lors de l\'attente du retour de paiement: $e');
     } finally {
       timeoutTimer?.cancel();
       await subscription?.cancel();
@@ -269,8 +268,7 @@ class PaymentController extends GetxController {
       checkingPaymentStatus(true);
       switch (paymentType.value) {
         case PaymentType.massRequest:
-          paymentStatusMessage.value =
-              'Votre demande de messe a été effectué avec succès';
+          paymentStatusMessage.value = 'Votre demande de messe a été effectuée avec succès';
           break;
         case PaymentType.donation:
           paymentStatusMessage.value = 'Votre don a été effectué avec succès';

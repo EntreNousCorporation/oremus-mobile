@@ -31,9 +31,16 @@ class MassRequestStatusTimeline extends StatelessWidget {
 
     // Calculer les statuts futurs potentiels (pas encore atteints)
     String currentStatusCode = sortedHistory.last.status?.code ?? '';
+
+    // Créer un Set des codes de statuts déjà atteints pour éviter les doublons
+    Set<String> achievedStatusCodes = sortedHistory
+        .map((status) => status.status?.code ?? '')
+        .toSet();
+
     List<String> possibleNextStatuses = _getPossibleNextStatuses(
         currentStatusCode,
-        statusesMap
+        statusesMap,
+        achievedStatusCodes // Passer les statuts déjà atteints
     );
 
     return TimelineTheme(
@@ -77,7 +84,7 @@ class MassRequestStatusTimeline extends StatelessWidget {
       );
     }
 
-    // Ajouter les statuts futurs potentiels (grisés)
+    // Ajouter les statuts futurs potentiels (grisés) - maintenant sans doublons
     for (var nextStatusCode in possibleNextStatuses) {
       var nextStatus = statusesMap[nextStatusCode];
       if (nextStatus != null) {
@@ -206,25 +213,38 @@ class MassRequestStatusTimeline extends StatelessWidget {
   }
 
   // Logique pour déterminer les statuts futurs possibles en fonction du statut actuel
+  // Maintenant avec vérification des doublons
   List<String> _getPossibleNextStatuses(
       String currentStatusCode,
-      Map<String, MassRequestAvailablesStatusesData> statusesMap
+      Map<String, MassRequestAvailablesStatusesData> statusesMap,
+      Set<String> achievedStatusCodes // Nouveau paramètre pour éviter les doublons
       ) {
+    List<String> nextStatuses = [];
+
     switch (currentStatusCode) {
       case 'REQUEST_INITIATED':
-        return ['REQUEST_PAID'];
+        nextStatuses = ['REQUEST_PAID'];
+        break;
       case 'REQUEST_PAID':
-        return ['REQUEST_ACCEPTED', 'REQUEST_REFUSED'];
+        nextStatuses = ['REQUEST_ACCEPTED', 'REQUEST_REFUSED'];
+        break;
       case 'REQUEST_ACCEPTED':
-        return ['REQUEST_ASSUMED'];
+        nextStatuses = ['REQUEST_ASSUMED'];
+        break;
       case 'REQUEST_ASSUMED':
       // Statut final, pas d'étapes suivantes
-        return [];
+        nextStatuses = [];
+        break;
       case 'REQUEST_REFUSED':
       // Statut final, pas d'étapes suivantes
-        return [];
+        nextStatuses = [];
+        break;
       default:
-        return [];
+        nextStatuses = [];
+        break;
     }
+
+    // Filtrer les statuts qui ont déjà été atteints pour éviter les doublons
+    return nextStatuses.where((statusCode) => !achievedStatusCodes.contains(statusCode)).toList();
   }
 }

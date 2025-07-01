@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
+
 import 'package:device_calendar/device_calendar.dart';
-import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
 import 'package:oremusapp/app/modules/lifeplan/data/model/user_life_plan.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class CalendarService {
   static final CalendarService _instance = CalendarService._internal();

@@ -352,25 +352,122 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                           )
                               : _.hasData.isTrue
                               ? FadeIn(
-                            child: ListView.separated(
-                              shrinkWrap: true,
-                              padding: const EdgeInsets.only(top: 8, bottom: 24),
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                var claimData = _.claims[index];
-                                return ClaimItem(claimData: claimData);
-                              },
-                              separatorBuilder: (context, index) {
-                                return const SizedBox(height: 16);
-                              },
-                              itemCount: _.claims.length,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 24),
+                              child: Column(
+                                children: [
+                                  ListView.separated(
+                                    shrinkWrap: true,
+                                    padding: EdgeInsets.zero,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    itemBuilder: (context, index) {
+                                      var claimData = _.claims[index];
+                                      return ClaimItem(claimData: claimData);
+                                    },
+                                    separatorBuilder: (context, index) {
+                                      return const SizedBox(height: 16);
+                                    },
+                                    itemCount: _.claims.length,
+                                  ),
+                                  const SizedBox(height: 30),
+
+                                  Center(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        _.moveToMassRequestClaims();
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                                        decoration: BoxDecoration(
+                                          color: colorGreenSemiLight,
+                                          borderRadius: BorderRadius.circular(16),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: colorGreenSemiLight.withValues(alpha: 0.3),
+                                              blurRadius: 10,
+                                              offset: const Offset(0, 4),
+                                              spreadRadius: 0,
+                                            ),
+                                          ],
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Icon(
+                                              Icons.add_circle_outline_rounded,
+                                              color: Colors.white,
+                                              size: 22,
+                                            ),
+                                            const SizedBox(width: 12),
+                                            Text(
+                                              'Nouvelle demande de messe',
+                                              style: TextStyles.montserratSemiBold(
+                                                textSize: TextSizes.fifteen,
+                                                textColor: Colors.white,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 30),
+                                ],
+                              ),
                             ),
                           )
                               : SizedBox(
-                            height: 300,
+                            height: 380,
                             width: double.maxFinite,
-                            child: NotFoundScreen(
-                              message: "Aucune réclamation enregistrée pour l'instant !",
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: NotFoundScreen(
+                                    message: "Aucune réclamation enregistrée pour l'instant !",
+                                  ),
+                                ),
+                                Center(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _.moveToMassRequestClaims();
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                                      decoration: BoxDecoration(
+                                        color: colorGreenSemiLight,
+                                        borderRadius: BorderRadius.circular(16),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: colorGreenSemiLight.withValues(alpha: 0.3),
+                                            blurRadius: 10,
+                                            offset: const Offset(0, 4),
+                                            spreadRadius: 0,
+                                          ),
+                                        ],
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons.add_circle_outline_rounded,
+                                            color: Colors.white,
+                                            size: 22,
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Text(
+                                            'Nouvelle réclamation',
+                                            style: TextStyles.montserratSemiBold(
+                                              textSize: TextSizes.fifteen,
+                                              textColor: Colors.white,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),

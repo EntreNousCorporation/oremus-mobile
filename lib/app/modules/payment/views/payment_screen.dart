@@ -22,7 +22,7 @@ class PaymentScreen extends StatelessWidget {
           child: GetX<PaymentController>(builder: (logic) {
             return Column(
               children: [
-                // Header avec design amélioré
+                // Header
                 SizedBox(height: MediaQuery.of(context).padding.top),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
@@ -40,7 +40,7 @@ class PaymentScreen extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          // Bouton retour avec animation
+                          // Bouton retour
                           Container(
                             decoration: BoxDecoration(
                               color: colorGreen.withValues(alpha: 0.1),
@@ -58,7 +58,7 @@ class PaymentScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 12),
-                          // Titre avec style amélioré
+                          // Titre
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,

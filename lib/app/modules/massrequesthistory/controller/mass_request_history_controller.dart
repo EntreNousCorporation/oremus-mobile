@@ -83,7 +83,9 @@ class MassRequestHistoryController extends GetxController {
   }
 
   canRedoPayment(MassRequestResponse? massRequestSelected) {
-    return massRequestSelected?.status?.code == 'REQUEST_INITIATED';
+    bool isValidTime = Jiffy.now().diff(Jiffy.parse(massRequestSelected?.createdAt ?? '', pattern: AppConstants.TIME_ZONE_FORMAT), unit: Unit.day) < 1;
+    print('isValidTime ::: ${Jiffy.now().diff(Jiffy.parse(massRequestSelected?.createdAt ?? '', pattern: AppConstants.TIME_ZONE_FORMAT), unit: Unit.day)}');
+    return massRequestSelected?.status?.code == 'REQUEST_INITIATED' && isValidTime;
   }
 
   doNewMassRequest() {

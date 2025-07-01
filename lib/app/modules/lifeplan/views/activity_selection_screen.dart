@@ -4,8 +4,6 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/lifeplan/controller/activity_selection_controller.dart';
-import 'package:oremusapp/app/modules/lifeplan/data/model/life_plan.dart';
-import 'package:oremusapp/app/modules/lifeplan/data/model/time_slots_grid.dart';
 import 'package:oremusapp/app/modules/lifeplan/views/widgets/activity_selection_card.dart';
 
 class ActivitySelectionScreen extends StatelessWidget {

@@ -5,6 +5,8 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:audio_session/audio_session.dart';
+import 'package:crypto/crypto.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
@@ -16,8 +18,6 @@ import 'package:oremusapp/app/modules/rosary/data/model/rosary_file_data.dart';
 import 'package:oremusapp/app/modules/rosary/services/audio_file_manager_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
-import 'package:flutter/foundation.dart';
-import 'package:crypto/crypto.dart';
 
 // Classe pour les données de position (comme dans votre code original)
 class PositionData {

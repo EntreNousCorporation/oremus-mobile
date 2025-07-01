@@ -473,7 +473,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                           ),
                                           const SizedBox(height: 8),
                                           Text(
-                                            'Faire une réclamation',
+                                            'Faire\nune réclamation',
                                             textAlign: TextAlign.center,
                                             style: TextStyles.montserratSemiBold(
                                               textSize: TextSizes.thirteen,
@@ -516,7 +516,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                           ),
                                           const SizedBox(height: 8),
                                           Text(
-                                            'Répéter cette demande',
+                                            'Répéter\ncette demande',
                                             textAlign: TextAlign.center,
                                             style: TextStyles.montserratSemiBold(
                                               textSize: TextSizes.thirteen,

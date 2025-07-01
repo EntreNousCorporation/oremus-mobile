@@ -67,10 +67,10 @@ class MassRequestHistoryDetailController extends GetxController {
   moveToMassRequestClaims(MassRequestResponse massRequestData) {
     Get.toNamed(
       Routes.MASS_REQUEST_CLAIM,
-      arguments: [
-        paroisseSelected.toJson(),
-        massRequestData.toJson(),
-      ],
+      arguments: {
+        'paroisse_selected': paroisseSelected.toJson(),
+        'mass_request_data': massRequestData.toJson(),
+      },
     );
   }
 

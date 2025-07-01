@@ -188,12 +188,55 @@ double applyElevation() {
 }
 
 bool isEventExpired(LiturgicalCelebrationResponse? liturgicalCelebration) {
-  return Jiffy.parse(liturgicalCelebration?.startDate ?? '')
-      .isBefore(Jiffy.now());
+  if (liturgicalCelebration == null || liturgicalCelebration.startDate == null) {
+    return true;
+  }
+
+  final eventDate = Jiffy.parse(liturgicalCelebration.startDate!, pattern: AppConstants.TIME_ZONE_FORMAT);
+  final now = Jiffy.now();
+
+  // Si l'événement est dans le futur (jour futur), il n'est pas expiré
+  if (eventDate.startOf(Unit.day).isAfter(now.startOf(Unit.day))) {
+    return false;
+  }
+
+  // Si l'événement est d'un jour passé, il est expiré
+  if (eventDate.startOf(Unit.day).isBefore(now.startOf(Unit.day))) {
+    return true;
+  }
+
+  // Si on est le même jour que l'événement, vérifier les slots
+  if (liturgicalCelebration.slots == null || liturgicalCelebration.slots!.isEmpty) {
+    // Pas de slots, comparer juste avec la startDate complète
+    return eventDate.isBefore(now);
+  }
+
+  // Vérifier si au moins un slot n'est pas encore commencé
+  for (final slot in liturgicalCelebration.slots!) {
+    if (slot.startTime != null) {
+      // Parser l'heure de début du slot
+      final timeParts = slot.startTime!.split(':');
+      final hours = int.parse(timeParts[0]);
+      final minutes = int.parse(timeParts[1]);
+      final seconds = timeParts.length > 2 ? int.parse(timeParts[2]) : 0;
+
+      // Combiner la date de l'événement avec l'heure de début du slot
+      final slotStartDateTime = eventDate.clone()
+          .startOf(Unit.day)
+          .add(hours: hours, minutes: minutes, seconds: seconds);
+
+      // Si au moins un slot n'a pas encore commencé, l'événement n'est pas expiré
+      if (slotStartDateTime.isAfter(now)) {
+        return false;
+      }
+    }
+  }
+
+  // Tous les slots ont commencé (ou sont passés)
+  return true;
 }
 
-shareApp(String message,
-    {bool? includeFile = true, String filePath = ''}) async {
+shareApp(String message, {bool? includeFile = true, String filePath = ''}) async {
   final box = Get.context?.findRenderObject() as RenderBox?;
 
   ByteData imagebyte = await rootBundle.load(filePath);

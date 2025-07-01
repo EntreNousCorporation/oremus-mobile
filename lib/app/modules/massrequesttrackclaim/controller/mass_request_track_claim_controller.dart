@@ -7,6 +7,7 @@ import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/utils.dart';
+import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 import 'package:oremusapp/app/modules/massrequestclaim/data/model/claim_response.dart';
 import 'package:oremusapp/app/modules/massrequestclaim/data/repository/mass_request_claim_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
@@ -59,6 +60,16 @@ class MassRequestTrackClaimController extends GetxController {
         paroisseSelected.toJson(),
         claimData?.toJson(),
       ],
+    );
+  }
+
+  moveToMassRequestClaims([MassRequestResponse? massRequestData]) {
+    Get.toNamed(
+      Routes.MASS_REQUEST_CLAIM,
+      arguments: {
+        'paroisse_selected': paroisseSelected.toJson(),
+        'mass_request_data': massRequestData?.toJson(),
+      },
     );
   }
 

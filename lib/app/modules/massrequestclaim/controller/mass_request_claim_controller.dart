@@ -50,11 +50,13 @@ class MassRequestClaimController extends GetxController {
   }
 
   getArguments() {
-    if (Get.arguments != null) {
-      paroisseSelected.value = ContentPlace.fromJson(Get.arguments[0]);
-      if (Get.arguments[1] != null) {
-        massRequestSelected.value = MassRequestResponse.fromJson(Get.arguments[1]);
-      }
+    if (Get.arguments == null) return;
+    Map arguments = Get.arguments;
+    if (arguments.containsKey('paroisse_selected') && arguments['paroisse_selected'] != null) {
+      paroisseSelected.value = ContentPlace.fromJson(arguments['paroisse_selected']);
+    }
+    if (arguments.containsKey('mass_request_data') && arguments['mass_request_data'] != null) {
+      massRequestSelected.value = MassRequestResponse.fromJson(arguments['mass_request_data']);
     }
   }
 

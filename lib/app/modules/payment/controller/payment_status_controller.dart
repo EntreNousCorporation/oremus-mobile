@@ -24,7 +24,7 @@ class PaymentStatusController extends GetxController {
     if (Get.arguments == null) return;
     Map<String, dynamic> arguments = Get.arguments;
     if (arguments.containsKey('payment_type')) {
-      paymentType.value = Get.arguments['payment_response'];
+      paymentType.value = Get.arguments['payment_type'];
     }
     if (arguments.containsKey('paroisse_selected')) {
       paroisseSelected.value = ContentPlace.fromJson(Get.arguments['paroisse_selected']);

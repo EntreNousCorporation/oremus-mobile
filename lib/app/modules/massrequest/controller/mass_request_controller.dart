@@ -257,6 +257,7 @@ class MassRequestController extends GetxController {
     }
   }
 
+  @Deprecated('No longer used')
   Future<void> showPickerBack(BuildContext context) async {
     // Normaliser les dates permises
     final allowedDatesNormalized = allowedDates
