@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/commons/timeline/flutter_timeline.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
 
 class MassRequestStatusTimeline extends StatelessWidget {
@@ -29,103 +28,163 @@ class MassRequestStatusTimeline extends StatelessWidget {
     sortedHistory.sort((a, b) =>
         DateTime.parse(a.createdAt ?? '').compareTo(DateTime.parse(b.createdAt ?? '')));
 
-    // Calculer les statuts futurs potentiels (pas encore atteints)
-    String currentStatusCode = sortedHistory.last.status?.code ?? '';
-
     // Créer un Set des codes de statuts déjà atteints pour éviter les doublons
     Set<String> achievedStatusCodes = sortedHistory
         .map((status) => status.status?.code ?? '')
         .toSet();
 
-    List<String> possibleNextStatuses = _getPossibleNextStatuses(
-        currentStatusCode,
+    // Calculer tous les statuts à venir selon le flow complet
+    List<TimelineItemData> futureStatuses = _getAllFutureStatuses(
+        sortedHistory.isNotEmpty ? sortedHistory.last.status?.code ?? '' : '',
         statusesMap,
-        achievedStatusCodes // Passer les statuts déjà atteints
+        achievedStatusCodes
     );
 
-    return TimelineTheme(
-      data: TimelineThemeData(
-        lineColor: Colors.grey[300]!,
-        itemGap: 24.0,
-      ),
-      child: Timeline(
-        indicatorSize: 28,
-        isLeftAligned: true,
-        events: _buildTimelineEvents(sortedHistory, statusesMap, possibleNextStatuses),
-      ),
-    );
+    return _buildCustomTimeline(sortedHistory, statusesMap, futureStatuses);
   }
 
-  List<TimelineEventDisplay> _buildTimelineEvents(
+  Widget _buildCustomTimeline(
       List<MassRequestStatusData> sortedHistory,
       Map<String, MassRequestAvailablesStatusesData> statusesMap,
-      List<String> possibleNextStatuses
+      List<TimelineItemData> futureStatuses
       ) {
-    List<TimelineEventDisplay> events = [];
+    List<Widget> timelineItems = [];
+    int totalItems = sortedHistory.length + futureStatuses.length;
 
     // Ajouter les statuts déjà atteints
     for (var i = 0; i < sortedHistory.length; i++) {
       var statusEvent = sortedHistory[i];
       bool isLatestStatus = i == sortedHistory.length - 1;
+      String statusCode = statusEvent.status?.code ?? '';
+      bool isLastItem = (i == totalItems - 1);
 
-      events.add(
-        TimelineEventDisplay(
+      timelineItems.add(
+        _buildTimelineItem(
+          indicator: _buildStatusIndicator(
+            isCompleted: true,
+            isLatest: isLatestStatus,
+            statusCode: statusCode, // Passer le code de statut
+          ),
           child: _buildStatusItem(
             statusEvent.status?.name?.fr ?? '',
             statusEvent.createdAt,
             isCompleted: true,
             isLatest: isLatestStatus,
+            statusCode: statusCode,
           ),
-          indicator: _buildStatusIndicator(
-            isCompleted: true,
-            isLatest: isLatestStatus,
-          ),
+          lineColor: colorGreenSemiLight, // Ligne verte pour les étapes passées
+          showLine: !isLastItem,
         ),
       );
     }
 
-    // Ajouter les statuts futurs potentiels (grisés) - maintenant sans doublons
-    for (var nextStatusCode in possibleNextStatuses) {
-      var nextStatus = statusesMap[nextStatusCode];
-      if (nextStatus != null) {
-        events.add(
-          TimelineEventDisplay(
-            child: _buildStatusItem(
-              nextStatus.name?.fr ?? '',
-              null,
-              isCompleted: false,
-              isLatest: false,
-            ),
+    // Ajouter les statuts futurs
+    for (var i = 0; i < futureStatuses.length; i++) {
+      var futureStatus = futureStatuses[i];
+      bool isLastItem = (sortedHistory.length + i == totalItems - 1);
+
+      if (futureStatus.isParallel) {
+        // Affichage spécial pour les statuts parallèles (Accepté/Refusé)
+        timelineItems.add(
+          _buildTimelineItem(
             indicator: _buildStatusIndicator(
               isCompleted: false,
               isLatest: false,
+              statusCode: '', // Pas de code spécifique pour les statuts parallèles
             ),
+            child: _buildParallelStatusItem(futureStatus.parallelStatuses!, statusesMap),
+            lineColor: Colors.grey[300]!, // Ligne grise pour les étapes futures
+            showLine: !isLastItem,
           ),
         );
+      } else {
+        // Affichage normal pour un statut unique
+        var status = statusesMap[futureStatus.statusCode];
+        if (status != null) {
+          timelineItems.add(
+            _buildTimelineItem(
+              indicator: _buildStatusIndicator(
+                isCompleted: false,
+                isLatest: false,
+                statusCode: futureStatus.statusCode ?? '',
+              ),
+              child: _buildStatusItem(
+                status.name?.fr ?? '',
+                null,
+                isCompleted: false,
+                isLatest: false,
+                statusCode: futureStatus.statusCode ?? '',
+              ),
+              lineColor: Colors.grey[300]!, // Ligne grise pour les étapes futures
+              showLine: !isLastItem,
+            ),
+          );
+        }
       }
     }
 
-    return events;
+    return Column(
+      children: timelineItems,
+    );
+  }
+
+  Widget _buildTimelineItem({
+    required Widget indicator,
+    required Widget child,
+    required Color lineColor,
+    required bool showLine,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Colonne avec l'indicateur et la ligne
+        Column(
+          children: [
+            // Indicateur
+            indicator,
+            // Ligne de connexion
+            if (showLine) ...[
+              Container(
+                width: 2,
+                height: 48,
+                color: lineColor,
+              ),
+            ],
+          ],
+        ),
+        // Contenu à droite
+        Expanded(child: child),
+      ],
+    );
   }
 
   Widget _buildStatusIndicator({
     required bool isCompleted,
     required bool isLatest,
+    String statusCode = '',
   }) {
-    Color indicatorColor = isCompleted
-        ? (isLatest ? colorGreenSemiLight : Colors.grey[400]!)
-        : Colors.grey[300]!;
+    // Vérifier si c'est un statut refusé
+    bool isRefused = statusCode == 'REQUEST_REFUSED';
+
+    Color indicatorColor;
+    if (isCompleted) {
+      indicatorColor = isRefused ? Colors.red[600]! : colorGreenSemiLight;
+    } else {
+      indicatorColor = Colors.grey[300]!;
+    }
 
     return Container(
-      width: 20,
-      height: 20,
+      width: 28,
+      height: 28,
       decoration: BoxDecoration(
         color: indicatorColor,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(14),
         boxShadow: isLatest
             ? [
           BoxShadow(
-            color: colorGreenSemiLight.withValues(alpha: 0.3),
+            color: isRefused
+                ? Colors.red.withValues(alpha: 0.3)
+                : colorGreenSemiLight.withValues(alpha: 0.3),
             blurRadius: 6,
             spreadRadius: 1,
           )
@@ -133,9 +192,9 @@ class MassRequestStatusTimeline extends StatelessWidget {
             : null,
       ),
       child: isCompleted
-          ? const Icon(
-        Icons.check,
-        size: 14,
+          ? Icon(
+        isRefused ? Icons.close : Icons.check, // Croix pour refusé, coche pour accepté
+        size: 16,
         color: Colors.white,
       )
           : null,
@@ -148,6 +207,7 @@ class MassRequestStatusTimeline extends StatelessWidget {
       {
         required bool isCompleted,
         required bool isLatest,
+        String statusCode = '',
       }
       ) {
     // Formatter la date si elle existe
@@ -157,8 +217,21 @@ class MassRequestStatusTimeline extends StatelessWidget {
       formattedDate = DateFormat('dd MMM yyyy à HH:mm').format(date);
     }
 
+    // Vérifier si c'est un statut final
+    bool isFinalStatus = statusCode == 'REQUEST_ACCEPTED' || statusCode == 'REQUEST_REFUSED';
+    // Vérifier si c'est un statut refusé
+    bool isRefused = statusCode == 'REQUEST_REFUSED';
+
+    // Déterminer la couleur du texte
+    Color textColor;
+    if (isCompleted) {
+      textColor = isRefused ? Colors.red[600]! : colorGreenSemiLight;
+    } else {
+      textColor = Colors.grey[500]!;
+    }
+
     return Container(
-      margin: const EdgeInsets.only(left: 12, bottom: 4),
+      margin: const EdgeInsets.only(left: 16, bottom: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -167,9 +240,7 @@ class MassRequestStatusTimeline extends StatelessWidget {
             statusName,
             style: TextStyles.montserratSemiBold(
               textSize: TextSizes.fifteen,
-              textColor: isCompleted
-                  ? (isLatest ? colorGreenSemiLight : colorBlack)
-                  : Colors.grey[500]!,
+              textColor: textColor,
             ),
           ),
 
@@ -185,8 +256,8 @@ class MassRequestStatusTimeline extends StatelessWidget {
             ),
           ],
 
-          // Badge "En cours" pour le statut actuel
-          if (isLatest) ...[
+          // Badge "En cours" pour le statut actuel (sauf pour les statuts finaux)
+          if (isLatest && !isFinalStatus) ...[
             const SizedBox(height: 6),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -212,39 +283,109 @@ class MassRequestStatusTimeline extends StatelessWidget {
     );
   }
 
-  // Logique pour déterminer les statuts futurs possibles en fonction du statut actuel
-  // Maintenant avec vérification des doublons
-  List<String> _getPossibleNextStatuses(
+  // Widget spécial pour afficher les statuts parallèles - OPTION 2 : badges discrets
+  Widget _buildParallelStatusItem(
+      List<String> parallelStatusCodes,
+      Map<String, MassRequestAvailablesStatusesData> statusesMap
+      ) {
+    return Container(
+      margin: const EdgeInsets.only(left: 16, bottom: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Prochaines étapes possibles',
+            style: TextStyles.montserratSemiBold(
+              textSize: TextSizes.fifteen,
+              textColor: Colors.grey[500]!,
+            ),
+          ),
+          const SizedBox(height: 12),
+          // Affichage des badges discrets en ligne
+          Wrap(
+            spacing: 16,
+            runSpacing: 8,
+            children: parallelStatusCodes.map((statusCode) {
+              var status = statusesMap[statusCode];
+              if (status == null) return Container();
+
+              bool isAccepted = statusCode == 'REQUEST_ACCEPTED';
+
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Point discret
+                  Container(
+                    width: 4,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: isAccepted ? Colors.green[400] : Colors.red[400],
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  // Texte simple
+                  Text(
+                    status.name?.fr ?? '',
+                    style: TextStyles.montserratMedium(
+                      textSize: TextSizes.fourteen,
+                      textColor: Colors.grey[600]!,
+                    ),
+                  ),
+                ],
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Calculer tous les statuts futurs selon le flow : Initié → Payé → Pris en charge → Accepté/Refusé
+  List<TimelineItemData> _getAllFutureStatuses(
       String currentStatusCode,
       Map<String, MassRequestAvailablesStatusesData> statusesMap,
-      Set<String> achievedStatusCodes // Nouveau paramètre pour éviter les doublons
+      Set<String> achievedStatusCodes
       ) {
-    List<String> nextStatuses = [];
+    List<TimelineItemData> futureStatuses = [];
 
-    switch (currentStatusCode) {
-      case 'REQUEST_INITIATED':
-        nextStatuses = ['REQUEST_PAID'];
-        break;
-      case 'REQUEST_PAID':
-        nextStatuses = ['REQUEST_ACCEPTED', 'REQUEST_REFUSED'];
-        break;
-      case 'REQUEST_ACCEPTED':
-        nextStatuses = ['REQUEST_ASSUMED'];
-        break;
-      case 'REQUEST_ASSUMED':
-      // Statut final, pas d'étapes suivantes
-        nextStatuses = [];
-        break;
-      case 'REQUEST_REFUSED':
-      // Statut final, pas d'étapes suivantes
-        nextStatuses = [];
-        break;
-      default:
-        nextStatuses = [];
-        break;
+    // Flow complet : Initié → Payé → Pris en charge → Accepté/Refusé
+    List<String> completeFlow = [
+      'REQUEST_INITIATED',  // Initié
+      'REQUEST_PAID',       // Payé
+      'REQUEST_ASSUMED',    // Pris en charge
+      // Accepté/Refusé seront gérés séparément comme statuts parallèles
+    ];
+
+    // Ajouter TOUS les statuts manquants du flow principal (pas seulement les suivants)
+    for (String statusCode in completeFlow) {
+      if (!achievedStatusCodes.contains(statusCode)) {
+        futureStatuses.add(TimelineItemData(statusCode: statusCode));
+      }
     }
 
-    // Filtrer les statuts qui ont déjà été atteints pour éviter les doublons
-    return nextStatuses.where((statusCode) => !achievedStatusCodes.contains(statusCode)).toList();
+    // Toujours ajouter les statuts finaux parallèles (Accepté/Refusé) s'ils ne sont pas encore atteints
+    if (!achievedStatusCodes.contains('REQUEST_ACCEPTED') &&
+        !achievedStatusCodes.contains('REQUEST_REFUSED')) {
+      futureStatuses.add(TimelineItemData(
+          isParallel: true,
+          parallelStatuses: ['REQUEST_ACCEPTED', 'REQUEST_REFUSED']
+      ));
+    }
+
+    return futureStatuses;
   }
+}
+
+// Classe helper pour gérer les statuts futurs
+class TimelineItemData {
+  final String? statusCode;
+  final bool isParallel;
+  final List<String>? parallelStatuses;
+
+  TimelineItemData({
+    this.statusCode,
+    this.isParallel = false,
+    this.parallelStatuses,
+  });
 }

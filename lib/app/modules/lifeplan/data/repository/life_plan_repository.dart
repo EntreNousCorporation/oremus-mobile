@@ -39,7 +39,7 @@ class LifePlanRepository implements ILifePlanRepository {
   @override
   Future<DataResponse<UserLifePlan>> getUserLifePlans({int? page = 0, int? size = 10}) async {
     Response response = await _apiClient.doRequest(
-      endpoint: "/user-life-plans?page=$page&size=$size",
+      endpoint: "/users/life-plans?page=$page&size=$size",
       method: HttpMethod.get,
       useBearer: true,
     );

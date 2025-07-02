@@ -138,8 +138,33 @@ class MassRequestWithWorshipController extends GetxController {
   }
 
   resetChooseDate() {
+    // Réinitialisation des horaires principaux
     worshipHours.clear();
     datesChoosen.clear();
+
+    // Réinitialisation des horaires récurrents et spéciaux
+    worshipRecurrentHoursTemp.clear();
+    worshipSpecialHoursTemp.clear();
+    worshipRecurrentHours.clear();
+    worshipSpecialHours.clear();
+
+    // Réinitialisation des dates et horaires sélectionnés
+    allowedDates.clear();
+    selectedDate.value = null;
+    selectedHours.clear();
+    selectedHour.value = null;
+
+    // Réinitialisation des variables sauvegardées
+    savedSelectedSlotKeys.clear();
+    savedWorshipRecurrentHours.clear();
+    savedWorshipSpecialHours.clear();
+    savedEndDate.value = null;
+    savedSpecialMasses = null;
+
+    // Réinitialisation du prix
+    resetPrice();
+
+    // Suppression du contrôleur de filtrage des dates
     Get.delete<FilterMassRequestDateController>(force: true);
   }
 

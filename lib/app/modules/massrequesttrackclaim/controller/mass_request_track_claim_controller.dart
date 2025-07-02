@@ -49,8 +49,10 @@ class MassRequestTrackClaimController extends GetxController {
   getArguments() {
     if (Get.arguments != null) {
       paroisseSelected.value = ContentPlace.fromJson(Get.arguments);
-      doGetClaims();
+      doGetClaims(paroisseSelected.value);
+      return;
     }
+    doGetClaims();
   }
 
   moveToTrackClaimDetails(ClaimData? claimData) {
@@ -87,13 +89,13 @@ class MassRequestTrackClaimController extends GetxController {
     if (paroisseSelected.value.identifier != null) {
       paroisseSelected.refresh();
     }
-    doGetClaims();
+    doGetClaims(paroisseSelected.value);
     update();
   }
 
-  doGetClaims() {
+  doGetClaims([ContentPlace? paroisse]) {
     hideKeyboard();
-    searchCriteria.value.worshipPlace = paroisseSelected.value.identifier;
+    searchCriteria.value.worshipPlace = paroisse?.identifier;
     isDataProcessing(true);
 
     log('request doGetClaims ::: ${jsonEncode(searchCriteria.toJson())}');
