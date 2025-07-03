@@ -74,9 +74,9 @@ class SignupController extends GetxController {
 
     String firstname = firstnameController.text.trim();
     String lastname = lastnameController.text.trim();
-    String email = emailController.text.trim().toString().replaceAll(' ', '');
-    String phone = phoneController.text.trim().toString().replaceAll(' ', '');
-    String password = passwordController.text.trim().toString().replaceAll(' ', '');
+    String email = emailController.text.trim().toString().replaceAll(RegExp(r'\s'), '');
+    String phone = phoneController.text.trim().toString().replaceAll(RegExp(r'\s'), '');
+    String password = passwordController.text.trim().toString().replaceAll(RegExp(r'\s'), '');
 
     loading(true);
     lockScreen(true);
@@ -128,7 +128,7 @@ class SignupController extends GetxController {
     String lastname = lastnameController.text.trim().toString();
     String firstname = firstnameController.text.trim().toString();
     String email = emailController.text.trim().toString();
-    String phone = phoneController.text.trim().toString().replaceAll(' ', '');
+    String phone = phoneController.text.trim().toString().replaceAll(RegExp(r'\s'), '');
     String password = passwordController.text.trim().toString();
     String confPassword = confPasswordController.text.trim().toString();
     bool isValidEmail = EmailValidator.validate(email) == true;
@@ -136,6 +136,8 @@ class SignupController extends GetxController {
     if (lastnameFocusNode.hasFocus) {
       if (lastname.isEmpty) {
         lastnameErrorMessage.value = 'Le nom est obligatoire';
+      } else if (lastname.length < 2) {
+        lastnameErrorMessage.value = 'Le nom doit contenir au moins 2 caractères';
       } else {
         lastnameErrorMessage.value = '';
       }
@@ -144,6 +146,8 @@ class SignupController extends GetxController {
     if (firstnameFocusNode.hasFocus) {
       if (firstname.isEmpty) {
         firstnameErrorMessage.value = 'Le prénom est obligatoire';
+      } else if (firstname.length < 2) {
+        firstnameErrorMessage.value = 'Le prénom doit contenir au moins 2 caractères';
       } else {
         firstnameErrorMessage.value = '';
       }
@@ -194,7 +198,8 @@ class SignupController extends GetxController {
       confPasswordErrorMessage.value = '';
     }
     isValidForm.value = lastname.isNotEmpty &&
-        firstname.isNotEmpty &&
+        firstname.isNotEmpty && lastname.length >= 2 &&
+        firstname.length >= 2 &&
         email.isNotEmpty &&
         isValidEmail &&
         phone.isNotEmpty &&
