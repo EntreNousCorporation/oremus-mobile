@@ -38,6 +38,8 @@
 	<string>Oremus souhaite accéder à votre calendrier pour créer des rappels pour vos plans de vie spirituels.</string>
 	<key>NSDocumentsFolderUsageDescription</key>
 	<string>L'application a besoin d'accéder à vos documents pour stocker les fichiers audio du rosaire.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>L'application nécessite cette permission pour optimiser la lecture audio des prières du rosaire.</string>
 	<key>NSExceptionDomains</key>
 	<dict>
 		<key>api.oremus.ci</key>
