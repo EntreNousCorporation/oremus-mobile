@@ -9,6 +9,7 @@ class FlavorSettings {
   FlavorSettings.dev()
       : oremusFlavor = OremusFlavor(
           apiBaseUrl: 'https://api-dev.oremus.ci',
+          customBaseUrl: 'https://report-dev.oremus.ci',
           endpoint: '',
           shareAppLink: 'https://download-dev.oremus.ci/store-link',
           byPassAuth: false,
@@ -23,6 +24,7 @@ class FlavorSettings {
   FlavorSettings.prod()
       : oremusFlavor = OremusFlavor(
           apiBaseUrl: 'https://api.oremus.ci',
+          customBaseUrl: 'https://report.oremus.ci',
           endpoint: '',
           shareAppLink: 'https://download.oremus.ci/store-link',
           byPassAuth: true,
@@ -33,6 +35,7 @@ class FlavorSettings {
 
 class OremusFlavor {
   final String? apiBaseUrl;
+  final String? customBaseUrl;
   final String? endpoint;
   final String? shareAppLink;
   final String? oneSignalAppID;
@@ -42,6 +45,7 @@ class OremusFlavor {
 
   OremusFlavor({
     this.apiBaseUrl,
+    this.customBaseUrl,
     this.endpoint,
     this.shareAppLink,
     this.oneSignalAppID,

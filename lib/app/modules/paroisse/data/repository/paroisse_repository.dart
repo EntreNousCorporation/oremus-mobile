@@ -21,6 +21,7 @@ import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/remote/data_response.dart';
 import 'package:oremusapp/app/remote/error_response.dart';
 import 'package:oremusapp/app/remote/schedule_response.dart';
+import 'package:oremusapp/main.dart';
 
 class ParoisseRepository implements IParoisseRepository {
   final ApiClient _apiClient;
@@ -78,7 +79,7 @@ class ParoisseRepository implements IParoisseRepository {
     String? currentUserId = DB.getUserSigninInfo()?.id;
 
     Response response = await _apiClient.doRequest(
-      customBaseUrl: 'https://report-dev.oremus.ci',
+      customBaseUrl: customBaseUrl,
       endpoint: '/worship-places?query=$query&page=$page&size=${AppConstants.PAGING_SIZE_1000}',
       method: HttpMethod.get,
       useBearer: false,

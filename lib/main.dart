@@ -32,6 +32,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 var appUrl;
+var customBaseUrl;
 var isUserConnected = false.obs;
 var requestMassWithoutWorship = false.obs;
 var donationWithoutWorship = false.obs;
@@ -61,8 +62,8 @@ void main() async {
 
   initializeDateFormatting('fr_FR', null).then((_) async {
     final settings = await _getFlavorSettings();
-    appUrl = settings.oremusFlavor.apiBaseUrl.toString() +
-        settings.oremusFlavor.endpoint.toString();
+    appUrl = settings.oremusFlavor.apiBaseUrl.toString() + settings.oremusFlavor.endpoint.toString();
+    customBaseUrl = settings.oremusFlavor.customBaseUrl.toString() + settings.oremusFlavor.endpoint.toString();
     shareAppLink = settings.oremusFlavor.shareAppLink;
     canCheckConnectivity = settings.oremusFlavor.canCheckConectivity;
     oneSignalAppID = settings.oremusFlavor.oneSignalAppID;
