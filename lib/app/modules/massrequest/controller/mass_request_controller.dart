@@ -644,47 +644,53 @@ class MassRequestController extends GetxController {
       return timeA.hour * 60 + timeA.minute - (timeB.hour * 60 + timeB.minute);
     });
 
-    // Filtrer les slots selon l'heure cible du tableau
     List<Slot> filteredSlots = [];
 
-    // Nouvelle logique pour sélectionner le slot le plus proche de l'heure cible
-    Slot? closestSlot;
-    int? minDifference;
-
-    for (var slot in allSlots) {
-      final slotTime = parseTimeFromString(slot.startTime ?? '00:00:00');
-
-      // Si nous avons un créneau exact à l'heure cible, le sélectionner directement
-      if (slotTime.hour == targetHour) {
-        closestSlot = slot;
-        minDifference = 0;
-        break;
-      }
-
-      // Sinon, trouver le créneau le plus proche de l'heure cible
-      // Selon le tableau, nous préférons les créneaux après l'heure cible
-      int difference = slotTime.hour - targetHour;
-
-      // Pour les créneaux avant l'heure cible, augmenter artificiellement la différence
-      // pour favoriser les créneaux après l'heure cible (comme indiqué dans le tableau)
-      if (difference < 0) {
-        difference = difference + 24; // Ajouter 24 pour mettre à la fin de la liste
-      }
-
-      if (minDifference == null || difference < minDifference) {
-        minDifference = difference;
-        closestSlot = slot;
-      }
-    }
-
-    // Si on a trouvé un créneau proche, l'utiliser, sinon prendre tous les créneaux
-    if (closestSlot != null) {
-      filteredSlots = [closestSlot];
-      log('Sélection du créneau le plus proche de ${targetHour}h: ${closestSlot.startTime}');
-    } else if (allSlots.isNotEmpty) {
-      // Si aucun créneau ne correspond à notre logique, prendre tous les créneaux disponibles
+    // CORRECTION : Si l'utilisateur a sélectionné manuellement une date,
+    // afficher TOUS les créneaux disponibles sans filtrage
+    if (!isFirst) {
       filteredSlots = List.from(allSlots);
-      log('Aucun créneau proche trouvé, utilisation de tous les créneaux disponibles');
+      log('Date sélectionnée manuellement : affichage de tous les créneaux (${filteredSlots.length})');
+    } else {
+      // Sinon, appliquer la logique de filtrage selon l'heure cible (pour la sélection automatique initiale)
+      Slot? closestSlot;
+      int? minDifference;
+
+      for (var slot in allSlots) {
+        final slotTime = parseTimeFromString(slot.startTime ?? '00:00:00');
+
+        // Si nous avons un créneau exact à l'heure cible, le sélectionner directement
+        if (slotTime.hour == targetHour) {
+          closestSlot = slot;
+          minDifference = 0;
+          break;
+        }
+
+        // Sinon, trouver le créneau le plus proche de l'heure cible
+        // Selon le tableau, nous préférons les créneaux après l'heure cible
+        int difference = slotTime.hour - targetHour;
+
+        // Pour les créneaux avant l'heure cible, augmenter artificiellement la différence
+        // pour favoriser les créneaux après l'heure cible (comme indiqué dans le tableau)
+        if (difference < 0) {
+          difference = difference + 24; // Ajouter 24 pour mettre à la fin de la liste
+        }
+
+        if (minDifference == null || difference < minDifference) {
+          minDifference = difference;
+          closestSlot = slot;
+        }
+      }
+
+      // Si on a trouvé un créneau proche, l'utiliser, sinon prendre tous les créneaux
+      if (closestSlot != null) {
+        filteredSlots = [closestSlot];
+        log('Sélection automatique du créneau le plus proche de ${targetHour}h: ${closestSlot.startTime}');
+      } else if (allSlots.isNotEmpty) {
+        // Si aucun créneau ne correspond à notre logique, prendre tous les créneaux disponibles
+        filteredSlots = List.from(allSlots);
+        log('Aucun créneau proche trouvé, utilisation de tous les créneaux disponibles');
+      }
     }
 
     // Mettre à jour les heures disponibles
@@ -693,6 +699,9 @@ class MassRequestController extends GetxController {
     selectedHours.refresh();
 
     log('Heures disponibles après filtrage: ${selectedHours.length}');
+    if (selectedHours.isNotEmpty) {
+      log('Créneaux disponibles: ${selectedHours.map((s) => s?.startTime ?? "").join(", ")}');
+    }
 
     // Sélectionner l'heure
     if (selectedHours.isNotEmpty) {
@@ -871,15 +880,20 @@ class MassRequestController extends GetxController {
       if (value.isNotEmpty == true) {
         worshipHours.value = value;
 
-        // Filtrer les messes récurrentes
+        // Filtrer les messes récurrentes (exclure les confessions)
         worshipRecurrentHoursTemp.value = worshipHours
-            .where((element) => element.isRecurrent == true)
+            .where((element) => 
+                element.isRecurrent == true && 
+                element.type?.code != AppConstants.CONFESSION &&
+                element.type?.code != AppConstants.SPECIAL_CONFESSION)
             .toList();
 
-        // Filtrer les messes spéciales non expirées (24h à l'avance)
+        // Filtrer les messes spéciales non expirées (24h à l'avance) et exclure les confessions
         worshipSpecialHoursTemp.value = worshipHours
             .where((element) =>
         element.isRecurrent == false &&
+            element.type?.code != AppConstants.CONFESSION &&
+            element.type?.code != AppConstants.SPECIAL_CONFESSION &&
             (Jiffy.parse(element.startDate ?? Jiffy.now().format(),
                 pattern: AppConstants.TIME_ZONE_FORMAT)
                 .isAfter(Jiffy.now().add(hours: 24))))

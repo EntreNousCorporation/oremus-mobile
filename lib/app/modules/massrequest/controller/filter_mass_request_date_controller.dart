@@ -102,10 +102,15 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
     if (Get.arguments != null) {
       worshipHours.value = Get.arguments[0];
       worshipRecurrentHoursTemp.value =
-          worshipHours.where((element) => element.isRecurrent == true).toList();
+          worshipHours.where((element) => 
+              element.isRecurrent == true && 
+              element.type?.code != 'CONFESSION' &&
+              element.type?.code != 'SPECIAL_CONFESSION').toList();
       worshipSpecialHoursTemp.value = worshipHours
           .where((element) =>
       element.isRecurrent == false &&
+          element.type?.code != 'CONFESSION' &&
+          element.type?.code != 'SPECIAL_CONFESSION' &&
           (Jiffy.parse(element.startDate ?? Jiffy.now().format(),
               pattern: AppConstants.TIME_ZONE_FORMAT)
               .isAfter(Jiffy.now().add(hours: 24))))
@@ -455,7 +460,6 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
     if (isSpecial) {
       return selectedSlotKeys.contains(_createSpecialSlotKey(identifier, startTime));
     } else {
-      // Logique existante pour les messes récurrentes
       return worshipRecurrentHours
           .firstWhere(
             (mass) => mass.dayOfWeek == identifier,
