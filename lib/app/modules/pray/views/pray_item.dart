@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html_v3/flutter_html.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';

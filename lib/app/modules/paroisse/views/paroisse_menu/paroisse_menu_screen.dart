@@ -24,7 +24,7 @@ class ParoisseMenuScreen extends StatelessWidget {
     return Container(
       color: colorGreen,
       child: GetX<ParoisseMenuController>(
-        builder: (_) {
+        builder: (controller) {
           return KeyboardDismisser(
             child: Scaffold(
               resizeToAvoidBottomInset: true,
@@ -80,7 +80,7 @@ class ParoisseMenuScreen extends StatelessWidget {
                           ),
                           child: IconButton(
                             onPressed: () {
-                              _.doGoToReportProblem();
+                              controller.doGoToReportProblem();
                             },
                             icon: SvgPicture.asset(
                               Assets.imagesWarning,
@@ -100,16 +100,16 @@ class ParoisseMenuScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: LikeButton(
-                            isLiked: _.paroisseSelected.value.isFavorite,
+                            isLiked: controller.paroisseSelected.value.isFavorite,
                             onTap: (isLiked) async {
                               log('isLiked => $isLiked');
-                              _.paroisseSelected.value.isFavorite = !isLiked;
+                              controller.paroisseSelected.value.isFavorite = !isLiked;
                               if (isLiked) {
-                                _.removeFavorite(
-                                    _.paroisseSelected.value, isLiked);
+                                controller.removeFavorite(
+                                    controller.paroisseSelected.value, isLiked);
                               } else {
-                                _.saveFavorite(
-                                    _.paroisseSelected.value, isLiked);
+                                controller.saveFavorite(
+                                    controller.paroisseSelected.value, isLiked);
                               }
                               return !isLiked;
                             },
@@ -147,7 +147,7 @@ class ParoisseMenuScreen extends StatelessWidget {
                           ),
                           child: IconButton(
                             onPressed: () {
-                              _.goToMap();
+                              controller.goToMap();
                             },
                             icon: const Icon(
                               Icons.map_rounded,
@@ -162,7 +162,7 @@ class ParoisseMenuScreen extends StatelessWidget {
                         title: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(
-                            _.paroisseSelected.value.name ?? '-',
+                            controller.paroisseSelected.value.name ?? '-',
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,
@@ -196,13 +196,13 @@ class ParoisseMenuScreen extends StatelessWidget {
                               alignment: Alignment.center,
                               children: [
                                 // Image de couverture avec hero animation
-                                (_.paroisseSelected.value.coverImage?.link
+                                (controller.paroisseSelected.value.coverImage?.link
                                             ?.isNotEmpty ==
                                         true)
                                     ? Hero(
-                                        tag: 'tag${_.indexSelected.value}',
+                                        tag: 'tag${controller.indexSelected.value}',
                                         child: CachedNetworkImage(
-                                          imageUrl: _.paroisseSelected.value
+                                          imageUrl: controller.paroisseSelected.value
                                                   .coverImage?.link ??
                                               '',
                                           fit: BoxFit.cover,
@@ -219,7 +219,7 @@ class ParoisseMenuScreen extends StatelessWidget {
                                         ),
                                       )
                                     : Hero(
-                                        tag: 'tag${_.indexSelected.value}',
+                                        tag: 'tag${controller.indexSelected.value}',
                                         child: Image.asset(
                                           Assets.imagesBgLogin,
                                           width: Get.width,
@@ -306,10 +306,10 @@ class ParoisseMenuScreen extends StatelessWidget {
                         ),
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
-                            var menu = _.menus[index];
+                            var menu = controller.menus[index];
                             return _buildEnhancedMenuItem(menu);
                           },
-                          childCount: _.menus.length,
+                          childCount: controller.menus.length,
                         ),
                       ),
                     ),

@@ -22,13 +22,13 @@ class DioceseScreen extends StatelessWidget {
       child: SafeArea(
         child: GetX<DioceseController>(
             initState: (state) {},
-            builder: (_) {
+            builder: (controller) {
               return WillPopScope(
-                onWillPop: () async => _.unlockBackButton.value,
+                onWillPop: () async => controller.unlockBackButton.value,
                 child: KeyboardDismisser(
                   child: SmartRefresher(
-                    controller: _.refreshController,
-                    onRefresh: _.onRefresh,
+                    controller: controller.refreshController,
+                    onRefresh: controller.onRefresh,
                     header: const CustomClassicHeader(),
                     child: Scaffold(
                       resizeToAvoidBottomInset: true,
@@ -75,7 +75,7 @@ class DioceseScreen extends StatelessWidget {
                               ),
                             ),
                             Separators.maximumVertical(),
-                            _.isDataProcessing.isTrue
+                            controller.isDataProcessing.isTrue
                                 ? Expanded(
                                     child: Center(
                                       child: LottieLoadingView(
@@ -83,7 +83,7 @@ class DioceseScreen extends StatelessWidget {
                                       ),
                                     ),
                                   )
-                                : _.hasData.isTrue
+                                : controller.hasData.isTrue
                                     ? Expanded(
                                         child: FadeIn(
                                           child: Padding(
@@ -108,11 +108,11 @@ class DioceseScreen extends StatelessWidget {
                                                       mainAxisSpacing: 16.0,
                                                     ),
                                                     itemCount:
-                                                        _.dioceses.length,
+                                                        controller.dioceses.length,
                                                     itemBuilder:
                                                         (context, index) {
                                                       var paroisse =
-                                                          _.dioceses[index];
+                                                          controller.dioceses[index];
                                                       return GridviewItem(
                                                           diocese: paroisse);
                                                     },

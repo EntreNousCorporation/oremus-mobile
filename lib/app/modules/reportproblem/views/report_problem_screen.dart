@@ -22,10 +22,10 @@ class ReportProblemScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: colorWhite,
-      child: GetX<ReportProblemController>(builder: (_) {
+      child: GetX<ReportProblemController>(builder: (controller) {
         return KeyboardDismisser(
           child: PopScope(
-            canPop: _.unlockBackButton.value,
+            canPop: controller.unlockBackButton.value,
             child: Scaffold(
               resizeToAvoidBottomInset: true,
               body: NotificationListener<OverscrollIndicatorNotification>(
@@ -75,7 +75,7 @@ class ReportProblemScreen extends StatelessWidget {
                         title: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(
-                            _.paroisseSelected.value.name ?? '-',
+                            controller.paroisseSelected.value.name ?? '-',
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,
@@ -108,9 +108,9 @@ class ReportProblemScreen extends StatelessWidget {
                               fit: StackFit.expand,
                               children: [
                                 // Image de couverture
-                                (_.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
+                                (controller.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
                                     ? CachedNetworkImage(
-                                  imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                  imageUrl: controller.paroisseSelected.value.coverImage?.link ?? '',
                                   fit: BoxFit.cover,
                                   placeholder: (context, url) =>
                                       LottieLoadingView(size: Get.width / 6),
@@ -223,7 +223,7 @@ class ReportProblemScreen extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 12),
                                   TextFormField(
-                                    controller: _.emailController,
+                                    controller: controller.emailController,
                                     keyboardAppearance: Brightness.light,
                                     style: TextStyles.montserratSemiBold(textColor: colorBlack),
                                     maxLines: 1,
@@ -258,7 +258,7 @@ class ReportProblemScreen extends StatelessWidget {
                                       ),
                                     ),
                                     onChanged: (value) {
-                                      _.checkForm();
+                                      controller.checkForm();
                                     },
                                   ),
                                   const SizedBox(height: 10),
@@ -299,7 +299,7 @@ class ReportProblemScreen extends StatelessWidget {
                                     ),
                                   ),
                                   const SizedBox(height: 12),
-                                  _.isReportProblemTypeProcessing.isTrue
+                                  controller.isReportProblemTypeProcessing.isTrue
                                       ? const ShimmerPrice(height: 50)
                                       : const ReportProblemTypeFilter(),
                                 ],
@@ -346,19 +346,19 @@ class ReportProblemScreen extends StatelessWidget {
                                 text: 'Envoyer',
                                 borderRadius: 12,
                                 textSize: TextSizes.sixteen,
-                                bgcolor: _.isValidForm.isTrue
+                                bgcolor: controller.isValidForm.isTrue
                                     ? colorGreenSemiLight
                                     : Colors.grey[300]!,
-                                borderColor: _.isValidForm.isTrue
+                                borderColor: controller.isValidForm.isTrue
                                     ? colorGreenSemiLight
                                     : Colors.grey[300]!,
-                                textColor: _.isValidForm.isTrue
+                                textColor: controller.isValidForm.isTrue
                                     ? colorWhite
                                     : Colors.grey[500]!,
                                 actionColor: colorGreenSemiLight.withValues(alpha: 0.8),
-                                enabled: _.isValidForm.value,
+                                enabled: controller.isValidForm.value,
                                 action: () {
-                                  _.doSendReportProblem();
+                                  controller.doSendReportProblem();
                                 },
                               ),
                             ),

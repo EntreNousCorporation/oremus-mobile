@@ -28,7 +28,7 @@ class SigninScreen extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 6.0, sigmaY: 6.0),
         child: GetX<SigninController>(
-          builder: (_) {
+          builder: (controller) {
             return FadeIn(
               preferences: const AnimationPreferences(
                 duration: Duration(milliseconds: 800),
@@ -40,9 +40,9 @@ class SigninScreen extends StatelessWidget {
                   resizeToAvoidBottomInset: false,
                   body: SafeArea(
                     child: PopScope(
-                      canPop: _.unlockBackButton.value,
+                      canPop: controller.unlockBackButton.value,
                       child: AbsorbPointer(
-                        absorbing: _.lockScreen.value,
+                        absorbing: controller.lockScreen.value,
                         child: Column(
                           children: [
                             // Back/Home Button
@@ -55,7 +55,7 @@ class SigninScreen extends StatelessWidget {
                                   ),
                                   child: GestureDetector(
                                     onTap: () {
-                                      _.tempLogin.value ? Get.back() : _.goToHome();
+                                      controller.tempLogin.value ? Get.back() : controller.goToHome();
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.all(12),
@@ -64,7 +64,7 @@ class SigninScreen extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(16),
                                       ),
                                       child: Icon(
-                                        _.tempLogin.value
+                                        controller.tempLogin.value
                                             ? Icons.arrow_back_rounded
                                             : Icons.home_rounded,
                                         color: colorGreen,
@@ -159,7 +159,7 @@ class SigninScreen extends StatelessWidget {
                                               ],
                                             ),
                                             child: Form(
-                                              key: _.formSigninKey,
+                                              key: controller.formSigninKey,
                                               child: Padding(
                                                 padding: const EdgeInsets.all(30),
                                                 child: Column(
@@ -213,8 +213,8 @@ class SigninScreen extends StatelessWidget {
 
                                                     // Email Field with enhanced styling
                                                     MyTextField(
-                                                      focusNode: _.emailFocusNode,
-                                                      controller: _.emailController,
+                                                      focusNode: controller.emailFocusNode,
+                                                      controller: controller.emailController,
                                                       hintText: 'Votre adresse email',
                                                       labelText: 'E-mail',
                                                       prefixIcon: "assets/images/icon_enveloppe.svg",
@@ -224,17 +224,17 @@ class SigninScreen extends StatelessWidget {
                                                       keyboardType: TextInputType.emailAddress,
                                                       textCapitalization: TextCapitalization.none,
                                                       onChanged: (value) {
-                                                        _.checkForm();
+                                                        controller.checkForm();
                                                       },
-                                                      errorText: _.emailErrorMessage.value,
+                                                      errorText: controller.emailErrorMessage.value,
                                                     ),
 
                                                     const SizedBox(height: 20),
 
                                                     // Password Field with enhanced styling
                                                     MyTextField(
-                                                      focusNode: _.passwordFocusNode,
-                                                      controller: _.passwordController,
+                                                      focusNode: controller.passwordFocusNode,
+                                                      controller: controller.passwordController,
                                                       hintText: 'Votre mot de passe',
                                                       labelText: 'Mot de passe',
                                                       isPassword: true,
@@ -244,9 +244,9 @@ class SigninScreen extends StatelessWidget {
                                                       //borderRadius: 16,
                                                       textCapitalization: TextCapitalization.none,
                                                       onChanged: (value) {
-                                                        _.checkForm();
+                                                        controller.checkForm();
                                                       },
-                                                      errorText: _.passwordErrorMessage.value,
+                                                      errorText: controller.passwordErrorMessage.value,
                                                     ),
 
                                                     // Forgot Password Link with improved styling
@@ -254,7 +254,7 @@ class SigninScreen extends StatelessWidget {
                                                       alignment: Alignment.centerRight,
                                                       child: TextButton(
                                                         onPressed: () {
-                                                          _.goToForgotPassword();
+                                                          controller.goToForgotPassword();
                                                         },
                                                         style: TextButton.styleFrom(
                                                           padding: const EdgeInsets.symmetric(
@@ -279,25 +279,25 @@ class SigninScreen extends StatelessWidget {
                                                         width: double.infinity,
                                                         height: 56,
                                                         child: ElevatedButton(
-                                                          onPressed: _.isValidForm.isTrue
+                                                          onPressed: controller.isValidForm.isTrue
                                                               ? () {
-                                                            _.connectUser();
+                                                            controller.connectUser();
                                                           }
                                                               : null,
                                                           style: ElevatedButton.styleFrom(
-                                                            backgroundColor: _.isValidForm.isTrue
+                                                            backgroundColor: controller.isValidForm.isTrue
                                                                 ? colorGreen
                                                                 : Colors.grey[300],
                                                             foregroundColor: Colors.white,
                                                             shape: RoundedRectangleBorder(
                                                               borderRadius: BorderRadius.circular(18),
                                                             ),
-                                                            elevation: _.isValidForm.isTrue ? 4 : 0,
+                                                            elevation: controller.isValidForm.isTrue ? 4 : 0,
                                                             padding: const EdgeInsets.symmetric(vertical: 12),
                                                           ),
                                                           child: AnimatedOpacity(
                                                             duration: const Duration(milliseconds: 300),
-                                                            opacity: _.isValidForm.isTrue ? 1.0 : 0.7,
+                                                            opacity: controller.isValidForm.isTrue ? 1.0 : 0.7,
                                                             child: Row(
                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                               children: [
@@ -315,7 +315,7 @@ class SigninScreen extends StatelessWidget {
                                                                   width: 20,
                                                                   height: 20,
                                                                   colorFilter: ColorFilter.mode(
-                                                                    _.isValidForm.isTrue
+                                                                    controller.isValidForm.isTrue
                                                                         ? Colors.white
                                                                         : Colors.grey[400]!,
                                                                     BlendMode.srcIn,
@@ -404,7 +404,7 @@ class SigninScreen extends StatelessWidget {
                                                     borderColor: Colors.transparent,
                                                     actionColor: colorGreen.withValues(alpha:0.7),
                                                     action: () {
-                                                      _.goToSignup();
+                                                      controller.goToSignup();
                                                     },
                                                   ),
                                                 ),
@@ -432,7 +432,7 @@ class SigninScreen extends StatelessWidget {
                                 ),
                                 child: GestureDetector(
                                   onTap: () {
-                                    _.tempLogin.value ? Get.back() : _.goToHome();
+                                    controller.tempLogin.value ? Get.back() : controller.goToHome();
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.all(12),
@@ -441,7 +441,7 @@ class SigninScreen extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(16),
                                     ),
                                     child: Icon(
-                                      _.tempLogin.value
+                                      controller.tempLogin.value
                                           ? Icons.arrow_back_rounded
                                           : Icons.home_rounded,
                                       color: colorGreen,

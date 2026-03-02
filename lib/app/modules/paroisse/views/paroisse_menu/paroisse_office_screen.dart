@@ -28,7 +28,7 @@ class ParoisseOfficeScreen extends StatelessWidget {
     return Container(
       color: colorGreen,
       child: GetX<ParoisseOfficeController>(
-          builder: (_) {
+          builder: (controller) {
             return KeyboardDismisser(
               child: Scaffold(
                 resizeToAvoidBottomInset: true,
@@ -84,7 +84,7 @@ class ParoisseOfficeScreen extends StatelessWidget {
                             ),
                             child: IconButton(
                               onPressed: () {
-                                _.goToReportProblem();
+                                controller.goToReportProblem();
                               },
                               icon: SvgPicture.asset(
                                 Assets.imagesWarning,
@@ -103,14 +103,14 @@ class ParoisseOfficeScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: LikeButton(
-                              isLiked: _.paroisseSelected.value.isFavorite,
+                              isLiked: controller.paroisseSelected.value.isFavorite,
                               onTap: (isLiked) async {
                                 log('isLiked => $isLiked');
-                                _.paroisseSelected.value.isFavorite = !isLiked;
+                                controller.paroisseSelected.value.isFavorite = !isLiked;
                                 if (isLiked) {
-                                  _.removeFavorite(_.paroisseSelected.value, isLiked);
+                                  controller.removeFavorite(controller.paroisseSelected.value, isLiked);
                                 } else {
-                                  _.saveFavorite(_.paroisseSelected.value, isLiked);
+                                  controller.saveFavorite(controller.paroisseSelected.value, isLiked);
                                 }
                                 return !isLiked;
                               },
@@ -144,7 +144,7 @@ class ParoisseOfficeScreen extends StatelessWidget {
                             ),
                             child: IconButton(
                               onPressed: () {
-                                _.goToMap();
+                                controller.goToMap();
                               },
                               icon: const Icon(
                                 Icons.map_rounded,
@@ -159,7 +159,7 @@ class ParoisseOfficeScreen extends StatelessWidget {
                           title: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16.0),
                             child: Text(
-                              '${_.paroisseSelected.value.name}',
+                              '${controller.paroisseSelected.value.name}',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
@@ -192,11 +192,11 @@ class ParoisseOfficeScreen extends StatelessWidget {
                                 fit: StackFit.expand,
                                 children: [
                                   // Image de couverture
-                                  (_.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
+                                  (controller.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
                                       ? Hero(
-                                    tag: 'tag${_.paroisseSelected.value.identifier}',
+                                    tag: 'tag${controller.paroisseSelected.value.identifier}',
                                     child: CachedNetworkImage(
-                                      imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                      imageUrl: controller.paroisseSelected.value.coverImage?.link ?? '',
                                       fit: BoxFit.cover,
                                       placeholder: (context, url) =>
                                           LottieLoadingView(size: Get.width / 6),
@@ -210,7 +210,7 @@ class ParoisseOfficeScreen extends StatelessWidget {
                                     ),
                                   )
                                       : Hero(
-                                    tag: 'tag${_.paroisseSelected.value.identifier}',
+                                    tag: 'tag${controller.paroisseSelected.value.identifier}',
                                     child: Image.asset(
                                       Assets.imagesBgLogin,
                                       width: Get.width,
@@ -266,7 +266,7 @@ class ParoisseOfficeScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Hero(
-                                      tag: _.code.value,
+                                      tag: controller.code.value,
                                       child: Text(
                                         'Horaires des bureaux',
                                         style: TextStyles.montserratBold(
@@ -291,7 +291,7 @@ class ParoisseOfficeScreen extends StatelessWidget {
                       ),
 
                       // Contenu principal (horaires d'ouverture)
-                      _.isDataProcessing.isTrue
+                      controller.isDataProcessing.isTrue
                           ? SliverFillRemaining(
                         child: Center(
                           child: LottieLoadingView(
@@ -299,7 +299,7 @@ class ParoisseOfficeScreen extends StatelessWidget {
                           ),
                         ),
                       )
-                          : _.hasData.isTrue
+                          : controller.hasData.isTrue
                           ? SliverPadding(
                         padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                         sliver: SliverToBoxAdapter(
@@ -326,7 +326,7 @@ class ParoisseOfficeScreen extends StatelessWidget {
                                 contentHorizontalPadding: 16,
                                 contentVerticalPadding: 16,
                                 headerBorderRadius: 12,
-                                children: _.offices.map((value) {
+                                children: controller.offices.map((value) {
                                   return AccordionSection(
                                     headerPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                                     contentBorderRadius: 12,

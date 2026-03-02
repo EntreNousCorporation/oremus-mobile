@@ -18,7 +18,7 @@ class MassRequestTrackClaimDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.grey[50],
-      child: GetX<MassRequestTrackClaimDetailController>(builder: (_) {
+      child: GetX<MassRequestTrackClaimDetailController>(builder: (controller) {
         return KeyboardDismisser(
           child: Scaffold(
             backgroundColor: Colors.grey[50],
@@ -70,7 +70,7 @@ class MassRequestTrackClaimDetailScreen extends StatelessWidget {
                       title: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
-                          _.paroisseSelected.value.name ?? '',
+                          controller.paroisseSelected.value.name ?? '',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
@@ -104,11 +104,11 @@ class MassRequestTrackClaimDetailScreen extends StatelessWidget {
                             fit: StackFit.expand,
                             children: [
                               // Cover image
-                              (_.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
+                              (controller.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
                                   ? CachedNetworkImage(
                                 width: Get.width,
                                 height: Get.width,
-                                imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                imageUrl: controller.paroisseSelected.value.coverImage?.link ?? '',
                                 fit: BoxFit.cover,
                                 placeholder: (context, url) => LottieLoadingView(size: Get.width / 6),
                                 errorWidget: (context, url, error) => Image.asset(
@@ -228,16 +228,16 @@ class MassRequestTrackClaimDetailScreen extends StatelessWidget {
                                   width: 60,
                                   height: 60,
                                   decoration: BoxDecoration(
-                                    color: getColor(_.claimSelected.value?.status?.code).withValues(alpha: 0.1),
+                                    color: getColor(controller.claimSelected.value?.status?.code).withValues(alpha: 0.1),
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: getColor(_.claimSelected.value?.status?.code).withValues(alpha: 0.3),
+                                      color: getColor(controller.claimSelected.value?.status?.code).withValues(alpha: 0.3),
                                       width: 2,
                                     ),
                                   ),
                                   child: Icon(
-                                    getIcon(_.claimSelected.value?.status?.code),
-                                    color: getColor(_.claimSelected.value?.status?.code),
+                                    getIcon(controller.claimSelected.value?.status?.code),
+                                    color: getColor(controller.claimSelected.value?.status?.code),
                                     size: 30,
                                   ),
                                 ),
@@ -245,14 +245,14 @@ class MassRequestTrackClaimDetailScreen extends StatelessWidget {
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                                   decoration: BoxDecoration(
-                                    color: getColor(_.claimSelected.value?.status?.code).withValues(alpha: 0.1),
+                                    color: getColor(controller.claimSelected.value?.status?.code).withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text(
-                                    _.claimSelected.value?.status?.name?.fr ?? '-',
+                                    controller.claimSelected.value?.status?.name?.fr ?? '-',
                                     style: TextStyles.montserratBold(
                                       textSize: TextSizes.sixteen,
-                                      textColor: getColor(_.claimSelected.value?.status?.code),
+                                      textColor: getColor(controller.claimSelected.value?.status?.code),
                                     ),
                                   ),
                                 ),
@@ -283,21 +283,21 @@ class MassRequestTrackClaimDetailScreen extends StatelessWidget {
                                 // Detail items
                                 _buildDetailItem(
                                   title: 'Paroisse',
-                                  value: _.claimSelected.value?.massRequest?.worshipPlace?.name ?? '-',
+                                  value: controller.claimSelected.value?.massRequest?.worshipPlace?.name ?? '-',
                                   icon: Icons.church_outlined,
                                 ),
                                 _buildDivider(),
 
                                 _buildDetailItem(
                                   title: 'Type de réclamation',
-                                  value: _.claimSelected.value?.typeOfClaim?.name?.fr ?? '-',
+                                  value: controller.claimSelected.value?.typeOfClaim?.name?.fr ?? '-',
                                   icon: Icons.category_outlined,
                                 ),
                                 _buildDivider(),
 
                                 _buildDetailItem(
                                   title: 'Description de la réclamation',
-                                  value: _.claimSelected.value?.description ?? '-',
+                                  value: controller.claimSelected.value?.description ?? '-',
                                   icon: Icons.description_outlined,
                                   isLongText: true,
                                 ),
@@ -305,23 +305,23 @@ class MassRequestTrackClaimDetailScreen extends StatelessWidget {
 
                                 _buildDetailItem(
                                   title: 'Créée le',
-                                  value: getDateTime(_.claimSelected.value?.createdAt ?? ' - '),
+                                  value: getDateTime(controller.claimSelected.value?.createdAt ?? ' - '),
                                   icon: Icons.calendar_today_rounded,
                                 ),
                                 _buildDivider(),
 
                                 _buildDetailItem(
                                   title: 'Modifiée le',
-                                  value: getDateTime(_.claimSelected.value?.updatedAt ?? ' - '),
+                                  value: getDateTime(controller.claimSelected.value?.updatedAt ?? ' - '),
                                   icon: Icons.update_rounded,
                                 ),
 
                                 // Show observation only if it exists
-                                if ((_.claimSelected.value?.observation ?? '').isNotEmpty) ...[
+                                if ((controller.claimSelected.value?.observation ?? '').isNotEmpty) ...[
                                   _buildDivider(),
                                   _buildDetailItem(
                                     title: 'Observation',
-                                    value: _.claimSelected.value?.observation ?? '-',
+                                    value: controller.claimSelected.value?.observation ?? '-',
                                     icon: Icons.comment_outlined,
                                     isLongText: true,
                                   ),

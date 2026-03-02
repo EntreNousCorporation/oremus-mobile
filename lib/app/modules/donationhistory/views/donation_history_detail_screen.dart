@@ -22,7 +22,7 @@ class DonationHistoryDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: colorGreen,
-      child: GetX<DonationHistoryDetailController>(builder: (_) {
+      child: GetX<DonationHistoryDetailController>(builder: (controller) {
         return KeyboardDismisser(
           child: Scaffold(
             resizeToAvoidBottomInset: true,
@@ -79,16 +79,16 @@ class DonationHistoryDetailScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: LikeButton(
-                          isLiked: _.paroisseSelected.value.isFavorite,
+                          isLiked: controller.paroisseSelected.value.isFavorite,
                           onTap: (isLiked) async {
                             log('isLiked => $isLiked');
-                            _.paroisseSelected.value.isFavorite = !isLiked;
+                            controller.paroisseSelected.value.isFavorite = !isLiked;
                             if (isLiked) {
-                              _.removeFavorite(
-                                  _.paroisseSelected.value, isLiked);
+                              controller.removeFavorite(
+                                  controller.paroisseSelected.value, isLiked);
                             } else {
-                              _.saveFavorite(
-                                  _.paroisseSelected.value, isLiked);
+                              controller.saveFavorite(
+                                  controller.paroisseSelected.value, isLiked);
                             }
                             return !isLiked;
                           },
@@ -124,7 +124,7 @@ class DonationHistoryDetailScreen extends StatelessWidget {
                         ),
                         child: IconButton(
                           onPressed: () {
-                            _.goToMap();
+                            controller.goToMap();
                           },
                           icon: const Icon(
                             Icons.map_rounded,
@@ -140,7 +140,7 @@ class DonationHistoryDetailScreen extends StatelessWidget {
                       title: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
-                          _.donationSelected.value.isForOremus == false ? _.paroisseSelected.value.name ?? '' : 'Oremus',
+                          controller.donationSelected.value.isForOremus == false ? controller.paroisseSelected.value.name ?? '' : 'Oremus',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
@@ -173,9 +173,9 @@ class DonationHistoryDetailScreen extends StatelessWidget {
                             fit: StackFit.expand,
                             children: [
                               // Image de couverture
-                              (_.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
+                              (controller.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
                                   ? CachedNetworkImage(
-                                imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                imageUrl: controller.paroisseSelected.value.coverImage?.link ?? '',
                                 fit: BoxFit.cover,
                                 placeholder: (context, url) =>
                                     LottieLoadingView(size: Get.width / 6),
@@ -239,15 +239,15 @@ class DonationHistoryDetailScreen extends StatelessWidget {
                                 Container(
                                   padding: const EdgeInsets.all(16),
                                   decoration: BoxDecoration(
-                                    color: getColor(_.donationSelected.value.status?.code).withValues(alpha: 0.1),
+                                    color: getColor(controller.donationSelected.value.status?.code).withValues(alpha: 0.1),
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: getColor(_.donationSelected.value.status?.code),
+                                      color: getColor(controller.donationSelected.value.status?.code),
                                       width: 2,
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: getColor(_.donationSelected.value.status?.code).withValues(alpha: 0.3),
+                                        color: getColor(controller.donationSelected.value.status?.code).withValues(alpha: 0.3),
                                         blurRadius: 12,
                                         spreadRadius: 2,
                                         offset: const Offset(0, 4),
@@ -255,8 +255,8 @@ class DonationHistoryDetailScreen extends StatelessWidget {
                                     ],
                                   ),
                                   child: Icon(
-                                    getIcon(_.donationSelected.value.status?.code),
-                                    color: getColor(_.donationSelected.value.status?.code),
+                                    getIcon(controller.donationSelected.value.status?.code),
+                                    color: getColor(controller.donationSelected.value.status?.code),
                                     size: 40,
                                   ),
                                 ),
@@ -264,11 +264,11 @@ class DonationHistoryDetailScreen extends StatelessWidget {
 
                                 // Texte de statut
                                 Text(
-                                  _.donationSelected.value.status?.name?.fr ?? '-',
+                                  controller.donationSelected.value.status?.name?.fr ?? '-',
                                   textAlign: TextAlign.center,
                                   style: TextStyles.montserratBold(
                                     textSize: TextSizes.twenty,
-                                    textColor: getColor(_.donationSelected.value.status?.code),
+                                    textColor: getColor(controller.donationSelected.value.status?.code),
                                   ),
                                 ),
                               ],
@@ -296,7 +296,7 @@ class DonationHistoryDetailScreen extends StatelessWidget {
                                 // Section date
                                 _buildInfoSection(
                                   label: 'Date',
-                                  value: getCustomDate(_.donationSelected.value.createdAt ?? ''),
+                                  value: getCustomDate(controller.donationSelected.value.createdAt ?? ''),
                                   icon: Icons.calendar_today_rounded,
                                   isFirst: true,
                                 ),
@@ -314,7 +314,7 @@ class DonationHistoryDetailScreen extends StatelessWidget {
                                 // Section montant
                                 _buildInfoSection(
                                   label: 'Montant',
-                                  value: '${_.donationSelected.value.amount.toString().split('.').first.amountFormat()} FCFA',
+                                  value: '${controller.donationSelected.value.amount.toString().split('.').first.amountFormat()} FCFA',
                                   icon: Icons.payments_rounded,
                                   isFirst: false,
                                 ),
@@ -332,7 +332,7 @@ class DonationHistoryDetailScreen extends StatelessWidget {
                                 // Section montant
                                 _buildInfoSection(
                                   label: 'Description',
-                                  value: _.donationSelected.value.description ?? '-',
+                                  value: controller.donationSelected.value.description ?? '-',
                                   icon: Icons.description_outlined,
                                   isFirst: false,
                                 ),
@@ -341,11 +341,11 @@ class DonationHistoryDetailScreen extends StatelessWidget {
                           ),
 
                           // Bouton pour répéter le don
-                          if (_.canRedoDonation()) ...[
+                          if (controller.canRedoDonation()) ...[
                             const SizedBox(height: 36),
                             GestureDetector(
                               onTap: () {
-                                _.moveToDonation(_.donationSelected.value);
+                                controller.moveToDonation(controller.donationSelected.value);
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),

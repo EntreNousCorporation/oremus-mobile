@@ -27,7 +27,7 @@ class ResetPasswordScreen extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 6.0, sigmaY: 6.0),
         child: GetX<ResetPasswordController>(
-          builder: (_) {
+          builder: (controller) {
             return FadeIn(
               preferences: const AnimationPreferences(
                 duration: Duration(milliseconds: 800),
@@ -38,9 +38,9 @@ class ResetPasswordScreen extends StatelessWidget {
                   backgroundColor: Colors.black.withOpacity(0.3),
                   resizeToAvoidBottomInset: true,
                   body: WillPopScope(
-                    onWillPop: () async => _.unlockBackButton.value,
+                    onWillPop: () async => controller.unlockBackButton.value,
                     child: AbsorbPointer(
-                      absorbing: _.lockScreen.value,
+                      absorbing: controller.lockScreen.value,
                       child: Stack(
                         children: [
                           // Back Button with animation
@@ -180,7 +180,7 @@ class ResetPasswordScreen extends StatelessWidget {
                                               ],
                                             ),
                                             child: Form(
-                                              key: _.formSigninKey,
+                                              key: controller.formSigninKey,
                                               child: Padding(
                                                 padding: const EdgeInsets.all(30),
                                                 child: Column(
@@ -237,8 +237,8 @@ class ResetPasswordScreen extends StatelessWidget {
 
                                                           // New Password Field
                                                           MyTextField(
-                                                            focusNode: _.newPasswordFocusNode,
-                                                            controller: _.newPasswordController,
+                                                            focusNode: controller.newPasswordFocusNode,
+                                                            controller: controller.newPasswordController,
                                                             hintText: 'Votre nouveau mot de passe',
                                                             labelText: 'Nouveau mot de passe',
                                                             isPassword: true,
@@ -247,17 +247,17 @@ class ResetPasswordScreen extends StatelessWidget {
                                                             //textFieldColor: Colors.white,
                                                             //borderRadius: 16,
                                                             onChanged: (value) {
-                                                              _.checkForm();
+                                                              controller.checkForm();
                                                             },
-                                                            errorText: _.newPasswordErrorMessage.value,
+                                                            errorText: controller.newPasswordErrorMessage.value,
                                                           ),
 
                                                           const SizedBox(height: 15),
 
                                                           // Confirm Password Field
                                                           MyTextField(
-                                                            focusNode: _.confPasswordFocusNode,
-                                                            controller: _.confPasswordController,
+                                                            focusNode: controller.confPasswordFocusNode,
+                                                            controller: controller.confPasswordController,
                                                             hintText: 'Confirmez votre mot de passe',
                                                             labelText: 'Confirmer le mot de passe',
                                                             isPassword: true,
@@ -266,9 +266,9 @@ class ResetPasswordScreen extends StatelessWidget {
                                                             //textFieldColor: Colors.white,
                                                             //borderRadius: 16,
                                                             onChanged: (value) {
-                                                              _.checkForm();
+                                                              controller.checkForm();
                                                             },
-                                                            errorText: _.confPasswordErrorMessage.value,
+                                                            errorText: controller.confPasswordErrorMessage.value,
                                                           ),
                                                         ],
                                                       ),
@@ -320,7 +320,7 @@ class ResetPasswordScreen extends StatelessWidget {
                                                       decoration: BoxDecoration(
                                                         borderRadius: BorderRadius.circular(18),
                                                         gradient: LinearGradient(
-                                                          colors: _.isValidForm.isTrue
+                                                          colors: controller.isValidForm.isTrue
                                                               ? [
                                                             colorGreen.withOpacity(0.9),
                                                             colorGreen,
@@ -332,7 +332,7 @@ class ResetPasswordScreen extends StatelessWidget {
                                                           begin: Alignment.topLeft,
                                                           end: Alignment.bottomRight,
                                                         ),
-                                                        boxShadow: _.isValidForm.isTrue
+                                                        boxShadow: controller.isValidForm.isTrue
                                                             ? [
                                                           BoxShadow(
                                                             color: colorGreen.withOpacity(0.3),
@@ -344,9 +344,9 @@ class ResetPasswordScreen extends StatelessWidget {
                                                             : [],
                                                       ),
                                                       child: TextButton(
-                                                        onPressed: _.isValidForm.isTrue
+                                                        onPressed: controller.isValidForm.isTrue
                                                             ? () {
-                                                          _.doResetPassword();
+                                                          controller.doResetPassword();
                                                         }
                                                             : null,
                                                         style: TextButton.styleFrom(
@@ -365,7 +365,7 @@ class ResetPasswordScreen extends StatelessWidget {
                                                                 fontSize: 16,
                                                                 fontWeight: FontWeight.bold,
                                                                 letterSpacing: 0.5,
-                                                                color: _.isValidForm.isTrue
+                                                                color: controller.isValidForm.isTrue
                                                                     ? Colors.white
                                                                     : Colors.grey[500],
                                                               ),
@@ -376,7 +376,7 @@ class ResetPasswordScreen extends StatelessWidget {
                                                               width: 20,
                                                               height: 20,
                                                               colorFilter: ColorFilter.mode(
-                                                                _.isValidForm.isTrue
+                                                                controller.isValidForm.isTrue
                                                                     ? Colors.white
                                                                     : Colors.grey[500]!,
                                                                 BlendMode.srcIn,

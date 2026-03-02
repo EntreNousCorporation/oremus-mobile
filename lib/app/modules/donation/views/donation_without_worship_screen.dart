@@ -22,10 +22,10 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.grey[50],
-      child: GetBuilder<DonationWithoutWorshipController>(builder: (_) {
+      child: GetBuilder<DonationWithoutWorshipController>(builder: (controller) {
         return KeyboardDismisser(
           child: PopScope(
-            canPop: _.unlockBackButton.value,
+            canPop: controller.unlockBackButton.value,
             child: Scaffold(
               resizeToAvoidBottomInset: true,
               body: NotificationListener<OverscrollIndicatorNotification>(
@@ -117,12 +117,12 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                 AnimatedOpacity(
                                   duration: const Duration(milliseconds: 500),
                                   opacity: 1.0,
-                                  child: (_.selectedEntityType.value ==
+                                  child: (controller.selectedEntityType.value ==
                                       EntityType.worship.name &&
-                                      _.paroisseSelected.value.coverImage?.link
+                                      controller.paroisseSelected.value.coverImage?.link
                                           ?.isNotEmpty == true)
                                       ? CachedNetworkImage(
-                                    imageUrl: _.paroisseSelected.value
+                                    imageUrl: controller.paroisseSelected.value
                                         .coverImage?.link ?? '',
                                     fit: BoxFit.cover,
                                     placeholder: (context, url) =>
@@ -303,7 +303,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                               Expanded(
                                                 child: GestureDetector(
                                                   onTap: () {
-                                                    _.selectEntityType(EntityType.oremus.name);
+                                                    controller.selectEntityType(EntityType.oremus.name);
                                                   },
                                                   child: AnimatedContainer(
                                                     duration: const Duration(
@@ -312,7 +312,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                         .symmetric(
                                                         vertical: 20),
                                                     decoration: BoxDecoration(
-                                                      color: _
+                                                      color: controller
                                                           .selectedEntityType
                                                           .value ==
                                                           EntityType.oremus.name
@@ -323,7 +323,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                       borderRadius: BorderRadius
                                                           .circular(16),
                                                       border: Border.all(
-                                                        color: _
+                                                        color: controller
                                                             .selectedEntityType
                                                             .value ==
                                                             EntityType.oremus
@@ -331,12 +331,12 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                             ? colorGreenSemiLight
                                                             : Colors.grey[300]!,
                                                         width:
-                                                        _.selectedEntityType
+                                                        controller.selectedEntityType
                                                             .value ==
                                                             EntityType.oremus
                                                                 .name ? 2 : 1,
                                                       ),
-                                                      boxShadow: _
+                                                      boxShadow: controller
                                                           .selectedEntityType
                                                           .value ==
                                                           EntityType.oremus.name
@@ -367,7 +367,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                               decoration: BoxDecoration(
                                                                 shape: BoxShape
                                                                     .circle,
-                                                                color: _
+                                                                color: controller
                                                                     .selectedEntityType
                                                                     .value ==
                                                                     EntityType
@@ -376,7 +376,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                                     ? colorGreenSemiLight
                                                                     : Colors
                                                                     .grey[300],
-                                                                boxShadow: _
+                                                                boxShadow: controller
                                                                     .selectedEntityType
                                                                     .value ==
                                                                     EntityType
@@ -397,7 +397,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                               child: Icon(
                                                                 Icons
                                                                     .home_work_outlined,
-                                                                color: _
+                                                                color: controller
                                                                     .selectedEntityType
                                                                     .value ==
                                                                     EntityType
@@ -415,7 +415,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                               'OREMUS',
                                                               style: TextStyles
                                                                   .montserratBold(
-                                                                textColor: _
+                                                                textColor: controller
                                                                     .selectedEntityType
                                                                     .value ==
                                                                     EntityType
@@ -430,7 +430,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                             ),
                                                           ],
                                                         ),
-                                                        if (_.selectedEntityType
+                                                        if (controller.selectedEntityType
                                                             .value ==
                                                             EntityType.oremus
                                                                 .name)
@@ -459,7 +459,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                               Expanded(
                                                 child: GestureDetector(
                                                   onTap: () {
-                                                    _.selectEntityType(
+                                                    controller.selectEntityType(
                                                         EntityType.worship
                                                             .name);
                                                   },
@@ -470,7 +470,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                         .symmetric(
                                                         vertical: 20),
                                                     decoration: BoxDecoration(
-                                                      color: _
+                                                      color: controller
                                                           .selectedEntityType
                                                           .value ==
                                                           EntityType.worship
@@ -482,14 +482,14 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                       borderRadius: BorderRadius
                                                           .circular(16),
                                                       border: Border.all(
-                                                        color: _
+                                                        color: controller
                                                             .selectedEntityType
                                                             .value ==
                                                             EntityType.worship
                                                                 .name
                                                             ? colorGreenSemiLight
                                                             : Colors.grey[300]!,
-                                                        width: _
+                                                        width: controller
                                                             .selectedEntityType
                                                             .value ==
                                                             EntityType.worship
@@ -497,7 +497,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                             ? 2
                                                             : 1,
                                                       ),
-                                                      boxShadow: _
+                                                      boxShadow: controller
                                                           .selectedEntityType
                                                           .value ==
                                                           EntityType.worship
@@ -529,7 +529,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                               decoration: BoxDecoration(
                                                                 shape: BoxShape
                                                                     .circle,
-                                                                color: _
+                                                                color: controller
                                                                     .selectedEntityType
                                                                     .value ==
                                                                     EntityType
@@ -538,7 +538,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                                     ? colorGreenSemiLight
                                                                     : Colors
                                                                     .grey[300],
-                                                                boxShadow: _
+                                                                boxShadow: controller
                                                                     .selectedEntityType
                                                                     .value ==
                                                                     EntityType
@@ -559,7 +559,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                               child: Icon(
                                                                 Icons
                                                                     .church_outlined,
-                                                                color: _
+                                                                color: controller
                                                                     .selectedEntityType
                                                                     .value ==
                                                                     EntityType
@@ -577,7 +577,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                               'PAROISSE',
                                                               style: TextStyles
                                                                   .montserratBold(
-                                                                textColor: _
+                                                                textColor: controller
                                                                     .selectedEntityType
                                                                     .value ==
                                                                     EntityType
@@ -592,7 +592,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                             ),
                                                           ],
                                                         ),
-                                                        if (_.selectedEntityType
+                                                        if (controller.selectedEntityType
                                                             .value ==
                                                             EntityType.worship
                                                                 .name)
@@ -626,7 +626,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                             ),
 
                             // Parish selection section
-                            if (_.selectedEntityType.value ==
+                            if (controller.selectedEntityType.value ==
                                 EntityType.worship.name)
                               TweenAnimationBuilder(
                                 tween: Tween<double>(begin: 0.0, end: 1.0),
@@ -692,7 +692,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                             Obx(() {
                                               return GestureDetector(
                                                 onTap: () {
-                                                  _.goToWorshipChoice();
+                                                  controller.goToWorshipChoice();
                                                 },
                                                 child: Container(
                                                   padding: const EdgeInsets
@@ -703,16 +703,16 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                     borderRadius: BorderRadius
                                                         .circular(16),
                                                     border: Border.all(
-                                                      color: _.paroisseSelected
+                                                      color: controller.paroisseSelected
                                                           .value.identifier !=
                                                           null
                                                           ? colorGreenSemiLight
                                                           : Colors.grey[300]!,
-                                                      width: _.paroisseSelected
+                                                      width: controller.paroisseSelected
                                                           .value.identifier !=
                                                           null ? 2 : 1,
                                                     ),
-                                                    boxShadow: _
+                                                    boxShadow: controller
                                                         .paroisseSelected.value
                                                         .identifier != null
                                                         ? [
@@ -732,7 +732,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                         .spaceBetween,
                                                     children: [
                                                       Expanded(
-                                                        child: _
+                                                        child: controller
                                                             .paroisseSelected
                                                             .value.identifier ==
                                                             null
@@ -759,7 +759,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                           ],
                                                         )
                                                             : Text(
-                                                          '${_.paroisseSelected
+                                                          '${controller.paroisseSelected
                                                               .value.name}',
                                                           style: TextStyles
                                                               .montserratSemiBold(
@@ -780,7 +780,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                               .circle,
                                                         ),
                                                         child: Icon(
-                                                          _.paroisseSelected
+                                                          controller.paroisseSelected
                                                               .value
                                                               .identifier !=
                                                               null
@@ -918,16 +918,16 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                           Row(
                                             children: [
                                               _buildQuickAmountButton(
-                                                  _, '1 000', '1 000'),
+                                                  controller, '1 000', '1 000'),
                                               const SizedBox(width: 8),
                                               _buildQuickAmountButton(
-                                                  _, '5 000', '5 000'),
+                                                  controller, '5 000', '5 000'),
                                               const SizedBox(width: 8),
                                               _buildQuickAmountButton(
-                                                  _, '10 000', '10 000'),
+                                                  controller, '10 000', '10 000'),
                                               const SizedBox(width: 8),
                                               _buildQuickAmountButton(
-                                                  _, '20 000', '20 000'),
+                                                  controller, '20 000', '20 000'),
                                             ],
                                           ),
                                         ],
@@ -1044,20 +1044,20 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                         text: 'Continuer',
                                         borderRadius: 16,
                                         textSize: TextSizes.seventeen,
-                                        bgcolor: _.isValidForm.isTrue
+                                        bgcolor: controller.isValidForm.isTrue
                                             ? colorGreenSemiLight
                                             : Colors.grey[300]!,
-                                        borderColor: _.isValidForm.isTrue
+                                        borderColor: controller.isValidForm.isTrue
                                             ? colorGreenSemiLight
                                             : Colors.grey[300]!,
-                                        textColor: _.isValidForm.isTrue
+                                        textColor: controller.isValidForm.isTrue
                                             ? colorWhite
                                             : Colors.grey[500]!,
                                         actionColor: colorGreenSemiLight
                                             .withValues(alpha: 0.8),
-                                        enabled: _.isValidForm.value,
+                                        enabled: controller.isValidForm.value,
                                         action: () {
-                                          _.doSendDonation();
+                                          controller.doSendDonation();
                                         },
                                       ),
                                     ),

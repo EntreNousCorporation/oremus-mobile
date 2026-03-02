@@ -22,7 +22,7 @@ class FilterWorshipScreen extends StatelessWidget {
       color: colorGreen,
       child: SafeArea(
         bottom: false,
-        child: GetX<FilterWorshipController>(builder: (_) {
+        child: GetX<FilterWorshipController>(builder: (controller) {
           return PopScope(
             canPop: false,
             child: KeyboardDismisser(
@@ -59,7 +59,7 @@ class FilterWorshipScreen extends StatelessWidget {
                                     ),
                                     child: IconButton(
                                       onPressed: () {
-                                        _.goBackToMassRequest();
+                                        controller.goBackToMassRequest();
                                       },
                                       icon: const Icon(
                                         Icons.arrow_back_rounded,
@@ -70,7 +70,7 @@ class FilterWorshipScreen extends StatelessWidget {
                                   ),
                                   const SizedBox(width: 16),
                                   Text(
-                                    _.title.value,
+                                    controller.title.value,
                                     style: TextStyles.montserratBold(
                                       textColor: colorWhite,
                                       textSize: TextSizes.twenty,
@@ -140,13 +140,13 @@ class FilterWorshipScreen extends StatelessWidget {
 
                       // Contenu principal (liste des paroisses)
                       Expanded(
-                        child: _.isDataProcessing.isTrue
+                        child: controller.isDataProcessing.isTrue
                             ? Center(
                           child: LottieLoadingView(
                             size: Get.width / 4,
                           ),
                         )
-                            : _.hasData.isTrue
+                            : controller.hasData.isTrue
                             ? FadeIn(
                           child: NotificationListener<
                               OverscrollIndicatorNotification>(
@@ -157,8 +157,8 @@ class FilterWorshipScreen extends StatelessWidget {
                             child: SmartRefresher(
                               enablePullDown: true,
                               enablePullUp: true,
-                              onRefresh: _.onRefresh,
-                              onLoading: _.onLoading,
+                              onRefresh: controller.onRefresh,
+                              onLoading: controller.onLoading,
                               header: const CustomClassicHeader(),
                               footer: CustomFooter(
                                 builder: (BuildContext context,
@@ -191,16 +191,16 @@ class FilterWorshipScreen extends StatelessWidget {
                                   );
                                 },
                               ),
-                              controller: _.refreshController,
+                              controller: controller.refreshController,
                               physics: const BouncingScrollPhysics(),
                               child: ListView.builder(
                                 padding: const EdgeInsets.only(
                                   top: 16,
                                   bottom: 16,
                                 ),
-                                itemCount: _.paroisses.length,
+                                itemCount: controller.paroisses.length,
                                 itemBuilder: (context, index) {
-                                  var paroisse = _.paroisses[index];
+                                  var paroisse = controller.paroisses[index];
                                   return Padding(
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 16,
@@ -208,8 +208,8 @@ class FilterWorshipScreen extends StatelessWidget {
                                     ),
                                     child: GestureDetector(
                                       onTap: () {
-                                        _.worshipSelected.value = paroisse;
-                                        _.goBackToMassRequest();
+                                        controller.worshipSelected.value = paroisse;
+                                        controller.goBackToMassRequest();
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
@@ -329,9 +329,9 @@ class FilterWorshipScreen extends StatelessWidget {
                             ),
                           ),
                         )
-                            : _.hasError.isTrue
+                            : controller.hasError.isTrue
                             ? NotFoundScreen(
-                          message: _.errorMessage.value,
+                          message: controller.errorMessage.value,
                         )
                             : NotFoundScreen(
                           message: "Aucune paroisse trouvée",

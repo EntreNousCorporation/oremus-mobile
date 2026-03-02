@@ -22,10 +22,10 @@ class DonationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetX<DonationController>(builder: (_) {
+    return GetX<DonationController>(builder: (controller) {
       return KeyboardDismisser(
         child: PopScope(
-          canPop: _.unlockBackButton.value,
+          canPop: controller.unlockBackButton.value,
           child: Scaffold(
             resizeToAvoidBottomInset: true,
             backgroundColor: Colors.grey[50],
@@ -81,14 +81,14 @@ class DonationScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: LikeButton(
-                          isLiked: _.paroisseSelected.value.isFavorite,
+                          isLiked: controller.paroisseSelected.value.isFavorite,
                           onTap: (isLiked) async {
                             log('isLiked => $isLiked');
-                            _.paroisseSelected.value.isFavorite = !isLiked;
+                            controller.paroisseSelected.value.isFavorite = !isLiked;
                             if (isLiked) {
-                              _.removeFavorite(_.paroisseSelected.value, isLiked);
+                              controller.removeFavorite(controller.paroisseSelected.value, isLiked);
                             } else {
-                              _.saveFavorite(_.paroisseSelected.value, isLiked);
+                              controller.saveFavorite(controller.paroisseSelected.value, isLiked);
                             }
                             return !isLiked;
                           },
@@ -122,7 +122,7 @@ class DonationScreen extends StatelessWidget {
                         ),
                         child: IconButton(
                           onPressed: () {
-                            _.goToMap();
+                            controller.goToMap();
                           },
                           icon: const Icon(
                             Icons.map_rounded,
@@ -139,7 +139,7 @@ class DonationScreen extends StatelessWidget {
                       title: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
-                          _.paroisseSelected.value.name ?? '-',
+                          controller.paroisseSelected.value.name ?? '-',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
@@ -173,9 +173,9 @@ class DonationScreen extends StatelessWidget {
                             fit: StackFit.expand,
                             children: [
                               // Cover image
-                              (_.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
+                              (controller.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
                                   ? CachedNetworkImage(
-                                imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                imageUrl: controller.paroisseSelected.value.coverImage?.link ?? '',
                                 fit: BoxFit.cover,
                                 placeholder: (context, url) =>
                                     LottieLoadingView(size: Get.width / 6),
@@ -296,13 +296,13 @@ class DonationScreen extends StatelessWidget {
                               const SizedBox(height: 12),
                               Row(
                                 children: [
-                                  _buildQuickAmountButton(_, '1 000', '1 000'),
+                                  _buildQuickAmountButton(controller, '1 000', '1 000'),
                                   const SizedBox(width: 8),
-                                  _buildQuickAmountButton(_, '5 000', '5 000'),
+                                  _buildQuickAmountButton(controller, '5 000', '5 000'),
                                   const SizedBox(width: 8),
-                                  _buildQuickAmountButton(_, '10 000', '10 000'),
+                                  _buildQuickAmountButton(controller, '10 000', '10 000'),
                                   const SizedBox(width: 8),
-                                  _buildQuickAmountButton(_, '20 000', '20 000'),
+                                  _buildQuickAmountButton(controller, '20 000', '20 000'),
                                 ],
                               ),
                             ],
@@ -338,19 +338,19 @@ class DonationScreen extends StatelessWidget {
                             text: 'Continuer',
                             borderRadius: 16,
                             textSize: TextSizes.seventeen,
-                            bgcolor: _.isValidForm.isTrue
+                            bgcolor: controller.isValidForm.isTrue
                                 ? colorGreenSemiLight
                                 : Colors.grey[300]!,
-                            borderColor: _.isValidForm.isTrue
+                            borderColor: controller.isValidForm.isTrue
                                 ? colorGreenSemiLight
                                 : Colors.grey[300]!,
-                            textColor: _.isValidForm.isTrue
+                            textColor: controller.isValidForm.isTrue
                                 ? colorWhite
                                 : Colors.grey[500]!,
                             actionColor: colorGreenSemiLight.withValues(alpha: 0.8),
-                            enabled: _.isValidForm.value,
+                            enabled: controller.isValidForm.value,
                             action: () {
-                              _.doSendDonation();
+                              controller.doSendDonation();
                             },
                           ),
                         ),

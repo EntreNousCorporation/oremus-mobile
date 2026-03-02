@@ -39,8 +39,8 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "ci.oremus.app.oremusapp"
-    compileSdkVersion 35
-    ndkVersion = '25.1.8937393'
+    compileSdkVersion 36
+    ndkVersion = '27.0.12077973'
 
     buildFeatures {
         buildConfig true
@@ -62,8 +62,8 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "ci.oremus.app.oremusapp"
-        minSdkVersion 22
-        targetSdkVersion 35
+        minSdkVersion flutter.minSdkVersion
+        targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }

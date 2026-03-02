@@ -21,7 +21,7 @@ class EditProfileScreen extends StatelessWidget {
       backgroundColor: colorGrey4,
       resizeToAvoidBottomInset: true,
       body: GetBuilder<EditProfileController>(
-        builder: (_) {
+        builder: (controller) {
           return KeyboardDismisser(
             child: Stack(
               children: [
@@ -142,13 +142,13 @@ class EditProfileScreen extends StatelessWidget {
                                             // Lastname field
                                             _buildStyledTextField(
                                               context: context,
-                                              focusNode: _.lastnameFocusNode,
-                                              controller: _.lastnameController,
+                                              focusNode: controller.lastnameFocusNode,
+                                              controller: controller.lastnameController,
                                               labelText: 'Nom',
                                               prefixIcon: Assets.imagesIconUser,
-                                              //errorText: _.lastnameErrorMessage.value,
+                                              //errorText: controller.lastnameErrorMessage.value,
                                               onChanged: (value) =>
-                                                  _.checkForm(),
+                                                  controller.checkForm(),
                                               maskInputs: [
                                                 FilteringTextInputFormatter
                                                     .allow(RegExp(AppConstants
@@ -161,13 +161,13 @@ class EditProfileScreen extends StatelessWidget {
                                             // Firstname field
                                             _buildStyledTextField(
                                               context: context,
-                                              focusNode: _.firstnameFocusNode,
-                                              controller: _.firstnameController,
+                                              focusNode: controller.firstnameFocusNode,
+                                              controller: controller.firstnameController,
                                               labelText: 'Prénom(s)',
                                               prefixIcon: Assets.imagesIconUser,
-                                              errorText: _.firstnameErrorMessage.value,
+                                              errorText: controller.firstnameErrorMessage.value,
                                               onChanged: (value) =>
-                                                  _.checkForm(),
+                                                  controller.checkForm(),
                                               textCapitalization:
                                                   TextCapitalization.words,
                                               maskInputs: [
@@ -182,15 +182,15 @@ class EditProfileScreen extends StatelessWidget {
                                             // Phone field
                                             _buildStyledTextField(
                                               context: context,
-                                              focusNode: _.phoneFocusNode,
-                                              controller: _.phoneController,
+                                              focusNode: controller.phoneFocusNode,
+                                              controller: controller.phoneController,
                                               labelText: 'Téléphone',
                                               prefixIcon:
                                                   Assets.imagesIconPhone,
                                               errorText:
-                                                  _.phoneErrorMessage.value,
+                                                  controller.phoneErrorMessage.value,
                                               onChanged: (value) =>
-                                                  _.checkForm(),
+                                                  controller.checkForm(),
                                               keyboardType: TextInputType.phone,
                                               maxLength: 14,
                                               maskInputs: [
@@ -210,17 +210,17 @@ class EditProfileScreen extends StatelessWidget {
                                                   const SizedBox(height: 16),
                                                   _buildStyledTextField(
                                                     context: context,
-                                                    focusNode: _.emailFocusNode,
+                                                    focusNode: controller.emailFocusNode,
                                                     controller:
-                                                        _.emailController,
+                                                        controller.emailController,
                                                     labelText: 'E-mail',
                                                     prefixIcon: Assets
                                                         .imagesIconEnveloppe,
-                                                    errorText: _
+                                                    errorText: controller
                                                         .emailErrorMessage
                                                         .value,
                                                     onChanged: (value) =>
-                                                        _.checkForm(),
+                                                        controller.checkForm(),
                                                     keyboardType: TextInputType
                                                         .emailAddress,
                                                     textCapitalization:
@@ -238,7 +238,7 @@ class EditProfileScreen extends StatelessWidget {
                                   ),
 
                                   // Update button
-                                  _buildUpdateButton(_),
+                                  _buildUpdateButton(controller),
 
                                   const SizedBox(height: 20),
                                 ],

@@ -130,7 +130,6 @@ class MassRequestHistoryController extends GetxController {
               onSurface: colorBlack, // default text color
               primary: colorGreen, // circle color
             ),
-            dialogBackgroundColor: Colors.white,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                 foregroundColor: colorWhite,
@@ -147,7 +146,7 @@ class MassRequestHistoryController extends GetxController {
                   borderRadius: BorderRadius.circular(50),
                 ),
               ),
-            ),
+            ), dialogTheme: DialogThemeData(backgroundColor: Colors.white),
           ),
           child: child!,
         );
@@ -316,7 +315,7 @@ class MassRequestHistoryController extends GetxController {
               }),
             ),
 
-            dialogTheme: DialogTheme(
+            dialogTheme: DialogThemeData(
               elevation: 8,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),

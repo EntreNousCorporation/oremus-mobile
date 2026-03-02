@@ -16,7 +16,7 @@ class FavoritesScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: colorGrey4,
       body: GetX<FavoriteController>(
-        builder: (_) {
+        builder: (controller) {
           return PopScope(
             canPop: false,
             child: KeyboardDismisser(
@@ -64,8 +64,8 @@ class FavoritesScreen extends StatelessWidget {
                               Expanded(
                                 child: Center(
                                   child: Text(
-                                    _.favorites.isNotEmpty
-                                        ? 'Mes favoris (${_.favorites.length})'
+                                    controller.favorites.isNotEmpty
+                                        ? 'Mes favoris (${controller.favorites.length})'
                                         : 'Mes favoris',
                                     style: TextStyles.montserratBold(
                                       textColor: colorWhite,
@@ -96,11 +96,11 @@ class FavoritesScreen extends StatelessWidget {
                         Separators.normalVertical(),
                         // Favorites list, loading state, or empty state
                         Expanded(
-                          child: _.isLoading.isTrue
+                          child: controller.isLoading.isTrue
                               ? _buildLoadingState()
-                              : _.favorites.isNotEmpty
-                              ? _buildFavoritesList(_)
-                              : _buildEmptyState(_),
+                              : controller.favorites.isNotEmpty
+                              ? _buildFavoritesList(controller)
+                              : _buildEmptyState(controller),
                         ),
                       ],
                     ),
@@ -119,7 +119,7 @@ class FavoritesScreen extends StatelessWidget {
                         child: InkWell(
                           customBorder: const CircleBorder(),
                           onTap: () {
-                            _.getAllFavorites();
+                            controller.getAllFavorites();
                           },
                           child: const Padding(
                             padding: EdgeInsets.all(8.0),

@@ -26,7 +26,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.grey[50],
-      child: GetX<MassRequestHistoryController>(builder: (_) {
+      child: GetX<MassRequestHistoryController>(builder: (controller) {
         return KeyboardDismisser(
           child: Scaffold(
             backgroundColor: Colors.grey[50],
@@ -82,14 +82,14 @@ class MassRequestHistoryScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: LikeButton(
-                          isLiked: _.paroisseSelected.value?.isFavorite,
+                          isLiked: controller.paroisseSelected.value?.isFavorite,
                           onTap: (isLiked) async {
                             log('isLiked => $isLiked');
-                            _.paroisseSelected.value?.isFavorite = !isLiked;
+                            controller.paroisseSelected.value?.isFavorite = !isLiked;
                             if (isLiked) {
-                              _.removeFavorite(_.paroisseSelected.value ?? ContentPlace(), isLiked);
+                              controller.removeFavorite(controller.paroisseSelected.value ?? ContentPlace(), isLiked);
                             } else {
-                              _.saveFavorite(_.paroisseSelected.value ?? ContentPlace(), isLiked);
+                              controller.saveFavorite(controller.paroisseSelected.value ?? ContentPlace(), isLiked);
                             }
                             return !isLiked;
                           },
@@ -120,7 +120,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
                         ),
                         child: IconButton(
                           onPressed: () {
-                            _.goToMap();
+                            controller.goToMap();
                           },
                           icon: const Icon(
                             Icons.map_rounded,
@@ -136,7 +136,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
                       title: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
-                          _.paroisseSelected.value?.name ?? 'Mes demandes de messes',
+                          controller.paroisseSelected.value?.name ?? 'Mes demandes de messes',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
@@ -170,9 +170,9 @@ class MassRequestHistoryScreen extends StatelessWidget {
                             fit: StackFit.expand,
                             children: [
                               // Cover image
-                              (_.paroisseSelected.value?.coverImage?.link?.isNotEmpty == true)
+                              (controller.paroisseSelected.value?.coverImage?.link?.isNotEmpty == true)
                                   ? CachedNetworkImage(
-                                imageUrl: _.paroisseSelected.value?.coverImage?.link ?? '',
+                                imageUrl: controller.paroisseSelected.value?.coverImage?.link ?? '',
                                 fit: BoxFit.cover,
                                 placeholder: (context, url) =>
                                     LottieLoadingView(size: Get.width / 6),
@@ -324,7 +324,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
                         const SizedBox(height: 24),
 
                         // Mass requests list or loading/empty indicators
-                        _.isDataProcessing.isTrue
+                        controller.isDataProcessing.isTrue
                             ? SizedBox(
                           height: 200,
                           child: Center(
@@ -333,7 +333,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
                             ),
                           ),
                         )
-                            : _.hasData.isTrue
+                            : controller.hasData.isTrue
                             ? FadeIn(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -346,13 +346,13 @@ class MassRequestHistoryScreen extends StatelessWidget {
                                   padding: EdgeInsets.zero,
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
-                                    var massRequest = _.massRequests[index];
+                                    var massRequest = controller.massRequests[index];
                                     return HistoryItem(massRequest: massRequest);
                                   },
                                   separatorBuilder: (context, index) {
                                     return const SizedBox(height: 16);
                                   },
-                                  itemCount: _.massRequests.length,
+                                  itemCount: controller.massRequests.length,
                                 ),
 
                                 const SizedBox(height: 30),
@@ -360,7 +360,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
                                 Center(
                                   child: GestureDetector(
                                     onTap: () {
-                                      _.moveToMassRequest();
+                                      controller.moveToMassRequest();
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
@@ -414,7 +414,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
                               Center(
                                 child: GestureDetector(
                                   onTap: () {
-                                    _.moveToMassRequest();
+                                    controller.moveToMassRequest();
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),

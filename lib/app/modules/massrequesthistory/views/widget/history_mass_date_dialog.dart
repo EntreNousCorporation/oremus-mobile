@@ -25,7 +25,7 @@ Future historyMassDateDialog() {
         elevation: 10,
         insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: GetX<MassRequestHistoryDetailController>(
-          builder: (_) {
+          builder: (controller) {
             return Container(
               padding: const EdgeInsets.all(24),
               child: Column(
@@ -131,10 +131,10 @@ Future historyMassDateDialog() {
                   Flexible(
                     child: ListView.separated(
                       shrinkWrap: true,
-                      itemCount: _.massRequestSelected.value.bookings?.length ?? 0,
+                      itemCount: controller.massRequestSelected.value.bookings?.length ?? 0,
                       separatorBuilder: (context, index) => const SizedBox(height: 16),
                       itemBuilder: (context, index) {
-                        var item = _.massRequestSelected.value.bookings?[index];
+                        var item = controller.massRequestSelected.value.bookings?[index];
                         return Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(

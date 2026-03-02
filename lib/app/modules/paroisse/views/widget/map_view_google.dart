@@ -8,11 +8,11 @@ class MapViewGoogle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetX<ParoisseMapController>(builder: (_) {
+    return GetX<ParoisseMapController>(builder: (controller) {
       return GoogleMap(
         initialCameraPosition: CameraPosition(
-          target: LatLng(_.paroisseSelected.value.localisation?.latitude ?? 0.0,
-              _.paroisseSelected.value.localisation?.longitude ?? 0.0),
+          target: LatLng(controller.paroisseSelected.value.localisation?.latitude ?? 0.0,
+              controller.paroisseSelected.value.localisation?.longitude ?? 0.0),
           zoom: 17.4746,
         ),
         zoomControlsEnabled: false,
@@ -24,16 +24,16 @@ class MapViewGoogle extends StatelessWidget {
         trafficEnabled: true,
         liteModeEnabled: false,
         zoomGesturesEnabled: true,
-        markers: _.worshipPlaceMarkers.value,
-        mapType: _.typeMapValue.value == 'Plan' ? MapType.normal : MapType.satellite,
+        markers: controller.worshipPlaceMarkers.value,
+        mapType: controller.typeMapValue.value == 'Plan' ? MapType.normal : MapType.satellite,
         onTap: (LatLng position) {
-          _.mapController.hideInfoWindow!();
+          controller.mapController.hideInfoWindow!();
         },
         onCameraMove: (CameraPosition position) {
-          _.mapController.onCameraMove!();
+          controller.mapController.onCameraMove!();
         },
-        onMapCreated: (GoogleMapController controller) {
-          _.mapController.googleMapController = controller;
+        onMapCreated: (GoogleMapController mc) {
+          controller.mapController.googleMapController = mc;
         },
       );
     });

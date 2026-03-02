@@ -24,7 +24,7 @@ Future recapDialog() {
       return Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: GetBuilder<FilterMassRequestDateController>(
-          builder: (_) {
+          builder: (controller) {
             return Container(
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -59,20 +59,20 @@ Future recapDialog() {
                       child: Column(
                         children: [
                           // Messes récurrentes
-                          if (_.datesChoosenForWorshipRecurrentHours.isNotEmpty)
+                          if (controller.datesChoosenForWorshipRecurrentHours.isNotEmpty)
                             _buildMassSection(
                               'Messes récurrentes',
-                              _.datesChoosenForWorshipRecurrentHours,
+                              controller.datesChoosenForWorshipRecurrentHours,
                               isRecurrent: true,
                             ),
 
                           // Messes spéciales
-                          if (_.datesChoosenWorshipSpecialHours.isNotEmpty) ...[
-                            if (_.datesChoosenForWorshipRecurrentHours.isNotEmpty)
+                          if (controller.datesChoosenWorshipSpecialHours.isNotEmpty) ...[
+                            if (controller.datesChoosenForWorshipRecurrentHours.isNotEmpty)
                               const Divider(height: 32),
                             _buildMassSection(
                               'Messes spéciales',
-                              _.datesChoosenWorshipSpecialHours,
+                              controller.datesChoosenWorshipSpecialHours,
                               isRecurrent: false,
                             ),
                           ],
@@ -100,7 +100,7 @@ Future recapDialog() {
                       ElevatedButton(
                         onPressed: () {
                           Get.back();
-                          _.goBackToMassRequest();
+                          controller.goBackToMassRequest();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: colorGreen,

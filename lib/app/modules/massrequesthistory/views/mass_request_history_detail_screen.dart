@@ -23,7 +23,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: colorGreen,
-      child: GetX<MassRequestHistoryDetailController>(builder: (_) {
+      child: GetX<MassRequestHistoryDetailController>(builder: (controller) {
         return KeyboardDismisser(
           child: Scaffold(
             resizeToAvoidBottomInset: true,
@@ -80,16 +80,16 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: LikeButton(
-                          isLiked: _.paroisseSelected.value.isFavorite,
+                          isLiked: controller.paroisseSelected.value.isFavorite,
                           onTap: (isLiked) async {
                             log('isLiked => $isLiked');
-                            _.paroisseSelected.value.isFavorite = !isLiked;
+                            controller.paroisseSelected.value.isFavorite = !isLiked;
                             if (isLiked) {
-                              _.removeFavorite(
-                                  _.paroisseSelected.value, isLiked);
+                              controller.removeFavorite(
+                                  controller.paroisseSelected.value, isLiked);
                             } else {
-                              _.saveFavorite(
-                                  _.paroisseSelected.value, isLiked);
+                              controller.saveFavorite(
+                                  controller.paroisseSelected.value, isLiked);
                             }
                             return !isLiked;
                           },
@@ -125,7 +125,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                         ),
                         child: IconButton(
                           onPressed: () {
-                            _.goToMap();
+                            controller.goToMap();
                           },
                           icon: const Icon(
                             Icons.map_rounded,
@@ -140,7 +140,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                       title: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
-                          _.paroisseSelected.value.name ?? '',
+                          controller.paroisseSelected.value.name ?? '',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
@@ -173,9 +173,9 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                             fit: StackFit.expand,
                             children: [
                               // Image de couverture
-                              (_.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
+                              (controller.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
                                   ? CachedNetworkImage(
-                                imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                imageUrl: controller.paroisseSelected.value.coverImage?.link ?? '',
                                 fit: BoxFit.cover,
                                 placeholder: (context, url) =>
                                     LottieLoadingView(size: Get.width / 6),
@@ -239,15 +239,15 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                 Container(
                                   padding: const EdgeInsets.all(16),
                                   decoration: BoxDecoration(
-                                    color: getColor(_.massRequestSelected.value.status?.code).withValues(alpha: 0.1),
+                                    color: getColor(controller.massRequestSelected.value.status?.code).withValues(alpha: 0.1),
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: getColor(_.massRequestSelected.value.status?.code),
+                                      color: getColor(controller.massRequestSelected.value.status?.code),
                                       width: 2,
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: getColor(_.massRequestSelected.value.status?.code).withValues(alpha: 0.3),
+                                        color: getColor(controller.massRequestSelected.value.status?.code).withValues(alpha: 0.3),
                                         blurRadius: 12,
                                         spreadRadius: 2,
                                         offset: const Offset(0, 4),
@@ -255,8 +255,8 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                     ],
                                   ),
                                   child: Icon(
-                                    getIcon(_.massRequestSelected.value.status?.code),
-                                    color: getColor(_.massRequestSelected.value.status?.code),
+                                    getIcon(controller.massRequestSelected.value.status?.code),
+                                    color: getColor(controller.massRequestSelected.value.status?.code),
                                     size: 40,
                                   ),
                                 ),
@@ -264,11 +264,11 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
 
                                 // Texte de statut
                                 Text(
-                                  _.massRequestSelected.value.status?.name?.fr ?? '-',
+                                  controller.massRequestSelected.value.status?.name?.fr ?? '-',
                                   textAlign: TextAlign.center,
                                   style: TextStyles.montserratBold(
                                     textSize: TextSizes.twenty,
-                                    textColor: getColor(_.massRequestSelected.value.status?.code),
+                                    textColor: getColor(controller.massRequestSelected.value.status?.code),
                                   ),
                                 ),
                               ],
@@ -296,7 +296,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                 // Section référence
                                 _buildInfoSection(
                                   label: 'Référence',
-                                  value: _.massRequestSelected.value.traceId ?? '-',
+                                  value: controller.massRequestSelected.value.traceId ?? '-',
                                   icon: Icons.numbers_rounded,
                                   isFirst: true,
                                 ),
@@ -307,7 +307,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                 // Section type de demande
                                 _buildInfoSection(
                                   label: 'Type de demande',
-                                  value: _.massRequestSelected.value.typeOfMassRequest?.name?.fr ?? '-',
+                                  value: controller.massRequestSelected.value.typeOfMassRequest?.name?.fr ?? '-',
                                   icon: Icons.category_rounded,
                                   isFirst: false,
                                 ),
@@ -318,7 +318,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                 // Section date
                                 _buildInfoSection(
                                   label: 'Date',
-                                  value: getCustomDate(_.massRequestSelected.value.createdAt ?? ''),
+                                  value: getCustomDate(controller.massRequestSelected.value.createdAt ?? ''),
                                   icon: Icons.calendar_today_rounded,
                                   isFirst: false,
                                 ),
@@ -329,7 +329,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                 // Section montant
                                 _buildInfoSection(
                                   label: 'Montant',
-                                  value: '${_.massRequestSelected.value.price.toString().split('.').first.amountFormat()} FCFA',
+                                  value: '${controller.massRequestSelected.value.price.toString().split('.').first.amountFormat()} FCFA',
                                   icon: Icons.payments_rounded,
                                   isFirst: false,
                                 ),
@@ -382,7 +382,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                           ),
                                         ),
                                         child: Text(
-                                          _.massRequestSelected.value.prayerIntent ?? '-',
+                                          controller.massRequestSelected.value.prayerIntent ?? '-',
                                           style: TextStyles.montserratRegular(
                                             textSize: TextSizes.fourteen,
                                             textColor: colorBlack,
@@ -398,7 +398,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                                   child: GestureDetector(
                                     onTap: () {
-                                      _.showMassHours();
+                                      controller.showMassHours();
                                     },
                                     child: Container(
                                       width: double.infinity,
@@ -436,7 +436,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                           ),
 
                           // Boutons d'actions
-                          if (_.canClaimMassRequest()) ...[
+                          if (controller.canClaimMassRequest()) ...[
                             const SizedBox(height: 32),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -445,7 +445,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                 Expanded(
                                   child: GestureDetector(
                                     onTap: () {
-                                      _.moveToMassRequestClaims(_.massRequestSelected.value);
+                                      controller.moveToMassRequestClaims(controller.massRequestSelected.value);
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -492,7 +492,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                 Expanded(
                                   child: GestureDetector(
                                     onTap: () {
-                                      _.moveToMassRequest(_.massRequestSelected.value);
+                                      controller.moveToMassRequest(controller.massRequestSelected.value);
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -533,7 +533,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                           ],
 
                           // Section de statuts (si disponible)
-                          if (_.massRequestStatuses.isNotEmpty) ...[
+                          if (controller.massRequestStatuses.isNotEmpty) ...[
                             const SizedBox(height: 32),
                             Container(
                               width: double.infinity,

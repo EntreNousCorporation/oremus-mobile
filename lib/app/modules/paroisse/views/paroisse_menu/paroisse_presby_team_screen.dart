@@ -23,7 +23,7 @@ class ParoisseBresbyTeamScreen extends StatelessWidget {
     return Container(
       color: colorGreen,
       child: GetX<ParoissePresbyTeamController>(
-          builder: (_) {
+          builder: (controller) {
             return KeyboardDismisser(
               child: Scaffold(
                 resizeToAvoidBottomInset: true,
@@ -79,7 +79,7 @@ class ParoisseBresbyTeamScreen extends StatelessWidget {
                             ),
                             child: IconButton(
                               onPressed: () {
-                                _.goToReportProblem();
+                                controller.goToReportProblem();
                               },
                               icon: SvgPicture.asset(
                                 Assets.imagesWarning,
@@ -98,14 +98,14 @@ class ParoisseBresbyTeamScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: LikeButton(
-                              isLiked: _.paroisseSelected.value.isFavorite,
+                              isLiked: controller.paroisseSelected.value.isFavorite,
                               onTap: (isLiked) async {
                                 log('isLiked => $isLiked');
-                                _.paroisseSelected.value.isFavorite = !isLiked;
+                                controller.paroisseSelected.value.isFavorite = !isLiked;
                                 if (isLiked) {
-                                  _.removeFavorite(_.paroisseSelected.value, isLiked);
+                                  controller.removeFavorite(controller.paroisseSelected.value, isLiked);
                                 } else {
-                                  _.saveFavorite(_.paroisseSelected.value, isLiked);
+                                  controller.saveFavorite(controller.paroisseSelected.value, isLiked);
                                 }
                                 return !isLiked;
                               },
@@ -139,7 +139,7 @@ class ParoisseBresbyTeamScreen extends StatelessWidget {
                             ),
                             child: IconButton(
                               onPressed: () {
-                                _.goToMap();
+                                controller.goToMap();
                               },
                               icon: const Icon(
                                 Icons.map_rounded,
@@ -154,7 +154,7 @@ class ParoisseBresbyTeamScreen extends StatelessWidget {
                           title: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16.0),
                             child: Text(
-                              '${_.paroisseSelected.value.name}',
+                              '${controller.paroisseSelected.value.name}',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
@@ -187,9 +187,9 @@ class ParoisseBresbyTeamScreen extends StatelessWidget {
                                 fit: StackFit.expand,
                                 children: [
                                   // Image de couverture
-                                  (_.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
+                                  (controller.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
                                       ? CachedNetworkImage(
-                                    imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                    imageUrl: controller.paroisseSelected.value.coverImage?.link ?? '',
                                     fit: BoxFit.cover,
                                     placeholder: (context, url) =>
                                         LottieLoadingView(size: Get.width / 6),
@@ -255,9 +255,9 @@ class ParoisseBresbyTeamScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Hero(
-                                      tag: _.code.value,
+                                      tag: controller.code.value,
                                       child: Text(
-                                        _.getTypeTitle(_.code.value),
+                                        controller.getTypeTitle(controller.code.value),
                                         style: TextStyles.montserratBold(
                                           textSize: TextSizes.seventeen,
                                           textColor: colorGreenSemiLight,
@@ -280,7 +280,7 @@ class ParoisseBresbyTeamScreen extends StatelessWidget {
                       ),
 
                       // Contenu principal (liste des membres de l'équipe)
-                      _.isDataProcessing.isTrue
+                      controller.isDataProcessing.isTrue
                           ? SliverFillRemaining(
                         child: Center(
                           child: LottieLoadingView(
@@ -288,21 +288,21 @@ class ParoisseBresbyTeamScreen extends StatelessWidget {
                           ),
                         ),
                       )
-                          : _.hasData.isTrue
+                          : controller.hasData.isTrue
                           ? SliverPadding(
                         padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                         sliver: SliverList(
                           delegate: SliverChildBuilderDelegate(
                                 (context, index) {
-                              var user = _.presbyTeams[index];
+                              var user = controller.presbyTeams[index];
                               return PresbyTeamItem(user: user);
                             },
-                            childCount: _.presbyTeams.length,
+                            childCount: controller.presbyTeams.length,
                           ),
                         ),
                       )
                           : SliverFillRemaining(
-                        child: _buildEmptyState(_.getTypeMessage(_.code.value)),
+                        child: _buildEmptyState(controller.getTypeMessage(controller.code.value)),
                       ),
                     ],
                   ),

@@ -308,7 +308,7 @@ class DonationHistoryController extends GetxController {
               }),
             ),
 
-            dialogTheme: DialogTheme(
+            dialogTheme: DialogThemeData(
               elevation: 8,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),

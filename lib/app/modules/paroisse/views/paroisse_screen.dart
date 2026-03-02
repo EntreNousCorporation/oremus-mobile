@@ -86,9 +86,9 @@ class _ParoisseScreenState extends State<ParoisseScreen>
 
     return Container(
       color: colorGreen,
-      child: GetX<ParoisseController>(builder: (_) {
+      child: GetX<ParoisseController>(builder: (controller) {
         // Force isExtended to always be true to keep the FAB expanded
-        _.isExtended.value = true;
+        controller.isExtended.value = true;
 
         return PopScope(
           canPop: false,
@@ -113,7 +113,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  _.doLaunchSimpleSearch();
+                                  controller.doLaunchSimpleSearch();
                                 },
                                 child: Material(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -141,12 +141,12 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                               // Recherche par horaire
                               Obx(() => GestureDetector(
                                 onTap: () {
-                                  _.doSearchBySchedule();
+                                  controller.doSearchBySchedule();
                                 },
                                 child: Material(
                                   borderRadius: BorderRadius.circular(10.0),
                                   elevation: 10,
-                                  color: _.isTimeFormatSearch.value
+                                  color: controller.isTimeFormatSearch.value
                                       ? colorGreen  // Vert si format d'heure détecté
                                       : colorWhite, // Blanc sinon
                                   shadowColor: colorGrey2.withValues(alpha: 0.5),
@@ -155,7 +155,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                     width: (Get.width / 9),
                                     child: Icon(
                                       Icons.schedule_rounded,
-                                      color: _.isTimeFormatSearch.value
+                                      color: controller.isTimeFormatSearch.value
                                           ? colorWhite      // Blanc si format d'heure
                                           : colorPurpleLight, // Violet sinon
                                     ),
@@ -165,7 +165,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                               Separators.normalHorizontal(),
                               GestureDetector(
                                 onTap: () {
-                                  _.goToAdvancedSearch();
+                                  controller.goToAdvancedSearch();
                                 },
                                 child: Material(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -173,12 +173,12 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                   color: colorWhite,
                                   shadowColor: colorGrey2.withValues(alpha: 0.5),
                                   child: b.Badge(
-                                    showBadge: (_.searchCriteria.value.isCriteriaEmpty == false)
+                                    showBadge: (controller.searchCriteria.value.isCriteriaEmpty == false)
                                         ? true
                                         : false,
                                     position: b.BadgePosition.topEnd(top: -10, end: -5),
                                     badgeContent: Text(
-                                      '${_.searchCriteria.value.countCriteria}',
+                                      '${controller.searchCriteria.value.countCriteria}',
                                       style: TextStyles.montserratRegular(
                                         textColor: colorWhite,
                                         textSize: TextSizes.thirteen,
@@ -200,8 +200,8 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                         ),
                         Separators.minimunVertical(),
                         // Indicateur de recherche par horaire actuelle
-                        Obx(() => _.isTimeFormatSearch.value &&
-                            _.searchController.text.trim().isNotEmpty
+                        Obx(() => controller.isTimeFormatSearch.value &&
+                            controller.searchController.text.trim().isNotEmpty
                             ? Container(
                           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -220,7 +220,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
-                                  'Recherche par horaire : ${_.searchController.text.trim()}',
+                                  'Recherche par horaire : ${controller.searchController.text.trim()}',
                                   style: TextStyles.montserratMedium(
                                     textSize: TextSizes.thirteen,
                                     textColor: colorGreen,
@@ -228,8 +228,8 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                 ),
                               ),
                               GestureDetector(
-                                //onTap: () => _.switchToNormalSearch(),
-                                onTap: () => _.clearSearch(),
+                                //onTap: () => controller.switchToNormalSearch(),
+                                onTap: () => controller.clearSearch(),
                                 child: Container(
                                   padding: const EdgeInsets.all(4),
                                   decoration: BoxDecoration(
@@ -250,7 +250,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                         ),
 
 
-                        _.isDataProcessing.isTrue
+                        controller.isDataProcessing.isTrue
                             ? Expanded(
                           child: Center(
                             child: LottieLoadingView(
@@ -258,7 +258,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                             ),
                           ),
                         )
-                            : _.hasData.isTrue
+                            : controller.hasData.isTrue
                             ? Expanded(
                           child: FadeIn(
                             child: Padding(
@@ -276,11 +276,11 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                 },
                                 child: SmartRefresher(
                                   scrollController:
-                                  _.scrollController,
+                                  controller.scrollController,
                                   enablePullDown: true,
                                   enablePullUp: true,
-                                  onRefresh: _.onRefresh,
-                                  onLoading: _.onLoading,
+                                  onRefresh: controller.onRefresh,
+                                  onLoading: controller.onLoading,
                                   header: const CustomClassicHeader(),
                                   footer: CustomFooter(
                                     builder: (BuildContext context,
@@ -365,7 +365,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                       );
                                     },
                                   ),
-                                  controller: _.refreshController,
+                                  controller: controller.refreshController,
                                   physics:
                                   const BouncingScrollPhysics(),
                                   child: ListView.separated(
@@ -374,10 +374,10 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                     padding: const EdgeInsets.only(
                                         top: 16),
                                     shrinkWrap: false,
-                                    itemCount: _.paroisses.length,
+                                    itemCount: controller.paroisses.length,
                                     itemBuilder: (builder, index) {
                                       var paroisse =
-                                      _.paroisses[index];
+                                      controller.paroisses[index];
                                       return ParoisseItem(
                                         paroisse: paroisse,
                                         index: index,
@@ -401,7 +401,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                             message: "Aucune paroisse trouvée !",
                             buttonTitle: 'Rafraîchir',
                             doAction: () {
-                              _.getParoisses();
+                              controller.getParoisses();
                             },
                           ),
                         ),
@@ -466,7 +466,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                           InkWell(
                                             onTap: () {
                                               _toggleSubMenu(); // Ferme le sous-menu
-                                              _.doMoveRequestMass(); // Fonction existante
+                                              controller.doMoveRequestMass(); // Fonction existante
                                             },
                                             borderRadius:
                                             const BorderRadius.only(
@@ -515,7 +515,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                           InkWell(
                                             onTap: () {
                                               _toggleSubMenu(); // Ferme le sous-menu
-                                              _.doMakeDonation();
+                                              controller.doMakeDonation();
                                             },
                                             borderRadius:
                                             const BorderRadius.only(

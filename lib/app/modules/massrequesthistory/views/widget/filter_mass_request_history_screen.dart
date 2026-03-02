@@ -19,7 +19,7 @@ class FilterMassRequestHistoryScreen extends StatelessWidget {
       color: colorGreen,
       child: SafeArea(
         bottom: false,
-        child: GetX<FilterMassRequestHistoryController>(builder: (_) {
+        child: GetX<FilterMassRequestHistoryController>(builder: (controller) {
           return PopScope(
             canPop: false,
             child: KeyboardDismisser(
@@ -46,8 +46,8 @@ class FilterMassRequestHistoryScreen extends StatelessWidget {
                       ),
                       child: IconButton(
                         onPressed: () {
-                          _.doResetFilter();
-                          _.goBackToMassRequestHistory();
+                          controller.doResetFilter();
+                          controller.goBackToMassRequestHistory();
                         },
                         icon: const Icon(
                           Icons.close,
@@ -104,7 +104,7 @@ class FilterMassRequestHistoryScreen extends StatelessWidget {
                           ),
                           TextButton.icon(
                             onPressed: () {
-                              _.doResetFilter();
+                              controller.doResetFilter();
                             },
                             icon: const Icon(
                               Icons.refresh,
@@ -176,7 +176,7 @@ class FilterMassRequestHistoryScreen extends StatelessWidget {
                                     const SizedBox(height: 16),
 
                                     // Liste horizontale des types sélectionnés
-                                    _.isMassRequestDataProcessing.isTrue
+                                    controller.isMassRequestDataProcessing.isTrue
                                         ? Center(
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -186,16 +186,16 @@ class FilterMassRequestHistoryScreen extends StatelessWidget {
                                         ),
                                       ),
                                     )
-                                        : _.hasMassRequestData.isTrue && _.massRequestTypesTemp.isNotEmpty
+                                        : controller.hasMassRequestData.isTrue && controller.massRequestTypesTemp.isNotEmpty
                                         ? Container(
                                       padding: const EdgeInsets.symmetric(vertical: 8),
                                       height: 60,
                                       child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
                                           physics: const BouncingScrollPhysics(),
-                                          itemCount: _.massRequestTypesTemp.length,
+                                          itemCount: controller.massRequestTypesTemp.length,
                                           itemBuilder: (context, index) {
-                                            var typeData = _.massRequestTypesTemp[index];
+                                            var typeData = controller.massRequestTypesTemp[index];
                                             return TypeDataItem(
                                               typeData: typeData,
                                               key: ValueKey(typeData.code),
@@ -276,16 +276,16 @@ class FilterMassRequestHistoryScreen extends StatelessWidget {
                         textSize: TextSizes.sixteen,
                         borderRadius: 12,
                         actionColor: colorGreenSemiLight.withValues(alpha: 0.8),
-                        enabled: _.enabledApplyButton.value,
-                        borderColor: _.enabledApplyButton.value
+                        enabled: controller.enabledApplyButton.value,
+                        borderColor: controller.enabledApplyButton.value
                             ? colorGreenSemiLight
                             : Colors.grey[300]!,
-                        bgcolor: _.enabledApplyButton.value
+                        bgcolor: controller.enabledApplyButton.value
                             ? colorGreenSemiLight
                             : Colors.grey[300]!,
                         textColor: colorWhite,
                         action: () {
-                          _.goBackToMassRequestHistory();
+                          controller.goBackToMassRequestHistory();
                         },
                       ),
                     ),

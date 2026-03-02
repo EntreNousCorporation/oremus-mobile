@@ -124,7 +124,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
 
     return Container(
       color: colorGreen,
-      child: GetX<ParoisseController>(builder: (_) {
+      child: GetX<ParoisseController>(builder: (controller) {
         return PopScope(
           canPop: false,
           child: KeyboardDismisser(
@@ -202,7 +202,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                       ),
                                       child: IconButton(
                                         onPressed: () {
-                                          _.doLaunchSimpleSearch();
+                                          controller.doLaunchSimpleSearch();
                                         },
                                         icon: const Icon(
                                           Icons.search_rounded,
@@ -235,10 +235,10 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                       ),
                                       child: IconButton(
                                         onPressed: () {
-                                          _.goToAdvancedSearch();
+                                          controller.goToAdvancedSearch();
                                         },
                                         icon: b.Badge(
-                                          showBadge: (_.searchCriteria.value
+                                          showBadge: (controller.searchCriteria.value
                                                   .isCriteriaEmpty ==
                                               false),
                                           position: b.BadgePosition.topEnd(
@@ -246,7 +246,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                           badgeColor: colorGreenSemiLight,
                                           padding: EdgeInsets.all(6),
                                           badgeContent: Text(
-                                            '${_.searchCriteria.value.countCriteria}',
+                                            '${controller.searchCriteria.value.countCriteria}',
                                             style: TextStyles.montserratBold(
                                               textColor: colorWhite,
                                               textSize: TextSizes.eleven,
@@ -272,13 +272,13 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                       Expanded(
                         child: Container(
                           color: colorGrey4,
-                          child: _.isDataProcessing.isTrue
+                          child: controller.isDataProcessing.isTrue
                               ? Center(
                                   child: LottieLoadingView(
                                     size: Get.width / 4,
                                   ),
                                 )
-                              : _.hasData.isTrue
+                              : controller.hasData.isTrue
                                   ? FadeIn(
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(
@@ -291,11 +291,11 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                           },
                                           child: SmartRefresher(
                                             scrollController:
-                                                _.scrollController,
+                                                controller.scrollController,
                                             enablePullDown: true,
                                             enablePullUp: true,
-                                            onRefresh: _.onRefresh,
-                                            onLoading: _.onLoading,
+                                            onRefresh: controller.onRefresh,
+                                            onLoading: controller.onLoading,
                                             header: const CustomClassicHeader(),
                                             footer: CustomFooter(
                                               builder: (BuildContext context,
@@ -337,17 +337,17 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                                 );
                                               },
                                             ),
-                                            controller: _.refreshController,
+                                            controller: controller.refreshController,
                                             physics:
                                                 const BouncingScrollPhysics(),
                                             child: ListView.builder(
                                               padding: const EdgeInsets.only(
                                                   top: 8, bottom: 100),
                                               shrinkWrap: false,
-                                              itemCount: _.paroisses.length,
+                                              itemCount: controller.paroisses.length,
                                               itemBuilder: (builder, index) {
                                                 var paroisse =
-                                                    _.paroisses[index];
+                                                    controller.paroisses[index];
                                                 return Padding(
                                                   padding:
                                                       const EdgeInsets.only(
@@ -386,7 +386,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                             double newY = _fabPosition!.dy + details.delta.dy;
 
                             // Limiter la position à l'intérieur des bords de l'écran
-                            if (_.isExtended.isTrue) {
+                            if (controller.isExtended.isTrue) {
                               newX = newX.clamp(0.0, Get.width - 250);
                               newY = newY.clamp(
                                   0.0,
@@ -444,7 +444,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                         isLast: false,
                                         onTap: () {
                                           _toggleSubMenu();
-                                          _.doMoveRequestMass();
+                                          controller.doMoveRequestMass();
                                         },
                                       ),
 
@@ -466,7 +466,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                         isLast: true,
                                         onTap: () {
                                           _toggleSubMenu();
-                                          _.doMakeDonation();
+                                          controller.doMakeDonation();
                                         },
                                       ),
                                     ],
@@ -480,7 +480,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                           AnimatedBuilder(
                             animation: _sizeAnimationController,
                             builder: (context, child) {
-                              final width = _.isExtended.isTrue ? 250.0 : 75.0;
+                              final width = controller.isExtended.isTrue ? 250.0 : 75.0;
                               return Container(
                                 width: width,
                                 height: 60.0,
@@ -508,7 +508,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 16),
                                       child: Row(
-                                        mainAxisAlignment: _.isExtended.isTrue
+                                        mainAxisAlignment: controller.isExtended.isTrue
                                             ? MainAxisAlignment.spaceBetween
                                             : MainAxisAlignment.center,
                                         children: [
@@ -518,7 +518,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                             colorFilter: const ColorFilter.mode(
                                                 colorWhite, BlendMode.srcIn),
                                           ),
-                                          if (_.isExtended.isTrue) ...[
+                                          if (controller.isExtended.isTrue) ...[
                                             const SizedBox(width: 8),
                                             Expanded(
                                               child: Text(

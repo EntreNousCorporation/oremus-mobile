@@ -21,7 +21,7 @@ class ParoisseTypeMasseScreen extends StatelessWidget {
     return Container(
       color: colorGreen,
       child: GetX<ParoisseMassController>(
-          builder: (_) {
+          builder: (controller) {
             return KeyboardDismisser(
               child: Scaffold(
                 resizeToAvoidBottomInset: true,
@@ -77,7 +77,7 @@ class ParoisseTypeMasseScreen extends StatelessWidget {
                             ),
                             child: IconButton(
                               onPressed: () {
-                                _.goToReportProblem();
+                                controller.goToReportProblem();
                               },
                               icon: SvgPicture.asset(
                                 Assets.imagesWarning,
@@ -96,13 +96,13 @@ class ParoisseTypeMasseScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: LikeButton(
-                              isLiked: _.paroisseSelected.value.isFavorite,
+                              isLiked: controller.paroisseSelected.value.isFavorite,
                               onTap: (isLiked) async {
-                                _.paroisseSelected.value.isFavorite = !isLiked;
+                                controller.paroisseSelected.value.isFavorite = !isLiked;
                                 if (isLiked) {
-                                  _.removeFavorite(_.paroisseSelected.value, isLiked);
+                                  controller.removeFavorite(controller.paroisseSelected.value, isLiked);
                                 } else {
-                                  _.saveFavorite(_.paroisseSelected.value, isLiked);
+                                  controller.saveFavorite(controller.paroisseSelected.value, isLiked);
                                 }
                                 return !isLiked;
                               },
@@ -136,7 +136,7 @@ class ParoisseTypeMasseScreen extends StatelessWidget {
                             ),
                             child: IconButton(
                               onPressed: () {
-                                _.goToMap();
+                                controller.goToMap();
                               },
                               icon: const Icon(
                                 Icons.map_rounded,
@@ -151,7 +151,7 @@ class ParoisseTypeMasseScreen extends StatelessWidget {
                           title: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16.0),
                             child: Text(
-                              '${_.paroisseSelected.value.name}',
+                              '${controller.paroisseSelected.value.name}',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
@@ -184,9 +184,9 @@ class ParoisseTypeMasseScreen extends StatelessWidget {
                                 fit: StackFit.expand,
                                 children: [
                                   // Image de couverture
-                                  (_.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
+                                  (controller.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
                                       ? CachedNetworkImage(
-                                    imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                    imageUrl: controller.paroisseSelected.value.coverImage?.link ?? '',
                                     fit: BoxFit.cover,
                                     placeholder: (context, url) =>
                                         LottieLoadingView(size: Get.width / 6),
@@ -294,13 +294,13 @@ class ParoisseTypeMasseScreen extends StatelessWidget {
                                     textColor: colorWhite,
                                   ),
                                   borderColor: colorGreenSemiLight,
-                                  tabs: _.menusMasseTab.keys.map((e) {
+                                  tabs: controller.menusMasseTab.keys.map((e) {
                                     return Tab(text: e);
                                   }).toList(),
                                 ),
                                 Expanded(
                                   child: TabBarView(
-                                    children: _.menusMasseTab.entries.map((e) {
+                                    children: controller.menusMasseTab.entries.map((e) {
                                       return Center(
                                         child: e.value,
                                       );

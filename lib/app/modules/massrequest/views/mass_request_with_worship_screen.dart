@@ -24,10 +24,10 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: colorGreen,
-      child: GetX<MassRequestWithWorshipController>(builder: (_) {
+      child: GetX<MassRequestWithWorshipController>(builder: (controller) {
         return KeyboardDismisser(
           child: PopScope(
-            canPop: _.unlockBackButton.value,
+            canPop: controller.unlockBackButton.value,
             child: Scaffold(
               resizeToAvoidBottomInset: true,
               body: NotificationListener<OverscrollIndicatorNotification>(
@@ -109,9 +109,9 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                               fit: StackFit.expand,
                               children: [
                                 // Image de couverture
-                                (_.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
+                                (controller.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
                                     ? CachedNetworkImage(
-                                  imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                  imageUrl: controller.paroisseSelected.value.coverImage?.link ?? '',
                                   fit: BoxFit.cover,
                                   placeholder: (context, url) =>
                                       LottieLoadingView(size: Get.width / 6),
@@ -166,18 +166,18 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                             const SizedBox(height: 12),
                             _buildSelectionCard(
                               onTap: () {
-                                _.goToWorshipChoice();
+                                controller.goToWorshipChoice();
                               },
                               content: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      _.paroisseSelected.value.identifier == null
+                                      controller.paroisseSelected.value.identifier == null
                                           ? 'Sélectionner une paroisse'
-                                          : '${_.paroisseSelected.value.name}',
+                                          : '${controller.paroisseSelected.value.name}',
                                       style: TextStyles.montserratSemiBold(
-                                        textColor: _.paroisseSelected.value.identifier == null
+                                        textColor: controller.paroisseSelected.value.identifier == null
                                             ? colorGrey1
                                             : colorBlack,
                                         textSize: TextSizes.fifteen,
@@ -185,11 +185,11 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                                     ),
                                   ),
                                   Icon(
-                                    _.paroisseSelected.value.identifier != null
+                                    controller.paroisseSelected.value.identifier != null
                                         ? Icons.check_circle_outline_rounded
                                         : Icons.arrow_forward_ios_rounded,
                                     size: 22,
-                                    color: _.paroisseSelected.value.identifier != null
+                                    color: controller.paroisseSelected.value.identifier != null
                                         ? colorGreen
                                         : colorGrey1,
                                   ),
@@ -221,12 +221,12 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                             const SizedBox(height: 24),
 
                             // Section dates multiples (conditionnelle)
-                            if (_.massRequestTypeRepetitionSelected.value?.code == RepetitionType.many.name) ...[
+                            if (controller.massRequestTypeRepetitionSelected.value?.code == RepetitionType.many.name) ...[
                               _buildSelectionCard(
                                 onTap: () {
-                                  _.goToDatesChoice();
+                                  controller.goToDatesChoice();
                                 },
-                                content: _.isDatesProcessing.isTrue
+                                content: controller.isDatesProcessing.isTrue
                                     ? const ShimmerPrice(height: 50)
                                     : Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -239,12 +239,12 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                                       ),
                                     ),
                                     Icon(
-                                      (_.datesChoosen.length > 1 &&
-                                          _.massRequestTypeRepetitionSelected.value?.code == RepetitionType.many.name)
+                                      (controller.datesChoosen.length > 1 &&
+                                          controller.massRequestTypeRepetitionSelected.value?.code == RepetitionType.many.name)
                                           ? Icons.check_circle
                                           : Icons.calendar_month,
                                       size: 22,
-                                      color: _.worshipHours.isNotEmpty
+                                      color: controller.worshipHours.isNotEmpty
                                           ? colorGreen
                                           : colorGrey1,
                                     ),
@@ -255,7 +255,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                             ],
 
                             // Section date unique (conditionnelle)
-                            if (_.massRequestTypeRepetitionSelected.value?.code == RepetitionType.once.name) ...[
+                            if (controller.massRequestTypeRepetitionSelected.value?.code == RepetitionType.once.name) ...[
                               _buildSectionTitle(
                                 icon: Icons.event_outlined,
                                 title: 'Date et heure',
@@ -269,8 +269,8 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                                       flex: 2,
                                       child: GestureDetector(
                                         onTap: () {
-                                          if (_.selectedDate.value == null) return;
-                                          _.showPicker(context);
+                                          if (controller.selectedDate.value == null) return;
+                                          controller.showPicker(context);
                                         },
                                         child: Container(
                                           padding: const EdgeInsets.symmetric(
@@ -281,28 +281,28 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                                             color: colorGreen.withValues(alpha: 0.1),
                                             borderRadius: BorderRadius.circular(12),
                                             border: Border.all(
-                                              color: _.selectedDate.value != null
+                                              color: controller.selectedDate.value != null
                                                   ? colorGreen.withValues(alpha: 0.3)
                                                   : Colors.red.withValues(alpha: 0.3),
                                             ),
                                           ),
-                                          child: _.isDatesProcessing.isTrue
+                                          child: controller.isDatesProcessing.isTrue
                                               ? const ShimmerPrice(height: 24)
                                               : Row(
                                             children: [
                                               Icon(
                                                 Icons.calendar_today_rounded,
                                                 size: 20,
-                                                color: _.selectedDate.value != null
+                                                color: controller.selectedDate.value != null
                                                     ? colorGreen
                                                     : Colors.red,
                                               ),
                                               const SizedBox(width: 8),
                                               Expanded(
                                                 child: Text(
-                                                  _.selectedDate.value?.dayToDisplay ?? 'Choisir une date',
+                                                  controller.selectedDate.value?.dayToDisplay ?? 'Choisir une date',
                                                   style: TextStyles.montserratSemiBold(
-                                                    textColor: _.selectedDate.value != null
+                                                    textColor: controller.selectedDate.value != null
                                                         ? colorBlack
                                                         : Colors.red,
                                                     textSize: TextSizes.fourteen,
@@ -361,7 +361,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              child: _.isPricingProcessing.isTrue
+                              child: controller.isPricingProcessing.isTrue
                                   ? const ShimmerPrice(height: 50)
                                   : Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -392,7 +392,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
-                                        _.getPrice().value,
+                                        controller.getPrice().value,
                                         style: TextStyles.montserratBold(
                                           textColor: colorBlack,
                                           textSize: TextSizes.twenty_four,
@@ -410,16 +410,16 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                               text: 'Continuer',
                               borderRadius: 12,
                               textSize: TextSizes.sixteen,
-                              bgcolor: _.isValidForm.isTrue
+                              bgcolor: controller.isValidForm.isTrue
                                   ? colorGreen
                                   : colorGrey1.withValues(alpha: 0.5),
-                              borderColor: _.isValidForm.isTrue
+                              borderColor: controller.isValidForm.isTrue
                                   ? colorGreen
                                   : colorGreen.withValues(alpha: 0),
                               actionColor: colorGreen.withValues(alpha: 0.5),
-                              enabled: _.isValidForm.value,
+                              enabled: controller.isValidForm.value,
                               action: () {
-                                _.doSendMassRequest();
+                                controller.doSendMassRequest();
                               },
                             ),
                             const SizedBox(height: 16),

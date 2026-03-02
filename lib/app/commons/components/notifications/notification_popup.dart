@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html_v3/flutter_html.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -102,11 +102,11 @@ class NotificationPopup extends StatelessWidget {
                             ),
                           },
                           // Gestion des clics sur les liens
-                          onLinkTap: (url, renderContext, attributes, element) {
+                          onLinkTap: (url, renderContext, element) {
                             _handleLinkTap(url);
                           },
                           // Alternative pour les anciennes versions
-                          onAnchorTap: (url, renderContext, attributes, element) {
+                          onAnchorTap: (url, renderContext, element) {
                             _handleLinkTap(url);
                           },
                         ),

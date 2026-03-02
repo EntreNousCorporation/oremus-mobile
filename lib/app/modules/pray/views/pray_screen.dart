@@ -21,9 +21,9 @@ class PrayScreen extends StatelessWidget {
       color: colorWhite,
       child: SafeArea(
         bottom: false,
-        child: GetX<PrayController>(builder: (_) {
+        child: GetX<PrayController>(builder: (controller) {
           return PopScope(
-            canPop: _.unlockBackButton.value,
+            canPop: controller.unlockBackButton.value,
             child: KeyboardDismisser(
               child: Scaffold(
                 resizeToAvoidBottomInset: true,
@@ -90,19 +90,19 @@ class PrayScreen extends StatelessWidget {
                       child: Container(
                         color: colorGrey4,
                         width: double.infinity,
-                        child: _.isDataProcessing.isTrue
+                        child: controller.isDataProcessing.isTrue
                             ? Center(
                           child: LottieLoadingView(
                             size: Get.width / 4,
                           ),
                         )
-                            : _.hasData.isTrue
+                            : controller.hasData.isTrue
                             ? FadeIn(
                           child: SmartRefresher(
                             enablePullDown: true,
                             enablePullUp: true,
-                            onLoading: _.onLoading,
-                            onRefresh: _.onRefresh,
+                            onLoading: controller.onLoading,
+                            onRefresh: controller.onRefresh,
                             header: const CustomClassicHeader(),
                             footer: CustomFooter(
                               builder: (BuildContext context, LoadStatus? mode) {
@@ -178,7 +178,7 @@ class PrayScreen extends StatelessWidget {
                               },
                             ),
                             physics: const BouncingScrollPhysics(),
-                            controller: _.refreshController,
+                            controller: controller.refreshController,
                             child: ListView.builder(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 20,
@@ -186,9 +186,9 @@ class PrayScreen extends StatelessWidget {
                               ),
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
-                              itemCount: _.prayers.length,
+                              itemCount: controller.prayers.length,
                               itemBuilder: (context, index) {
-                                var pray = _.prayers[index];
+                                var pray = controller.prayers[index];
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 16),
                                   child: PrayItem(pray: pray),

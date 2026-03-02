@@ -14,7 +14,7 @@ class MassRequestMenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: colorWhite,
-      child: GetX<MassRequestMenuController>(builder: (_) {
+      child: GetX<MassRequestMenuController>(builder: (controller) {
         return KeyboardDismisser(
           child: Column(
             children: [
@@ -78,9 +78,9 @@ class MassRequestMenuScreen extends StatelessWidget {
                       crossAxisSpacing: 16.0,
                       mainAxisSpacing: 16.0,
                     ),
-                    itemCount: _.menus.length,
+                    itemCount: controller.menus.length,
                     itemBuilder: (context, index) {
-                      var menu = _.menus[index];
+                      var menu = controller.menus[index];
                       return MenuGridItem(item: menu);
                     },
                   ),

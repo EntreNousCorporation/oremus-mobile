@@ -15,8 +15,8 @@ class WorshipSpecialHoursList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetX<FilterMassRequestDateController>(
-      builder: (_) {
-        if (_.worshipSpecialHours.isEmpty) {
+      builder: (controller) {
+        if (controller.worshipSpecialHours.isEmpty) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -39,13 +39,13 @@ class WorshipSpecialHoursList extends StatelessWidget {
         }
 
         // Filtrer les messes spéciales selon les dates sélectionnées
-        final startDate = Jiffy.parse(_.initialSelectedDate.value?.day ?? '').dateTime;
-        final endDate = Jiffy.parse(_.endSelectedDate.value?.day ?? '').dateTime;
+        final startDate = Jiffy.parse(controller.initialSelectedDate.value?.day ?? '').dateTime;
+        final endDate = Jiffy.parse(controller.endSelectedDate.value?.day ?? '').dateTime;
         final now = DateTime.now();
         final currentWeekDay = now.weekday - 1; // 0=lundi, 6=dimanche
         final isAfternoon = now.hour >= 12;
 
-        final filteredSpecialMasses = _.worshipSpecialHours.where((specialMass) {
+        final filteredSpecialMasses = controller.worshipSpecialHours.where((specialMass) {
           // Vérifie si la messe est dans la plage de dates sélectionnée
           final specialDate = Jiffy.parse(specialMass.day ?? '').dateTime;
           final isInDateRange = !specialDate.isBefore(startDate) && !specialDate.isAfter(endDate);
@@ -213,7 +213,7 @@ class WorshipSpecialHoursList extends StatelessWidget {
                             final isSlotSelectable = isSlotAvailableForSpecialMass(slot.startTime, specialMass.day);
 
                             return FilterChip(
-                              selected: _.isSlotSelected(
+                              selected: controller.isSlotSelected(
                                   specialMass.day ?? '',
                                   slot.startTime ?? '',
                                   isSpecial: true
@@ -226,7 +226,7 @@ class WorshipSpecialHoursList extends StatelessWidget {
                                 );
                               }
                                   : (selected) {
-                                _.toggleSlotSelection(
+                                controller.toggleSlotSelection(
                                     specialMass.day ?? '',
                                     slot.startTime ?? '',
                                     isSpecial: true
@@ -238,7 +238,7 @@ class WorshipSpecialHoursList extends StatelessWidget {
                               checkmarkColor: colorGreenSemiLight,
                               labelStyle: TextStyles.montserratSemiBold(
                                 textSize: TextSizes.fourteen,
-                                textColor: _.isSlotSelected(
+                                textColor: controller.isSlotSelected(
                                     specialMass.day ?? '',
                                     slot.startTime ?? '',
                                     isSpecial: true
@@ -250,7 +250,7 @@ class WorshipSpecialHoursList extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(20),
                                 side: BorderSide(
                                   color: isSlotSelectable
-                                      ? (_.isSlotSelected(
+                                      ? (controller.isSlotSelected(
                                       specialMass.day ?? '',
                                       slot.startTime ?? '',
                                       isSpecial: true

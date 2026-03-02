@@ -25,7 +25,7 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.grey[50],
-      child: GetX<MassRequestTrackClaimController>(builder: (_) {
+      child: GetX<MassRequestTrackClaimController>(builder: (controller) {
         return KeyboardDismisser(
           child: Scaffold(
             backgroundColor: Colors.grey[50],
@@ -81,14 +81,14 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: LikeButton(
-                          isLiked: _.paroisseSelected.value.isFavorite,
+                          isLiked: controller.paroisseSelected.value.isFavorite,
                           onTap: (isLiked) async {
                             log('isLiked => $isLiked');
-                            _.paroisseSelected.value.isFavorite = !isLiked;
+                            controller.paroisseSelected.value.isFavorite = !isLiked;
                             if (isLiked) {
-                              _.removeFavorite(_.paroisseSelected.value, isLiked);
+                              controller.removeFavorite(controller.paroisseSelected.value, isLiked);
                             } else {
-                              _.saveFavorite(_.paroisseSelected.value, isLiked);
+                              controller.saveFavorite(controller.paroisseSelected.value, isLiked);
                             }
                             return !isLiked;
                           },
@@ -121,7 +121,7 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                         ),
                         child: IconButton(
                           onPressed: () {
-                            _.goToMap();
+                            controller.goToMap();
                           },
                           icon: const Icon(
                             Icons.map_rounded,
@@ -137,7 +137,7 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                       title: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
-                          _.paroisseSelected.value.name ?? '-',
+                          controller.paroisseSelected.value.name ?? '-',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
@@ -171,11 +171,11 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                             fit: StackFit.expand,
                             children: [
                               // Cover image
-                              (_.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
+                              (controller.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
                                   ? CachedNetworkImage(
                                 width: Get.width,
                                 height: Get.width,
-                                imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                imageUrl: controller.paroisseSelected.value.coverImage?.link ?? '',
                                 fit: BoxFit.cover,
                                 placeholder: (context, url) => LottieLoadingView(size: Get.width / 6),
                                 errorWidget: (context, url, error) => Image.asset(
@@ -276,7 +276,7 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                             child: GestureDetector(
                               onTap: () {
-                                _.goToWorshipChoice();
+                                controller.goToWorshipChoice();
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -284,10 +284,10 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
-                                    color: _.paroisseSelected.value.identifier != null
+                                    color: controller.paroisseSelected.value.identifier != null
                                         ? colorGreenSemiLight
                                         : Colors.grey[300]!,
-                                    width: _.paroisseSelected.value.identifier != null ? 2 : 1,
+                                    width: controller.paroisseSelected.value.identifier != null ? 2 : 1,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
@@ -301,7 +301,7 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(
-                                      child: _.paroisseSelected.value.identifier == null
+                                      child: controller.paroisseSelected.value.identifier == null
                                           ? Text(
                                         'Filtrer par paroisse',
                                         style: TextStyles.montserratMedium(
@@ -310,7 +310,7 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                                         ),
                                       )
                                           : Text(
-                                        '${_.paroisseSelected.value.name}',
+                                        '${controller.paroisseSelected.value.name}',
                                         style: TextStyles.montserratSemiBold(
                                           textColor: colorBlack,
                                           textSize: TextSizes.fifteen,
@@ -325,7 +325,7 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                                         shape: BoxShape.circle,
                                       ),
                                       child: Icon(
-                                        _.paroisseSelected.value.identifier != null
+                                        controller.paroisseSelected.value.identifier != null
                                             ? Icons.edit_rounded
                                             : Icons.arrow_forward_ios_rounded,
                                         size: 15,
@@ -341,7 +341,7 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                         // Claims list or empty/loading state
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 24),
-                          child: _.isDataProcessing.isTrue
+                          child: controller.isDataProcessing.isTrue
                               ? SizedBox(
                             height: 300,
                             child: Center(
@@ -350,7 +350,7 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                               ),
                             ),
                           )
-                              : _.hasData.isTrue
+                              : controller.hasData.isTrue
                               ? FadeIn(
                             child: Padding(
                               padding: const EdgeInsets.only(top: 8, bottom: 24),
@@ -361,13 +361,13 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                                     padding: EdgeInsets.zero,
                                     physics: const NeverScrollableScrollPhysics(),
                                     itemBuilder: (context, index) {
-                                      var claimData = _.claims[index];
+                                      var claimData = controller.claims[index];
                                       return ClaimItem(claimData: claimData);
                                     },
                                     separatorBuilder: (context, index) {
                                       return const SizedBox(height: 16);
                                     },
-                                    itemCount: _.claims.length,
+                                    itemCount: controller.claims.length,
                                   ),
 
                                   Visibility(
@@ -378,7 +378,7 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                                         Center(
                                           child: GestureDetector(
                                             onTap: () {
-                                              _.moveToMassRequestClaims();
+                                              controller.moveToMassRequestClaims();
                                             },
                                             child: Container(
                                               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
@@ -439,7 +439,7 @@ class MassRequestTrackClaimScreen extends StatelessWidget {
                                   child: Center(
                                     child: GestureDetector(
                                       onTap: () {
-                                        _.moveToMassRequestClaims();
+                                        controller.moveToMassRequestClaims();
                                       },
                                       child: Container(
                                         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),

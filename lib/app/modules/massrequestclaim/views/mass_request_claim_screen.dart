@@ -24,7 +24,7 @@ class MassRequestClaimScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.grey[50],
-      child: GetX<MassRequestClaimController>(builder: (_) {
+      child: GetX<MassRequestClaimController>(builder: (controller) {
         return KeyboardDismisser(
           child: Scaffold(
             backgroundColor: Colors.grey[50],
@@ -80,14 +80,14 @@ class MassRequestClaimScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: LikeButton(
-                          isLiked: _.paroisseSelected.value.isFavorite,
+                          isLiked: controller.paroisseSelected.value.isFavorite,
                           onTap: (isLiked) async {
                             log('isLiked => $isLiked');
-                            _.paroisseSelected.value.isFavorite = !isLiked;
+                            controller.paroisseSelected.value.isFavorite = !isLiked;
                             if (isLiked) {
-                              _.removeFavorite(_.paroisseSelected.value, isLiked);
+                              controller.removeFavorite(controller.paroisseSelected.value, isLiked);
                             } else {
-                              _.saveFavorite(_.paroisseSelected.value, isLiked);
+                              controller.saveFavorite(controller.paroisseSelected.value, isLiked);
                             }
                             return !isLiked;
                           },
@@ -120,7 +120,7 @@ class MassRequestClaimScreen extends StatelessWidget {
                         ),
                         child: IconButton(
                           onPressed: () {
-                            _.goToMap();
+                            controller.goToMap();
                           },
                           icon: const Icon(
                             Icons.map_rounded,
@@ -144,7 +144,7 @@ class MassRequestClaimScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          _.paroisseSelected.value.name ?? '',
+                          controller.paroisseSelected.value.name ?? '',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
@@ -178,13 +178,13 @@ class MassRequestClaimScreen extends StatelessWidget {
                             fit: StackFit.expand,
                             children: [
                               // Cover image with Hero animation
-                              (_.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
+                              (controller.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
                                   ? Hero(
-                                tag: 'tag${_.paroisseSelected.value.identifier}',
+                                tag: 'tag${controller.paroisseSelected.value.identifier}',
                                 child: CachedNetworkImage(
                                   width: Get.width,
                                   height: Get.width,
-                                  imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                  imageUrl: controller.paroisseSelected.value.coverImage?.link ?? '',
                                   fit: BoxFit.cover,
                                   placeholder: (context, url) => LottieLoadingView(size: Get.width / 6),
                                   errorWidget: (context, url, error) => Image.asset(
@@ -196,7 +196,7 @@ class MassRequestClaimScreen extends StatelessWidget {
                                 ),
                               )
                                   : Hero(
-                                tag: 'tag${_.paroisseSelected.value.identifier}',
+                                tag: 'tag${controller.paroisseSelected.value.identifier}',
                                 child: Image.asset(
                                   Assets.imagesBgLogin,
                                   width: Get.width,
@@ -336,7 +336,7 @@ class MassRequestClaimScreen extends StatelessWidget {
                                   const SizedBox(height: 4),
                                   GestureDetector(
                                     onTap: () {
-                                      _.goToWorshipChoice();
+                                      controller.goToWorshipChoice();
                                     },
                                     child: Container(
                                       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -345,17 +345,17 @@ class MassRequestClaimScreen extends StatelessWidget {
                                         color: Colors.grey[50],
                                         borderRadius: BorderRadius.circular(12),
                                         border: Border.all(
-                                          color: _.paroisseSelected.value.identifier != null
+                                          color: controller.paroisseSelected.value.identifier != null
                                               ? colorGreenSemiLight
                                               : Colors.grey[300]!,
-                                          width: _.paroisseSelected.value.identifier != null ? 2 : 1,
+                                          width: controller.paroisseSelected.value.identifier != null ? 2 : 1,
                                         ),
                                       ),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Expanded(
-                                            child: _.paroisseSelected.value.identifier == null
+                                            child: controller.paroisseSelected.value.identifier == null
                                                 ? Text(
                                               'Choisir une paroisse',
                                               style: TextStyles.montserratMedium(
@@ -364,7 +364,7 @@ class MassRequestClaimScreen extends StatelessWidget {
                                               ),
                                             )
                                                 : Text(
-                                              '${_.paroisseSelected.value.name}',
+                                              '${controller.paroisseSelected.value.name}',
                                               style: TextStyles.montserratSemiBold(
                                                 textColor: colorBlack,
                                                 textSize: TextSizes.fifteen,
@@ -379,7 +379,7 @@ class MassRequestClaimScreen extends StatelessWidget {
                                               shape: BoxShape.circle,
                                             ),
                                             child: Icon(
-                                              _.paroisseSelected.value.identifier != null
+                                              controller.paroisseSelected.value.identifier != null
                                                   ? Icons.edit_rounded
                                                   : Icons.arrow_forward_ios_rounded,
                                               size: 16,
@@ -512,19 +512,19 @@ class MassRequestClaimScreen extends StatelessWidget {
                               text: 'Soumettre',
                               borderRadius: 16,
                               textSize: TextSizes.sixteen,
-                              bgcolor: _.isValidForm.isTrue
+                              bgcolor: controller.isValidForm.isTrue
                                   ? colorGreenSemiLight
                                   : Colors.grey[300]!,
-                              borderColor: _.isValidForm.isTrue
+                              borderColor: controller.isValidForm.isTrue
                                   ? colorGreenSemiLight
                                   : Colors.grey[300]!,
-                              textColor: _.isValidForm.isTrue
+                              textColor: controller.isValidForm.isTrue
                                   ? colorWhite
                                   : Colors.grey[500]!,
                               actionColor: colorGreenSemiLight.withValues(alpha: 0.8),
-                              enabled: _.isValidForm.value,
+                              enabled: controller.isValidForm.value,
                               action: () {
-                                _.doSendClaim();
+                                controller.doSendClaim();
                               },
                             ),
                           ),

@@ -27,7 +27,7 @@ class InitResetPasswordScreen extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 6.0, sigmaY: 6.0),
         child: GetX<InitResetPasswordController>(
-          builder: (_) {
+          builder: (controller) {
             return FadeIn(
               preferences: const AnimationPreferences(
                 duration: Duration(milliseconds: 800),
@@ -38,9 +38,9 @@ class InitResetPasswordScreen extends StatelessWidget {
                   backgroundColor: Colors.black.withOpacity(0.3),
                   resizeToAvoidBottomInset: true,
                   body: WillPopScope(
-                    onWillPop: () async => _.unlockBackButton.value,
+                    onWillPop: () async => controller.unlockBackButton.value,
                     child: AbsorbPointer(
-                      absorbing: _.lockScreen.value,
+                      absorbing: controller.lockScreen.value,
                       child: Stack(
                         children: [
                           // Back Button with animation
@@ -180,7 +180,7 @@ class InitResetPasswordScreen extends StatelessWidget {
                                               ],
                                             ),
                                             child: Form(
-                                              key: _.formSigninKey,
+                                              key: controller.formSigninKey,
                                               child: Padding(
                                                 padding: const EdgeInsets.all(30),
                                                 child: Column(
@@ -211,8 +211,8 @@ class InitResetPasswordScreen extends StatelessWidget {
 
                                                     // Email Field with enhanced styling
                                                     MyTextField(
-                                                      focusNode: _.emailFocusNode,
-                                                      controller: _.emailController,
+                                                      focusNode: controller.emailFocusNode,
+                                                      controller: controller.emailController,
                                                       hintText: 'Votre adresse email',
                                                       labelText: 'E-mail',
                                                       prefixIcon: "assets/images/icon_enveloppe.svg",
@@ -222,9 +222,9 @@ class InitResetPasswordScreen extends StatelessWidget {
                                                       keyboardType: TextInputType.emailAddress,
                                                       textCapitalization: TextCapitalization.none,
                                                       onChanged: (value) {
-                                                        _.checkForm();
+                                                        controller.checkForm();
                                                       },
-                                                      errorText: _.emailErrorMessage.value,
+                                                      errorText: controller.emailErrorMessage.value,
                                                     ),
 
                                                     const SizedBox(height: 30),
@@ -236,7 +236,7 @@ class InitResetPasswordScreen extends StatelessWidget {
                                                       decoration: BoxDecoration(
                                                         borderRadius: BorderRadius.circular(18),
                                                         gradient: LinearGradient(
-                                                          colors: _.isValidForm.isTrue
+                                                          colors: controller.isValidForm.isTrue
                                                               ? [
                                                             colorGreen.withOpacity(0.9),
                                                             colorGreen,
@@ -248,7 +248,7 @@ class InitResetPasswordScreen extends StatelessWidget {
                                                           begin: Alignment.topLeft,
                                                           end: Alignment.bottomRight,
                                                         ),
-                                                        boxShadow: _.isValidForm.isTrue
+                                                        boxShadow: controller.isValidForm.isTrue
                                                             ? [
                                                           BoxShadow(
                                                             color: colorGreen.withOpacity(0.3),
@@ -260,9 +260,9 @@ class InitResetPasswordScreen extends StatelessWidget {
                                                             : [],
                                                       ),
                                                       child: TextButton(
-                                                        onPressed: _.isValidForm.isTrue
+                                                        onPressed: controller.isValidForm.isTrue
                                                             ? () {
-                                                          _.doInitResetPassword();
+                                                          controller.doInitResetPassword();
                                                         }
                                                             : null,
                                                         style: TextButton.styleFrom(
@@ -281,7 +281,7 @@ class InitResetPasswordScreen extends StatelessWidget {
                                                                 fontSize: 16,
                                                                 fontWeight: FontWeight.bold,
                                                                 letterSpacing: 0.5,
-                                                                color: _.isValidForm.isTrue
+                                                                color: controller.isValidForm.isTrue
                                                                     ? Colors.white
                                                                     : Colors.grey[500],
                                                               ),
@@ -292,7 +292,7 @@ class InitResetPasswordScreen extends StatelessWidget {
                                                               width: 20,
                                                               height: 20,
                                                               colorFilter: ColorFilter.mode(
-                                                                _.isValidForm.isTrue
+                                                                controller.isValidForm.isTrue
                                                                     ? Colors.white
                                                                     : Colors.grey[500]!,
                                                                 BlendMode.srcIn,

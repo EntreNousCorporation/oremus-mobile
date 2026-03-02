@@ -16,7 +16,7 @@ class DonationMenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: colorWhite,
-      child: GetX<DonationMenuController>(builder: (_) {
+      child: GetX<DonationMenuController>(builder: (controller) {
         return KeyboardDismisser(
           child: Column(
             children: [
@@ -83,9 +83,9 @@ class DonationMenuScreen extends StatelessWidget {
                       crossAxisSpacing: 12.0,
                       mainAxisSpacing: 12.0,
                     ),
-                    itemCount: _.menus.length,
+                    itemCount: controller.menus.length,
                     itemBuilder: (context, index) {
-                      var menu = _.menus[index];
+                      var menu = controller.menus[index];
                       return MenuGridItem(item: menu);
                     },
                   ),

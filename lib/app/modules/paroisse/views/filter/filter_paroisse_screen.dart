@@ -23,7 +23,7 @@ class FilterParoisseScreen extends StatelessWidget {
     return Container(
       color: colorGreen,
       child: GetBuilder<FilterParoisseController>(
-        builder: (_) {
+        builder: (controller) {
           return PopScope(
             canPop: false,
             child: KeyboardDismisser(
@@ -79,8 +79,8 @@ class FilterParoisseScreen extends StatelessWidget {
                                       ),
                                       child: IconButton(
                                         onPressed: () {
-                                          _.doResetFilter();
-                                          _.goBackToParoisse();
+                                          controller.doResetFilter();
+                                          controller.goBackToParoisse();
                                         },
                                         icon: const Icon(
                                           Icons.arrow_back_rounded,
@@ -126,7 +126,7 @@ class FilterParoisseScreen extends StatelessWidget {
                                           ),
                                         ),
                                         onPressed: () {
-                                          _.doResetFilter();
+                                          controller.doResetFilter();
                                         },
                                         style: TextButton.styleFrom(
                                           padding: const EdgeInsets.symmetric(
@@ -400,10 +400,10 @@ class FilterParoisseScreen extends StatelessWidget {
                                               ],
                                             ),
                                             child: MyTextField(
-                                              controller: _.cityController,
+                                              controller: controller.cityController,
                                               onChanged: (value) {
-                                                _.searchCriteria.value.city = value;
-                                                _.canDoApplyAction();
+                                                controller.searchCriteria.value.city = value;
+                                                controller.canDoApplyAction();
                                               },
                                               hintText: 'Entrez une ville',
                                             ),
@@ -439,10 +439,10 @@ class FilterParoisseScreen extends StatelessWidget {
                                               ],
                                             ),
                                             child: MyTextField(
-                                              controller: _.municipalityController,
+                                              controller: controller.municipalityController,
                                               onChanged: (value) {
-                                                _.searchCriteria.value.municipality = value;
-                                                _.canDoApplyAction();
+                                                controller.searchCriteria.value.municipality = value;
+                                                controller.canDoApplyAction();
                                               },
                                               hintText: 'Entrez une commune',
                                             ),
@@ -478,10 +478,10 @@ class FilterParoisseScreen extends StatelessWidget {
                                               ],
                                             ),
                                             child: MyTextField(
-                                              controller: _.neighborhoodController,
+                                              controller: controller.neighborhoodController,
                                               onChanged: (value) {
-                                                _.searchCriteria.value.neighborhood = value;
-                                                _.canDoApplyAction();
+                                                controller.searchCriteria.value.neighborhood = value;
+                                                controller.canDoApplyAction();
                                               },
                                               hintText: 'Entrez un quartier',
                                             ),
@@ -529,7 +529,7 @@ class FilterParoisseScreen extends StatelessWidget {
                               controller.enabledApplyButton.value ? colorGreen : colorGrey1,
                               bgcolor: controller.enabledApplyButton.value ? colorGreen : colorGrey1,
                               action: () {
-                                _.goBackToParoisse();
+                                controller.goBackToParoisse();
                               },
                               borderRadius: 16,
                             )),

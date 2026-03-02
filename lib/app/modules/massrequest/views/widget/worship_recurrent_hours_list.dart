@@ -145,8 +145,8 @@ class WorshipRecurrentHoursList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetX<FilterMassRequestDateController>(
-      builder: (_) {
-        if (_.worshipRecurrentHours.isEmpty) {
+      builder: (controller) {
+        if (controller.worshipRecurrentHours.isEmpty) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -238,11 +238,11 @@ class WorshipRecurrentHoursList extends StatelessWidget {
         }
 
         // Trier les jours en fonction de leur sélectionnabilité
-        final List<Map<String, dynamic>> sortedDays = _.worshipRecurrentHours.map((item) {
+        final List<Map<String, dynamic>> sortedDays = controller.worshipRecurrentHours.map((item) {
           bool isSelectable = isDayOfWeekInDateRange(
               int.parse(item.dayOfWeek ?? '0'),
-              Jiffy.parse(_.initialSelectedDate.value?.day ?? '').dateTime,
-              Jiffy.parse(_.endSelectedDate.value?.day ?? '').dateTime
+              Jiffy.parse(controller.initialSelectedDate.value?.day ?? '').dateTime,
+              Jiffy.parse(controller.endSelectedDate.value?.day ?? '').dateTime
           );
           return {
             'item': item,
@@ -310,7 +310,7 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                     final isHourSelectable = isSelectable &&
                         isHourAvailable(slot.startTime, currentDayDate, ruleBasedDate);
 
-                    final isSelected = _.isSlotSelected(
+                    final isSelected = controller.isSlotSelected(
                         item.dayOfWeek ?? '0',
                         slot.startTime ?? ''
                     );
@@ -325,11 +325,11 @@ class WorshipRecurrentHoursList extends StatelessWidget {
                         );
                       }
                           : (bool selected) {
-                        _.toggleSlotSelection(
+                        controller.toggleSlotSelection(
                             item.dayOfWeek ?? '0',
                             slot.startTime ?? ''
                         );
-                        _.onWorshipRecurrentHoursSelected(item, true);
+                        controller.onWorshipRecurrentHoursSelected(item, true);
                       },
                       label: Text(slot.startTime ?? ''),
                       backgroundColor: colorWhite,

@@ -21,11 +21,11 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: colorGrey4,
-      body: GetX<ProfileController>(builder: (_) {
+      body: GetX<ProfileController>(builder: (controller) {
         return PopScope(
-          canPop: _.unlockBackButton.value,
+          canPop: controller.unlockBackButton.value,
           child: AbsorbPointer(
-            absorbing: _.lockScreen.value,
+            absorbing: controller.lockScreen.value,
             child: KeyboardDismisser(
               child: Stack(
                 children: [
@@ -87,7 +87,7 @@ class ProfileScreen extends StatelessWidget {
                                 ),
                                 child: IconButton(
                                   onPressed: () {
-                                    _.goToEditProfile();
+                                    controller.goToEditProfile();
                                   },
                                   icon: const Icon(
                                     Icons.edit_rounded,
@@ -103,24 +103,24 @@ class ProfileScreen extends StatelessWidget {
                         // Main content area
                         Expanded(
                           child: SmartRefresher(
-                            controller: _.refreshController,
-                            onRefresh: _.getProfile,
+                            controller: controller.refreshController,
+                            onRefresh: controller.getProfile,
                             header: const CustomClassicHeader(
                               textColor: colorWhite,
                             ),
-                            child: _.isDataProcessing.isTrue
+                            child: controller.isDataProcessing.isTrue
                                 ? Center(
                                     child: LottieLoadingView(
                                       size: Get.width / 4,
                                     ),
                                   )
-                                : _.hasData.isTrue
-                                    ? _buildProfileContent(_, context)
-                                    : _.hasError.isTrue
+                                : controller.hasData.isTrue
+                                    ? _buildProfileContent(controller, context)
+                                    : controller.hasError.isTrue
                                         ? NotFoundScreen(
-                                            message: _.errorMessage.value,
+                                            message: controller.errorMessage.value,
                                             doAction: () {
-                                              _.getProfile();
+                                              controller.getProfile();
                                             },
                                           )
                                         : NotFoundScreen(
@@ -128,7 +128,7 @@ class ProfileScreen extends StatelessWidget {
                                                 "Aucune information trouvée !",
                                             buttonTitle: 'Rafraîchir',
                                             doAction: () {
-                                              _.getProfile();
+                                              controller.getProfile();
                                             },
                                           ),
                           ),

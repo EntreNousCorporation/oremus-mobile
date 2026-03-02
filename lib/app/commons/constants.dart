@@ -16,7 +16,7 @@ abstract class AppConstants {
 
   //CONNECTIVITY
   static const REQUEST_TIMEOUT = 2 * 60; //seconds
-  static var kExpandedHeight = Get.width / 1.75; //seconds
+  static var kExpandedHeight = Get.width / 1.75;
 
   //HIVE
   static const BOX_NAME = "oremusBox";

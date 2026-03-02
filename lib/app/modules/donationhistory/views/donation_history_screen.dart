@@ -26,7 +26,7 @@ class DonationHistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.grey[50],
-      child: GetX<DonationHistoryController>(builder: (_) {
+      child: GetX<DonationHistoryController>(builder: (controller) {
         return KeyboardDismisser(
           child: Scaffold(
             backgroundColor: Colors.grey[50],
@@ -84,17 +84,17 @@ class DonationHistoryScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: LikeButton(
-                          isLiked: _.paroisseSelected.value.isFavorite,
+                          isLiked: controller.paroisseSelected.value.isFavorite,
                           onTap: (isLiked) async {
                             log('isLiked => $isLiked');
-                            _.paroisseSelected.value.isFavorite =
+                            controller.paroisseSelected.value.isFavorite =
                             !isLiked;
                             if (isLiked) {
-                              _.removeFavorite(
-                                  _.paroisseSelected.value, isLiked);
+                              controller.removeFavorite(
+                                  controller.paroisseSelected.value, isLiked);
                             } else {
-                              _.saveFavorite(
-                                  _.paroisseSelected.value, isLiked);
+                              controller.saveFavorite(
+                                  controller.paroisseSelected.value, isLiked);
                             }
                             return !isLiked;
                           },
@@ -130,7 +130,7 @@ class DonationHistoryScreen extends StatelessWidget {
                         ),
                         child: IconButton(
                           onPressed: () {
-                            _.goToMap();
+                            controller.goToMap();
                           },
                           icon: const Icon(
                             Icons.map_rounded,
@@ -147,7 +147,7 @@ class DonationHistoryScreen extends StatelessWidget {
                       title: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
-                          _.paroisseSelected.value.name ?? 'Mes dons',
+                          controller.paroisseSelected.value.name ?? 'Mes dons',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
@@ -181,9 +181,9 @@ class DonationHistoryScreen extends StatelessWidget {
                             fit: StackFit.expand,
                             children: [
                               // Cover image
-                              (_.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
+                              (controller.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
                                   ? CachedNetworkImage(
-                                imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                imageUrl: controller.paroisseSelected.value.coverImage?.link ?? '',
                                 fit: BoxFit.cover,
                                 placeholder: (context, url) =>
                                     LottieLoadingView(size: Get.width / 6),
@@ -335,7 +335,7 @@ class DonationHistoryScreen extends StatelessWidget {
                         const SizedBox(height: 24),
 
                         // Donations list or loading/empty indicators
-                        _.isDataProcessing.isTrue
+                        controller.isDataProcessing.isTrue
                             ? SizedBox(
                           height: 200,
                           child: Center(
@@ -344,7 +344,7 @@ class DonationHistoryScreen extends StatelessWidget {
                             ),
                           ),
                         )
-                            : _.hasData.isTrue
+                            : controller.hasData.isTrue
                             ? FadeIn(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -360,14 +360,14 @@ class DonationHistoryScreen extends StatelessWidget {
                                   physics:
                                   const NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
-                                    var donation = _.donations[index];
+                                    var donation = controller.donations[index];
                                     return DonationHistoryItem(
                                         donation: donation);
                                   },
                                   separatorBuilder: (context, index) {
                                     return const SizedBox(height: 16);
                                   },
-                                  itemCount: _.donations.length,
+                                  itemCount: controller.donations.length,
                                 ),
 
                                 const SizedBox(height: 24),

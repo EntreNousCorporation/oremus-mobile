@@ -16,8 +16,8 @@ class FilterMassRequestDateScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        final _ = Get.find<FilterMassRequestDateController>();
-        _.doBack();
+        final controller = Get.find<FilterMassRequestDateController>();
+        controller.doBack();
         return false;
       },
       child: Scaffold(
@@ -28,15 +28,15 @@ class FilterMassRequestDateScreen extends StatelessWidget {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios, color: colorWhite),
             onPressed: () {
-              final _ = Get.find<FilterMassRequestDateController>();
-              _.doBack();
+              final controller = Get.find<FilterMassRequestDateController>();
+              controller.doBack();
             },
           ),
           actions: [
             TextButton(
               onPressed: () {
-                final _ = Get.find<FilterMassRequestDateController>();
-                _.doResetFilter();
+                final controller = Get.find<FilterMassRequestDateController>();
+                controller.doResetFilter();
               },
               child: Text(
                 'Réinitialiser',
@@ -55,12 +55,12 @@ class FilterMassRequestDateScreen extends StatelessWidget {
           ),
         ),
         body: GetX<FilterMassRequestDateController>(
-          builder: (_) => KeyboardDismisser(
+          builder: (controller) => KeyboardDismisser(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // En-tête avec sélection de date
-                _buildDateSelection(_),
+                _buildDateSelection(controller),
 
                 // Contenu principal avec TabBarView
                 Expanded(
@@ -158,10 +158,10 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                     text: 'Continuer',
                     textSize: TextSizes.eighteen,
                     actionColor: colorGreenSemiLight,
-                    enabled: _.enabledApplyButton.value,
-                    borderColor: _.enabledApplyButton.value ? colorGreen : colorGrey1,
-                    bgcolor: _.enabledApplyButton.value ? colorGreen : colorGrey1,
-                    action: () => _.moveToRecap(),
+                    enabled: controller.enabledApplyButton.value,
+                    borderColor: controller.enabledApplyButton.value ? colorGreen : colorGrey1,
+                    bgcolor: controller.enabledApplyButton.value ? colorGreen : colorGrey1,
+                    action: () => controller.moveToRecap(),
                   ),
                 ),
               ],
@@ -172,7 +172,7 @@ class FilterMassRequestDateScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDateSelection(FilterMassRequestDateController _) {
+  Widget _buildDateSelection(FilterMassRequestDateController controller) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -201,16 +201,16 @@ class FilterMassRequestDateScreen extends StatelessWidget {
               Expanded(
                 child: _buildDateBox(
                   'Du',
-                  _.initialSelectedDate.value?.dayToDisplay ?? '-',
-                  onTap: () => _.selectStartDate(Get.context!),
+                  controller.initialSelectedDate.value?.dayToDisplay ?? '-',
+                  onTap: () => controller.selectStartDate(Get.context!),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: _buildDateBox(
                   'Au',
-                  _.endSelectedDate.value?.dayToDisplay ?? '-',
-                  onTap: () => _.selectEndDate(Get.context!, _.initialSelectedDate.value),
+                  controller.endSelectedDate.value?.dayToDisplay ?? '-',
+                  onTap: () => controller.selectEndDate(Get.context!, controller.initialSelectedDate.value),
                 ),
               ),
             ],

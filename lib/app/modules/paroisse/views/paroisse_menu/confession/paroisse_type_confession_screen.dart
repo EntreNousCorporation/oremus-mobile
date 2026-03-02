@@ -22,7 +22,7 @@ class ParoisseTypeConfessionScreen extends StatelessWidget {
       color: colorGreen,
       child: GetX<ParoisseConfessionController>(
           initState: (state) {},
-          builder: (_) {
+          builder: (controller) {
             return KeyboardDismisser(
               child: Scaffold(
                 resizeToAvoidBottomInset: true,
@@ -78,7 +78,7 @@ class ParoisseTypeConfessionScreen extends StatelessWidget {
                             ),
                             child: IconButton(
                               onPressed: () {
-                                _.goToReportProblem();
+                                controller.goToReportProblem();
                               },
                               icon: SvgPicture.asset(
                                 Assets.imagesWarning,
@@ -97,13 +97,13 @@ class ParoisseTypeConfessionScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: LikeButton(
-                              isLiked: _.paroisseSelected.value.isFavorite,
+                              isLiked: controller.paroisseSelected.value.isFavorite,
                               onTap: (isLiked) async {
-                                _.paroisseSelected.value.isFavorite = !isLiked;
+                                controller.paroisseSelected.value.isFavorite = !isLiked;
                                 if (isLiked) {
-                                  _.removeFavorite(_.paroisseSelected.value, isLiked);
+                                  controller.removeFavorite(controller.paroisseSelected.value, isLiked);
                                 } else {
-                                  _.saveFavorite(_.paroisseSelected.value, isLiked);
+                                  controller.saveFavorite(controller.paroisseSelected.value, isLiked);
                                 }
                                 return !isLiked;
                               },
@@ -137,7 +137,7 @@ class ParoisseTypeConfessionScreen extends StatelessWidget {
                             ),
                             child: IconButton(
                               onPressed: () {
-                                _.goToMap();
+                                controller.goToMap();
                               },
                               icon: const Icon(
                                 Icons.map_rounded,
@@ -153,7 +153,7 @@ class ParoisseTypeConfessionScreen extends StatelessWidget {
                           title: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16.0),
                             child: Text(
-                              '${_.paroisseSelected.value.name}',
+                              '${controller.paroisseSelected.value.name}',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
@@ -186,9 +186,9 @@ class ParoisseTypeConfessionScreen extends StatelessWidget {
                                 fit: StackFit.expand,
                                 children: [
                                   // Image de couverture
-                                  (_.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
+                                  (controller.paroisseSelected.value.coverImage?.link?.isNotEmpty == true)
                                       ? CachedNetworkImage(
-                                    imageUrl: _.paroisseSelected.value.coverImage?.link ?? '',
+                                    imageUrl: controller.paroisseSelected.value.coverImage?.link ?? '',
                                     fit: BoxFit.cover,
                                     placeholder: (context, url) =>
                                         LottieLoadingView(size: Get.width / 6),
@@ -299,7 +299,7 @@ class ParoisseTypeConfessionScreen extends StatelessWidget {
                                     textColor: colorWhite,
                                   ),
                                   borderColor: colorGreenSemiLight,
-                                  tabs: _.menusConfessionTab.keys.map((e) {
+                                  tabs: controller.menusConfessionTab.keys.map((e) {
                                     return Tab(text: e);
                                   }).toList(),
                                 ),
@@ -307,7 +307,7 @@ class ParoisseTypeConfessionScreen extends StatelessWidget {
                                 // Contenu des onglets
                                 Expanded(
                                   child: TabBarView(
-                                    children: _.menusConfessionTab.entries.map((e) {
+                                    children: controller.menusConfessionTab.entries.map((e) {
                                       return Center(
                                         child: e.value,
                                       );

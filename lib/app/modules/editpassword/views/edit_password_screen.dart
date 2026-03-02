@@ -15,7 +15,7 @@ class EditPasswordScreen extends StatelessWidget {
       backgroundColor: colorGrey4,
       resizeToAvoidBottomInset: true,
       body: GetX<EditPasswordController>(
-        builder: (_) {
+        builder: (controller) {
           return KeyboardDismisser(
             child: Stack(
               children: [
@@ -83,9 +83,9 @@ class EditPasswordScreen extends StatelessWidget {
                       // Form content
                       Expanded(
                         child: PopScope(
-                          canPop: _.unlockBackButton.value,
+                          canPop: controller.unlockBackButton.value,
                           child: AbsorbPointer(
-                            absorbing: _.lockScreen.value,
+                            absorbing: controller.lockScreen.value,
                             child: SingleChildScrollView(
                               physics: const BouncingScrollPhysics(),
                               child: Padding(
@@ -127,7 +127,7 @@ class EditPasswordScreen extends StatelessWidget {
                                       child: Padding(
                                         padding: const EdgeInsets.all(24),
                                         child: Form(
-                                          key: _.formSigninKey,
+                                          key: controller.formSigninKey,
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
@@ -147,12 +147,12 @@ class EditPasswordScreen extends StatelessWidget {
                                               // Current password field
                                               _buildStyledTextField(
                                                 context: context,
-                                                focusNode: _.passwordFocusNode,
-                                                controller: _.passwordController,
+                                                focusNode: controller.passwordFocusNode,
+                                                controller: controller.passwordController,
                                                 labelText: 'Ancien mot de passe',
                                                 prefixIcon: "assets/images/icon_password_profil.svg",
-                                                errorText: _.passwordErrorMessage.value,
-                                                onChanged: (value) => _.checkForm(),
+                                                errorText: controller.passwordErrorMessage.value,
+                                                onChanged: (value) => controller.checkForm(),
                                                 isPassword: true,
                                               ),
 
@@ -161,12 +161,12 @@ class EditPasswordScreen extends StatelessWidget {
                                               // New password field
                                               _buildStyledTextField(
                                                 context: context,
-                                                focusNode: _.newPasswordFocusNode,
-                                                controller: _.newPasswordController,
+                                                focusNode: controller.newPasswordFocusNode,
+                                                controller: controller.newPasswordController,
                                                 labelText: 'Nouveau mot de passe',
                                                 prefixIcon: "assets/images/icon_password_profil.svg",
-                                                errorText: _.newPasswordErrorMessage.value,
-                                                onChanged: (value) => _.checkForm(),
+                                                errorText: controller.newPasswordErrorMessage.value,
+                                                onChanged: (value) => controller.checkForm(),
                                                 isPassword: true,
                                               ),
 
@@ -175,12 +175,12 @@ class EditPasswordScreen extends StatelessWidget {
                                               // Confirm password field
                                               _buildStyledTextField(
                                                 context: context,
-                                                focusNode: _.confPasswordFocusNode,
-                                                controller: _.confPasswordController,
+                                                focusNode: controller.confPasswordFocusNode,
+                                                controller: controller.confPasswordController,
                                                 labelText: 'Confirmer le mot de passe',
                                                 prefixIcon: "assets/images/icon_password_profil.svg",
-                                                errorText: _.confPasswordErrorMessage.value,
-                                                onChanged: (value) => _.checkForm(),
+                                                errorText: controller.confPasswordErrorMessage.value,
+                                                onChanged: (value) => controller.checkForm(),
                                                 isPassword: true,
                                               ),
 
@@ -205,7 +205,7 @@ class EditPasswordScreen extends StatelessWidget {
                                     const SizedBox(height: 30),
 
                                     // Update button
-                                    _buildUpdateButton(_),
+                                    _buildUpdateButton(controller),
                                   ],
                                 ),
                               ),
