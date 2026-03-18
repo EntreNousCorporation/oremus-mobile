@@ -122,6 +122,8 @@ class MassRequestData {
   String? typeOfMassRequest;
   List<PriceData?>? slots;
   bool? forceDuplicateCreation;
+  String? paymentMethod;
+  String? phoneNumber;
 
   MassRequestData({
     this.prayerIntent,
@@ -129,6 +131,8 @@ class MassRequestData {
     this.typeOfMassRequest,
     this.slots,
     this.forceDuplicateCreation,
+    this.paymentMethod,
+    this.phoneNumber,
   });
 
   MassRequestData.fromJson(Map<String, dynamic> json) {
@@ -136,6 +140,8 @@ class MassRequestData {
     worshipPlace = json['worshipPlace'];
     typeOfMassRequest = json['typeOfMassRequest'];
     forceDuplicateCreation = json['forceDuplicateCreation'];
+    paymentMethod = json['paymentMethod'];
+    phoneNumber = json['phoneNumber'];
     if (json['slots'] != null) {
       slots = <PriceData>[];
       json['slots'].forEach((v) {
@@ -150,6 +156,8 @@ class MassRequestData {
     data['worshipPlace'] = worshipPlace;
     data['typeOfMassRequest'] = typeOfMassRequest;
     data['forceDuplicateCreation'] = forceDuplicateCreation;
+    data['paymentMethod'] = paymentMethod;
+    data['phoneNumber'] = phoneNumber;
     if (slots != null) {
       data['slots'] = slots?.map((v) => v?.toJson()).toList();
     }

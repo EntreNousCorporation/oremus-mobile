@@ -121,6 +121,7 @@ class SigninController extends GetxController {
       Map<String, dynamic> payload = Jwt.parseJwt(value.accessToken ?? '');
       var userConnection = Signin(
         username: payload['username'],
+        phone: payload['phone_number'],
         id: payload['sub'],
         isBoUser: value.isBoUser,
       );

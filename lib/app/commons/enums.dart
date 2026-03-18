@@ -14,7 +14,9 @@ enum EnvCredentials {
 enum PaymentStatus {
   REFUSED,
   PENDING,
+  INITIATED,
   ACCEPTED,
+  FAILED,
   NONE,
 }
 

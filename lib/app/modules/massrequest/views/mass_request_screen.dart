@@ -14,6 +14,7 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/filter_mass_request_date_controller.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/mass_request_controller.dart';
+import 'package:oremusapp/app/modules/massrequest/views/widget/custom_card.dart';
 import 'package:oremusapp/app/modules/massrequest/views/widget/intent_type_description_widget.dart';
 import 'package:oremusapp/app/modules/massrequest/views/widget/mass_hour_filter.dart';
 import 'package:oremusapp/app/modules/massrequest/views/widget/mass_repetition_filter.dart';
@@ -280,7 +281,7 @@ class MassRequestScreen extends StatelessWidget {
                             title: 'Type de demande de messe',
                           ),
                           const SizedBox(height: 12),
-                          _buildCard(
+                          CustomCard(
                             content: const MassTypeFilter(),
                           ),
                           const SizedBox(height: 24),
@@ -291,7 +292,7 @@ class MassRequestScreen extends StatelessWidget {
                             title: 'Répétition',
                           ),
                           const SizedBox(height: 12),
-                          _buildCard(
+                          CustomCard(
                             content: const MassTypeRepetitionFilter(),
                           ),
                           const SizedBox(height: 24),
@@ -337,7 +338,7 @@ class MassRequestScreen extends StatelessWidget {
                               title: 'Date et heure',
                             ),
                             const SizedBox(height: 12),
-                            _buildCard(
+                            CustomCard(
                               content: Row(
                                 children: [
                                   // Date
@@ -418,7 +419,7 @@ class MassRequestScreen extends StatelessWidget {
                             title: 'Intention de messe',
                           ),
                           const SizedBox(height: 12),
-                          _buildCard(
+                          CustomCard(
                             content: const IntentTypeDescriptionWidget(),
                           ),
                           const SizedBox(height: 32),
@@ -495,7 +496,7 @@ class MassRequestScreen extends StatelessWidget {
                             actionColor: colorGreen.withValues(alpha: 0.5),
                             enabled: controller.isValidForm.value,
                             action: () {
-                              controller.doSendMassRequest();
+                              controller.moveToRecap();
                             },
                           ),
                           const SizedBox(height: 16),
@@ -538,24 +539,6 @@ class MassRequestScreen extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  // Carte de base pour les contenus
-  Widget _buildCard({required Widget content}) {
-    return Container(
-      decoration: BoxDecoration(
-        color: colorWhite,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: content,
     );
   }
 

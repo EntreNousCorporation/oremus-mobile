@@ -11,6 +11,7 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/commons/utils.dart';
+import 'package:oremusapp/app/modules/massrequest/views/widget/info_section.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/controller/mass_request_history_detail_controller.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/views/widget/mass_request_state_view.dart';
 import 'package:oremusapp/generated/assets.dart';
@@ -294,7 +295,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                             child: Column(
                               children: [
                                 // Section référence
-                                _buildInfoSection(
+                                InfoSection(
                                   label: 'Référence',
                                   value: controller.massRequestSelected.value.traceId ?? '-',
                                   icon: Icons.numbers_rounded,
@@ -305,7 +306,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                 _buildDivider(),
 
                                 // Section type de demande
-                                _buildInfoSection(
+                                InfoSection(
                                   label: 'Type de demande',
                                   value: controller.massRequestSelected.value.typeOfMassRequest?.name?.fr ?? '-',
                                   icon: Icons.category_rounded,
@@ -316,7 +317,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                 _buildDivider(),
 
                                 // Section date
-                                _buildInfoSection(
+                                InfoSection(
                                   label: 'Date',
                                   value: getCustomDate(controller.massRequestSelected.value.createdAt ?? ''),
                                   icon: Icons.calendar_today_rounded,
@@ -327,7 +328,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                 _buildDivider(),
 
                                 // Section montant
-                                _buildInfoSection(
+                                InfoSection(
                                   label: 'Montant',
                                   value: '${controller.massRequestSelected.value.price.toString().split('.').first.amountFormat()} FCFA',
                                   icon: Icons.payments_rounded,
@@ -605,64 +606,6 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
         height: 1,
         thickness: 1,
         color: Colors.grey.withValues(alpha: 0.2),
-      ),
-    );
-  }
-
-  // Section d'information
-  Widget _buildInfoSection({
-    required String label,
-    required String value,
-    required IconData icon,
-    required bool isFirst,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Row(
-        children: [
-          // Icône
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: colorGreen.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              color: colorGreen,
-              size: 24,
-            ),
-          ),
-          const SizedBox(width: 16),
-
-          // Textes
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Libellé
-                Text(
-                  label,
-                  style: TextStyles.montserratRegular(
-                    textSize: TextSizes.thirteen,
-                    textColor: Colors.grey[600]!,
-                  ),
-                ),
-                const SizedBox(height: 4),
-
-                // Valeur
-                Text(
-                  value,
-                  style: TextStyles.montserratSemiBold(
-                    textSize: TextSizes.fifteen,
-                    textColor: colorBlack,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

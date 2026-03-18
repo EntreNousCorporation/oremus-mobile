@@ -10,7 +10,7 @@ import GoogleMaps
   ) -> Bool {
     GeneratedPluginRegistrant.register(with: self)
 
-    let controller = window.rootViewController as! FlutterViewController
+    let controller = window?.rootViewController as! FlutterViewController
 
     let flavorChannel = FlutterMethodChannel(
         name: "flavor",

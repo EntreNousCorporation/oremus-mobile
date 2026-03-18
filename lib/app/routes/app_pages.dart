@@ -33,8 +33,10 @@ import 'package:oremusapp/app/modules/massrequest/binding/filter_mass_request_da
 import 'package:oremusapp/app/modules/massrequest/binding/filter_worship_binding.dart';
 import 'package:oremusapp/app/modules/massrequest/binding/mass_request_binding.dart';
 import 'package:oremusapp/app/modules/massrequest/binding/mass_request_menu_binding.dart';
+import 'package:oremusapp/app/modules/massrequest/binding/mass_request_recap_binding.dart';
 import 'package:oremusapp/app/modules/massrequest/binding/mass_request_with_worship_binding.dart';
 import 'package:oremusapp/app/modules/massrequest/views/mass_request_menu_screen.dart';
+import 'package:oremusapp/app/modules/massrequest/views/mass_request_recap_screen.dart';
 import 'package:oremusapp/app/modules/massrequest/views/mass_request_screen.dart';
 import 'package:oremusapp/app/modules/massrequest/views/mass_request_with_worship_screen.dart';
 import 'package:oremusapp/app/modules/massrequest/views/widget/filter_mass_request_date_screen.dart';
@@ -286,6 +288,13 @@ class AppPages {
       name: Routes.MASS_REQUEST,
       page: () => const MassRequestScreen(),
       binding: MassRequestBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.MASS_REQUEST_RECAP,
+      page: () => const MassRequestRecapScreen(),
+      binding: MassRequestRecapBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

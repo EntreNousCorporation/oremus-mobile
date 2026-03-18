@@ -47,32 +47,32 @@ class PaymentSuccessScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Expanded(child: Container()),
-                  SizedBox(
-                    width: Get.width / 1.5,
-                    child: Material(
-                      borderRadius: BorderRadius.circular(10.0),
-                      elevation: 10,
-                      color: colorWhite,
-                      shadowColor: colorGrey2.withValues(alpha: 0.5),
-                      child: CustomButton(
-                        text: 'Terminer',
-                        borderRadius: 10,
-                        textSize: TextSizes.sixteen,
-                        bgcolor: colorGreen,
-                        borderColor: colorGreen,
-                        actionColor: colorGreen.withValues(alpha: 0.5),
-                        action: () {
-                          logic.doRedirection();
-                        },
-                      ),
-                    ),
-                  ),
-                  Separators.normalVertical(),
                 ],
               ),
             ),
           ),
+          floatingActionButton: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            height: 50,
+            child: Material(
+              borderRadius: BorderRadius.circular(10.0),
+              elevation: 10,
+              color: colorWhite,
+              shadowColor: colorGrey2.withValues(alpha: 0.5),
+              child: CustomButton(
+                text: 'Terminer',
+                borderRadius: 10,
+                textSize: TextSizes.sixteen,
+                bgcolor: colorGreen,
+                borderColor: colorGreen,
+                actionColor: colorGreen.withValues(alpha: 0.5),
+                action: () {
+                  logic.doRedirection();
+                },
+              ),
+            ),
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         );
       }),
     );

@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/massrequest/controller/mass_request_controller.dart';
-import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
+import 'package:oremusapp/app/modules/massrequest/controller/mass_request_recap_controller.dart';
+import 'package:oremusapp/app/modules/payment/data/model/payment_status_data.dart';
 
-class PrayerIntentFilter extends StatelessWidget {
-  const PrayerIntentFilter({Key? key}) : super(key: key);
+class PaymentMethodFilter extends StatelessWidget {
+  const PaymentMethodFilter({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<MassRequestController>(builder: (logic) {
-      return DropdownButtonFormField<PrayerIntentData?>(
+    return GetBuilder<MassRequestRecapController>(builder: (logic) {
+      return DropdownButtonFormField<PaymentMethodData?>(
         isExpanded: true,
-        initialValue: logic.prayerIntentSelected.value,
+        initialValue: logic.paymentMethodSelected.value,
         enableFeedback: true,
         icon: const Icon(
           Icons.arrow_drop_down_rounded,
@@ -31,7 +30,7 @@ class PrayerIntentFilter extends StatelessWidget {
             10,
           ),
           isDense: false,
-          labelText: '',
+          labelText: 'Choisir un mode de paiement',
           labelStyle: TextStyles.montserratRegular(
             textColor: colorBlack,
             textSize: TextSizes.sixteen,
@@ -50,12 +49,12 @@ class PrayerIntentFilter extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
           ),
         ),
-        items: logic.prayerIntents
-            .map<DropdownMenuItem<PrayerIntentData?>>((PrayerIntentData? typeData) {
-          return DropdownMenuItem<PrayerIntentData?>(
-            value: typeData,
+        items: logic.paymentMethods
+            .map<DropdownMenuItem<PaymentMethodData?>>((PaymentMethodData? paymentMethod) {
+          return DropdownMenuItem<PaymentMethodData?>(
+            value: paymentMethod,
             child: Text(
-              '${DB.getCurrentLanguage() == 'fr' ? typeData?.defaultText?.fr : typeData?.defaultText?.en}',
+              paymentMethod?.name?.fr ?? '-',
               maxLines: 2,
               softWrap: true,
               overflow: TextOverflow.ellipsis,
@@ -66,8 +65,9 @@ class PrayerIntentFilter extends StatelessWidget {
             ),
           );
         }).toList(),
-        onChanged: (PrayerIntentData? value) {
-          logic.updatePrayerIntentFilter(value);
+        onChanged: (PaymentMethodData? value) {
+          logic.paymentMethodSelected.value = value;
+          logic.checkForm();
         },
       );
     });

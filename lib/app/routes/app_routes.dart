@@ -51,6 +51,7 @@ abstract class Routes {
   static const MASS_REQUEST_TRACK_CLAIM_DETAILS = '/mass-request-track-claim-details';
   static const MASS_REQUEST_WITHOUT_WORSHIP = '/mass-request-without-worship';
   static const MASS_REQUEST_MENU = '/mass-request-menu';
+  static const MASS_REQUEST_RECAP = '/mass-request-recap';
 
   //DONATION
   static const DONATION = '/donation';

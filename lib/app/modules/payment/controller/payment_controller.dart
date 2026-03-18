@@ -41,6 +41,9 @@ class PaymentController extends GetxController {
   var isTimerActive = false.obs;
   late Timer timer;
 
+  Rx<int> manualVerifyCount = Rx<int>(0);
+  var manualVerify = false.obs;
+
   @override
   void onInit() {
     getArguments();
@@ -131,8 +134,7 @@ class PaymentController extends GetxController {
     );
 
     if (massRequestResponseSelected.value.paymentUrl?.isNotEmpty == true) {
-      webViewController.value.loadRequest(
-          Uri.parse(massRequestResponseSelected.value.paymentUrl ?? ''));
+      webViewController.value.loadRequest(Uri.parse(massRequestResponseSelected.value.paymentUrl ?? ''));
     } else if (donationSelected.value.paymentUrl?.isNotEmpty == true) {
       webViewController.value.loadRequest(
           Uri.parse(donationSelected.value.paymentUrl ?? ''));
@@ -250,16 +252,20 @@ class PaymentController extends GetxController {
     log('request doGetPaymentStatus :::');
 
     checkingPaymentStatus(true);
-    paymentRepository.paymentStatus(transactionId: transactionId ?? '')
+    paymentRepository.paymentStatus(transactionId: transactionId ?? '', manualVerify: manualVerify.value)
         .then((value) {
-      if (value.paymentStatus == PaymentStatus.REFUSED.name) {
+      if (value.paymentStatus == PaymentStatus.REFUSED.name || value.paymentStatus == PaymentStatus.FAILED.name) {
         checkingPaymentStatus(true);
-        paymentStatusMessage.value =
-            'Le paiement a échoué. Veuillez réessayer svp !';
+        paymentStatusMessage.value = 'Le paiement a échoué. Veuillez réessayer svp !';
         moveToError();
         return;
       }
-      if (value.paymentStatus == PaymentStatus.PENDING.name) {
+      if (value.paymentStatus == PaymentStatus.PENDING.name || value.paymentStatus == PaymentStatus.INITIATED.name) {
+        manualVerifyCount.value += 1;
+        log('manualVerifyCount ::: ${manualVerifyCount.value}');
+        if (manualVerifyCount.value == 5) {
+          manualVerify.value = true;
+        }
         checkingPaymentStatus(false);
         return;
       }

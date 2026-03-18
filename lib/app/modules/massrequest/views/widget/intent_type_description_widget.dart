@@ -24,7 +24,6 @@ class IntentTypeDescriptionWidget extends StatelessWidget {
           focusNode: logic.massIntentionFocusNode,
           cursorColor: colorBlue,
           keyboardType: TextInputType.multiline,
-          //textInputAction: TextInputAction.done,
           decoration: InputDecoration(
             contentPadding:
                 const EdgeInsets.only(top: 16, left: 16, right: 0, bottom: 0),

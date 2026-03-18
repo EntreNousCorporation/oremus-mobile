@@ -21,16 +21,19 @@ import 'package:oremusapp/app/modules/massrequest/data/repository/mass_request_r
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
+import 'package:oremusapp/app/modules/payment/data/repository/payment_repository.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
 class MassRequestWithWorshipController extends GetxController {
   final MassRequestRepository massRequestRepository;
   final ParoisseRepository paroisseRepository;
+  final PaymentRepository paymentRepository;
 
   MassRequestWithWorshipController({
     required this.massRequestRepository,
     required this.paroisseRepository,
+    required this.paymentRepository,
   });
 
   var unlockBackButton = true.obs;
@@ -118,8 +121,8 @@ class MassRequestWithWorshipController extends GetxController {
         name: 'Plusieurs messes',
       ),
     ];
-    massRequestTypeRepetitionSelected.value =
-        massRequestTypeRepetitions.firstWhereOrNull((p0) => p0?.code == 'once');
+    massRequestTypeRepetitionSelected.value = massRequestTypeRepetitions
+        .firstWhereOrNull((p0) => p0?.code == 'once');
   }
 
   moveToPayment(MassRequestResponse massRequestResponse) {
@@ -171,7 +174,9 @@ class MassRequestWithWorshipController extends GetxController {
   goToDatesChoice() async {
     if (worshipHours.isEmpty) {
       showNotification(
-          message: 'Aucun horaire de messe disponible.\nVeuillez choisir une autre paroisse svp');
+        message:
+            'Aucun horaire de messe disponible.\nVeuillez choisir une autre paroisse svp',
+      );
       return;
     }
 
@@ -183,7 +188,7 @@ class MassRequestWithWorshipController extends GetxController {
         'selectedSlotKeys': savedSelectedSlotKeys.toList(),
         'endDate': savedEndDate.toJson(),
         'specialMasses': savedSpecialMasses,
-      }
+      },
     ];
 
     final result = await Get.toNamed(
@@ -194,11 +199,14 @@ class MassRequestWithWorshipController extends GetxController {
     if (result != null && result is Map) {
       // Mettre à jour avec le nouveau format de résultat
       datesChoosen.value = result['dates'] ?? [];
-      savedEndDate.value = result['endDate'] != null
-          ? PriceData.fromJson(result['endDate'])
-          : null;
+      savedEndDate.value =
+          result['endDate'] != null
+              ? PriceData.fromJson(result['endDate'])
+              : null;
       savedSelectedSlotKeys.clear();
-      savedSelectedSlotKeys.addAll(Set<String>.from(result['selectedSlotKeys'] ?? []));
+      savedSelectedSlotKeys.addAll(
+        Set<String>.from(result['selectedSlotKeys'] ?? []),
+      );
       savedSpecialMasses = result['specialMasses'];
 
       datesChoosen.refresh();
@@ -230,9 +238,12 @@ class MassRequestWithWorshipController extends GetxController {
   }
 
   void checkForm() {
-    isValidForm.value = massRequestTypeSelected.value != null &&
+    isValidForm.value =
+        massRequestTypeSelected.value != null &&
         massIntentionController.text.isNotEmpty &&
-        price.value != '-' && price.value != '0.0' && price.value != '0' &&
+        price.value != '-' &&
+        price.value != '0.0' &&
+        price.value != '0' &&
         (massRequestTypeRepetitionSelected.value?.code == 'many'
             ? datesChoosen.isNotEmpty
             : selectedDate.value != null);
@@ -278,9 +289,10 @@ class MassRequestWithWorshipController extends GetxController {
   // Ouvrir un date picker qui ne permet que les dates calculées
   Future<void> showPicker(BuildContext context) async {
     // Normaliser les dates permises
-    final allowedDatesNormalized = allowedDates
-        .map((date) => DateTime(date.year, date.month, date.day))
-        .toList();
+    final allowedDatesNormalized =
+        allowedDates
+            .map((date) => DateTime(date.year, date.month, date.day))
+            .toList();
 
     // Obtenir la date actuelle
     DateTime now = DateTime.now();
@@ -288,31 +300,36 @@ class MassRequestWithWorshipController extends GetxController {
     // Déterminer la date initiale du picker
     DateTime initialDate;
     if (selectedDate.value != null) {
-      List<String> dateParts = selectedDate.value!.dayToDisplay?.split('-') ?? [];
+      List<String> dateParts =
+          selectedDate.value!.dayToDisplay?.split('-') ?? [];
       DateTime selectedDateTime = DateTime(
-          int.parse(dateParts[2]),
-          int.parse(dateParts[1]),
-          int.parse(dateParts[0])
+        int.parse(dateParts[2]),
+        int.parse(dateParts[1]),
+        int.parse(dateParts[0]),
       );
 
-      if (allowedDatesNormalized.contains(DateTime(
+      if (allowedDatesNormalized.contains(
+        DateTime(
           selectedDateTime.year,
           selectedDateTime.month,
-          selectedDateTime.day
-      ))) {
+          selectedDateTime.day,
+        ),
+      )) {
         initialDate = selectedDateTime;
       } else {
         initialDate = allowedDatesNormalized.firstWhere(
-                (date) => date.isAfter(DateTime(now.year, now.month, now.day)) ||
-                date.isAtSameMomentAs(DateTime(now.year, now.month, now.day)),
-            orElse: () => allowedDatesNormalized.first
+          (date) =>
+              date.isAfter(DateTime(now.year, now.month, now.day)) ||
+              date.isAtSameMomentAs(DateTime(now.year, now.month, now.day)),
+          orElse: () => allowedDatesNormalized.first,
         );
       }
     } else {
       initialDate = allowedDatesNormalized.firstWhere(
-              (date) => date.isAfter(DateTime(now.year, now.month, now.day)) ||
-              date.isAtSameMomentAs(DateTime(now.year, now.month, now.day)),
-          orElse: () => allowedDatesNormalized.first
+        (date) =>
+            date.isAfter(DateTime(now.year, now.month, now.day)) ||
+            date.isAtSameMomentAs(DateTime(now.year, now.month, now.day)),
+        orElse: () => allowedDatesNormalized.first,
       );
     }
 
@@ -332,41 +349,42 @@ class MassRequestWithWorshipController extends GetxController {
         return Theme(
           data: ThemeData.light().copyWith(
             colorScheme: const ColorScheme.light(
-                onPrimary: colorWhite,
-                onSurface: colorBlack,
-                primary: colorGreen
+              onPrimary: colorWhite,
+              onSurface: colorBlack,
+              primary: colorGreen,
             ),
             // Personnaliser les boutons du Dialog
             textButtonTheme: TextButtonThemeData(
               style: ButtonStyle(
                 foregroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) => colorWhite
+                  (Set<WidgetState> states) => colorWhite,
                 ),
-                backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                      (Set<WidgetState> states) {
-                    // Si le bouton est le bouton "Annuler"
-                    if (states.contains(WidgetState.selected)) {
-                      return colorBlack;
-                    }
-                    // Pour le bouton "Confirmer"
-                    return colorGreen;
-                  },
-                ),
+                backgroundColor: WidgetStateProperty.resolveWith<Color>((
+                  Set<WidgetState> states,
+                ) {
+                  // Si le bouton est le bouton "Annuler"
+                  if (states.contains(WidgetState.selected)) {
+                    return colorBlack;
+                  }
+                  // Pour le bouton "Confirmer"
+                  return colorGreen;
+                }),
                 textStyle: WidgetStateProperty.all(
-                    TextStyles.montserratRegular(textSize: TextSizes.fourteen)
+                  TextStyles.montserratRegular(textSize: TextSizes.fourteen),
                 ),
                 shape: WidgetStateProperty.all(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
                     side: const BorderSide(
-                        color: Colors.transparent,
-                        width: 1,
-                        style: BorderStyle.solid
+                      color: Colors.transparent,
+                      width: 1,
+                      style: BorderStyle.solid,
                     ),
                   ),
                 ),
               ),
-            ), dialogTheme: const DialogThemeData(backgroundColor: Colors.white),
+            ),
+            dialogTheme: const DialogThemeData(backgroundColor: Colors.white),
           ),
           child: child!,
         );
@@ -379,17 +397,24 @@ class MassRequestWithWorshipController extends GetxController {
     }
   }
 
-  void updateRepetitionFilter(DateTime datetime, {bool isFirst = true, Slot? selectHour}) {
+  void updateRepetitionFilter(
+    DateTime datetime, {
+    bool isFirst = true,
+    Slot? selectHour,
+  }) {
     final now = DateTime.now();
 
     // Convertir jour de la semaine standard (1-7, lundi-dimanche) vers votre système (0-6, lundi-dimanche)
     // Dans votre système: 0=lundi, 1=mardi, 2=mercredi, 3=jeudi, 4=vendredi, 5=samedi, 6=dimanche
-    final currentDayOfWeekSystem = now.weekday - 1; // weekday: 1=lundi, 7=dimanche
+    final currentDayOfWeekSystem =
+        now.weekday - 1; // weekday: 1=lundi, 7=dimanche
 
     // Déterminer si nous sommes avant ou après midi
-    final isBefore12h = now.hour < 12;
+    final isBefore12h = now.hour < 12 || (now.hour == 12 && now.minute == 0);
 
-    log('Jour actuel: ${now.weekday} (${getDay(now.weekday)}), converti en système: $currentDayOfWeekSystem');
+    log(
+      'Jour actuel: ${now.weekday} (${getDay(now.weekday)}), converti en système: $currentDayOfWeekSystem',
+    );
     log('Avant midi: $isBefore12h');
 
     // Variables pour stocker la date et l'heure cibles selon les règles
@@ -398,7 +423,8 @@ class MassRequestWithWorshipController extends GetxController {
     int targetDayOfWeekStandard; // Format standard (1-7, lundi-dimanche)
 
     // Appliquer les règles du tableau
-    switch (now.weekday) { // Utiliser le format standard weekday (1-7)
+    switch (now.weekday) {
+      // Utiliser le format standard weekday (1-7)
       case 7: // Dimanche (tout le jour) -> Mardi 12h
         targetDayOfWeekStandard = 2; // Mardi
         targetHour = 12;
@@ -428,7 +454,7 @@ class MassRequestWithWorshipController extends GetxController {
       case 4: // Jeudi
         if (isBefore12h) {
           targetDayOfWeekStandard = 4; // Même jour (jeudi)
-          targetHour = 16;
+          targetHour = 12;
         } else {
           targetDayOfWeekStandard = 5; // Vendredi
           targetHour = 12;
@@ -444,16 +470,18 @@ class MassRequestWithWorshipController extends GetxController {
         }
         break;
       case 6: // Samedi
-        if (isBefore12h) {
+        final isBefore09h30 =
+            now.hour < 9 || (now.hour == 9 && now.minute <= 30);
+        if (isBefore09h30) {
           targetDayOfWeekStandard = 6; // Même jour (samedi)
-          targetHour = 16;
+          targetHour = 12;
         } else {
           targetDayOfWeekStandard = 2; // Mardi (semaine suivante)
           targetHour = 12;
         }
         break;
       default:
-      // Fallback au cas où
+        // Fallback au cas où
         targetDayOfWeekStandard = now.weekday + 1 > 7 ? 1 : now.weekday + 1;
         targetHour = 12;
     }
@@ -461,32 +489,41 @@ class MassRequestWithWorshipController extends GetxController {
     // Calculer la date cible basée sur le jour de la semaine cible
     targetDate = getNextSpecificWeekday(now, targetDayOfWeekStandard);
 
-    log('Date cible selon règles: ${targetDate.toString()} (${getDay(targetDate.weekday)}), Heure cible: $targetHour');
+    log(
+      'Date cible selon règles: ${targetDate.toString()} (${getDay(targetDate.weekday)}), Heure cible: $targetHour',
+    );
 
     // Si la date sélectionnée (datetime) est différente de la date par défaut et après la date minimale,
     // utiliser la date sélectionnée en gardant les règles d'heure
     if (!isFirst && datetime != targetDate && !datetime.isBefore(targetDate)) {
       targetDate = datetime;
-      log('Utilisation de la date sélectionnée: ${targetDate.toString()} (${getDay(targetDate.weekday)})');
+      log(
+        'Utilisation de la date sélectionnée: ${targetDate.toString()} (${getDay(targetDate.weekday)})',
+      );
     }
 
     // Vérifier si des messes sont disponibles à cette date
     if (!hasMassesAvailable(targetDate)) {
-      log('Aucune messe disponible pour ${targetDate.toString()} (${getDay(targetDate.weekday)})');
+      log(
+        'Aucune messe disponible pour ${targetDate.toString()} (${getDay(targetDate.weekday)})',
+      );
 
       // Chercher la prochaine date avec des messes disponibles en commençant par la date cible
       DateTime nextDate = findNextDateWithMasses(targetDate);
 
       if (nextDate != targetDate) {
         targetDate = nextDate;
-        log('Prochaine date avec messes disponibles: ${targetDate.toString()} (${getDay(targetDate.weekday)})');
+        log(
+          'Prochaine date avec messes disponibles: ${targetDate.toString()} (${getDay(targetDate.weekday)})',
+        );
       }
     }
 
     // Formater la date pour l'affichage et pour les requêtes
     final formattedDay = targetDate.day.toString().padLeft(2, '0');
     final formattedMonth = targetDate.month.toString().padLeft(2, '0');
-    final formattedTargetDate = "${targetDate.year}-$formattedMonth-$formattedDay";
+    final formattedTargetDate =
+        "${targetDate.year}-$formattedMonth-$formattedDay";
 
     // Récupérer tous les slots disponibles pour cette date
     List<Slot> allSlots = [];
@@ -496,21 +533,26 @@ class MassRequestWithWorshipController extends GetxController {
 
     // Ajouter les horaires récurrents pour le jour de la semaine
     final recurentHour = worshipRecurrentHours.firstWhereOrNull(
-            (element) => int.parse(element.dayOfWeek ?? '-1') == targetDayOfWeekSystem
+      (element) =>
+          int.parse(element.dayOfWeek ?? '-1') == targetDayOfWeekSystem,
     );
 
     if (recurentHour != null && recurentHour.slots != null) {
-      log('Messes récurrentes trouvées pour ${getDay(targetDate.weekday)}: ${recurentHour.slots?.length ?? 0}');
+      log(
+        'Messes récurrentes trouvées pour ${getDay(targetDate.weekday)}: ${recurentHour.slots?.length ?? 0}',
+      );
       allSlots.addAll(recurentHour.slots ?? []);
     }
 
     // Ajouter les horaires spéciaux pour cette date spécifique
     final specialHour = worshipSpecialHours.firstWhereOrNull(
-            (element) => element.day == formattedTargetDate
+      (element) => element.day == formattedTargetDate,
     );
 
     if (specialHour != null && specialHour.slots != null) {
-      log('Messes spéciales trouvées pour $formattedTargetDate: ${specialHour.slots?.length ?? 0}');
+      log(
+        'Messes spéciales trouvées pour $formattedTargetDate: ${specialHour.slots?.length ?? 0}',
+      );
       allSlots.addAll(specialHour.slots ?? []);
     }
 
@@ -529,7 +571,9 @@ class MassRequestWithWorshipController extends GetxController {
     // afficher TOUS les créneaux disponibles sans filtrage
     if (!isFirst) {
       filteredSlots = List.from(allSlots);
-      log('Date sélectionnée manuellement : affichage de tous les créneaux (${filteredSlots.length})');
+      log(
+        'Date sélectionnée manuellement : affichage de tous les créneaux (${filteredSlots.length})',
+      );
     } else {
       // Sinon, appliquer la logique de filtrage selon l'heure cible (pour la sélection automatique initiale)
       Slot? closestSlot;
@@ -552,7 +596,8 @@ class MassRequestWithWorshipController extends GetxController {
         // Pour les créneaux avant l'heure cible, augmenter artificiellement la différence
         // pour favoriser les créneaux après l'heure cible (comme indiqué dans le tableau)
         if (difference < 0) {
-          difference = difference + 24; // Ajouter 24 pour mettre à la fin de la liste
+          difference =
+              difference + 24; // Ajouter 24 pour mettre à la fin de la liste
         }
 
         if (minDifference == null || difference < minDifference) {
@@ -564,11 +609,15 @@ class MassRequestWithWorshipController extends GetxController {
       // Si on a trouvé un créneau proche, l'utiliser, sinon prendre tous les créneaux
       if (closestSlot != null) {
         filteredSlots = [closestSlot];
-        log('Sélection automatique du créneau le plus proche de ${targetHour}h: ${closestSlot.startTime}');
+        log(
+          'Sélection automatique du créneau le plus proche de ${targetHour}h: ${closestSlot.startTime}',
+        );
       } else if (allSlots.isNotEmpty) {
         // Si aucun créneau ne correspond à notre logique, prendre tous les créneaux disponibles
         filteredSlots = List.from(allSlots);
-        log('Aucun créneau proche trouvé, utilisation de tous les créneaux disponibles');
+        log(
+          'Aucun créneau proche trouvé, utilisation de tous les créneaux disponibles',
+        );
       }
     }
 
@@ -579,20 +628,28 @@ class MassRequestWithWorshipController extends GetxController {
 
     log('Heures disponibles après filtrage: ${selectedHours.length}');
     if (selectedHours.isNotEmpty) {
-      log('Créneaux disponibles: ${selectedHours.map((s) => s?.startTime ?? "").join(", ")}');
+      log(
+        'Créneaux disponibles: ${selectedHours.map((s) => s?.startTime ?? "").join(", ")}',
+      );
     }
 
     // Sélectionner l'heure
     if (selectedHours.isNotEmpty) {
       if (isFirst || selectedHour.value == null) {
         selectedHour.value = selectedHours.first;
-        log('Sélection de la première heure disponible: ${selectedHour.value?.startTime}');
+        log(
+          'Sélection de la première heure disponible: ${selectedHour.value?.startTime}',
+        );
       } else if (selectHour != null) {
         selectedHour.value = selectHour;
-        log('Sélection de l\'heure spécifiée: ${selectedHour.value?.startTime}');
+        log(
+          'Sélection de l\'heure spécifiée: ${selectedHour.value?.startTime}',
+        );
       } else if (!selectedHours.contains(selectedHour.value)) {
         selectedHour.value = selectedHours.first;
-        log('L\'heure précédente n\'est plus disponible, sélection de la première heure: ${selectedHour.value?.startTime}');
+        log(
+          'L\'heure précédente n\'est plus disponible, sélection de la première heure: ${selectedHour.value?.startTime}',
+        );
       }
       selectedHour.refresh();
     } else {
@@ -603,7 +660,8 @@ class MassRequestWithWorshipController extends GetxController {
     // Mettre à jour la date sélectionnée
     selectedDate.value = PriceData(
       day: formattedTargetDate,
-      dayOfWeek: (targetDate.weekday - 1).toString(), // Conversion vers votre système
+      dayOfWeek:
+          (targetDate.weekday - 1).toString(), // Conversion vers votre système
       isDaySelected: true,
       dayToDisplay: "$formattedDay-$formattedMonth-${targetDate.year}",
       slots: selectedHour.value != null ? [selectedHour.value!] : [],
@@ -620,7 +678,7 @@ class MassRequestWithWorshipController extends GetxController {
     update();
   }
 
-// Méthode pour obtenir le prochain jour de la semaine spécifique
+  // Méthode pour obtenir le prochain jour de la semaine spécifique
   DateTime getNextSpecificWeekday(DateTime date, int targetWeekday) {
     DateTime result = date;
 
@@ -629,18 +687,22 @@ class MassRequestWithWorshipController extends GetxController {
 
     // Calculer combien de jours ajouter pour atteindre le jour cible
     int daysToAdd = targetWeekday - date.weekday;
-    if (daysToAdd <= 0) daysToAdd += 7; // Si le jour cible est aujourd'hui ou avant, passer à la semaine suivante
+    if (daysToAdd < 0)
+      daysToAdd +=
+          7; // Si le jour cible est avant aujourd'hui, passer à la semaine suivante
 
     result = result.add(Duration(days: daysToAdd));
     return result;
   }
 
-// Fonction pour vérifier si deux dates sont le même jour
+  // Fonction pour vérifier si deux dates sont le même jour
   bool isSameDay(DateTime date1, DateTime date2) {
-    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
   }
 
-// Fonction pour analyser une heure à partir d'une chaîne "HH:MM:SS"
+  // Fonction pour analyser une heure à partir d'une chaîne "HH:MM:SS"
   DateTime parseTimeFromString(String timeString) {
     try {
       final parts = timeString.split(':');
@@ -655,30 +717,31 @@ class MassRequestWithWorshipController extends GetxController {
     }
   }
 
-// Vérifier si des messes sont disponibles pour une date donnée
+  // Vérifier si des messes sont disponibles pour une date donnée
   bool hasMassesAvailable(DateTime date) {
     // Convertir en jour de la semaine dans votre système (0-6, lundi-dimanche)
     final dayOfWeekSystem = date.weekday - 1;
 
     // Format de date "yyyy-MM-dd" pour les messes spéciales
-    final formattedDate = "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+    final formattedDate =
+        "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
 
     // Vérifier les messes récurrentes
     bool hasRecurrent = worshipRecurrentHours.any(
-            (hour) => int.parse(hour.dayOfWeek ?? '-1') == dayOfWeekSystem &&
-            (hour.slots?.isNotEmpty ?? false)
+      (hour) =>
+          int.parse(hour.dayOfWeek ?? '-1') == dayOfWeekSystem &&
+          (hour.slots?.isNotEmpty ?? false),
     );
 
     // Vérifier les messes spéciales
     bool hasSpecial = worshipSpecialHours.any(
-            (hour) => hour.day == formattedDate &&
-            (hour.slots?.isNotEmpty ?? false)
+      (hour) => hour.day == formattedDate && (hour.slots?.isNotEmpty ?? false),
     );
 
     return hasRecurrent || hasSpecial;
   }
 
-// Trouver la prochaine date avec des messes disponibles
+  // Trouver la prochaine date avec des messes disponibles
   DateTime findNextDateWithMasses(DateTime startDate) {
     DateTime checkDate = startDate;
 
@@ -695,14 +758,16 @@ class MassRequestWithWorshipController extends GetxController {
   }
 
   updateMassTypeRepetitionFilter(
-      MassTypeRepetitionData? massTypeRepetitionData) {
+    MassTypeRepetitionData? massTypeRepetitionData,
+  ) {
     //selectedHour.value = null;
     datesChoosen.clear();
     massRequestTypeRepetitionSelected.value = massTypeRepetitionData;
     checkForm();
     if (selectedDate.value != null &&
         selectedHour.value != null &&
-        massRequestTypeRepetitionSelected.value?.code == RepetitionType.once.name) {
+        massRequestTypeRepetitionSelected.value?.code ==
+            RepetitionType.once.name) {
       selectedDate.value?.slots = [selectedHour.value ?? Slot()];
       datesChoosen.value = [selectedDate.value ?? PriceData()];
       doGetMassRequestPrice();
@@ -715,53 +780,66 @@ class MassRequestWithWorshipController extends GetxController {
     hideKeyboard();
 
     log('request doGetMassRequestType');
-    massRequestRepository.getMassRequestType(page: 0).then((value) {
-      if (value.isNotEmpty == true) {
-        massRequestTypes.value = value;
-        var massRequestTypeSelected = value
-            .firstWhereOrNull((element) => element.code == 'ACTION_OF_GRACE');
-        updateMassTypeFilter(massRequestTypeSelected);
-      }
-      update();
-    }, onError: (error) {
-      var err = error as CustomException;
-      if (err.code == 401) {
-        showCustomDialog(
-          Get.context!,
-          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-        ).then((value) {
-          doLogout();
-        });
-      } else if (err.code == 900) {
-        showNotification(message: err.message.toString());
-      }
-      debugPrint("error => ${error.toString()}");
-    });
+    massRequestRepository
+        .getMassRequestType(page: 0)
+        .then(
+          (value) {
+            if (value.isNotEmpty == true) {
+              massRequestTypes.value = value;
+              var massRequestTypeSelected = value.firstWhereOrNull(
+                (element) => element.code == 'ACTION_OF_GRACE',
+              );
+              updateMassTypeFilter(massRequestTypeSelected);
+            }
+            update();
+          },
+          onError: (error) {
+            var err = error as CustomException;
+            if (err.code == 401) {
+              showCustomDialog(
+                Get.context!,
+                message:
+                    'Votre session a expiré\nVeuillez-vous reconnecter svp',
+              ).then((value) {
+                doLogout();
+              });
+            } else if (err.code == 900) {
+              showNotification(message: err.message.toString());
+            }
+            debugPrint("error => ${error.toString()}");
+          },
+        );
   }
 
   doGetPrayerIntent() {
     hideKeyboard();
 
     log('request doGetPrayerIntent');
-    massRequestRepository.getPrayerIntent(page: 0).then((value) {
-      if (value.isNotEmpty == true) {
-        prayerIntents.value = value;
-      }
-      update();
-    }, onError: (error) {
-      var err = error as CustomException;
-      if (err.code == 401) {
-        showCustomDialog(
-          Get.context!,
-          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-        ).then((value) {
-          doLogout();
-        });
-      } else if (err.code == 900) {
-        showNotification(message: err.message.toString());
-      }
-      debugPrint("error => ${error.toString()}");
-    });
+    massRequestRepository
+        .getPrayerIntent(page: 0)
+        .then(
+          (value) {
+            if (value.isNotEmpty == true) {
+              prayerIntents.value = value;
+            }
+            update();
+          },
+          onError: (error) {
+            var err = error as CustomException;
+            if (err.code == 401) {
+              showCustomDialog(
+                Get.context!,
+                message:
+                    'Votre session a expiré\nVeuillez-vous reconnecter svp',
+              ).then((value) {
+                doLogout();
+              });
+            } else if (err.code == 900) {
+              showNotification(message: err.message.toString());
+            }
+            debugPrint("error => ${error.toString()}");
+          },
+        );
   }
 
   doGetPlaceOfWorshipHours() {
@@ -771,76 +849,101 @@ class MassRequestWithWorshipController extends GetxController {
     isDatesProcessing(true);
     paroisseRepository
         .getLiturgicalCelebration(paroisseSelected.value.identifier)
-        .then((value) {
-      isDatesProcessing(false);
-      if (value.isNotEmpty == true) {
-        worshipHours.value = value;
+        .then(
+          (value) {
+            isDatesProcessing(false);
+            if (value.isNotEmpty == true) {
+              worshipHours.value = value;
 
-        // Filtrer les messes récurrentes (exclure les confessions)
-        worshipRecurrentHoursTemp.value = worshipHours
-            .where((element) => 
-                element.isRecurrent == true && 
-                element.type?.code != 'CONFESSION' &&
-                element.type?.code != 'SPECIAL_CONFESSION')
-            .toList();
+              // Filtrer les messes récurrentes (exclure les confessions)
+              worshipRecurrentHoursTemp.value =
+                  worshipHours
+                      .where(
+                        (element) =>
+                            element.isRecurrent == true &&
+                            element.type?.code != 'CONFESSION' &&
+                            element.type?.code != 'SPECIAL_CONFESSION',
+                      )
+                      .toList();
 
-        // Filtrer les messes spéciales non expirées (24h à l'avance) et exclure les confessions
-        worshipSpecialHoursTemp.value = worshipHours
-            .where((element) =>
-        element.isRecurrent == false &&
-            element.type?.code != 'CONFESSION' &&
-            element.type?.code != 'SPECIAL_CONFESSION' &&
-            (Jiffy.parse(element.startDate ?? Jiffy.now().format(),
-                pattern: AppConstants.TIME_ZONE_FORMAT)
-                .isAfter(Jiffy.now().add(hours: 24))))
-            .toList();
+              // Filtrer les messes spéciales non expirées (24h à l'avance) et exclure les confessions
+              worshipSpecialHoursTemp.value =
+                  worshipHours
+                      .where(
+                        (element) =>
+                            element.isRecurrent == false &&
+                            element.type?.code != 'CONFESSION' &&
+                            element.type?.code != 'SPECIAL_CONFESSION' &&
+                            (Jiffy.parse(
+                              element.startDate ?? Jiffy.now().format(),
+                              pattern: AppConstants.TIME_ZONE_FORMAT,
+                            ).isAfter(Jiffy.now().add(hours: 24))),
+                      )
+                      .toList();
 
-        worshipRecurrentHours.value = transformWorshipRecurrentHours(worshipRecurrentHoursTemp);
-        worshipSpecialHours.value = transformWorshipSpecialHours(worshipSpecialHoursTemp);
+              worshipRecurrentHours.value = transformWorshipRecurrentHours(
+                worshipRecurrentHoursTemp,
+              );
+              worshipSpecialHours.value = transformWorshipSpecialHours(
+                worshipSpecialHoursTemp,
+              );
 
-        // Obtenir les dates autorisées pour les messes récurrentes
-        List<int> recurringDays = worshipRecurrentHours
-            .map((element) => int.parse(element.dayOfWeek ?? '0') + 1)
-            .toList();
-        List<DateTime> recurringDates = getNextDatesForDays(recurringDays);
+              // Obtenir les dates autorisées pour les messes récurrentes
+              List<int> recurringDays =
+                  worshipRecurrentHours
+                      .map((element) => int.parse(element.dayOfWeek ?? '0') + 1)
+                      .toList();
+              List<DateTime> recurringDates = getNextDatesForDays(
+                recurringDays,
+              );
 
-        // Obtenir les dates pour les messes spéciales
-        List<DateTime> specialDates = worshipSpecialHours
-            .map((element) => Jiffy.parse(element.day ?? '', pattern: "yyyy-MM-dd").dateTime)
-            .toList();
+              // Obtenir les dates pour les messes spéciales
+              List<DateTime> specialDates =
+                  worshipSpecialHours
+                      .map(
+                        (element) =>
+                            Jiffy.parse(
+                              element.day ?? '',
+                              pattern: "yyyy-MM-dd",
+                            ).dateTime,
+                      )
+                      .toList();
 
-        // Combiner les dates récurrentes et spéciales
-        Set<DateTime> allDates = {...recurringDates, ...specialDates};
+              // Combiner les dates récurrentes et spéciales
+              Set<DateTime> allDates = {...recurringDates, ...specialDates};
 
-        // Trier les dates
-        allowedDates.value = allDates.toList()..sort();
+              // Trier les dates
+              allowedDates.value = allDates.toList()..sort();
 
-        DateTime now = DateTime.now();
-        DateTime today = DateTime(now.year, now.month, now.day);
+              DateTime now = DateTime.now();
+              DateTime today = DateTime(now.year, now.month, now.day);
 
-        DateTime datetime = allowedDates.value.firstWhere(
-              (date) => date.isAfter(today) || date.isAtSameMomentAs(today),
-          orElse: () => allowedDates.first,
+              DateTime datetime = allowedDates.value.firstWhere(
+                (date) => date.isAfter(today) || date.isAtSameMomentAs(today),
+                orElse: () => allowedDates.first,
+              );
+
+              log('datetime ::: ${datetime.toIso8601String()}');
+              updateRepetitionFilter(datetime);
+            }
+          },
+          onError: (error) {
+            isDatesProcessing(false);
+            var err = error as CustomException;
+            if (err.code == 401) {
+              showCustomDialog(
+                Get.context!,
+                message:
+                    'Votre session a expiré\nVeuillez-vous reconnecter svp',
+              ).then((value) {
+                doLogout();
+              });
+            } else if (err.code == 900) {
+              showNotification(message: err.message.toString());
+            }
+            debugPrint("doGetPlaceOfWorshipHours Error => ${error.toString()}");
+          },
         );
-
-        log('datetime ::: ${datetime.toIso8601String()}');
-        updateRepetitionFilter(datetime);
-      }
-    }, onError: (error) {
-      isDatesProcessing(false);
-      var err = error as CustomException;
-      if (err.code == 401) {
-        showCustomDialog(
-          Get.context!,
-          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-        ).then((value) {
-          doLogout();
-        });
-      } else if (err.code == 900) {
-        showNotification(message: err.message.toString());
-      }
-      debugPrint("doGetPlaceOfWorshipHours Error => ${error.toString()}");
-    });
   }
 
   doGetMassRequestPrice() {
@@ -852,30 +955,35 @@ class MassRequestWithWorshipController extends GetxController {
 
     massRequestRepository
         .getMassRequestPrice(
-        request: datesChoosen,
-        workshipId: paroisseSelected.value.identifier.toString())
-        .then((value) {
-      isPricingProcessing(false);
-      hasData(true);
-      price.value = value.price.toString();
-      checkForm();
-    }, onError: (error) {
-      isPricingProcessing(false);
-      hasData(false);
-      var err = error as CustomException;
-      if (err.code == 401) {
-        showCustomDialog(
-          Get.context!,
-          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-        ).then((value) {
-          doLogout();
-        });
-      } else if (err.code == 900) {
-        price.value = '-';
-        log('Error doGetMassRequestPrice ::: ${err.message.toString()}');
-      }
-      debugPrint("Error doGetMassRequestPrice => ${error.toString()}");
-    });
+          request: datesChoosen,
+          workshipId: paroisseSelected.value.identifier.toString(),
+        )
+        .then(
+          (value) {
+            isPricingProcessing(false);
+            hasData(true);
+            price.value = value.price.toString();
+            checkForm();
+          },
+          onError: (error) {
+            isPricingProcessing(false);
+            hasData(false);
+            var err = error as CustomException;
+            if (err.code == 401) {
+              showCustomDialog(
+                Get.context!,
+                message:
+                    'Votre session a expiré\nVeuillez-vous reconnecter svp',
+              ).then((value) {
+                doLogout();
+              });
+            } else if (err.code == 900) {
+              price.value = '-';
+              log('Error doGetMassRequestPrice ::: ${err.message.toString()}');
+            }
+            debugPrint("Error doGetMassRequestPrice => ${error.toString()}");
+          },
+        );
   }
 
   doSendMassRequest({bool? forceDuplicateCreation}) {
@@ -889,57 +997,63 @@ class MassRequestWithWorshipController extends GetxController {
     });
 
     var request = MassRequestData(
-      prayerIntent: massIntentionController.text.isNotEmpty
-          ? massIntentionController.text
-          : prayerIntentSelected.value?.defaultText?.fr,
+      prayerIntent:
+          massIntentionController.text.isNotEmpty
+              ? massIntentionController.text
+              : prayerIntentSelected.value?.defaultText?.fr,
       typeOfMassRequest: massRequestTypeSelected.value?.code,
       slots: datesChoosen,
       worshipPlace: paroisseSelected.value.identifier,
       forceDuplicateCreation: forceDuplicateCreation,
+      paymentMethod: '', //todo,
     );
 
     log('request doSendMassRequest => ${jsonEncode(request.toJson())}');
 
-    massRequestRepository.sendMassRequest(request: request).then(
+    massRequestRepository
+        .sendMassRequest(request: request)
+        .then(
           (value) {
-        EasyLoading.dismiss(animation: true).then((v) {
-          unlockBackButton.value = true;
-        });
-        moveToPayment(value);
-      },
-      onError: (error) {
-        EasyLoading.dismiss(animation: true).then((v) {
-          unlockBackButton.value = true;
-        });
-        debugPrint("error => ${error.toString()}");
-        var err = error as CustomException;
-        if (err.code == 401) {
-          showCustomDialog(
-            Get.context!,
-            message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-          ).then((value) {
-            doLogout();
-          });
-          return;
-        }
-        if (err.code == 409) {
-          showCustomDialog(
-            Get.context!,
-            message:
-            'Vous venez de faire une demande de messe identique. Souhaitez-vous confirmer cette demande ?',
-            positiveLabel: 'OUI',
-            positiveCallBack: () {
-              doSendMassRequest(forceDuplicateCreation: true);
-            },
-            negativeLabel: 'NON',
-          );
-          return;
-        }
-        showNotification(
-            message: 'Une erreur est survenue',
-            duration: const Duration(seconds: 4));
-      },
-    );
+            EasyLoading.dismiss(animation: true).then((v) {
+              unlockBackButton.value = true;
+            });
+            moveToPayment(value);
+          },
+          onError: (error) {
+            EasyLoading.dismiss(animation: true).then((v) {
+              unlockBackButton.value = true;
+            });
+            debugPrint("error => ${error.toString()}");
+            var err = error as CustomException;
+            if (err.code == 401) {
+              showCustomDialog(
+                Get.context!,
+                message:
+                    'Votre session a expiré\nVeuillez-vous reconnecter svp',
+              ).then((value) {
+                doLogout();
+              });
+              return;
+            }
+            if (err.code == 409) {
+              showCustomDialog(
+                Get.context!,
+                message:
+                    'Vous venez de faire une demande de messe identique. Souhaitez-vous confirmer cette demande ?',
+                positiveLabel: 'OUI',
+                positiveCallBack: () {
+                  doSendMassRequest(forceDuplicateCreation: true);
+                },
+                negativeLabel: 'NON',
+              );
+              return;
+            }
+            showNotification(
+              message: 'Une erreur est survenue',
+              duration: const Duration(seconds: 4),
+            );
+          },
+        );
   }
 
   doLogout() {
