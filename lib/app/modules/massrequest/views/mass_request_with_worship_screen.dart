@@ -419,7 +419,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                               actionColor: colorGreen.withValues(alpha: 0.5),
                               enabled: controller.isValidForm.value,
                               action: () {
-                                controller.doSendMassRequest();
+                                controller.moveToRecap();
                               },
                             ),
                             const SizedBox(height: 16),

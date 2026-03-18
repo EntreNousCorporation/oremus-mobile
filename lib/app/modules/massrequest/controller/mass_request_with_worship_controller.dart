@@ -3,11 +3,9 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
-import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
@@ -125,12 +123,21 @@ class MassRequestWithWorshipController extends GetxController {
         .firstWhereOrNull((p0) => p0?.code == 'once');
   }
 
-  moveToPayment(MassRequestResponse massRequestResponse) {
+  moveToRecap() {
     Get.toNamed(
-      Routes.PAYMENT,
+      Routes.MASS_REQUEST_RECAP,
       arguments: {
-        'payment_response': massRequestResponse.toJson(),
-        'payment_type': PaymentType.massRequest,
+        'prayerIntent':
+            massIntentionController.text.isNotEmpty
+                ? massIntentionController.text
+                : prayerIntentSelected.value?.defaultText?.fr,
+        'typeOfMassRequest': massRequestTypeSelected.toJson(),
+        'slots': datesChoosen,
+        'worshipPlace': paroisseSelected.toJson(),
+        'price': price.value,
+        'massRequestTypeRepetitionSelected': massRequestTypeRepetitionSelected.toJson(),
+        'selectedDate': selectedDate.toJson(),
+        'selectedHour': selectedHour.toJson(),
       },
     );
   }
@@ -982,76 +989,6 @@ class MassRequestWithWorshipController extends GetxController {
               log('Error doGetMassRequestPrice ::: ${err.message.toString()}');
             }
             debugPrint("Error doGetMassRequestPrice => ${error.toString()}");
-          },
-        );
-  }
-
-  doSendMassRequest({bool? forceDuplicateCreation}) {
-    hideKeyboard();
-    EasyLoading.show(
-      status: 'Traitement en cours...',
-      maskType: EasyLoadingMaskType.black,
-      indicator: LottieLoadingView(),
-    ).then((v) {
-      unlockBackButton.value = false;
-    });
-
-    var request = MassRequestData(
-      prayerIntent:
-          massIntentionController.text.isNotEmpty
-              ? massIntentionController.text
-              : prayerIntentSelected.value?.defaultText?.fr,
-      typeOfMassRequest: massRequestTypeSelected.value?.code,
-      slots: datesChoosen,
-      worshipPlace: paroisseSelected.value.identifier,
-      forceDuplicateCreation: forceDuplicateCreation,
-      paymentMethod: '', //todo,
-    );
-
-    log('request doSendMassRequest => ${jsonEncode(request.toJson())}');
-
-    massRequestRepository
-        .sendMassRequest(request: request)
-        .then(
-          (value) {
-            EasyLoading.dismiss(animation: true).then((v) {
-              unlockBackButton.value = true;
-            });
-            moveToPayment(value);
-          },
-          onError: (error) {
-            EasyLoading.dismiss(animation: true).then((v) {
-              unlockBackButton.value = true;
-            });
-            debugPrint("error => ${error.toString()}");
-            var err = error as CustomException;
-            if (err.code == 401) {
-              showCustomDialog(
-                Get.context!,
-                message:
-                    'Votre session a expiré\nVeuillez-vous reconnecter svp',
-              ).then((value) {
-                doLogout();
-              });
-              return;
-            }
-            if (err.code == 409) {
-              showCustomDialog(
-                Get.context!,
-                message:
-                    'Vous venez de faire une demande de messe identique. Souhaitez-vous confirmer cette demande ?',
-                positiveLabel: 'OUI',
-                positiveCallBack: () {
-                  doSendMassRequest(forceDuplicateCreation: true);
-                },
-                negativeLabel: 'NON',
-              );
-              return;
-            }
-            showNotification(
-              message: 'Une erreur est survenue',
-              duration: const Duration(seconds: 4),
-            );
           },
         );
   }
