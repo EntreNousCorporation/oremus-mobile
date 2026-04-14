@@ -9,7 +9,7 @@ import 'package:oremusapp/app/modules/pray/data/model/prayer.dart';
 import 'package:oremusapp/app/modules/pray/data/repository/pray_repository.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pull_to_refresh_simple/pull_to_refresh_simple.dart';
 
 class PrayController extends GetxController {
   final PrayRepository prayRepository;
