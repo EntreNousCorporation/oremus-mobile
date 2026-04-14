@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/modules/diocese/data/repository/diocese_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pull_to_refresh_simple/pull_to_refresh_simple.dart';
 
 class DioceseController extends GetxController {
   final DioceseRepository dioceseRepository;

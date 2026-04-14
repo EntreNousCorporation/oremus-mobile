@@ -1,4 +1,4 @@
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pull_to_refresh_simple/pull_to_refresh_simple.dart';
 
 
 /// Fabrique pour gérer les instances de RefreshController

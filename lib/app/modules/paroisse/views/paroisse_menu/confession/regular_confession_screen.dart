@@ -12,7 +12,7 @@ import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_confession_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/day_confession_item.dart';
 import 'package:oremusapp/generated/assets.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pull_to_refresh_simple/pull_to_refresh_simple.dart';
 
 class RegularConfessionScreen extends StatelessWidget {
   const RegularConfessionScreen({Key? key}) : super(key: key);

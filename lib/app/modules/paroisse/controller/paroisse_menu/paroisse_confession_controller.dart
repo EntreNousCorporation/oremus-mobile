@@ -15,7 +15,7 @@ import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/confession/re
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/confession/special_confession_screen.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pull_to_refresh_simple/pull_to_refresh_simple.dart';
 
 class ParoisseConfessionController extends GetxController {
   final ParoisseRepository paroisseRepository;

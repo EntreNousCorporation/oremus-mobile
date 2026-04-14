@@ -49,7 +49,7 @@ class CustomHomeNewScreen extends StatelessWidget {
                 screenCurrent = const ProfileScreen();
                 break;
               case AppConstants.PRAY:
-                logic.title.value = logic.menus[position].libelle ?? 'Mini Missel';
+                logic.title.value = logic.menus[position].libelle ?? 'Prières';
                 screenCurrent = const PrayScreen();
                 break;
               case AppConstants.REQUEST_MASS_WITHOUT_WORSHIP:

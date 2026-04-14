@@ -10,7 +10,7 @@ import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/customhome/views/widget/search_widget.dart';
 import 'package:oremusapp/app/modules/diocese/controller/diocese_controller.dart';
 import 'package:oremusapp/app/modules/diocese/views/widget/gridview_item.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pull_to_refresh_simple/pull_to_refresh_simple.dart';
 
 class DioceseScreen extends StatelessWidget {
   const DioceseScreen({Key? key}) : super(key: key);

@@ -11,7 +11,7 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/filter_worship_controller.dart';
 import 'package:oremusapp/app/modules/massrequest/views/widget/filter_search_widget.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pull_to_refresh_simple/pull_to_refresh_simple.dart';
 
 class FilterWorshipScreen extends StatelessWidget {
   const FilterWorshipScreen({Key? key}) : super(key: key);

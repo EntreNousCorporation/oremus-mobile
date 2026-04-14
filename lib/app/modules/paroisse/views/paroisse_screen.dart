@@ -14,7 +14,7 @@ import 'package:oremusapp/app/modules/customhome/views/widget/search_widget.dart
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/paroisse_item.dart';
 import 'package:oremusapp/generated/assets.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pull_to_refresh_simple/pull_to_refresh_simple.dart';
 
 class ParoisseScreen extends StatefulWidget {
   const ParoisseScreen({Key? key}) : super(key: key);

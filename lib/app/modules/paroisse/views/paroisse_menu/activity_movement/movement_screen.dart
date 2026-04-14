@@ -8,7 +8,7 @@ import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_activity_movement_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/movement_item.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pull_to_refresh_simple/pull_to_refresh_simple.dart';
 
 class MovementScreen extends StatelessWidget {
   const MovementScreen({Key? key}) : super(key: key);

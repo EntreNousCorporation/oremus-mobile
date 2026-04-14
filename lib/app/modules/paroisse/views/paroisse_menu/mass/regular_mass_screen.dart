@@ -11,7 +11,7 @@ import 'package:oremusapp/app/commons/timeline/flutter_timeline.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/paroisse/controller/paroisse_menu/paroisse_mass_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/views/widget/day_masse_item.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pull_to_refresh_simple/pull_to_refresh_simple.dart';
 
 class RegularMassScreen extends StatelessWidget {
   const RegularMassScreen({Key? key}) : super(key: key);

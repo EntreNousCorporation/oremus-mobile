@@ -12,7 +12,7 @@ import 'package:oremusapp/app/modules/lifeplan/views/user_life_plan_item.dart';
 import 'package:oremusapp/app/modules/lifeplan/views/widgets/background_operations_indicator.dart';
 import 'package:oremusapp/generated/assets.dart';
 import 'package:oremusapp/main.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pull_to_refresh_simple/pull_to_refresh_simple.dart';
 
 class LifePlanScreen extends StatelessWidget {
   const LifePlanScreen({Key? key}) : super(key: key);
@@ -66,8 +66,8 @@ class LifePlanScreen extends StatelessWidget {
                       controller: controller.refreshController,
                       onRefresh: controller.onRefresh,
                       enablePullDown: true,
-                      header: const WaterDropHeader(
-                        waterDropColor: colorGreenSemiLight,
+                      header: const WaterDropMaterialHeader(
+                        color: colorGreenSemiLight,
                       ),
                       child: TabBarView(
                         children: [

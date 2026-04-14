@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pull_to_refresh_simple/pull_to_refresh_simple.dart';
 
 class CustomClassicHeader extends StatelessWidget {
   const CustomClassicHeader({Key? key, this.textColor, this.textSize}) : super(key: key);
