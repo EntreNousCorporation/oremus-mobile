@@ -260,7 +260,7 @@ class PaymentController extends GetxController {
         moveToError();
         return;
       }
-      if (value.paymentStatus == PaymentStatus.PENDING.name || value.paymentStatus == PaymentStatus.INITIATED.name) {
+      if (value.paymentStatus == PaymentStatus.PENDING.name || value.paymentStatus == PaymentStatus.INITIATED.name || value.paymentStatus == PaymentStatus.INIT.name) {
         manualVerifyCount.value += 1;
         log('manualVerifyCount ::: ${manualVerifyCount.value}');
         if (manualVerifyCount.value == 5) {
@@ -269,21 +269,23 @@ class PaymentController extends GetxController {
         checkingPaymentStatus(false);
         return;
       }
-
-      //ACCEPTED
-      checkingPaymentStatus(true);
-      switch (paymentType.value) {
-        case PaymentType.massRequest:
-          paymentStatusMessage.value = 'Votre demande de messe a été effectuée avec succès';
-          break;
-        case PaymentType.donation:
-          paymentStatusMessage.value = 'Votre don a été effectué avec succès';
-          break;
-        case PaymentType.none:
-          paymentStatusMessage.value = 'Payment effectué avec succès';
-          break;
+      if (value.paymentStatus == PaymentStatus.ACCEPTED.name) {
+        //ACCEPTED
+        checkingPaymentStatus(true);
+        switch (paymentType.value) {
+          case PaymentType.massRequest:
+            paymentStatusMessage.value = 'Votre demande de messe a été effectuée avec succès';
+            break;
+          case PaymentType.donation:
+            paymentStatusMessage.value = 'Votre don a été effectué avec succès';
+            break;
+          case PaymentType.none:
+            paymentStatusMessage.value = 'Payment effectué avec succès';
+            break;
+        }
+        moveToSuccess();
+        return;
       }
-      moveToSuccess();
     }, onError: (error) {
       checkingPaymentStatus(false);
       var err = error as CustomException;
