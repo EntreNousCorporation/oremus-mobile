@@ -71,7 +71,84 @@ class ParoisseRepository implements IParoisseRepository {
   }
 
   @override
-  Future<DataResponse<ContentPlace>> getParoissesBySchedule({
+  Future<DataResponse<ContentPlace>> getParoissesBySchedule({int? page = 0, required String query}) async {
+    final isUserLoggedIn = DB.getUserSigninInfo()?.id?.isNotEmpty == true;
+
+    final uri = Uri(
+      path: '/worship-places',
+      queryParameters: {
+        'query': query,
+        'page': page.toString(),
+        'size': AppConstants.PAGING_SIZE_1000.toString(),
+      },
+    );
+
+    final response = await _apiClient.doRequest(
+      customBaseUrl: customBaseUrl,
+      endpoint: uri.toString(),
+      method: HttpMethod.get,
+      useBearer: false,
+    );
+
+    log('resp getParoissesBySchedule => ${response.statusCode}');
+
+    if (response.statusCode != 200) {
+      final e = ErrorResponse.fromJson(jsonDecode(response.bodyString!));
+      throw CustomException(e.debugMessage, e.status);
+    }
+
+    final scheduleResponse =
+    ScheduleApiResponse.fromJson(jsonDecode(response.bodyString!));
+
+    final result = DataResponse<ContentPlace>()
+      ..contents = scheduleResponse.content
+      ..last = scheduleResponse.page?.isLast ?? true;
+
+    if (result.contents == null || result.contents!.isEmpty) {
+      return result;
+    }
+
+    if (isUserLoggedIn) {
+      try {
+        final ids = result.contents!
+            .where((e) => e?.identifier != null)
+            .map((e) => e?.identifier!)
+            .toList();
+
+        final favoritesStatus = await getUserFavoritesForPlaces(ids);
+
+        final map = {
+          for (var f in favoritesStatus) f.identifier: f.isUserFavorite ?? false
+        };
+
+        for (var p in result.contents!) {
+          final isFav = map[p?.identifier] ?? false;
+          p?.isUserFavorite = isFav;
+          p?.isFavorite = isFav;
+        }
+      } catch (e) {
+        log('Error fetching favorites status: $e');
+        _applyLocalFavorites(result.contents ?? []);
+      }
+    } else {
+      _applyLocalFavorites(result.contents!);
+    }
+
+    return result;
+  }
+
+  void _applyLocalFavorites(List<ContentPlace?>? places) {
+    final localFavorites = DB.getUnsynchronizedFavorites();
+
+    final ids = localFavorites.map((e) => e.identifier).toSet();
+
+    for (var p in places ?? []) {
+      p?.isFavorite = ids.contains(p.identifier);
+    }
+  }
+
+  @override
+  Future<DataResponse<ContentPlace>> _getParoissesBySchedule({
     int? page = 0,
     required String query,
   }) async {
