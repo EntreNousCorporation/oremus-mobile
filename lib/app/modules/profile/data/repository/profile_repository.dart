@@ -26,8 +26,6 @@ class ProfileRepository implements IProfileRepository {
       useBearer: false,
     );
 
-    log('resp => ${response.statusCode}');
-
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.status, e.debugMessage);
@@ -43,8 +41,6 @@ class ProfileRepository implements IProfileRepository {
       method: HttpMethod.post,
       body: jsonEncode(request.toJson()),
     );
-
-    log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
@@ -62,8 +58,6 @@ class ProfileRepository implements IProfileRepository {
       body: jsonEncode(request.toJson()),
     );
 
-    log('resp => ${response.statusCode}');
-
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.status, e.debugMessage);
@@ -78,8 +72,6 @@ class ProfileRepository implements IProfileRepository {
       endpoint: "/users/$userId",
       method: HttpMethod.delete,
     );
-
-    log('resp => ${response.statusCode}');
 
     if (response.statusCode != 204) {
       var e = ErrorResponse.fromJson(response.data);

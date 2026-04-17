@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
@@ -101,7 +102,7 @@ class RosaryController extends GetxController {
 
       update();
     } catch (e) {
-      log('Erreur lors du chargement des préférences: $e');
+      OremusLogger.error('Erreur lors du chargement des préférences: $e');
     }
   }
 

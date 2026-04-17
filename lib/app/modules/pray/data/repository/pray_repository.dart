@@ -20,7 +20,6 @@ class PrayRepository implements IPrayRepository {
       method: HttpMethod.get,
       useBearer: false,
     );
-    log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       throw Exception(json.encode(response.data));
@@ -38,7 +37,6 @@ class PrayRepository implements IPrayRepository {
       method: HttpMethod.get,
       useBearer: false,
     );
-    log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       throw Exception(json.encode(response.data));

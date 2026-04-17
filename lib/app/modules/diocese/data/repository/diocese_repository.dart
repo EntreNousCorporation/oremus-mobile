@@ -22,7 +22,6 @@ class DioceseRepository implements IDioceseRepository {
       method: HttpMethod.get,
       useBearer: false,
     );
-    log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       throw Exception(json.encode(response.data));

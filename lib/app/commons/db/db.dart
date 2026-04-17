@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
@@ -32,34 +33,34 @@ class DB {
 
     _isInitializing = true;
     try {
-      log('Initialisation de Hive...');
+      OremusLogger.info('Initialisation de Hive...');
       await Hive.initFlutter();
-      log('Hive initialisé, obtention des SharedPreferences...');
+      OremusLogger.info('Hive initialisé, obtention des SharedPreferences...');
 
       final sharePrefs = await SharedPreferences.getInstance();
       var containsEncryption = sharePrefs.getString(AppConstants.STORAGE_KEY);
 
       if (containsEncryption == null) {
         var key = Hive.generateSecureKey();
-        log('Nouvelle clé générée');
+        OremusLogger.info('Nouvelle clé générée');
         await sharePrefs.setString(AppConstants.STORAGE_KEY, base64UrlEncode(key));
         containsEncryption = sharePrefs.getString(AppConstants.STORAGE_KEY);
       }
 
-      log('containsEncryption $containsEncryption');
+      OremusLogger.debug('containsEncryption $containsEncryption');
       var encryptionKey = base64Url.decode(sharePrefs.getString(AppConstants.STORAGE_KEY) ?? '');
-      log('encryptionKey obtenue, ouverture de la box...');
+      OremusLogger.info('encryptionKey obtenue, ouverture de la box...');
 
       encryptedBox = await Hive.openBox(
           AppConstants.BOX_NAME,
           encryptionCipher: HiveAesCipher(encryptionKey)
       );
 
-      log('Box Hive ouverte avec succès');
+      OremusLogger.info('Box Hive ouverte avec succès');
       _isInitialized = true;
       return true;
     } catch (e) {
-      log('Erreur lors de l\'initialisation de la base de données: $e');
+      OremusLogger.error('Erreur lors de l\'initialisation de la base de données: $e');
       _isInitialized = false;
       return false;
     } finally {

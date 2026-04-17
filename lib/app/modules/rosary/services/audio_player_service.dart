@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:just_waveform/just_waveform.dart';
+import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/rosary/data/model/rosary_file_data.dart';
@@ -189,7 +190,7 @@ class AudioPlayerService extends GetxService {
         }
       }
     } catch (e) {
-      log('Erreur lors du chargement de la vitesse: $e');
+      OremusLogger.error('Erreur lors du chargement de la vitesse: $e');
     }
   }
 
@@ -198,7 +199,7 @@ class AudioPlayerService extends GetxService {
     try {
       DB.saveData(KEY_PLAYBACK_SPEED, speed.toString());
     } catch (e) {
-      log('Erreur lors de la sauvegarde de la vitesse: $e');
+      OremusLogger.error('Erreur lors de la sauvegarde de la vitesse: $e');
     }
   }
 
@@ -207,9 +208,9 @@ class AudioPlayerService extends GetxService {
     try {
       await _audioPlayer.setSpeed(speed);
       _saveSpeed(speed);
-      log('Vitesse de lecture changée: ${speed}x');
+      OremusLogger.info('Vitesse de lecture changée: ${speed}x');
     } catch (e) {
-      log('Erreur lors du changement de vitesse: $e');
+      OremusLogger.error('Erreur lors du changement de vitesse: $e');
     }
   }
 
@@ -220,19 +221,16 @@ class AudioPlayerService extends GetxService {
     }
   }
 
-  // NOUVEAU: Passer à la vitesse suivante (cycle)
   void cycleSpeed() {
     int currentIndex = speedOptions.indexOf(playbackSpeed.value);
     int nextIndex = (currentIndex + 1) % speedOptions.length;
     setPlaybackSpeed(speedOptions[nextIndex]);
   }
 
-  // NOUVEAU: Réinitialiser à la vitesse normale
   void resetToNormalSpeed() {
     setPlaybackSpeed(1.0);
   }
 
-  // Nouveau: Créer un répertoire pour stocker les fichiers waveform en cache
   Future<String> _createWaveformCacheDir() async {
     final appDocDir = await getApplicationDocumentsDirectory();
     final cacheDirPath = '${appDocDir.path}/waveform_cache';
@@ -285,7 +283,7 @@ class AudioPlayerService extends GetxService {
     _audioPlayer.playbackEventStream.listen(
           (event) {},
       onError: (Object e, StackTrace stackTrace) {
-        log('Erreur de lecture audio: $e');
+        OremusLogger.error('Erreur de lecture audio: $e');
         errorMessage.value = 'Erreur de lecture. Veuillez réessayer svp';
       },
     );
@@ -316,7 +314,7 @@ class AudioPlayerService extends GetxService {
       await _fileManagerService.getLocalFilePath(mystereIndex, detailIndex);
 
       if (localFilePath != null) {
-        log('Utilisation du fichier local: $localFilePath');
+        OremusLogger.info('Utilisation du fichier local: $localFilePath');
         // Utiliser le fichier local existant
         await _playLocalFile(mystereIndex, detailIndex, localFilePath);
       } else {
@@ -337,7 +335,6 @@ class AudioPlayerService extends GetxService {
 
             // S'assurer que l'URL est correctement encodée
             final encodedUrl = Uri.encodeFull(audioUrl);
-            log('URL encodée: $encodedUrl');
 
             // Stocker l'URL pour téléchargement en arrière-plan
             _currentDownloadUrl = encodedUrl;
@@ -351,7 +348,7 @@ class AudioPlayerService extends GetxService {
                 filePath = await _fileManagerService.downloadFile(
                     mystereIndex, detailIndex);
               } catch (e) {
-                log('Erreur pendant le téléchargement sur iOS: $e');
+                OremusLogger.error('Erreur pendant le téléchargement sur iOS: $e');
                 errorMessage.value =
                 'Erreur de téléchargement. Veuillez réessayer.';
                 isDownloading.value = false;
@@ -363,7 +360,7 @@ class AudioPlayerService extends GetxService {
                 try {
                   await _playLocalFile(mystereIndex, detailIndex, filePath);
                 } catch (e) {
-                  log('Erreur lors de la lecture du fichier local sur iOS: $e');
+                  OremusLogger.error('Erreur lors de la lecture du fichier local sur iOS: $e');
                   errorMessage.value = 'Erreur de lecture. Veuillez réessayer.';
                 }
               } else {
@@ -404,7 +401,7 @@ class AudioPlayerService extends GetxService {
                 // Commencer la lecture
                 _audioPlayer.play();
               } catch (e) {
-                log('Erreur lors de la configuration du streaming: $e');
+                OremusLogger.error('Erreur lors de la configuration du streaming: $e');
                 errorMessage.value = 'Erreur de streaming. Veuillez réessayer.';
               }
             }
@@ -418,7 +415,7 @@ class AudioPlayerService extends GetxService {
         }
       }
     } catch (e) {
-      log('Erreur lors du chargement de l\'audio: $e');
+      OremusLogger.error('Erreur lors du chargement de l\'audio: $e');
       errorMessage.value =
       'Impossible de charger l\'audio. Veuillez réessayer.';
     } finally {
@@ -451,16 +448,16 @@ class AudioPlayerService extends GetxService {
             throw Exception(
                 'Le fichier existe mais ne peut pas être lu correctement sur iOS');
           }
-          log('Vérification de lecture réussie avant la configuration de l\'audio source');
+          OremusLogger.info('Vérification de lecture réussie avant la configuration de l\'audio source');
         } catch (e) {
-          log('Erreur lors de la vérification de lecture sur iOS: $e');
+          OremusLogger.error('Erreur lors de la vérification de lecture sur iOS: $e');
           throw Exception('Vérification de lecture échouée: $e');
         }
       }
 
       // Utiliser un URI encodé pour la lecture
       final audioUri = Uri.file(filePath);
-      log('URI du fichier pour lecture: ${audioUri.toString()}');
+      OremusLogger.info('URI du fichier pour lecture: ${audioUri.toString()}');
 
       final audioSource = AudioSource.uri(
         audioUri,
@@ -487,7 +484,7 @@ class AudioPlayerService extends GetxService {
       isCompleted.value = false;
       _audioPlayer.play();
     } catch (e) {
-      log('Erreur lors de la lecture du fichier local: $e');
+      OremusLogger.error('Erreur lors de la lecture du fichier local: $e');
       rethrow;
     }
   }
@@ -512,9 +509,9 @@ class AudioPlayerService extends GetxService {
       // Télécharger le fichier en arrière-plan
       await _fileManagerService.downloadFile(mystereIndex, detailIndex);
 
-      log('Téléchargement en arrière-plan terminé pour: $mysteryKey');
+      OremusLogger.info('Téléchargement en arrière-plan terminé pour: $mysteryKey');
     } catch (e) {
-      log('Erreur lors du téléchargement en arrière-plan: $e');
+      OremusLogger.error('Erreur lors du téléchargement en arrière-plan: $e');
     } finally {
       isDownloading.value = false;
       _isBackgroundDownloadInProgress = false;
@@ -539,12 +536,12 @@ class AudioPlayerService extends GetxService {
         final localPath = await _fileManagerService.getLocalFilePath(
             mystereIndex, detailIndex);
         if (localPath == null) {
-          log('Début du téléchargement complet après la lecture');
+          OremusLogger.info('Début du téléchargement complet après la lecture');
           try {
             await _fileManagerService.downloadFile(mystereIndex, detailIndex);
-            log('Téléchargement complet après la lecture réussi');
+            OremusLogger.info('Téléchargement complet après la lecture réussi');
           } catch (e) {
-            log('Erreur lors du téléchargement complet après la lecture: $e');
+            OremusLogger.error('Erreur lors du téléchargement complet après la lecture: $e');
           }
         }
       }
@@ -562,7 +559,7 @@ class AudioPlayerService extends GetxService {
         }
       }
     } catch (e) {
-      log('Erreur lors du préchargement des fichiers: $e');
+      OremusLogger.error('Erreur lors du préchargement des fichiers: $e');
     }
   }
 
@@ -594,7 +591,7 @@ class AudioPlayerService extends GetxService {
       // Vérifier que le fichier existe
       final file = File(filePath);
       if (!await file.exists()) {
-        log('Fichier audio introuvable pour la forme d\'onde: $filePath');
+        OremusLogger.info('Fichier audio introuvable pour la forme d\'onde: $filePath');
         isWaveformLoading.value = false;
         _isWaveformGenerationInProgress = false;
         _waveformGenerationCompleter?.complete();
@@ -609,7 +606,7 @@ class AudioPlayerService extends GetxService {
 
       // Vérifier si le waveform est déjà en cache
       if (await waveformCacheFile.exists()) {
-        log('Chargement du waveform depuis le cache: $waveformCachePath');
+        OremusLogger.info('Chargement du waveform depuis le cache: $waveformCachePath');
         try {
 
           // Traiter le waveform en arrière-plan
@@ -621,13 +618,13 @@ class AudioPlayerService extends GetxService {
           final processedData = await compute(_processWaveform, params);
           waveformData.value = processedData;
           isWaveformLoading.value = false;
-          log('Waveform chargé depuis le cache avec succès');
+          OremusLogger.info('Waveform chargé depuis le cache avec succès');
 
           _isWaveformGenerationInProgress = false;
           _waveformGenerationCompleter?.complete();
           return;
         } catch (e) {
-          log('Erreur lors du chargement du waveform depuis le cache: $e');
+          OremusLogger.error('Erreur lors du chargement du waveform depuis le cache: $e');
           // Si le cache est corrompu, supprimer le fichier cache et continuer avec la génération
           try {
             await waveformCacheFile.delete();
@@ -653,12 +650,12 @@ class AudioPlayerService extends GetxService {
             )).then((processedData) {
               waveformData.value = processedData;
               isWaveformLoading.value = false;
-              log('Waveform généré et traité avec succès');
+              OremusLogger.info('Waveform généré et traité avec succès');
 
               _isWaveformGenerationInProgress = false;
               _waveformGenerationCompleter?.complete();
             }).catchError((e) {
-              log('Erreur lors du traitement du waveform: $e');
+              OremusLogger.error('Erreur lors du traitement du waveform: $e');
               isWaveformLoading.value = false;
 
               _isWaveformGenerationInProgress = false;
@@ -667,7 +664,7 @@ class AudioPlayerService extends GetxService {
           }
         },
         onError: (e) {
-          log('Erreur lors de la génération de la forme d\'onde: $e');
+          OremusLogger.error('Erreur lors de la génération de la forme d\'onde: $e');
           isWaveformLoading.value = false;
           _isWaveformGenerationInProgress = false;
           _waveformGenerationCompleter?.complete();

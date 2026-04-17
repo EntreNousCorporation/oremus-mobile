@@ -3,9 +3,11 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
+import 'package:oremusapp/app/configs/flavor_settings.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/activity_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/favorite_check_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/favorite_data.dart';
@@ -43,7 +45,6 @@ class ParoisseRepository implements IParoisseRepository {
       method: HttpMethod.get,
       useBearer: false,
     );
-    log('resp getParoisses => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
@@ -51,7 +52,6 @@ class ParoisseRepository implements IParoisseRepository {
     } else {
       var result = DataResponse<ContentPlace>.fromJson(response.data);
 
-      log('isUserLoggedIn ::: $isUserLoggedIn');
       // Traiter les favoris en fonction de l'état de connexion
       if (isUserLoggedIn) {
         // Pour utilisateur connecté, isFavorite est basé sur isUserFavorite (source de vérité)
@@ -90,7 +90,6 @@ class ParoisseRepository implements IParoisseRepository {
       useBearer: false,
     );
 
-    log('resp getParoissesBySchedule => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       final e = ErrorResponse.fromJson(response.data);
@@ -127,7 +126,6 @@ class ParoisseRepository implements IParoisseRepository {
           p?.isFavorite = isFav;
         }
       } catch (e) {
-        log('Error fetching favorites status: $e');
         _applyLocalFavorites(result.contents ?? []);
       }
     } else {
@@ -162,8 +160,6 @@ class ParoisseRepository implements IParoisseRepository {
       useBearer: false,
     );
 
-    log('resp getParoissesBySchedule => ${response.statusCode}');
-
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
@@ -176,8 +172,6 @@ class ParoisseRepository implements IParoisseRepository {
       result.contents = scheduleResponse.content;
       result.last = scheduleResponse.page?.isLast ?? true;
 
-      log('isUserLoggedIn ::: $isUserLoggedIn');
-
       // Traiter les favoris en fonction de l'état de connexion
       if (isUserLoggedIn && result.contents != null && result.contents!.isNotEmpty) {
         try {
@@ -187,12 +181,8 @@ class ParoisseRepository implements IParoisseRepository {
               .map((place) => place!.identifier!)
               .toList();
 
-          log('Checking favorites for ${worshipPlaceIds.length} places: $worshipPlaceIds');
-
           // Récupérer l'état des favoris pour ces paroisses
           List<FavoriteCheckResponse> favoritesStatus = await getUserFavoritesForPlaces(worshipPlaceIds);
-
-          log('Received favorites status for ${favoritesStatus.length} places');
 
           // Merger les informations de favoris avec les paroisses
           for (var paroisse in result.contents ?? []) {
@@ -206,12 +196,9 @@ class ParoisseRepository implements IParoisseRepository {
               // Mettre à jour les propriétés de favori
               paroisse?.isUserFavorite = favoriteInfo.isUserFavorite ?? false;
               paroisse?.isFavorite = favoriteInfo.isUserFavorite ?? false;
-
-              log('Parish ${paroisse?.identifier} (${paroisse?.name}) - isUserFavorite: ${paroisse?.isUserFavorite}');
             }
           }
         } catch (e) {
-          log('Error fetching favorites status: $e');
           // En cas d'erreur, utiliser les favoris locaux comme fallback
           var localFavorites = DB.getUnsynchronizedFavorites();
           for (var paroisse in result.contents ?? []) {
@@ -250,18 +237,15 @@ class ParoisseRepository implements IParoisseRepository {
         useBearer: true,
       );
 
-      log('resp getUserFavoritesForPlaces => ${response.statusCode}');
-
       if (response.statusCode == 200) {
         return (response.data as List)
             .map((i) => FavoriteCheckResponse.fromJson(i))
             .toList();
       } else {
-        log('Error getting user favorites: ${response.statusCode}');
         return [];
       }
     } catch (e) {
-      log('Exception getting user favorites: $e');
+      OremusLogger.error('Exception getting user favorites: $e');
       return [];
     }
   }
@@ -284,10 +268,9 @@ class ParoisseRepository implements IParoisseRepository {
         body: request.toJson(),
       );
 
-      log('resp addServerFavorite => ${response.statusCode}');
       return response.statusCode == 200 || response.statusCode == 201;
     } catch (e) {
-      log('Error adding server favorite: $e');
+      OremusLogger.error('Error adding server favorite: $e');
       return false;
     }
   }
@@ -305,10 +288,9 @@ class ParoisseRepository implements IParoisseRepository {
         method: HttpMethod.delete,
       );
 
-      log('resp removeServerFavorite => ${response.statusCode}');
       return response.statusCode == 200 || response.statusCode == 204;
     } catch (e) {
-      log('Error removing server favorite: $e');
+      OremusLogger.error('Error removing server favorite: $e');
       return false;
     }
   }
@@ -327,13 +309,11 @@ class ParoisseRepository implements IParoisseRepository {
         useBearer: true,
       );
 
-      log('resp getServerFavorites => ${response.statusCode}');
-
       if (response.statusCode != 200) return DataResponse();
 
       return DataResponse<ContentPlace>.fromJson(response.data);
     } catch (e) {
-      log('Error getting server favorites: $e');
+      OremusLogger.error('Error getting server favorites: $e');
       return DataResponse();
     }
   }
@@ -356,7 +336,6 @@ class ParoisseRepository implements IParoisseRepository {
         // 2. Obtenir les favoris non synchronisés
         List<ContentPlace> unsyncedFavorites = DB.getUnsynchronizedFavorites();
         if (unsyncedFavorites.isNotEmpty) {
-          log('Syncing ${unsyncedFavorites.length} unsynced favorites for user: $currentUserId');
 
           // 3. Obtenir les favoris du serveur (source de vérité)
           DataResponse<ContentPlace> serverFavoritesResponse = await getServerFavorites();
@@ -369,7 +348,7 @@ class ParoisseRepository implements IParoisseRepository {
           // 5. Ajouter les favoris locaux au serveur
           for (var paroisse in toAddToServer) {
             bool success = await addServerFavorite(paroisse);
-            log('Added favorite to server: $success - ${paroisse.name}');
+            OremusLogger.info('Added favorite to server: $success - ${paroisse.name}');
           }
 
           // 6. Une fois la synchronisation terminée, effacer les favoris non synchronisés
@@ -395,15 +374,11 @@ class ParoisseRepository implements IParoisseRepository {
         // 10. Sauvegarder dans le cache local spécifique à l'utilisateur
         DB.saveSyncedFavorites(syncedFavorites);
 
-        log('Updated local cache with ${syncedFavorites.length} favorites for user: $currentUserId');
-
         // 11. Enregistrer l'ID de l'utilisateur actuel comme dernier synchronisateur
         DB.setLastSyncUserId(currentUserId!);
 
-        log('Favorites synchronized successfully with user $currentUserId');
       } else {
         // C'est un utilisateur différent, nettoyer les favoris non synchronisés précédents
-        log('Different user detected! Last: $lastSyncUserId, Current: $currentUserId');
         DB.clearUnsynchronizedFavorites();
 
         // Récupérer les favoris du nouvel utilisateur depuis le serveur
@@ -427,11 +402,9 @@ class ParoisseRepository implements IParoisseRepository {
 
         // Mettre à jour l'ID du dernier utilisateur synchronisé
         DB.setLastSyncUserId(currentUserId!);
-
-        log('Loaded ${syncedFavorites.length} favorites for new user: $currentUserId');
       }
     } catch (e) {
-      log('Error synchronizing favorites: $e');
+      OremusLogger.error('Error synchronizing favorites: $e');
     }
   }
 
@@ -450,7 +423,6 @@ class ParoisseRepository implements IParoisseRepository {
       method: HttpMethod.get,
       useBearer: false,
     );
-    log('resp getLiturgicalCelebration => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
@@ -469,7 +441,6 @@ class ParoisseRepository implements IParoisseRepository {
       method: HttpMethod.get,
       useBearer: false,
     );
-    log('resp getActivities => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
@@ -488,7 +459,6 @@ class ParoisseRepository implements IParoisseRepository {
       method: HttpMethod.get,
       useBearer: false,
     );
-    log('resp getMouvements => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       throw CustomException(response.statusCode, response.statusMessage);
@@ -506,7 +476,6 @@ class ParoisseRepository implements IParoisseRepository {
       method: HttpMethod.get,
       useBearer: false,
     );
-    log('resp getPlaceOfWorshipUsers => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
@@ -525,7 +494,6 @@ class ParoisseRepository implements IParoisseRepository {
       method: HttpMethod.get,
       useBearer: false,
     );
-    log('resp getPlaceOfWorshipContacts => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
@@ -546,7 +514,6 @@ class ParoisseRepository implements IParoisseRepository {
       method: HttpMethod.get,
       useBearer: false,
     );
-    log('resp getPlaceOfWorshipTypes => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e =
@@ -566,7 +533,6 @@ class ParoisseRepository implements IParoisseRepository {
       method: HttpMethod.get,
       useBearer: false,
     );
-    log('resp getOfficeTimes => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       throw CustomException(response.statusCode, response.statusMessage);

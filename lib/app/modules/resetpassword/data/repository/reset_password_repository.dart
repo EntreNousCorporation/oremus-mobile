@@ -21,7 +21,6 @@ class ResetPasswordRepository implements IResetPasswordRepository {
       method: HttpMethod.get,
       useBearer: false,
     );
-    log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       throw Exception(json.encode(response.data));
@@ -37,7 +36,6 @@ class ResetPasswordRepository implements IResetPasswordRepository {
       method: HttpMethod.get,
       useBearer: false,
     );
-    log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       throw Exception(json.encode(response.data));
@@ -54,7 +52,6 @@ class ResetPasswordRepository implements IResetPasswordRepository {
       body: jsonEncode(request.toJson()),
       useBearer: false,
     );
-    log('resp => ${response.statusCode}');
 
     if (response.statusCode! >= 200 && response.statusCode! <= 204) {
       return Signin();

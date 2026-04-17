@@ -39,6 +39,7 @@ class PaymentMethodFilter extends StatelessWidget {
                     ),
                   )
                 : ListView.separated(
+              physics: const BouncingScrollPhysics(),
                     scrollDirection: Axis.horizontal,
                     itemCount: logic.paymentMethods.length,
                     separatorBuilder: (_, __) => const SizedBox(width: 12),

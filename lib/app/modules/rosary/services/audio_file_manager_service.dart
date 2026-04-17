@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/modules/rosary/data/model/rosary_file_data.dart';
 import 'package:path_provider/path_provider.dart';
@@ -63,29 +64,29 @@ class AudioFileManagerService extends GetxService {
             if (exists && Platform.isIOS) {
               final testBytes = await file.readAsBytes();
               if (testBytes.isEmpty && fileSize > 0) {
-                log('Fichier existe mais ne peut pas être lu correctement sur iOS: $filePath');
+                OremusLogger.debug('Fichier existe mais ne peut pas être lu correctement sur iOS: $filePath');
                 exists = false;
               }
             }
           } catch (e) {
-            log('Erreur lors de la vérification du fichier: $e');
+            OremusLogger.error('Erreur lors de la vérification du fichier: $e');
             exists = false;
           }
 
-          log('Vérification du fichier [${Platform.isIOS ? "iOS" : "Android"}]: $filePath, existe: $exists, taille: $fileSize octets');
+          OremusLogger.info('Vérification du fichier [${Platform.isIOS ? "iOS" : "Android"}]: $filePath, existe: $exists, taille: $fileSize octets');
 
           if (exists && fileSize > 0) {
             _downloadedFiles[key] = filePath;
             validFiles++;
           } else {
-            log('Fichier en cache non trouvé ou invalide: $filePath');
+            OremusLogger.debug('Fichier en cache non trouvé ou invalide: $filePath');
           }
         }
-        log('Vérification terminée: $validFiles fichiers valides sur $filesChecked fichiers en cache');
+        OremusLogger.info('Vérification terminée: $validFiles fichiers valides sur $filesChecked fichiers en cache');
       }
-      log('Chargé ${_downloadedFiles.length} chemins de fichiers en cache');
+      OremusLogger.info('Chargé ${_downloadedFiles.length} chemins de fichiers en cache');
     } catch (e) {
-      log('Erreur lors du chargement des chemins de fichiers en cache: $e');
+      OremusLogger.error('Erreur lors du chargement des chemins de fichiers en cache: $e');
     }
   }
 
@@ -93,9 +94,9 @@ class AudioFileManagerService extends GetxService {
   void _saveCachedFilePaths() {
     try {
       DB.saveData(KEY_DOWNLOADED_FILES, json.encode(_downloadedFiles));
-      log('Sauvegarde de ${_downloadedFiles.length} chemins de fichiers');
+      OremusLogger.info('Sauvegarde de ${_downloadedFiles.length} chemins de fichiers');
     } catch (e) {
-      log('Erreur lors de la sauvegarde des chemins de fichiers en cache: $e');
+      OremusLogger.error('Erreur lors de la sauvegarde des chemins de fichiers en cache: $e');
     }
   }
 
@@ -115,7 +116,7 @@ class AudioFileManagerService extends GetxService {
 
     if (!exists || fileSize <= 0) {
       // Si le fichier n'existe plus, le retirer de la map
-      log('Fichier marqué comme téléchargé mais introuvable: $filePath');
+      OremusLogger.debug('Fichier marqué comme téléchargé mais introuvable: $filePath');
       _downloadedFiles.remove(key);
       _saveCachedFilePaths();
       return false;
@@ -170,8 +171,6 @@ class AudioFileManagerService extends GetxService {
 
       if (response.statusCode == 200) {
         final responseBody = response.body;
-        log('Réponse API reçue');
-
         final rosaryFileData = RosaryFileData.fromJson(json.decode(responseBody));
 
         // Mettre en cache pour utilisation future
@@ -182,7 +181,7 @@ class AudioFileManagerService extends GetxService {
         throw Exception('Échec de récupération des informations du fichier: ${response.statusCode}');
       }
     } catch (e) {
-      log('Erreur lors de la récupération des informations de fichier: $e');
+      OremusLogger.error('Erreur lors de la récupération des informations de fichier: $e');
       return null;
     }
   }
@@ -205,7 +204,7 @@ class AudioFileManagerService extends GetxService {
         return filePath;
       } else {
         // Si le fichier n'existe plus ou est corrompu, le retirer de la map
-        log('Fichier référencé mais non trouvé ou invalide: $filePath');
+        OremusLogger.debug('Fichier référencé mais non trouvé ou invalide: $filePath');
         _downloadedFiles.remove(key);
         _saveCachedFilePaths();
       }
@@ -228,7 +227,6 @@ class AudioFileManagerService extends GetxService {
       // Simplification : utiliser getApplicationDocumentsDirectory pour toutes les plateformes
       // Le répertoire de documents est fiable sur iOS et Android
       final appDocDir = await getApplicationDocumentsDirectory();
-      log('Répertoire de base: ${appDocDir.path}');
 
       // Créer un sous-répertoire pour les fichiers audio
       final rosaryDirPath = '${appDocDir.path}/rosary_audio';
@@ -245,12 +243,12 @@ class AudioFileManagerService extends GetxService {
       final fileName = 'mystere_${key}_${timestamp}_$sanitizedBucketName.mp3';
       final filePath = '${rosaryDir.path}/$fileName';
 
-      log('Téléchargement du fichier depuis: ${rosaryFileData.file!.link}');
-      log('Chemin de destination: $filePath');
+      OremusLogger.info('Téléchargement du fichier depuis: ${rosaryFileData.file!.link}');
+      OremusLogger.info('Chemin de destination: $filePath');
 
       // S'assurer que l'URL est correctement encodée (important pour iOS)
       final encodedUrl = Uri.encodeFull(rosaryFileData.file!.link!);
-      log('URL encodée pour téléchargement: $encodedUrl');
+      OremusLogger.info('URL encodée pour téléchargement: $encodedUrl');
 
       // Télécharger le fichier avec un client HTTP configuré pour de meilleurs délais
       final client = http.Client();
@@ -264,7 +262,7 @@ class AudioFileManagerService extends GetxService {
           // Vérifier si un ancien fichier existe déjà à cet emplacement et le supprimer
           if (await file.exists()) {
             await file.delete();
-            log('Ancien fichier supprimé pour éviter les conflits');
+            OremusLogger.info('Ancien fichier supprimé pour éviter les conflits');
           }
 
           // Écrire le fichier par flux pour une meilleure gestion de la mémoire
@@ -290,7 +288,7 @@ class AudioFileManagerService extends GetxService {
           final fileExists = await file.exists();
           final fileSize = fileExists ? await file.length() : 0;
 
-          log('Fichier écrit, existe: $fileExists, taille: $fileSize octets');
+          OremusLogger.info('Fichier écrit, existe: $fileExists, taille: $fileSize octets');
 
           if (fileExists && fileSize > 0) {
             // Sur iOS, s'assurer que le fichier est accessible avec les bonnes permissions
@@ -301,9 +299,9 @@ class AudioFileManagerService extends GetxService {
                 if (testRead.isEmpty) {
                   throw Exception('Le fichier existe mais ne peut pas être lu correctement sur iOS');
                 }
-                log('Vérification de lecture sur iOS réussie, taille: ${testRead.length} octets');
+                OremusLogger.info('Vérification de lecture sur iOS réussie, taille: ${testRead.length} octets');
               } catch (e) {
-                log('Erreur lors de la vérification de lecture sur iOS: $e');
+                OremusLogger.error('Erreur lors de la vérification de lecture sur iOS: $e');
                 return null;
               }
             }
@@ -318,15 +316,15 @@ class AudioFileManagerService extends GetxService {
           throw Exception('Échec du téléchargement du fichier: ${streamedResponse.statusCode}');
         }
       } catch (e) {
-        log('Erreur lors du téléchargement du fichier: $e');
+        OremusLogger.error('Erreur lors du téléchargement du fichier: $e');
         // En cas d'erreur, essayer de nettoyer les fichiers partiels
         final file = File(filePath);
         if (await file.exists()) {
           try {
             await file.delete();
-            log('Fichier partiel supprimé après erreur');
+            OremusLogger.info('Fichier partiel supprimé après erreur');
           } catch (cleanupError) {
-            log('Impossible de supprimer le fichier partiel: $cleanupError');
+            OremusLogger.error('Impossible de supprimer le fichier partiel: $cleanupError');
           }
         }
         rethrow; // Propager l'erreur pour une meilleure gestion
@@ -334,7 +332,7 @@ class AudioFileManagerService extends GetxService {
         client.close();
       }
     } catch (e) {
-      log('Erreur générale lors du téléchargement du fichier: $e');
+      OremusLogger.error('Erreur générale lors du téléchargement du fichier: $e');
       return null;
     } finally {
       isDownloading.value = false;
@@ -350,14 +348,14 @@ class AudioFileManagerService extends GetxService {
         final file = File(filePath);
         if (await file.exists()) {
           await file.delete();
-          log('Fichier supprimé: $filePath');
+          OremusLogger.info('Fichier supprimé: $filePath');
         }
       }
       _downloadedFiles.clear();
       _saveCachedFilePaths();
-      log('Tous les fichiers téléchargés ont été supprimés');
+      OremusLogger.info('Tous les fichiers téléchargés ont été supprimés');
     } catch (e) {
-      log('Erreur lors de la suppression des fichiers téléchargés: $e');
+      OremusLogger.error('Erreur lors de la suppression des fichiers téléchargés: $e');
     }
   }
 
@@ -367,7 +365,7 @@ class AudioFileManagerService extends GetxService {
       final rosaryFileData = await getFileInfo();
       return rosaryFileData?.file?.link;
     } catch (e) {
-      log('Erreur lors de la récupération de l\'URL de streaming: $e');
+      OremusLogger.error('Erreur lors de la récupération de l\'URL de streaming: $e');
       return null;
     }
   }

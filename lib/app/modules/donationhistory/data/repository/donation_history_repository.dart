@@ -27,7 +27,6 @@ class DonationHistoryRepository implements IDonationHistoryRepository {
       method: HttpMethod.get,
       useBearer: true,
     );
-    log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);

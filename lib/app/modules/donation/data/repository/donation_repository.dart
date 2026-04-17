@@ -22,7 +22,6 @@ class DonationRepository implements IDonationRepository {
       method: HttpMethod.post,
       body: request.toJson(),
     );
-    log('resp sendMassRequest => ${response.statusCode}');
 
     if (response.statusCode! >= 200 && response.statusCode! <= 204) {
       return DonationResponse.fromJson(response.data);
@@ -39,7 +38,6 @@ class DonationRepository implements IDonationRepository {
       method: HttpMethod.put,
       body: request.toJson(),
     );
-    log('resp sendMassRequest => ${response.statusCode}');
 
     if (response.statusCode != null && response.statusCode! >= 200 && response.statusCode! <= 204) {
       return DonationResponse.fromJson(response.data);

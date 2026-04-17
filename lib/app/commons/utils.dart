@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
+import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
@@ -37,10 +38,9 @@ extension StringExtension on String {
           .format(int.parse(value))
           .replaceAll(',', ' '); // tu as été smart, c'est bien 🙂
     } catch (error) {
-      log('amountFormat Catch error => $error');
+      OremusLogger.error('amountFormat Catch error => $error');
       value = "-";
     }
-    log("AMOUNT_FORMATED --> $value");
     return value;
   }
 
@@ -327,8 +327,6 @@ List<PriceData> transformWorshipSpecialHours(List<LiturgicalCelebrationResponse>
       ));
     }
   }
-
-  log('Messes spéciales transformées: ${result.length}');
   return result;
 }
 
@@ -381,13 +379,10 @@ List<PriceData> transformWorshipRecurrentHours(List<LiturgicalCelebrationRespons
       }
     }
   }
-
-  log('Jours récurrents transformés: ${result.length}');
   return result;
 }
 
 List<DateTime> getNextDatesForDays(List<int> daysOfWeek) {
-  log('getNextDatesForDays ::: $daysOfWeek');
   List<DateTime> upcomingDates = [];
   DateTime now = DateTime.now();
   int daysInMonth = AppConstants.END_DATE_LIMIT;
@@ -518,8 +513,6 @@ bool isDayOfWeekInDateRangeB(int dayOfWeek, DateTime startDate, DateTime endDate
   for (DateTime currentDate = adjustedStartDate;
   currentDate.isBefore(endDate) || currentDate.isAtSameMomentAs(endDate);
   currentDate = currentDate.add(const Duration(days: 1))) {
-    log('dayOfWeek ::: $dayOfWeek');
-    log('dayOfWeek ::: ${(currentDate.weekday - 1)}');
     // Vérifier si le jour de la semaine actuel correspond au jour recherché
     if ((currentDate.weekday - 1) == dayOfWeek) {
       return true; // Jour correspondant trouvé

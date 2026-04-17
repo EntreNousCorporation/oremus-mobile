@@ -24,7 +24,6 @@ class SignupRepository implements ISignupRepository {
       method: HttpMethod.post,
       useBearer: false,
     );
-    log('resp => ${response.statusCode}');
 
     if (response.statusCode! >= 200 && response.statusCode! <= 205) {
       return SigninResponse.fromJson(response.data);

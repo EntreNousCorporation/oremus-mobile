@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
+import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/email_validator.dart';
@@ -80,16 +81,16 @@ class SigninController extends GetxController {
     try {
       final id = await _notificationService.getDeviceId();
       _deviceId.value = id ?? '';
-      log('Device ID loaded: ${_deviceId.value}');
+      OremusLogger.info('Device ID loaded: ${_deviceId.value}');
     } catch (e) {
-      log('Error loading device ID: $e');
+      OremusLogger.error('Error loading device ID: $e');
     }
   }
 
   // Méthode appelée quand l'ID de l'appareil change
   void _onDeviceIdChanged() {
     _deviceId.value = _notificationService.deviceId.value ?? '';
-    log('Device ID changed: ${_deviceId.value}');
+    OremusLogger.info('Device ID changed: ${_deviceId.value}');
   }
 
   connectUser() {
@@ -109,13 +110,10 @@ class SigninController extends GetxController {
     lockScreen(true);
     Signin request = Signin(username: login, password: password);
 
-    log('request connectUser => ${request.toJson().toString()}');
-
     signinRepository.loginUser(request).then((value) {
       EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;
       });
-      log('value => ${value.accessToken}');
       lockScreen(false);
       DB.saveData(AppConstants.KEY_TOKEN, value.accessToken);
       Map<String, dynamic> payload = Jwt.parseJwt(value.accessToken ?? '');
@@ -158,12 +156,10 @@ class SigninController extends GetxController {
   _sendDeviceId(String userId) {
     hideKeyboard();
     Signin request = Signin(userId: userId, deviceId: _deviceId.value);
-    log('request _sendDeviceId => ${request.toJson()}');
 
     signinRepository.devices(request).then((value) {
-      log('_sendDeviceId successfully');
     }, onError: (error) {
-      debugPrint("error _sendDeviceId => ${error.toString()}");
+      OremusLogger.error("error _sendDeviceId => ${error.toString()}");
     });
   }
 
@@ -205,9 +201,6 @@ class SigninController extends GetxController {
     }
 
     isValidForm.value = email.isNotEmpty && isValidEmail && password.isNotEmpty;
-    log('email => $email');
-    log('isValidEmail => $isValidEmail');
-    log('isValidForm => ${isValidForm.value}');
   }
 
   @override

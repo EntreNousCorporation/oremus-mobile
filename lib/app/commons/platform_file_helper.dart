@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// Utilitaire pour gérer les différences de stockage entre iOS et Android
@@ -26,10 +27,10 @@ class PlatformFileHelper {
       final file = File(path);
       final exists = await file.exists();
       final size = exists ? await file.length() : 0;
-      log('Vérification du fichier: $path, existe: $exists, taille: $size octets');
+      OremusLogger.debug('Vérification du fichier: $path, existe: $exists, taille: $size octets');
       return exists && size > 0; // S'assurer que le fichier n'est pas vide
     } catch (e) {
-      log('Erreur lors de la vérification du fichier: $e');
+      OremusLogger.error('Erreur lors de la vérification du fichier: $e');
       return false;
     }
   }
@@ -50,7 +51,7 @@ class PlatformFileHelper {
         return await directory.create(recursive: true);
       }
     } catch (e) {
-      log('Erreur lors de la création du répertoire: $e');
+      OremusLogger.error('Erreur lors de la création du répertoire: $e');
       // En cas d'échec, essayer d'utiliser un répertoire temporaire
       final tempDir = await getTemporaryDirectory();
       final fallbackDir = Directory('${tempDir.path}/rosary_audio');

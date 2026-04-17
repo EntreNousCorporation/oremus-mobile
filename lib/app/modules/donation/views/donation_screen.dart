@@ -83,7 +83,6 @@ class DonationScreen extends StatelessWidget {
                         child: LikeButton(
                           isLiked: controller.paroisseSelected.value.isFavorite,
                           onTap: (isLiked) async {
-                            log('isLiked => $isLiked');
                             controller.paroisseSelected.value.isFavorite = !isLiked;
                             if (isLiked) {
                               controller.removeFavorite(controller.paroisseSelected.value, isLiked);

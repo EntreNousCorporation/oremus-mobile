@@ -25,8 +25,6 @@ class LifePlanRepository implements ILifePlanRepository {
       useBearer: true,
     );
 
-    log('getAvailableLifePlans response => ${response.statusCode}');
-
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
@@ -42,8 +40,6 @@ class LifePlanRepository implements ILifePlanRepository {
       method: HttpMethod.get,
       useBearer: true,
     );
-
-    log('getUserLifePlans response => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
@@ -62,9 +58,6 @@ class LifePlanRepository implements ILifePlanRepository {
       body: request.toJson(),
     );
 
-    log('createUserLifePlan request => ${request.toJson()}');
-    log('createUserLifePlan response => ${response.statusCode}');
-
     if (response.statusCode != 200 && response.statusCode != 201) {
       var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
@@ -82,9 +75,6 @@ class LifePlanRepository implements ILifePlanRepository {
       body: request.toJson(),
     );
 
-    log('updateUserLifePlan request => ${request.toJson()}');
-    log('updateUserLifePlan response => ${response.statusCode}');
-
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
@@ -100,8 +90,6 @@ class LifePlanRepository implements ILifePlanRepository {
       method: HttpMethod.delete,
       useBearer: true,
     );
-
-    log('deleteUserLifePlan response => ${response.statusCode}');
 
     if (response.statusCode != 200 && response.statusCode != 204) {
       var e = ErrorResponse.fromJson(response.data);

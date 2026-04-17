@@ -27,7 +27,6 @@ class MassRequestHistoryRepository implements IMassRequestHistoryRepository {
       method: HttpMethod.get,
       useBearer: true,
     );
-    log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
@@ -47,7 +46,6 @@ class MassRequestHistoryRepository implements IMassRequestHistoryRepository {
       method: HttpMethod.get,
       useBearer: true,
     );
-    log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
@@ -66,7 +64,6 @@ class MassRequestHistoryRepository implements IMassRequestHistoryRepository {
       method: HttpMethod.get,
       useBearer: true,
     );
-    log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);

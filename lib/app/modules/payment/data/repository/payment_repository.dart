@@ -24,7 +24,6 @@ class PaymentRepository implements IPaymentRepository {
       endpoint: "/checkout/check-payment/$transactionId?manualVerify=$manualVerify",
       method: HttpMethod.post,
     );
-    log('resp status code => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
@@ -40,7 +39,6 @@ class PaymentRepository implements IPaymentRepository {
       endpoint: "/payment-methods",
       method: HttpMethod.get,
     );
-    log('resp getPaymentMethods => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);

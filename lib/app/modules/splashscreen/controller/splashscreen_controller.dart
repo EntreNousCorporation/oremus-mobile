@@ -39,7 +39,6 @@ class SplashscreenController extends GetxController {
   void onReady() {
     currentLanguage.value = (DB.getCurrentLanguage().isNotEmpty == true ? DB.getCurrentLanguage() : Get.deviceLocale?.languageCode) ?? 'fr';
     updateLocale(currentLanguage.value);
-    log('getCurrentLanguage => ${DB.getCurrentLanguage().runtimeType}');
 
     hasUserConnected();
     getInitialView();
@@ -47,13 +46,11 @@ class SplashscreenController extends GetxController {
   }
 
   bool hasUserConnected() {
-    log('hasUserConnected id => ${DB.getUserSigninInfo()?.id}');
     isUserConnected.value = DB.getUserSigninInfo() != null;
     return isUserConnected.value;
   }
 
   updateLocale(String code) {
-    log('selected language => $code');
     Get.updateLocale(Locale(code, code.toUpperCase()));
     DB.setCurrentLanguage(code);
     update();

@@ -415,8 +415,6 @@ class MassRequestHistoryController extends GetxController {
       id: massRequestData?.identifier,
     );
 
-    log('request doSendMassRequest => ${jsonEncode(request.toJson())}');
-
     massRequestRepository.retryPayment(request: request).then((value) {
       EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;
@@ -449,8 +447,6 @@ class MassRequestHistoryController extends GetxController {
     searchCriteria.value.endDate = endDateApi.value;
     searchCriteria.value.worshipPlace = paroisseSelected.value?.identifier;
     isDataProcessing(true);
-
-    log('request getMassRequests ::: ${jsonEncode(searchCriteria.toJson())}');
 
     massRequestHistoryRepository
         .getMassRequests(searchCriteria: searchCriteria.value)
@@ -490,8 +486,6 @@ class MassRequestHistoryController extends GetxController {
   }
 
   onRefresh() {
-    log('request onRefresh');
-
     resetSearch();
     massRequestHistoryRepository
         .getMassRequests(searchCriteria: searchCriteria.value)
@@ -526,8 +520,6 @@ class MassRequestHistoryController extends GetxController {
   onLoading() {
     hideKeyboard();
     //searchCriteria.value.name = searchController.text.trim();
-
-    log('request onLoading');
 
     massRequestHistoryRepository
         .getMassRequests(page: page.value, searchCriteria: searchCriteria.value)
@@ -600,13 +592,11 @@ class MassRequestHistoryController extends GetxController {
   }
 
   saveFavorite(ContentPlace paroisse, bool state) {
-    log('saveFavorite 1 => ${paroisse.isFavorite}');
     paroisseRepository.addFavorite(paroisse);
     //showMessageFavorite(state);
   }
 
   removeFavorite(ContentPlace paroisse, bool state) {
-    log('removeFavorite 1 => ${paroisse.isFavorite}');
     paroisseRepository.deleteFavorite(paroisse);
     //showMessageFavorite(state);
   }

@@ -20,7 +20,6 @@ class ReportProblemRepository implements IReportProblemRepository {
       endpoint: "/report-problem-types",
       method: HttpMethod.get,
     );
-    log('resp getMassRequestPrice => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
@@ -39,7 +38,6 @@ class ReportProblemRepository implements IReportProblemRepository {
       method: HttpMethod.post,
       body: request.toJson(),
     );
-    log('resp sendMassRequest => ${response.statusCode}');
 
     if (response.statusCode! >= 200 && response.statusCode! <= 205) {
       return ReportProblemData();

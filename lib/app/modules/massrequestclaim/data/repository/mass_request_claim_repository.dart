@@ -25,7 +25,6 @@ class MassRequestClaimRepository implements IMassRequestClaimRepository {
       body: request.toJson(),
       method: HttpMethod.post,
     );
-    log('resp => ${response.statusCode}');
 
     if (response.statusCode! >= 200 && response.statusCode! <= 205) {
       return ClaimData.fromJson(response.data);
@@ -44,7 +43,6 @@ class MassRequestClaimRepository implements IMassRequestClaimRepository {
       endpoint: "/users/claims?page=$page&size=${AppConstants.MASS_REQUEST_PAGING_SIZE}&sort=createdAt,desc${(searchCriteria?.worshipPlace == null) ? '' : '&worshipPlace=${searchCriteria?.worshipPlace}'}${(searchCriteria?.typeOfClaim == null || searchCriteria?.typeOfClaim?.isEmpty == true) ? '' : '&typeOfClaim=${searchCriteria?.typeOfClaim}'}",
       method: HttpMethod.get,
     );
-    log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
@@ -60,7 +58,6 @@ class MassRequestClaimRepository implements IMassRequestClaimRepository {
       endpoint: "/types-of-claim?page=$page&size=${AppConstants.PAGING_SIZE_1000}&sort=code%2CASC",
       method: HttpMethod.get,
     );
-    log('resp getClaimTypes => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);

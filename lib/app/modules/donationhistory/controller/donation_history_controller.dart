@@ -396,8 +396,6 @@ class DonationHistoryController extends GetxController {
       id: massRequestData?.identifier,
     );
 
-    log('request doSendMassRequest => ${jsonEncode(request.toJson())}');
-
     donationRepository.donationRetryPayment(request: request).then((value) {
       EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;
@@ -430,8 +428,6 @@ class DonationHistoryController extends GetxController {
     searchCriteria.value.endDate = endDateApi.value;
     searchCriteria.value.worshipPlace = paroisseSelected.value.identifier;
     isDataProcessing(true);
-
-    log('request getMassRequests ::: ${jsonEncode(searchCriteria.toJson())}');
 
     donationHistoryRepository
         .getDonations(searchCriteria: searchCriteria.value)
@@ -471,8 +467,6 @@ class DonationHistoryController extends GetxController {
   }
 
   onRefresh() {
-    log('request onRefresh');
-
     resetSearch();
     donationHistoryRepository
         .getDonations(searchCriteria: searchCriteria.value)
@@ -507,8 +501,6 @@ class DonationHistoryController extends GetxController {
   onLoading() {
     hideKeyboard();
     //searchCriteria.value.name = searchController.text.trim();
-
-    log('request onLoading');
 
     donationHistoryRepository
         .getDonations(page: page.value, searchCriteria: searchCriteria.value)
@@ -580,13 +572,11 @@ class DonationHistoryController extends GetxController {
   }
 
   saveFavorite(ContentPlace paroisse, bool state) {
-    log('saveFavorite 1 => ${paroisse.isFavorite}');
     paroisseRepository.addFavorite(paroisse);
     //showMessageFavorite(state);
   }
 
   removeFavorite(ContentPlace paroisse, bool state) {
-    log('removeFavorite 1 => ${paroisse.isFavorite}');
     paroisseRepository.deleteFavorite(paroisse);
     //showMessageFavorite(state);
   }

@@ -22,7 +22,6 @@ class MassRequestRepository implements IMassRequestRepository {
       endpoint: "/types-of-mass-request?page=$page&size=${AppConstants.PAGING_SIZE_1000}&sort=code%2CASC",
       method: HttpMethod.get,
     );
-    log('resp getMassRequestType => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
@@ -40,7 +39,6 @@ class MassRequestRepository implements IMassRequestRepository {
       endpoint: "/prayers-intent?page=$page&size=${AppConstants.PAGING_SIZE_1000}&sort=code%2CASC",
       method: HttpMethod.get,
     );
-    log('resp getMassRequestType => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
@@ -64,7 +62,6 @@ class MassRequestRepository implements IMassRequestRepository {
       method: HttpMethod.post,
       body: requestData,
     );
-    log('resp getMassRequestPrice => ${response.statusCode}');
 
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
@@ -81,7 +78,6 @@ class MassRequestRepository implements IMassRequestRepository {
       method: HttpMethod.post,
       body: request.toJson(),
     );
-    log('resp sendMassRequest => ${response.statusCode}');
 
     if (response.statusCode! >= 200 && response.statusCode! <= 204) {
       return MassRequestResponse.fromJson(response.data);
@@ -98,7 +94,6 @@ class MassRequestRepository implements IMassRequestRepository {
       method: HttpMethod.put,
       body: request.toJson(),
     );
-    log('resp sendMassRequest => ${response.statusCode}');
 
     if (response.statusCode != null && response.statusCode! >= 200 && response.statusCode! <= 204) {
       return MassRequestResponse.fromJson(response.data);

@@ -166,7 +166,6 @@ class AboutController extends GetxController {
       arguments: true,
     );
     if (result == true) {
-      log('back moveToLogin');
       switch (code) {
         case 'FD':
           moveToDonationWithoutWorship();

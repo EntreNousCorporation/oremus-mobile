@@ -60,8 +60,6 @@ class PrayController extends GetxController {
     hideKeyboard();
     isMisselPrayersDataProcessing(true);
 
-    log('request getPrayers');
-
     prayRepository.getPrayers(page: pageMisselPrayer.value).then((value) {
       isMisselPrayersDataProcessing(false);
       misselPrayers.value = value;
@@ -95,8 +93,6 @@ class PrayController extends GetxController {
 
   ///Réinitialisation de la liste des prières (desactiver pour l'instant)
   onMisselPrayersRefresh() {
-    log('request onRefresh');
-
     resetMisselPrayers();
     prayRepository.getPrayers().then((value) {
       refreshMisselPrayerController.refreshCompleted();
@@ -127,13 +123,10 @@ class PrayController extends GetxController {
   onMisselPrayersLoading() {
     hideKeyboard();
 
-    log('request onLoading');
-
     prayRepository.getPrayers(page: pageMisselPrayer.value).then((value) {
       misselPrayers.addAll(value);
       misselPrayers.refresh();
       refreshMisselPrayerController.loadComplete();
-      log('${misselPrayers.length}');
       if (value.isNotEmpty) {
         pageMisselPrayer.value += 1;
       } else {
@@ -235,7 +228,6 @@ class PrayController extends GetxController {
       customPrayers.addAll(value);
       customPrayers.refresh();
       refreshCustomPrayersController.loadComplete();
-      log('${customPrayers.length}');
       if (value.isNotEmpty) {
         pageCustomPrayers.value += 1;
       } else {

@@ -77,8 +77,6 @@ class ApiClientImpl implements ApiClient {
         }
       }
 
-      log('request Body => $processedBody');
-
       try {
         switch (method) {
           case HttpMethod.get:

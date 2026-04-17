@@ -47,10 +47,7 @@ class DioceseController extends GetxController {
   getDioceses() {
     isDataProcessing(true);
 
-    log('request getDioceses');
-
     dioceseRepository.getDioceses().then((value) {
-      log('response getDioceses => $value');
       isDataProcessing(false);
       if (value.empty == false) {
         hasData(true);
