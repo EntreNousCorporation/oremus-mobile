@@ -17,15 +17,18 @@ class PrayController extends GetxController {
   PrayController({required this.prayRepository});
 
   var unlockBackButton = true.obs;
-  var isDataProcessing = false.obs;
-  var hasData = false.obs;
+  var isMisselPrayersDataProcessing = false.obs;
+  var hasMisselPrayersData = false.obs;
+  var isCustomPrayersDataProcessing = false.obs;
+  var hasCustomPrayersData = false.obs;
 
-  var readMore = false.obs;
+  var refreshMisselPrayerController = RefreshController();
+  var refreshCustomPrayersController = RefreshController();
 
-  var refreshController = RefreshController();
-
-  var page = 0.obs;
-  RxList<Prayer> prayers = RxList<Prayer>([]);
+  var pageMisselPrayer = 0.obs;
+  RxList<Prayer> misselPrayers = RxList<Prayer>([]);
+  var pageCustomPrayers = 0.obs;
+  RxList<Prayer> customPrayers = RxList<Prayer>([]);
 
   @override
   void onInit() {
@@ -35,43 +38,46 @@ class PrayController extends GetxController {
 
   @override
   void onReady() {
-    getPrayers();
+    getMisselPrayers();
+    getCustomPrayers();
     super.onReady();
   }
 
   @override
   void dispose() {
-   refreshController.dispose();
+   refreshMisselPrayerController.dispose();
+   refreshCustomPrayersController.dispose();
    super.dispose();
   }
 
   initPullToRefresh() {
-    refreshController = RefreshController(initialRefresh: false);
+    refreshMisselPrayerController = RefreshController(initialRefresh: false);
+    refreshCustomPrayersController = RefreshController(initialRefresh: false);
   }
 
   ///Chargement initial des prières
-  getPrayers() {
+  getMisselPrayers() {
     hideKeyboard();
-    isDataProcessing(true);
+    isMisselPrayersDataProcessing(true);
 
     log('request getPrayers');
 
-    prayRepository.getPrayers(page: page.value).then((value) {
-      isDataProcessing(false);
-      prayers.value = value;
-      if (prayers.isNotEmpty == true) {
-        hasData(true);
+    prayRepository.getPrayers(page: pageMisselPrayer.value).then((value) {
+      isMisselPrayersDataProcessing(false);
+      misselPrayers.value = value;
+      if (misselPrayers.isNotEmpty == true) {
+        hasMisselPrayersData(true);
       } else {
-        hasData(false);
+        hasMisselPrayersData(false);
       }
       if (value.isNotEmpty) {
-            page.value += 1;
+            pageMisselPrayer.value += 1;
           } else {
-            refreshController.loadNoData();
+            refreshMisselPrayerController.loadNoData();
           }
     }, onError: (error) {
-      isDataProcessing(false);
-      hasData(false);
+      isMisselPrayersDataProcessing(false);
+      hasMisselPrayersData(false);
       var err = error as CustomException;
       if (err.code == 401) {
         showCustomDialog(
@@ -88,20 +94,20 @@ class PrayController extends GetxController {
   }
 
   ///Réinitialisation de la liste des prières (desactiver pour l'instant)
-  onRefresh() {
+  onMisselPrayersRefresh() {
     log('request onRefresh');
 
-    resetSearch();
+    resetMisselPrayers();
     prayRepository.getPrayers().then((value) {
-      refreshController.refreshCompleted();
-      prayers.value = value;
+      refreshMisselPrayerController.refreshCompleted();
+      misselPrayers.value = value;
       if (value.isNotEmpty) {
-            page.value += 1;
+            pageMisselPrayer.value += 1;
           } else {
-            refreshController.loadNoData();
+            refreshMisselPrayerController.loadNoData();
           }
     }, onError: (error) {
-      refreshController.refreshCompleted();
+      refreshMisselPrayerController.refreshCompleted();
       var err = error as CustomException;
       if (err.code == 401) {
         showCustomDialog(
@@ -118,23 +124,23 @@ class PrayController extends GetxController {
   }
 
   ///Pagination des prières (desactiver pour l'instant)
-  onLoading() {
+  onMisselPrayersLoading() {
     hideKeyboard();
 
     log('request onLoading');
 
-    prayRepository.getPrayers(page: page.value).then((value) {
-      prayers.addAll(value);
-      prayers.refresh();
-      refreshController.loadComplete();
-      log('${prayers.length}');
+    prayRepository.getPrayers(page: pageMisselPrayer.value).then((value) {
+      misselPrayers.addAll(value);
+      misselPrayers.refresh();
+      refreshMisselPrayerController.loadComplete();
+      log('${misselPrayers.length}');
       if (value.isNotEmpty) {
-        page.value += 1;
+        pageMisselPrayer.value += 1;
       } else {
-        refreshController.loadNoData();
+        refreshMisselPrayerController.loadNoData();
       }
     }, onError: (error) {
-      refreshController.loadFailed();
+      refreshMisselPrayerController.loadFailed();
       var err = error as CustomException;
       if (err.code == 401) {
         showCustomDialog(
@@ -150,10 +156,111 @@ class PrayController extends GetxController {
     });
   }
 
-  //SEARCH SECTION
-  resetSearch() {
-    refreshController.loadComplete();
-    page.value = 0;
+  resetMisselPrayers() {
+    refreshMisselPrayerController.loadComplete();
+    pageMisselPrayer.value = 0;
+    hideKeyboard();
+  }
+
+
+  ///Chargement initial des prières ordinaires
+  getCustomPrayers() {
+    hideKeyboard();
+    isCustomPrayersDataProcessing(true);
+
+    prayRepository.getCustomPrayers(page: pageCustomPrayers.value).then((value) {
+      isCustomPrayersDataProcessing(false);
+      customPrayers.value = value;
+      if (customPrayers.isNotEmpty == true) {
+        hasCustomPrayersData(true);
+      } else {
+        hasCustomPrayersData(false);
+      }
+      if (value.isNotEmpty) {
+            pageCustomPrayers.value += 1;
+          } else {
+            refreshCustomPrayersController.loadNoData();
+          }
+    }, onError: (error) {
+      isCustomPrayersDataProcessing(false);
+      hasCustomPrayersData(false);
+      var err = error as CustomException;
+      if (err.code == 401) {
+        showCustomDialog(
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
+      }
+      log("error => ${error.toString()}");
+    });
+  }
+
+  ///Réinitialisation de la liste des prières Custom (desactiver pour l'instant)
+  onCustomPrayersRefresh() {
+    resetCustomPrayers();
+    prayRepository.getCustomPrayers().then((value) {
+      refreshCustomPrayersController.refreshCompleted();
+      customPrayers.value = value;
+      if (value.isNotEmpty) {
+            pageCustomPrayers.value += 1;
+          } else {
+            refreshCustomPrayersController.loadNoData();
+          }
+    }, onError: (error) {
+      refreshCustomPrayersController.refreshCompleted();
+      var err = error as CustomException;
+      if (err.code == 401) {
+        showCustomDialog(
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
+      }
+      log("error => ${error.toString()}");
+    });
+  }
+
+  ///Pagination des prières Custom (desactiver pour l'instant)
+  onCustomPrayersLoading() {
+    hideKeyboard();
+
+    prayRepository.getCustomPrayers(page: pageCustomPrayers.value).then((value) {
+      customPrayers.addAll(value);
+      customPrayers.refresh();
+      refreshCustomPrayersController.loadComplete();
+      log('${customPrayers.length}');
+      if (value.isNotEmpty) {
+        pageCustomPrayers.value += 1;
+      } else {
+        refreshCustomPrayersController.loadNoData();
+      }
+    }, onError: (error) {
+      refreshCustomPrayersController.loadFailed();
+      var err = error as CustomException;
+      if (err.code == 401) {
+        showCustomDialog(
+          Get.context!,
+          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+        ).then((value) {
+          doLogout();
+        });
+      } else if (err.code == 900) {
+        showNotification(message: err.message.toString());
+      }
+      log("error => ${error.toString()}");
+    });
+  }
+
+  resetCustomPrayers() {
+    refreshCustomPrayersController.loadComplete();
+    pageCustomPrayers.value = 0;
     hideKeyboard();
   }
 

@@ -11,8 +11,8 @@ import 'package:oremusapp/app/modules/pray/controller/pray_controller.dart';
 import 'package:oremusapp/app/modules/pray/views/pray_item.dart';
 import 'package:pull_to_refresh_simple/pull_to_refresh_simple.dart';
 
-class MiniMisselScreen extends StatelessWidget {
-  const MiniMisselScreen({super.key});
+class CustomPrayersScreen extends StatelessWidget {
+  const CustomPrayersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,19 +21,19 @@ class MiniMisselScreen extends StatelessWidget {
         return Container(
           color: colorGrey4,
           width: double.infinity,
-          child: controller.isMisselPrayersDataProcessing.isTrue
+          child: controller.isCustomPrayersDataProcessing.isTrue
               ? Center(
             child: LottieLoadingView(
               size: Get.width / 4,
             ),
           )
-              : controller.hasMisselPrayersData.isTrue
+              : controller.hasCustomPrayersData.isTrue
               ? FadeIn(
             child: SmartRefresher(
               enablePullDown: true,
               enablePullUp: true,
-              onLoading: controller.onMisselPrayersLoading,
-              onRefresh: controller.onMisselPrayersRefresh,
+              onLoading: controller.onCustomPrayersLoading,
+              onRefresh: controller.onCustomPrayersRefresh,
               header: const CustomClassicHeader(),
               footer: CustomFooter(
                 builder: (BuildContext context, LoadStatus? mode) {
@@ -109,7 +109,7 @@ class MiniMisselScreen extends StatelessWidget {
                 },
               ),
               physics: const BouncingScrollPhysics(),
-              controller: controller.refreshMisselPrayerController,
+              controller: controller.refreshCustomPrayersController,
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -117,9 +117,9 @@ class MiniMisselScreen extends StatelessWidget {
                 ),
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: controller.misselPrayers.length,
+                itemCount: controller.customPrayers.length,
                 itemBuilder: (context, index) {
-                  var pray = controller.misselPrayers[index];
+                  var pray = controller.customPrayers[index];
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 16),
                     child: PrayItem(pray: pray),

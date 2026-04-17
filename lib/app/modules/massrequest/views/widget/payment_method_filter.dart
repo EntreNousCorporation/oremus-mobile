@@ -1,10 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:oremusapp/app/commons/components/image_displayer.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/mass_request_recap_controller.dart';
 import 'package:oremusapp/app/modules/payment/data/model/payment_status_data.dart';
+import 'package:oremusapp/generated/assets.dart';
 
 class PaymentMethodFilter extends StatelessWidget {
   const PaymentMethodFilter({Key? key}) : super(key: key);
@@ -53,15 +56,49 @@ class PaymentMethodFilter extends StatelessWidget {
             .map<DropdownMenuItem<PaymentMethodData?>>((PaymentMethodData? paymentMethod) {
           return DropdownMenuItem<PaymentMethodData?>(
             value: paymentMethod,
-            child: Text(
-              paymentMethod?.name?.fr ?? '-',
-              maxLines: 2,
-              softWrap: true,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyles.montserratMedium(
-                textColor: colorBlack,
-                textSize: TextSizes.sixteen,
-              ),
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(2),
+                  child: SizedBox(
+                    height: 25,
+                    width: 25,
+                    child: CachedNetworkImage(
+                      imageUrl: paymentMethod?.logo ?? '',
+                      fit: BoxFit.cover,
+                      errorWidget: (context, error, stackTrace) {
+                        return const ImageDisplayer(
+                          icon: Assets.imagesLogo,
+                          fit: BoxFit.contain,
+                          //color: colorGrey3,
+                        );
+                      },
+                      progressIndicatorBuilder:
+                          (context, child, loadingProgress) {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.progress != null
+                                ? loadingProgress.progress ??
+                                0 / loadingProgress.totalSize!
+                                : null,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                Separators.minimunHorizontal(),
+                Text(
+                  paymentMethod?.name?.fr ?? '-',
+                  maxLines: 2,
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyles.montserratMedium(
+                    textColor: colorBlack,
+                    textSize: TextSizes.sixteen,
+                  ),
+                ),
+              ],
             ),
           );
         }).toList(),

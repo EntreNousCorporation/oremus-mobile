@@ -10,6 +10,7 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/pray/controller/pray_controller.dart';
+import 'package:oremusapp/app/modules/pray/views/custom_prayers_screen.dart';
 import 'package:oremusapp/app/modules/pray/views/mini_missel_screen.dart';
 import 'package:oremusapp/app/modules/pray/views/pray_item.dart';
 import 'package:oremusapp/generated/assets.dart';
@@ -180,7 +181,7 @@ class PrayScreen extends StatelessWidget {
                                     MiniMisselScreen(),
 
                                     // Tab des prieres ordinaires
-                                    SizedBox.shrink(),
+                                    CustomPrayersScreen(),
                                   ],
                                 ),
                               ),

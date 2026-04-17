@@ -28,20 +28,22 @@ class PaymentStatusData {
 
 class PaymentMethodData extends ToJsonInterface {
   String? code;
+  String? logo;
   Name? name;
 
-  PaymentMethodData({this.code, this.name});
+  PaymentMethodData({this.code, this.name, this.logo});
 
   PaymentMethodData.fromJson(Map<String, dynamic> json) {
     code = json['code'];
-    name =
-    json['name'] != null ? Name.fromJson(json['name']) : null;
+    logo = json['logo'];
+    name = json['name'] != null ? Name.fromJson(json['name']) : null;
   }
 
   @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['code'] = code;
+    data['logo'] = logo;
     if (name != null) {
       data['name'] = name?.toJson();
     }
