@@ -111,6 +111,34 @@ android {
     }
 }
 
+android.applicationVariants.all { variant ->
+    def flavorName = variant.flavorName
+    def buildType = variant.buildType.name
+    def versionName = variant.versionName
+    def versionCode = variant.versionCode
+
+    if (buildType == "release") {
+        def capitalizedFlavor = flavorName.capitalize()
+        def assembleTask = tasks.findByName("assemble${capitalizedFlavor}Release")
+
+        assembleTask?.doLast {
+            def date = new Date().format('ddMMyyyyHHmm')
+            def moduleName = "oremus"
+            def defaultApk = file("${buildDir}/outputs/flutter-apk/app-${flavorName}-release.apk")
+            def customApk = file("${buildDir}/outputs/flutter-apk/${moduleName}_${flavorName}_${date}_v${versionName}_b${versionCode}.apk")
+
+            if (defaultApk.exists()) {
+                copy {
+                    from defaultApk
+                    into defaultApk.parent
+                    rename { customApk.name }
+                }
+                println("✅ APK renommé : ${customApk.name}")
+            }
+        }
+    }
+}
+
 flutter {
     source '../..'
 }
