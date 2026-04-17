@@ -17,7 +17,6 @@ import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/filter_mass_request_date_controller.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/mass_request_controller.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/mass_request_recap_controller.dart';
-import 'package:oremusapp/app/modules/massrequest/views/widget/custom_card.dart';
 import 'package:oremusapp/app/modules/massrequest/views/widget/info_section.dart';
 import 'package:oremusapp/app/modules/massrequest/views/widget/intent_type_description_widget.dart';
 import 'package:oremusapp/app/modules/massrequest/views/widget/mass_hour_filter.dart';
@@ -349,7 +348,7 @@ class MassRequestRecapScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 24),
 
-                          CustomCard(content: const PaymentMethodFilter()),
+                          const PaymentMethodFilter(),
                           const SizedBox(height: 24),
                           Material(
                             borderRadius: BorderRadius.circular(10.0),
