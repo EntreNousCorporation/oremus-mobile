@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:get/get_connect/http/src/response/response.dart';
+import 'package:dio/dio.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/pray/data/model/prayer.dart';
@@ -20,13 +20,12 @@ class PrayRepository implements IPrayRepository {
       method: HttpMethod.get,
       useBearer: false,
     );
-    final String resp = json.encode(response.bodyString.toString());
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      throw Exception(resp);
+      throw Exception(json.encode(response.data));
     } else {
-      return (jsonDecode(response.bodyString.toString()) as List)
+      return (response.data as List)
           .map((i) => Prayer.fromJson(i))
           .toList();
     }
@@ -39,13 +38,12 @@ class PrayRepository implements IPrayRepository {
       method: HttpMethod.get,
       useBearer: false,
     );
-    final String resp = json.encode(response.bodyString.toString());
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      throw Exception(resp);
+      throw Exception(json.encode(response.data));
     } else {
-      return (jsonDecode(response.bodyString.toString()) as List)
+      return (response.data as List)
           .map((i) => Prayer.fromJson(i))
           .toList();
     }

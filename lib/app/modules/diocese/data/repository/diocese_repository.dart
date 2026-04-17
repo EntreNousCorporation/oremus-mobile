@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:get/get_connect/http/src/response/response.dart';
+import 'package:dio/dio.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/diocese/data/repository/interface_diocese_repository.dart';
@@ -22,14 +22,12 @@ class DioceseRepository implements IDioceseRepository {
       method: HttpMethod.get,
       useBearer: false,
     );
-    final String resp = json.encode(response.bodyString.toString());
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      throw Exception(resp);
+      throw Exception(json.encode(response.data));
     } else {
-      log('resp => $resp');
-      return DataResponse<ContentPlace>.fromJson(json.decode(response.bodyString.toString()));
+      return DataResponse<ContentPlace>.fromJson(response.data);
     }
   }
 }

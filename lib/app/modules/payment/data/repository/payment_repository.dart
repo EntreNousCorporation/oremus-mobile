@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:get/get.dart';
+import 'package:dio/dio.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/payment/data/model/payment_status_data.dart';
 import 'package:oremusapp/app/remote/api_client.dart';
@@ -27,10 +27,10 @@ class PaymentRepository implements IPaymentRepository {
     log('resp status code => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     } else {
-      return PaymentStatusData.fromJson(json.decode(response.bodyString.toString()));
+      return PaymentStatusData.fromJson(response.data);
     }
   }
 
@@ -43,10 +43,10 @@ class PaymentRepository implements IPaymentRepository {
     log('resp getPaymentMethods => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     } else {
-      return (jsonDecode(response.bodyString.toString()) as List)
+      return (response.data as List)
           .map((i) => PaymentMethodData.fromJson(i))
           .toList();
     }

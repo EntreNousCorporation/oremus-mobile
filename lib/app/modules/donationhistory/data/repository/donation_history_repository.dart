@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:get/get_connect/connect.dart';
+import 'package:dio/dio.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/donation/data/model/donation_response.dart';
@@ -30,11 +30,10 @@ class DonationHistoryRepository implements IDonationHistoryRepository {
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     } else {
-      return DataResponse<DonationResponse>.fromJson(
-          json.decode(response.bodyString.toString()));
+      return DataResponse<DonationResponse>.fromJson(response.data);
     }
   }
 }

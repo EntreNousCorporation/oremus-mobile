@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:get/get_connect/connect.dart';
+import 'package:dio/dio.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/lifeplan/data/model/create_life_plan_request.dart';
 import 'package:oremusapp/app/modules/lifeplan/data/model/life_plan.dart';
@@ -28,11 +28,10 @@ class LifePlanRepository implements ILifePlanRepository {
     log('getAvailableLifePlans response => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     } else {
-      return DataResponse<LifePlan>.fromJson(
-          json.decode(response.bodyString.toString()));
+      return DataResponse<LifePlan>.fromJson(response.data);
     }
   }
 
@@ -47,11 +46,10 @@ class LifePlanRepository implements ILifePlanRepository {
     log('getUserLifePlans response => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     } else {
-      return DataResponse<UserLifePlan>.fromJson(
-          json.decode(response.bodyString.toString()));
+      return DataResponse<UserLifePlan>.fromJson(response.data);
     }
   }
 
@@ -68,10 +66,10 @@ class LifePlanRepository implements ILifePlanRepository {
     log('createUserLifePlan response => ${response.statusCode}');
 
     if (response.statusCode != 200 && response.statusCode != 201) {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     } else {
-      return UserLifePlan.fromJson(json.decode(response.bodyString.toString()));
+      return UserLifePlan.fromJson(response.data);
     }
   }
 
@@ -88,10 +86,10 @@ class LifePlanRepository implements ILifePlanRepository {
     log('updateUserLifePlan response => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     } else {
-      return UserLifePlan.fromJson(json.decode(response.bodyString.toString()));
+      return UserLifePlan.fromJson(response.data);
     }
   }
 
@@ -106,7 +104,7 @@ class LifePlanRepository implements ILifePlanRepository {
     log('deleteUserLifePlan response => ${response.statusCode}');
 
     if (response.statusCode != 200 && response.statusCode != 204) {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     }
   }

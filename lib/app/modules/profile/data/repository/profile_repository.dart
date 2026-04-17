@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:get/get_connect/http/src/response/response.dart';
+import 'package:dio/dio.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
@@ -29,10 +29,10 @@ class ProfileRepository implements IProfileRepository {
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.status, e.debugMessage);
     } else {
-      return Profile.fromJson(json.decode(response.bodyString.toString()));
+      return Profile.fromJson(response.data);
     }
   }
 
@@ -47,10 +47,10 @@ class ProfileRepository implements IProfileRepository {
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.status, e.debugMessage);
     } else {
-      return Profile.fromJson(json.decode(response.bodyString.toString()));
+      return Profile.fromJson(response.data);
     }
   }
 
@@ -65,10 +65,10 @@ class ProfileRepository implements IProfileRepository {
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.status, e.debugMessage);
     } else {
-      return Profile.fromJson(json.decode(response.bodyString.toString()));
+      return Profile.fromJson(response.data);
     }
   }
 
@@ -82,7 +82,7 @@ class ProfileRepository implements IProfileRepository {
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 204) {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.status, e.debugMessage);
     } else {
       return Profile();

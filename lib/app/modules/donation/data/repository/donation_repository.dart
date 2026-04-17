@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:get/get.dart';
+import 'package:dio/dio.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/donation/data/model/donation_response.dart';
 import 'package:oremusapp/app/modules/donation/data/repository/interface_donation_repository.dart';
@@ -25,9 +25,9 @@ class DonationRepository implements IDonationRepository {
     log('resp sendMassRequest => ${response.statusCode}');
 
     if (response.statusCode! >= 200 && response.statusCode! <= 204) {
-      return DonationResponse.fromJson(json.decode(response.bodyString.toString()));
+      return DonationResponse.fromJson(response.data);
     } else {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     }
   }
@@ -42,9 +42,9 @@ class DonationRepository implements IDonationRepository {
     log('resp sendMassRequest => ${response.statusCode}');
 
     if (response.statusCode != null && response.statusCode! >= 200 && response.statusCode! <= 204) {
-      return DonationResponse.fromJson(json.decode(response.bodyString.toString()));
+      return DonationResponse.fromJson(response.data);
     } else {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     }
   }

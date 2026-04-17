@@ -32,6 +32,7 @@ class FlavorSettings {
         byPassAuth: true,
         envCredentials: EnvCredentials.prod,
         oneSignalAppID: '0d127e7e-a1dd-4275-b268-bb7cc626e0db',
+        showAppLogs: false,
       );
 }
 
@@ -41,6 +42,8 @@ class OremusFlavor {
   final String? endpoint;
   final String? shareAppLink;
   final String? oneSignalAppID;
+  final bool? showAppLogs;
+  final bool? bypassCert;
   final bool?
   byPassAuth; // True or False, whether we want to bypass the auth or not
   final bool? canCheckConectivity;
@@ -54,6 +57,8 @@ class OremusFlavor {
     this.oneSignalAppID,
     this.byPassAuth = false,
     this.canCheckConectivity = true,
+    this.showAppLogs = true,
+    this.bypassCert = true,
     this.envCredentials = EnvCredentials.dev,
   });
 }

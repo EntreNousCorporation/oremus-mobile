@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:get/get.dart';
+import 'package:dio/dio.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin_response.dart';
@@ -22,14 +22,12 @@ class SigninRepository implements ISigninRepository {
       method: HttpMethod.post,
       useBearer: false,
     );
-    final String resp = json.encode(response.bodyString.toString());
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      throw Exception(resp);
+      throw Exception(json.encode(response.data));
     } else {
-      log('resp => $resp');
-      return SigninResponse.fromJson(json.decode(response.bodyString.toString()));
+      return SigninResponse.fromJson(response.data);
     }
   }
 
@@ -41,13 +39,11 @@ class SigninRepository implements ISigninRepository {
       method: HttpMethod.post,
       useBearer: false,
     );
-    final String resp = json.encode(response.bodyString.toString());
     log('resp => ${response.statusCode}');
     if (response.statusCode! >= 200 && response.statusCode! <= 205) {
-      log('resp => $resp');
-      return SigninResponse.fromJson(json.decode(response.bodyString.toString()));
+      return SigninResponse.fromJson(response.data);
     } else {
-      throw Exception(resp);
+      throw Exception(json.encode(response.data));
     }
   }
 }

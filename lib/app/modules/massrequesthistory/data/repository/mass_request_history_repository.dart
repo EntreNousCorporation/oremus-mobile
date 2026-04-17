@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:get/get_connect/connect.dart';
+import 'package:dio/dio.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
@@ -30,11 +30,10 @@ class MassRequestHistoryRepository implements IMassRequestHistoryRepository {
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     } else {
-      return DataResponse<MassRequestResponse>.fromJson(
-          json.decode(response.bodyString.toString()));
+      return DataResponse<MassRequestResponse>.fromJson(response.data);
     }
   }
 
@@ -51,10 +50,10 @@ class MassRequestHistoryRepository implements IMassRequestHistoryRepository {
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     } else {
-      return (jsonDecode(response.bodyString.toString()) as List)
+      return (response.data as List)
           .map((i) => MassRequestStatusData.fromJson(i))
           .toList();
     }
@@ -70,10 +69,10 @@ class MassRequestHistoryRepository implements IMassRequestHistoryRepository {
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     } else {
-      return (jsonDecode(response.bodyString.toString()) as List)
+      return (response.data as List)
           .map((i) => MassRequestAvailablesStatusesData.fromJson(i))
           .toList();
     }

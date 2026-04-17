@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:get/get.dart';
+import 'package:dio/dio.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin_response.dart';
@@ -27,9 +27,9 @@ class SignupRepository implements ISignupRepository {
     log('resp => ${response.statusCode}');
 
     if (response.statusCode! >= 200 && response.statusCode! <= 205) {
-      return SigninResponse.fromJson(json.decode(response.bodyString.toString()));
+      return SigninResponse.fromJson(response.data);
     } else {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(response.statusCode, e.status);
       //throw Exception(resp);
     }

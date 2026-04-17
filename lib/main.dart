@@ -23,9 +23,12 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_theme.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/configs/flavor_settings.dart';
+import 'package:oremusapp/app/configs/services/logger_service.dart';
 import 'package:oremusapp/app/modules/initial/initial_binding.dart';
+import 'package:oremusapp/app/modules/metrics/widgets/monitoring_hub_screen.dart';
 import 'package:oremusapp/app/modules/rosary/services/audio_file_manager_service.dart';
 import 'package:oremusapp/app/modules/rosary/services/audio_player_service.dart';
+import 'package:oremusapp/app/remote/dio_util.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main_app_wrapper.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -43,6 +46,8 @@ var phoneId;
 var shareAppLink;
 var canCheckConnectivity;
 var oneSignalAppID;
+var showAppLogs;
+var bypassCert;
 var connectivityStatus = ConnectivityResult.none.obs;
 
 void main() async {
@@ -62,23 +67,38 @@ void main() async {
 
   initializeDateFormatting('fr_FR', null).then((_) async {
     final settings = await _getFlavorSettings();
-    appUrl = settings.oremusFlavor.apiBaseUrl.toString() + settings.oremusFlavor.endpoint.toString();
-    customBaseUrl = settings.oremusFlavor.customBaseUrl.toString() + settings.oremusFlavor.endpoint.toString();
+    appUrl =
+        settings.oremusFlavor.apiBaseUrl.toString() +
+        settings.oremusFlavor.endpoint.toString();
+    customBaseUrl =
+        settings.oremusFlavor.customBaseUrl.toString() +
+        settings.oremusFlavor.endpoint.toString();
     shareAppLink = settings.oremusFlavor.shareAppLink;
     canCheckConnectivity = settings.oremusFlavor.canCheckConectivity;
     oneSignalAppID = settings.oremusFlavor.oneSignalAppID;
+    showAppLogs = settings.oremusFlavor.showAppLogs;
+    bypassCert = settings.oremusFlavor.bypassCert;
     //byPassAuth = settings.oremusFlavor.byPassAuth;
+
+    await LoggerService.initialize(showAppLogs: showAppLogs);
+
+    // Initialiser Dio
+    await DioUtil().initialize();
 
     // Initialiser la base de données avec gestion d'erreur
     bool dbInitSuccess = await DB.initDatabase();
     if (!dbInitSuccess) {
-      log('AVERTISSEMENT: Échec de l\'initialisation de la base de données, l\'application fonctionnera sans persistance');
+      log(
+        'AVERTISSEMENT: Échec de l\'initialisation de la base de données, l\'application fonctionnera sans persistance',
+      );
     }
     await getDeviceInfos();
     getAppVersion();
 
     // Initialiser la surveillance de la connectivité
-    Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
+    Connectivity().onConnectivityChanged.listen((
+      List<ConnectivityResult> result,
+    ) {
       if (result.isNotEmpty) {
         connectivityStatus.value = result.first;
         log('Changement de connectivité: ${result.first.toString()}');
@@ -146,16 +166,29 @@ class OremusApp extends StatelessWidget {
           initialBinding: InitialBinding(),
           initialRoute: Routes.SPLASHSCREEN,
           getPages: AppPages.pages,
-          builder: EasyLoading.init(builder: (context, child) {
-            return MediaQuery(
-              data: MediaQuery.of(context)
-                  .copyWith(textScaler: const TextScaler.linear(1)),
-              child: MainAppWrapper(child: child!),
-            );
-          }),
+          builder: EasyLoading.init(
+            builder: (context, child) {
+              return MediaQuery(
+                data: MediaQuery.of(
+                  context,
+                ).copyWith(textScaler: const TextScaler.linear(1)),
+                child: GestureDetector(
+                  onLongPress: () {
+                    moveToMonitoringHubScreen();
+                  },
+                  child: MainAppWrapper(child: child!),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
+  }
+
+  moveToMonitoringHubScreen() {
+    if (showAppLogs == false) return;
+    Get.to(() => const MonitoringHubScreen(), transition: Transition.size);
   }
 }
 
@@ -186,8 +219,9 @@ getAppVersion() {
 }
 
 Future<FlavorSettings> _getFlavorSettings() async {
-  flavor =
-      await const MethodChannel('flavor').invokeMethod<String>('getFlavor');
+  flavor = await const MethodChannel(
+    'flavor',
+  ).invokeMethod<String>('getFlavor');
 
   log('STARTED WITH FLAVOR $flavor');
 
@@ -217,7 +251,9 @@ void configLoading() {
     ..maskColor = Colors.black.withValues(alpha: 0.8)
     ..userInteractions = false
     ..dismissOnTap = false
-    ..textStyle =
-        const TextStyle(color: colorBlack, fontFamily: 'montserrat_regular')
+    ..textStyle = const TextStyle(
+      color: colorBlack,
+      fontFamily: 'montserrat_regular',
+    )
     ..customAnimation = CustomAnimation();
 }

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:get/get.dart';
+import 'package:dio/dio.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
@@ -25,10 +25,10 @@ class MassRequestRepository implements IMassRequestRepository {
     log('resp getMassRequestType => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     } else {
-      return (jsonDecode(response.bodyString.toString()) as List)
+      return (response.data as List)
           .map((i) => TypeData.fromJson(i))
           .toList();
     }
@@ -43,10 +43,10 @@ class MassRequestRepository implements IMassRequestRepository {
     log('resp getMassRequestType => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     } else {
-      return (jsonDecode(response.bodyString.toString()) as List)
+      return (response.data as List)
           .map((i) => PrayerIntentData.fromJson(i))
           .toList();
     }
@@ -67,10 +67,10 @@ class MassRequestRepository implements IMassRequestRepository {
     log('resp getMassRequestPrice => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     } else {
-      return PriceResponse.fromJson(json.decode(response.bodyString.toString()));
+      return PriceResponse.fromJson(response.data);
     }
   }
 
@@ -84,9 +84,9 @@ class MassRequestRepository implements IMassRequestRepository {
     log('resp sendMassRequest => ${response.statusCode}');
 
     if (response.statusCode! >= 200 && response.statusCode! <= 204) {
-      return MassRequestResponse.fromJson(json.decode(response.bodyString.toString()));
+      return MassRequestResponse.fromJson(response.data);
     } else {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     }
   }
@@ -101,9 +101,9 @@ class MassRequestRepository implements IMassRequestRepository {
     log('resp sendMassRequest => ${response.statusCode}');
 
     if (response.statusCode != null && response.statusCode! >= 200 && response.statusCode! <= 204) {
-      return MassRequestResponse.fromJson(json.decode(response.bodyString.toString()));
+      return MassRequestResponse.fromJson(response.data);
     } else {
-      var e = ErrorResponse.fromJson(jsonDecode(response.bodyString.toString()));
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     }
   }

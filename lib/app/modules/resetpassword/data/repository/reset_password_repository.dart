@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:get/get.dart';
+import 'package:dio/dio.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/profile/data/model/profile.dart';
 import 'package:oremusapp/app/modules/resetpassword/data/repository/interface_reset_password_repository.dart';
@@ -21,14 +21,12 @@ class ResetPasswordRepository implements IResetPasswordRepository {
       method: HttpMethod.get,
       useBearer: false,
     );
-    final String resp = json.encode(response.bodyString.toString());
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      throw Exception(resp);
+      throw Exception(json.encode(response.data));
     } else {
-      //log('resp => $resp');
-      return Profile.fromJson(json.decode(response.bodyString.toString()));
+      return Profile.fromJson(response.data);
     }
   }
 
@@ -39,13 +37,12 @@ class ResetPasswordRepository implements IResetPasswordRepository {
       method: HttpMethod.get,
       useBearer: false,
     );
-    final String resp = json.encode(response.bodyString.toString());
     log('resp => ${response.statusCode}');
 
     if (response.statusCode != 200) {
-      throw Exception(resp);
+      throw Exception(json.encode(response.data));
     } else {
-      return Signin.fromJson(json.decode(response.bodyString.toString()));
+      return Signin.fromJson(response.data);
     }
   }
 
@@ -60,10 +57,9 @@ class ResetPasswordRepository implements IResetPasswordRepository {
     log('resp => ${response.statusCode}');
 
     if (response.statusCode! >= 200 && response.statusCode! <= 204) {
-      return Signin(); //Signin.fromJson(json.decode(response.bodyString.toString()));
+      return Signin();
     } else {
-      final String resp = json.encode(response.bodyString.toString());
-      throw Exception(resp);
+      throw Exception(json.encode(response.data));
     }
   }
 }
