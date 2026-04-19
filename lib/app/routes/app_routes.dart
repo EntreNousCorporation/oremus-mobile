@@ -67,6 +67,7 @@ abstract class Routes {
   static const PAYMENT = '/payment';
   static const PAYMENT_SUCCESS = '/payment-success';
   static const PAYMENT_ERROR = '/payment-error';
+  static const PAYMENT_PROCESSING = '/payment-processing';
 
   //REPORT PROBLEM
   static const REPORT_PROBLEM = '/report-problem';

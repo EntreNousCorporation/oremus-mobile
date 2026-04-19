@@ -17,6 +17,7 @@ enum PaymentStatus {
   INITIATED,
   INIT,
   ACCEPTED,
+  SUCCESS,
   FAILED,
   NONE,
 }

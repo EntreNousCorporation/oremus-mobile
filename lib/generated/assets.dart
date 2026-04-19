@@ -98,6 +98,7 @@ class Assets {
   static const String imagesMesse = 'assets/images/messe.svg';
   static const String imagesMovement = 'assets/images/movement.svg';
   static const String imagesPriestIcon = 'assets/images/priest_icon.svg';
+  static const String imagesProcess = 'assets/images/process.json';
   static const String imagesRosary = 'assets/images/rosary.svg';
   static const String imagesRosaryIcon = 'assets/images/rosary_icon.png';
   static const String imagesShareIcon = 'assets/images/share_icon.svg';

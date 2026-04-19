@@ -79,6 +79,7 @@ import 'package:oremusapp/app/modules/paroisse/views/paroisse_menu/paroisse_pres
 import 'package:oremusapp/app/modules/payment/binding/payment_binding.dart';
 import 'package:oremusapp/app/modules/payment/binding/payment_status_binding.dart';
 import 'package:oremusapp/app/modules/payment/views/payment_error_screen.dart';
+import 'package:oremusapp/app/modules/payment/views/payment_processing_screen.dart';
 import 'package:oremusapp/app/modules/payment/views/payment_screen.dart';
 import 'package:oremusapp/app/modules/payment/views/payment_success_screen.dart';
 import 'package:oremusapp/app/modules/pray/binding/pray_binding.dart';
@@ -420,6 +421,13 @@ class AppPages {
     GetPage(
       name: Routes.PAYMENT_ERROR,
       page: () => const PaymentErrorScreen(),
+      binding: PaymentStatusBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.PAYMENT_PROCESSING,
+      page: () => const PaymentProcessingScreen(),
       binding: PaymentStatusBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
