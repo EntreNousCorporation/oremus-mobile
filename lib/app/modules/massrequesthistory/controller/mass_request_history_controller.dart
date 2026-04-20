@@ -354,7 +354,7 @@ class MassRequestHistoryController extends GetxController {
       Routes.PAYMENT,
       arguments: {
         'payment_response': massRequestResponse?.toJson(),
-        'payment_type': PaymentType.donation,
+        'payment_type': PaymentType.massRequest,
       },
     );
   }

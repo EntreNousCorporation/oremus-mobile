@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/ino/fvm/versions/3.29.2/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/ino/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/ino/Projets/Flutter/oremus-app/android/app/.cxx/RelWithDebInfo/3t5j532s/x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/ino/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/ino/Projets/Flutter/oremus-app/android/app/.cxx/RelWithDebInfo/3t5j532s/x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

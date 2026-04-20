@@ -15,7 +15,7 @@ class PrayerIntentFilter extends StatelessWidget {
     return GetBuilder<MassRequestController>(builder: (logic) {
       return DropdownButtonFormField<PrayerIntentData?>(
         isExpanded: true,
-        initialValue: logic.prayerIntentSelected.value,
+        value: logic.prayerIntentSelected.value,
         enableFeedback: true,
         icon: const Icon(
           Icons.arrow_drop_down_rounded,

@@ -323,6 +323,7 @@ class PaymentController extends GetxController {
               return;
             }
 
+            checkingPaymentStatus(true);
             moveToProcessing();
           },
           onError: (error) {
