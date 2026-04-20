@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
@@ -11,6 +12,7 @@ import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/type_menu.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
+import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/generated/assets.dart';
 import 'package:oremusapp/main.dart';
@@ -18,9 +20,7 @@ import 'package:oremusapp/main.dart';
 class ParoisseMenuController extends GetxController {
   final ParoisseRepository paroisseRepository;
 
-  ParoisseMenuController({
-    required this.paroisseRepository,
-  });
+  ParoisseMenuController({required this.paroisseRepository});
 
   var paroisseSelected = ContentPlace().obs;
   var indexSelected = 0.obs;
@@ -39,199 +39,196 @@ class ParoisseMenuController extends GetxController {
     if (Get.arguments != null) {
       indexSelected.value = Get.arguments[0];
       paroisseSelected.value = ContentPlace.fromJson(Get.arguments[1]);
-      log('paroisseSelected paroisse menu :::${jsonEncode(paroisseSelected.value)}');
+      doGetWorshipDetails(paroisseSelected.value.identifier.toString());
     }
   }
 
   initMenus() {
-    menus.value = [
-      TypeMenu(
-        code: 'HM',
-        title: 'Horaires des messes',
-        icon: Assets.imagesMesse,
-        isPngImage: false,
-        activeTint: colorGreenSemiLight,
-        goToPage: () async {
-          await Get.toNamed(
-            Routes.PAROISSE_MESSE,
-            arguments: [
-              'HM',
-              paroisseSelected.value.toJson(),
-            ],
-          );
-          log("retour");
-          //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite =
-              isWorshipPlaceFavorite(paroisseSelected.value);
-          paroisseSelected.refresh();
-        },
-      ),
-      TypeMenu(
-        code: 'HC',
-        title: 'Horaires des confessions',
-        icon: Assets.imagesConfessionIcon,
-        isPngImage: false,
-        activeTint: colorGreenSemiLight,
-        goToPage: () async {
-          await Get.toNamed(
-            Routes.PAROISSE_CONFESSION,
-            arguments: [
-              'HC',
-              jsonEncode(paroisseSelected.value.toJson()),
-            ],
-          );
-          log("retour");
-          //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite =
-              isWorshipPlaceFavorite(paroisseSelected.value);
-          paroisseSelected.refresh();
-        },
-      ),
-      TypeMenu(
-        code: 'FD',
-        title: 'Don',
-        icon: Assets.imagesVolunteer,
-        isPngImage: false,
-        activeTint: colorGreenSemiLight,
-        goToPage: () async {
-          await Get.toNamed(
-            Routes.PAROISSE_DONATION_MENU,
-            arguments: paroisseSelected.toJson(),
-          );
-          //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
-          paroisseSelected.refresh();
-        },
-      ),
-      TypeMenu(
-        code: 'DM',
-        title: 'Demandes de messe',
-        icon: Assets.imagesIconDemandeDeMesse,
-        isPngImage: false,
-        activeTint: colorGreenSemiLight,
-        goToPage: () async {
-          await Get.toNamed(
-            Routes.PAROISSE_MASS_REQUEST_MENU,
-            arguments: paroisseSelected.toJson(),
-          );
-          //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
-          paroisseSelected.refresh();
-        },
-      ),
-      TypeMenu(
-        code: 'EP',
-        title: 'Equipe presbytérale',
-        icon: Assets.imagesPriestIcon,
-        isPngImage: false,
-        activeTint: colorGreenSemiLight,
-        goToPage: () async {
-          await Get.toNamed(
-            Routes.PAROISSE_PRESBY_TEAM,
-            arguments: [
-              'EP',
-              jsonEncode(paroisseSelected.value.toJson()),
-            ],
-          );
-          log("retour");
-          //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite =
-              isWorshipPlaceFavorite(paroisseSelected.value);
-          paroisseSelected.refresh();
-        },
-      ),
-      TypeMenu(
-        code: 'CO',
-        title: 'Contacts',
-        icon: Assets.imagesContacts,
-        isPngImage: false,
-        activeTint: colorGreenSemiLight,
-        goToPage: () async {
-          await Get.toNamed(
-            Routes.PAROISSE_CONTACT,
-            arguments: [
-              'CO',
-              jsonEncode(paroisseSelected.value.toJson()),
-            ],
-          );
-          log("retour");
-          //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite =
-              isWorshipPlaceFavorite(paroisseSelected.value);
-          paroisseSelected.refresh();
-        },
-      ),
-      TypeMenu(
-        code: 'IP',
-        title: 'Infos paroissiales',
-        icon: Assets.imagesIconInfosParoissiales,
-        isPngImage: false,
-        activeTint: colorGreenSemiLight,
-        goToPage: () async {
-          log('massInfoUrl => ${paroisseSelected.value.massInfo}');
-          await Get.toNamed(
-            Routes.PAROISSE_CONTACT,
-            arguments: [
-              'IP',
-              jsonEncode(paroisseSelected.value.toJson()),
-              paroisseSelected.value.massInfo ?? '',
-            ],
-          );
+    menus.value =
+        [
+          TypeMenu(
+            code: 'HM',
+            title: 'Horaires des messes',
+            icon: Assets.imagesMesse,
+            isPngImage: false,
+            activeTint: colorGreenSemiLight,
+            goToPage: () async {
+              await Get.toNamed(
+                Routes.PAROISSE_MESSE,
+                arguments: ['HM', paroisseSelected.value.toJson()],
+              );
+              log("retour");
+              //on met à jour la liste au cas où favoris mis à jour
+              paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(
+                paroisseSelected.value,
+              );
+              paroisseSelected.refresh();
+            },
+          ),
+          TypeMenu(
+            code: 'HC',
+            title: 'Horaires des confessions',
+            icon: Assets.imagesConfessionIcon,
+            isPngImage: false,
+            activeTint: colorGreenSemiLight,
+            goToPage: () async {
+              await Get.toNamed(
+                Routes.PAROISSE_CONFESSION,
+                arguments: ['HC', jsonEncode(paroisseSelected.value.toJson())],
+              );
+              log("retour");
+              //on met à jour la liste au cas où favoris mis à jour
+              paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(
+                paroisseSelected.value,
+              );
+              paroisseSelected.refresh();
+            },
+          ),
+          TypeMenu(
+            code: 'FD',
+            title: 'Don',
+            icon: Assets.imagesVolunteer,
+            isPngImage: false,
+            activeTint: colorGreenSemiLight,
+            goToPage: () async {
+              await Get.toNamed(
+                Routes.PAROISSE_DONATION_MENU,
+                arguments: paroisseSelected.toJson(),
+              );
+              //on met à jour la liste au cas où favoris mis à jour
+              paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(
+                paroisseSelected.value,
+              );
+              paroisseSelected.refresh();
+            },
+          ),
+          TypeMenu(
+            code: 'DM',
+            title: 'Demandes de messe',
+            icon: Assets.imagesIconDemandeDeMesse,
+            isPngImage: false,
+            activeTint: colorGreenSemiLight,
+            goToPage: () async {
+              await Get.toNamed(
+                Routes.PAROISSE_MASS_REQUEST_MENU,
+                arguments: paroisseSelected.toJson(),
+              );
+              //on met à jour la liste au cas où favoris mis à jour
+              paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(
+                paroisseSelected.value,
+              );
+              paroisseSelected.refresh();
+            },
+          ),
+          TypeMenu(
+            code: 'EP',
+            title: 'Equipe presbytérale',
+            icon: Assets.imagesPriestIcon,
+            isPngImage: false,
+            activeTint: colorGreenSemiLight,
+            goToPage: () async {
+              await Get.toNamed(
+                Routes.PAROISSE_PRESBY_TEAM,
+                arguments: ['EP', jsonEncode(paroisseSelected.value.toJson())],
+              );
+              log("retour");
+              //on met à jour la liste au cas où favoris mis à jour
+              paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(
+                paroisseSelected.value,
+              );
+              paroisseSelected.refresh();
+            },
+          ),
+          TypeMenu(
+            code: 'CO',
+            title: 'Contacts',
+            icon: Assets.imagesContacts,
+            isPngImage: false,
+            activeTint: colorGreenSemiLight,
+            goToPage: () async {
+              await Get.toNamed(
+                Routes.PAROISSE_CONTACT,
+                arguments: ['CO', jsonEncode(paroisseSelected.value.toJson())],
+              );
+              log("retour");
+              //on met à jour la liste au cas où favoris mis à jour
+              paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(
+                paroisseSelected.value,
+              );
+              paroisseSelected.refresh();
+            },
+          ),
+          TypeMenu(
+            code: 'IP',
+            title: 'Infos paroissiales',
+            icon: Assets.imagesIconInfosParoissiales,
+            isPngImage: false,
+            activeTint: colorGreenSemiLight,
+            goToPage: () async {
+              log('massInfoUrl => ${paroisseSelected.value.massInfo}');
+              await Get.toNamed(
+                Routes.PAROISSE_CONTACT,
+                arguments: [
+                  'IP',
+                  jsonEncode(paroisseSelected.value.toJson()),
+                  paroisseSelected.value.massInfo ?? '',
+                ],
+              );
 
-          //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite =
-              isWorshipPlaceFavorite(paroisseSelected.value);
-          paroisseSelected.refresh();
-        },
-      ),
-      TypeMenu(
-        code: 'HB',
-        title: 'Horaires des bureaux',
-        icon: Assets.imagesCalendar,
-        isPngImage: false,
-        activeTint: colorGreenSemiLight,
-        goToPage: () async {
-          await Get.toNamed(
-            Routes.PAROISSE_OFFICE,
-            arguments: [
-              'HB',
-              jsonEncode(paroisseSelected.value.toJson()),
-            ],
-          );
-          //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite =
-              isWorshipPlaceFavorite(paroisseSelected.value);
-          paroisseSelected.refresh();
-        },
-      ),
-      TypeMenu(
-        isVisible: false,
-        code: 'AM',
-        title: 'Activités & mouvements',
-        icon: Assets.imagesGroup,
-        isPngImage: false,
-        activeTint: colorGreenSemiLight,
-        goToPage: () async {
-          await Get.toNamed(
-            Routes.PAROISSE_ACTIVITY_MOVEMENT,
-            arguments: [
-              'AM',
-              jsonEncode(paroisseSelected.value.toJson()),
-            ],
-          );
-          log("retour");
-          //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
-          paroisseSelected.refresh();
-        },
-      ),
-    ].where((element) => element.isVisible).toList();
+              //on met à jour la liste au cas où favoris mis à jour
+              paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(
+                paroisseSelected.value,
+              );
+              paroisseSelected.refresh();
+            },
+          ),
+          TypeMenu(
+            code: 'HB',
+            title: 'Horaires des bureaux',
+            icon: Assets.imagesCalendar,
+            isPngImage: false,
+            activeTint: colorGreenSemiLight,
+            goToPage: () async {
+              await Get.toNamed(
+                Routes.PAROISSE_OFFICE,
+                arguments: ['HB', jsonEncode(paroisseSelected.value.toJson())],
+              );
+              //on met à jour la liste au cas où favoris mis à jour
+              paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(
+                paroisseSelected.value,
+              );
+              paroisseSelected.refresh();
+            },
+          ),
+          TypeMenu(
+            isVisible: false,
+            code: 'AM',
+            title: 'Activités & mouvements',
+            icon: Assets.imagesGroup,
+            isPngImage: false,
+            activeTint: colorGreenSemiLight,
+            goToPage: () async {
+              await Get.toNamed(
+                Routes.PAROISSE_ACTIVITY_MOVEMENT,
+                arguments: ['AM', jsonEncode(paroisseSelected.value.toJson())],
+              );
+              log("retour");
+              //on met à jour la liste au cas où favoris mis à jour
+              paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(
+                paroisseSelected.value,
+              );
+              paroisseSelected.refresh();
+            },
+          ),
+        ].where((element) => element.isVisible).toList();
   }
 
   bool isWorshipPlaceFavorite(ContentPlace paroisse) {
     var isFavorite = false;
     var favorites = paroisseRepository.getAllFavorites();
-    var hasParoisse = favorites.indexWhere((element) => element.identifier == paroisse.identifier);
+    var hasParoisse = favorites.indexWhere(
+      (element) => element.identifier == paroisse.identifier,
+    );
     if (hasParoisse != -1) {
       isFavorite = true;
     } else {
@@ -328,7 +325,10 @@ class ParoisseMenuController extends GetxController {
                       style: TextButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(color: colorGreen.withValues(alpha: 0.7), width: 1),
+                          side: BorderSide(
+                            color: colorGreen.withValues(alpha: 0.7),
+                            width: 1,
+                          ),
                         ),
                       ),
                       onPressed: Get.back,
@@ -374,11 +374,37 @@ class ParoisseMenuController extends GetxController {
     );
   }
 
+  doGetWorshipDetails(String identifier) {
+    paroisseRepository
+        .getParoisseDetails(worshipId: paroisseSelected.value.identifier)
+        .then(
+          (value) {
+            paroisseSelected.value = value;
+            update();
+          },
+          onError: (error) {
+            var err = error as CustomException;
+            if (err.code.toString().contains('401')) {
+              showCustomDialog(
+                Get.context!,
+                message:
+                    'Votre session a expiré\nVeuillez-vous reconnecter svp',
+              ).then((value) {
+                doLogout();
+              });
+            } else {
+              showNotification(
+                message:
+                    'Erreur lors du chargement des données: ${err.code.toString()}',
+              );
+            }
+            debugPrint("error => ${error.toString()}");
+          },
+        );
+  }
+
   moveToLogin(String code) async {
-    var result = await Get.toNamed(
-      Routes.SIGNIN,
-      arguments: true,
-    );
+    var result = await Get.toNamed(Routes.SIGNIN, arguments: true);
     if (result == true) {
       log('back moveToLogin');
       switch (code) {
@@ -397,10 +423,7 @@ class ParoisseMenuController extends GetxController {
   }
 
   goToMap() {
-    Get.toNamed(
-      Routes.PAROISSE_MAP,
-      arguments: paroisseSelected.toJson(),
-    );
+    Get.toNamed(Routes.PAROISSE_MAP, arguments: paroisseSelected.toJson());
   }
 
   saveFavorite(ContentPlace paroisse, bool state) {

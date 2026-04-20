@@ -7,7 +7,6 @@ import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
-import 'package:oremusapp/app/configs/flavor_settings.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/activity_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/favorite_check_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/favorite_data.dart';
@@ -35,13 +34,16 @@ class ParoisseRepository implements IParoisseRepository {
     int? page = 0,
     SearchCriteria? searchCriteria,
   }) async {
-    bool isUserLoggedIn = DB.getUserSigninInfo()?.id != null && DB.getUserSigninInfo()?.id?.isNotEmpty == true;
+    bool isUserLoggedIn =
+        DB.getUserSigninInfo()?.id != null &&
+        DB.getUserSigninInfo()?.id?.isNotEmpty == true;
     String? currentUserId = DB.getUserSigninInfo()?.id;
 
     searchCriteria?.likerUserId = currentUserId ?? '';
 
     Response response = await _apiClient.doRequest(
-      endpoint: "/places-of-worship?page=$page&size=${AppConstants.PAGING_SIZE_1000}&sort=name%2CASC${(searchCriteria?.name == null || searchCriteria?.name?.isEmpty == true) ? '' : '&name=${searchCriteria?.name}'}${(searchCriteria?.likerUserId == null || searchCriteria?.likerUserId?.isEmpty == true) ? '' : '&likerUserId=${searchCriteria?.likerUserId}'}${(searchCriteria?.type == null || searchCriteria?.type?.isEmpty == true) ? '' : '&type=${searchCriteria?.type}'}${(searchCriteria?.diocese == null || searchCriteria?.diocese?.isEmpty == true) ? '' : '&diocese=${searchCriteria?.diocese}'}${(searchCriteria?.city == null || searchCriteria?.city?.isEmpty == true) ? '' : '&city=${searchCriteria?.city}'}${(searchCriteria?.municipality == null || searchCriteria?.municipality?.isEmpty == true) ? '' : '&municipality=${searchCriteria?.municipality}'}${(searchCriteria?.neighborhood == null || searchCriteria?.neighborhood?.isEmpty == true) ? '' : '&neighborhood=${searchCriteria?.neighborhood}'}",
+      endpoint:
+          "/places-of-worship?page=$page&size=${AppConstants.PAGING_SIZE_1000}&sort=name%2CASC${(searchCriteria?.name == null || searchCriteria?.name?.isEmpty == true) ? '' : '&name=${searchCriteria?.name}'}${(searchCriteria?.likerUserId == null || searchCriteria?.likerUserId?.isEmpty == true) ? '' : '&likerUserId=${searchCriteria?.likerUserId}'}${(searchCriteria?.type == null || searchCriteria?.type?.isEmpty == true) ? '' : '&type=${searchCriteria?.type}'}${(searchCriteria?.diocese == null || searchCriteria?.diocese?.isEmpty == true) ? '' : '&diocese=${searchCriteria?.diocese}'}${(searchCriteria?.city == null || searchCriteria?.city?.isEmpty == true) ? '' : '&city=${searchCriteria?.city}'}${(searchCriteria?.municipality == null || searchCriteria?.municipality?.isEmpty == true) ? '' : '&municipality=${searchCriteria?.municipality}'}${(searchCriteria?.neighborhood == null || searchCriteria?.neighborhood?.isEmpty == true) ? '' : '&neighborhood=${searchCriteria?.neighborhood}'}",
       method: HttpMethod.get,
       useBearer: false,
     );
@@ -62,7 +64,9 @@ class ParoisseRepository implements IParoisseRepository {
         // Pour utilisateur non connecté, vérifier dans les favoris locaux non synchronisés
         var localFavorites = DB.getUnsynchronizedFavorites();
         for (var paroisse in result.contents ?? []) {
-          paroisse.isFavorite = localFavorites.any((element) => element.identifier == paroisse.identifier);
+          paroisse.isFavorite = localFavorites.any(
+            (element) => element.identifier == paroisse.identifier,
+          );
         }
       }
 
@@ -71,7 +75,42 @@ class ParoisseRepository implements IParoisseRepository {
   }
 
   @override
-  Future<DataResponse<ContentPlace>> getParoissesBySchedule({int? page = 0, required String query}) async {
+  Future<ContentPlace> getParoisseDetails({int? worshipId = 0}) async {
+    bool isUserLoggedIn =
+        DB.getUserSigninInfo()?.id != null &&
+        DB.getUserSigninInfo()?.id?.isNotEmpty == true;
+
+    Response response = await _apiClient.doRequest(
+      endpoint: "/places-of-worship/$worshipId",
+      method: HttpMethod.get,
+      useBearer: false,
+    );
+
+    if (response.statusCode != 200) {
+      var e = ErrorResponse.fromJson(response.data);
+      throw CustomException(e.debugMessage, e.status);
+    } else {
+      var result = ContentPlace.fromJson(response.data);
+
+      // Traiter les favoris en fonction de l'état de connexion
+      if (isUserLoggedIn) {
+        // Pour utilisateur connecté, isFavorite est basé sur isUserFavorite (source de vérité)
+        result.isFavorite = result.isUserFavorite ?? false;
+      } else {
+        // Pour utilisateur non connecté, vérifier dans les favoris locaux non synchronisés
+        var localFavorites = DB.getUnsynchronizedFavorites();
+        result.isFavorite = localFavorites.any((element) => element.identifier == result.identifier);
+      }
+
+      return result;
+    }
+  }
+
+  @override
+  Future<DataResponse<ContentPlace>> getParoissesBySchedule({
+    int? page = 0,
+    required String query,
+  }) async {
     final isUserLoggedIn = DB.getUserSigninInfo()?.id?.isNotEmpty == true;
 
     final uri = Uri(
@@ -90,18 +129,17 @@ class ParoisseRepository implements IParoisseRepository {
       useBearer: false,
     );
 
-
     if (response.statusCode != 200) {
       final e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     }
 
-    final scheduleResponse =
-    ScheduleApiResponse.fromJson(response.data);
+    final scheduleResponse = ScheduleApiResponse.fromJson(response.data);
 
-    final result = DataResponse<ContentPlace>()
-      ..contents = scheduleResponse.content
-      ..last = scheduleResponse.page?.isLast ?? true;
+    final result =
+        DataResponse<ContentPlace>()
+          ..contents = scheduleResponse.content
+          ..last = scheduleResponse.page?.isLast ?? true;
 
     if (result.contents == null || result.contents!.isEmpty) {
       return result;
@@ -109,15 +147,17 @@ class ParoisseRepository implements IParoisseRepository {
 
     if (isUserLoggedIn) {
       try {
-        final ids = result.contents!
-            .where((e) => e?.identifier != null)
-            .map((e) => e?.identifier!)
-            .toList();
+        final ids =
+            result.contents!
+                .where((e) => e?.identifier != null)
+                .map((e) => e?.identifier!)
+                .toList();
 
         final favoritesStatus = await getUserFavoritesForPlaces(ids);
 
         final map = {
-          for (var f in favoritesStatus) f.identifier: f.isUserFavorite ?? false
+          for (var f in favoritesStatus)
+            f.identifier: f.isUserFavorite ?? false,
         };
 
         for (var p in result.contents!) {
@@ -146,80 +186,12 @@ class ParoisseRepository implements IParoisseRepository {
   }
 
   @override
-  Future<DataResponse<ContentPlace>> _getParoissesBySchedule({
-    int? page = 0,
-    required String query,
-  }) async {
-    bool isUserLoggedIn = DB.getUserSigninInfo()?.id != null && DB.getUserSigninInfo()?.id?.isNotEmpty == true;
-    String? currentUserId = DB.getUserSigninInfo()?.id;
-
-    Response response = await _apiClient.doRequest(
-      customBaseUrl: customBaseUrl,
-      endpoint: '/worship-places?query=$query&page=$page&size=${AppConstants.PAGING_SIZE_1000}',
-      method: HttpMethod.get,
-      useBearer: false,
-    );
-
-    if (response.statusCode != 200) {
-      var e = ErrorResponse.fromJson(response.data);
-      throw CustomException(e.debugMessage, e.status);
-    } else {
-      // Parser d'abord avec ScheduleApiResponse
-      var scheduleResponse = ScheduleApiResponse.fromJson(response.data);
-
-      // Convertir vers DataResponse
-      var result = DataResponse<ContentPlace>();
-      result.contents = scheduleResponse.content;
-      result.last = scheduleResponse.page?.isLast ?? true;
-
-      // Traiter les favoris en fonction de l'état de connexion
-      if (isUserLoggedIn && result.contents != null && result.contents!.isNotEmpty) {
-        try {
-          // Extraire les IDs des paroisses
-          List<dynamic> worshipPlaceIds = result.contents!
-              .where((place) => place?.identifier != null)
-              .map((place) => place!.identifier!)
-              .toList();
-
-          // Récupérer l'état des favoris pour ces paroisses
-          List<FavoriteCheckResponse> favoritesStatus = await getUserFavoritesForPlaces(worshipPlaceIds);
-
-          // Merger les informations de favoris avec les paroisses
-          for (var paroisse in result.contents ?? []) {
-            if (paroisse?.identifier != null) {
-              // Chercher l'état du favori pour cette paroisse
-              var favoriteInfo = favoritesStatus.firstWhere(
-                    (fav) => fav.identifier == paroisse!.identifier,
-                orElse: () => FavoriteCheckResponse(identifier: paroisse!.identifier, isUserFavorite: false),
-              );
-
-              // Mettre à jour les propriétés de favori
-              paroisse?.isUserFavorite = favoriteInfo.isUserFavorite ?? false;
-              paroisse?.isFavorite = favoriteInfo.isUserFavorite ?? false;
-            }
-          }
-        } catch (e) {
-          // En cas d'erreur, utiliser les favoris locaux comme fallback
-          var localFavorites = DB.getUnsynchronizedFavorites();
-          for (var paroisse in result.contents ?? []) {
-            paroisse?.isFavorite = localFavorites.any((element) => element.identifier == paroisse?.identifier);
-          }
-        }
-      } else if (!isUserLoggedIn) {
-        // Pour utilisateur non connecté, vérifier dans les favoris locaux non synchronisés
-        var localFavorites = DB.getUnsynchronizedFavorites();
-        for (var paroisse in result.contents ?? []) {
-          paroisse?.isFavorite = localFavorites.any((element) => element.identifier == paroisse?.identifier);
-        }
-      }
-
-      return result;
-    }
-  }
-
-  @override
-  Future<List<FavoriteCheckResponse>> getUserFavoritesForPlaces(List<dynamic> worshipPlaceIds) async {
-    bool isUserLoggedIn = DB.getUserSigninInfo()?.id != null && DB.getUserSigninInfo()?.id?.isNotEmpty == true;
+  Future<List<FavoriteCheckResponse>> getUserFavoritesForPlaces(
+    List<dynamic> worshipPlaceIds,
+  ) async {
+    bool isUserLoggedIn =
+        DB.getUserSigninInfo()?.id != null &&
+        DB.getUserSigninInfo()?.id?.isNotEmpty == true;
 
     if (!isUserLoggedIn || worshipPlaceIds.isEmpty) {
       return [];
@@ -234,7 +206,7 @@ class ParoisseRepository implements IParoisseRepository {
       Response response = await _apiClient.doRequest(
         endpoint: "/users/full-text-search-likes?$queryParams",
         method: HttpMethod.get,
-        useBearer: true,
+        useBearer: false,
       );
 
       if (response.statusCode == 200) {
@@ -284,7 +256,8 @@ class ParoisseRepository implements IParoisseRepository {
 
     try {
       Response response = await _apiClient.doRequest(
-        endpoint: "/favorites?userId=$currentUserId&worshipPlaceId=${paroisse?.identifier}",
+        endpoint:
+            "/favorites?userId=$currentUserId&worshipPlaceId=${paroisse?.identifier}",
         method: HttpMethod.delete,
       );
 
@@ -298,13 +271,16 @@ class ParoisseRepository implements IParoisseRepository {
   // Méthode pour récupérer les favoris du serveur
   @override
   Future<DataResponse<ContentPlace>> getServerFavorites({int? page = 0}) async {
-    bool isUserLoggedIn = DB.getUserSigninInfo()?.id != null && DB.getUserSigninInfo()?.id?.isNotEmpty == true;
+    bool isUserLoggedIn =
+        DB.getUserSigninInfo()?.id != null &&
+        DB.getUserSigninInfo()?.id?.isNotEmpty == true;
 
     if (!isUserLoggedIn) return DataResponse();
 
     try {
       Response response = await _apiClient.doRequest(
-        endpoint: "/places-of-worship/user-favorites?page=$page&size=${AppConstants.MASS_REQUEST_PAGING_SIZE}&sort=%2CASC",
+        endpoint:
+            "/places-of-worship/user-favorites?page=$page&size=${AppConstants.MASS_REQUEST_PAGING_SIZE}&sort=%2CASC",
         method: HttpMethod.get,
         useBearer: true,
       );
@@ -322,7 +298,9 @@ class ParoisseRepository implements IParoisseRepository {
   // ou une connexion avec le même utilisateur que précédemment
   @override
   Future<void> syncFavorites() async {
-    bool isUserLoggedIn = DB.getUserSigninInfo()?.id != null && DB.getUserSigninInfo()?.id?.isNotEmpty == true;
+    bool isUserLoggedIn =
+        DB.getUserSigninInfo()?.id != null &&
+        DB.getUserSigninInfo()?.id?.isNotEmpty == true;
     String? currentUserId = DB.getUserSigninInfo()?.id;
 
     if (!isUserLoggedIn) return;
@@ -336,19 +314,29 @@ class ParoisseRepository implements IParoisseRepository {
         // 2. Obtenir les favoris non synchronisés
         List<ContentPlace> unsyncedFavorites = DB.getUnsynchronizedFavorites();
         if (unsyncedFavorites.isNotEmpty) {
-
           // 3. Obtenir les favoris du serveur (source de vérité)
-          DataResponse<ContentPlace> serverFavoritesResponse = await getServerFavorites();
-          List<ContentPlace?> serverFavorites = serverFavoritesResponse.contents ?? [];
+          DataResponse<ContentPlace> serverFavoritesResponse =
+              await getServerFavorites();
+          List<ContentPlace?> serverFavorites =
+              serverFavoritesResponse.contents ?? [];
 
           // 4. Identifier les favoris à ajouter au serveur
-          List<ContentPlace> toAddToServer = unsyncedFavorites.where((local) =>
-          !serverFavorites.any((server) => server?.identifier == local.identifier)).toList();
+          List<ContentPlace> toAddToServer =
+              unsyncedFavorites
+                  .where(
+                    (local) =>
+                        !serverFavorites.any(
+                          (server) => server?.identifier == local.identifier,
+                        ),
+                  )
+                  .toList();
 
           // 5. Ajouter les favoris locaux au serveur
           for (var paroisse in toAddToServer) {
             bool success = await addServerFavorite(paroisse);
-            OremusLogger.info('Added favorite to server: $success - ${paroisse.name}');
+            OremusLogger.info(
+              'Added favorite to server: $success - ${paroisse.name}',
+            );
           }
 
           // 6. Une fois la synchronisation terminée, effacer les favoris non synchronisés
@@ -356,14 +344,17 @@ class ParoisseRepository implements IParoisseRepository {
         }
 
         // 7. Récupérer à nouveau tous les favoris du serveur (pour avoir la liste complète et à jour)
-        DataResponse<ContentPlace> updatedServerFavoritesResponse = await getServerFavorites();
-        List<ContentPlace?> updatedServerFavorites = updatedServerFavoritesResponse.contents ?? [];
+        DataResponse<ContentPlace> updatedServerFavoritesResponse =
+            await getServerFavorites();
+        List<ContentPlace?> updatedServerFavorites =
+            updatedServerFavoritesResponse.contents ?? [];
 
         // 8. Convertir la liste en liste non nullable
-        List<ContentPlace> syncedFavorites = updatedServerFavorites
-            .where((item) => item != null)
-            .map((item) => item!)
-            .toList();
+        List<ContentPlace> syncedFavorites =
+            updatedServerFavorites
+                .where((item) => item != null)
+                .map((item) => item!)
+                .toList();
 
         // 9. Marquer tous les favoris comme étant favoris
         for (var favorite in syncedFavorites) {
@@ -376,20 +367,22 @@ class ParoisseRepository implements IParoisseRepository {
 
         // 11. Enregistrer l'ID de l'utilisateur actuel comme dernier synchronisateur
         DB.setLastSyncUserId(currentUserId!);
-
       } else {
         // C'est un utilisateur différent, nettoyer les favoris non synchronisés précédents
         DB.clearUnsynchronizedFavorites();
 
         // Récupérer les favoris du nouvel utilisateur depuis le serveur
-        DataResponse<ContentPlace> serverFavoritesResponse = await getServerFavorites();
-        List<ContentPlace?> serverFavorites = serverFavoritesResponse.contents ?? [];
+        DataResponse<ContentPlace> serverFavoritesResponse =
+            await getServerFavorites();
+        List<ContentPlace?> serverFavorites =
+            serverFavoritesResponse.contents ?? [];
 
         // Convertir la liste en liste non nullable
-        List<ContentPlace> syncedFavorites = serverFavorites
-            .where((item) => item != null)
-            .map((item) => item!)
-            .toList();
+        List<ContentPlace> syncedFavorites =
+            serverFavorites
+                .where((item) => item != null)
+                .map((item) => item!)
+                .toList();
 
         // Marquer tous les favoris comme étant favoris
         for (var favorite in syncedFavorites) {
@@ -417,7 +410,9 @@ class ParoisseRepository implements IParoisseRepository {
   }
 
   @override
-  Future<List<LiturgicalCelebrationResponse>> getLiturgicalCelebration(int idParoisse) async {
+  Future<List<LiturgicalCelebrationResponse>> getLiturgicalCelebration(
+    int idParoisse,
+  ) async {
     Response response = await _apiClient.doRequest(
       endpoint: "/places-of-worship/$idParoisse/liturgical-celebrations",
       method: HttpMethod.get,
@@ -481,9 +476,7 @@ class ParoisseRepository implements IParoisseRepository {
       var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     } else {
-      return (response.data as List)
-          .map((i) => PlaceUser.fromJson(i))
-          .toList();
+      return (response.data as List).map((i) => PlaceUser.fromJson(i)).toList();
     }
   }
 
@@ -500,9 +493,7 @@ class ParoisseRepository implements IParoisseRepository {
       throw CustomException(e.debugMessage, e.status);
     } else {
       debugPrint("===== getPlaceOfWorshipContacts =====");
-      return (response.data as List)
-          .map((i) => Contact.fromJson(i))
-          .toList();
+      return (response.data as List).map((i) => Contact.fromJson(i)).toList();
     }
   }
 
@@ -516,18 +507,17 @@ class ParoisseRepository implements IParoisseRepository {
     );
 
     if (response.statusCode != 200) {
-      var e =
-          ErrorResponse.fromJson(response.data);
+      var e = ErrorResponse.fromJson(response.data);
       throw CustomException(e.debugMessage, e.status);
     } else {
-      return (response.data as List)
-          .map((i) => PlaceType.fromJson(i))
-          .toList();
+      return (response.data as List).map((i) => PlaceType.fromJson(i)).toList();
     }
   }
 
   @override
-  Future<List<LiturgicalCelebrationResponse>> getOfficeTimes(int idParoisse) async {
+  Future<List<LiturgicalCelebrationResponse>> getOfficeTimes(
+    int idParoisse,
+  ) async {
     Response response = await _apiClient.doRequest(
       endpoint: "/places-of-worship/$idParoisse/services",
       method: HttpMethod.get,
@@ -547,7 +537,9 @@ class ParoisseRepository implements IParoisseRepository {
   Future<void> addFavorite(ContentPlace? paroisse) async {
     if (paroisse == null) return;
 
-    bool isUserLoggedIn = DB.getUserSigninInfo()?.id != null && DB.getUserSigninInfo()?.id?.isNotEmpty == true;
+    bool isUserLoggedIn =
+        DB.getUserSigninInfo()?.id != null &&
+        DB.getUserSigninInfo()?.id?.isNotEmpty == true;
 
     log('Adding favorite - User logged in: $isUserLoggedIn');
 
@@ -565,7 +557,9 @@ class ParoisseRepository implements IParoisseRepository {
         List<ContentPlace> syncedFavorites = DB.getSyncedFavorites();
 
         // Vérifier si le favori existe déjà
-        int index = syncedFavorites.indexWhere((element) => element.identifier == paroisse.identifier);
+        int index = syncedFavorites.indexWhere(
+          (element) => element.identifier == paroisse.identifier,
+        );
         if (index == -1) {
           syncedFavorites.add(paroisse);
           DB.saveSyncedFavorites(syncedFavorites);
@@ -577,12 +571,17 @@ class ParoisseRepository implements IParoisseRepository {
     } else {
       // Utilisateur non connecté, ajouter aux favoris non synchronisés
       var unsyncedFavorites = DB.getUnsynchronizedFavorites();
-      var hasParoisse = unsyncedFavorites.indexWhere((element) => element.identifier == paroisse.identifier);
+      var hasParoisse = unsyncedFavorites.indexWhere(
+        (element) => element.identifier == paroisse.identifier,
+      );
 
-      if (hasParoisse == -1) { // pas trouvé donc on peut ajouter
+      if (hasParoisse == -1) {
+        // pas trouvé donc on peut ajouter
         unsyncedFavorites.add(paroisse);
         DB.saveUnsynchronizedFavorites(unsyncedFavorites);
-        log('Local unsynchronized favorite added - total: ${unsyncedFavorites.length}');
+        log(
+          'Local unsynchronized favorite added - total: ${unsyncedFavorites.length}',
+        );
       }
     }
   }
@@ -591,7 +590,9 @@ class ParoisseRepository implements IParoisseRepository {
   Future<void> deleteFavorite(ContentPlace? paroisse) async {
     if (paroisse == null) return;
 
-    bool isUserLoggedIn = DB.getUserSigninInfo()?.id != null && DB.getUserSigninInfo()?.id?.isNotEmpty == true;
+    bool isUserLoggedIn =
+        DB.getUserSigninInfo()?.id != null &&
+        DB.getUserSigninInfo()?.id?.isNotEmpty == true;
 
     log('Removing favorite - User logged in: $isUserLoggedIn');
 
@@ -609,7 +610,9 @@ class ParoisseRepository implements IParoisseRepository {
         List<ContentPlace> syncedFavorites = DB.getSyncedFavorites();
 
         // Supprimer le favori du cache
-        syncedFavorites.removeWhere((element) => element.identifier == paroisse.identifier);
+        syncedFavorites.removeWhere(
+          (element) => element.identifier == paroisse.identifier,
+        );
 
         DB.saveSyncedFavorites(syncedFavorites);
         log('Updated local cache - removed favorite');
@@ -619,15 +622,21 @@ class ParoisseRepository implements IParoisseRepository {
     } else {
       // Utilisateur non connecté, supprimer des favoris non synchronisés
       var unsyncedFavorites = DB.getUnsynchronizedFavorites();
-      unsyncedFavorites.removeWhere((element) => element.identifier == paroisse.identifier);
+      unsyncedFavorites.removeWhere(
+        (element) => element.identifier == paroisse.identifier,
+      );
       DB.saveUnsynchronizedFavorites(unsyncedFavorites);
-      log('Local unsynchronized favorite removed - total: ${unsyncedFavorites.length}');
+      log(
+        'Local unsynchronized favorite removed - total: ${unsyncedFavorites.length}',
+      );
     }
   }
 
   @override
   List<ContentPlace> getAllFavorites() {
-    bool isUserLoggedIn = DB.getUserSigninInfo()?.id != null && DB.getUserSigninInfo()?.id?.isNotEmpty == true;
+    bool isUserLoggedIn =
+        DB.getUserSigninInfo()?.id != null &&
+        DB.getUserSigninInfo()?.id?.isNotEmpty == true;
 
     if (isUserLoggedIn) {
       // Pour un utilisateur connecté, utiliser le cache local des favoris synchronisés

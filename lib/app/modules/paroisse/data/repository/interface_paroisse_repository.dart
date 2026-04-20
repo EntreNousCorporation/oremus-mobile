@@ -11,6 +11,7 @@ import 'package:oremusapp/app/remote/data_response.dart';
 abstract class IParoisseRepository {
   //For API
   Future<DataResponse<ContentPlace>> getParoisses({int? page = 0, SearchCriteria? searchCriteria,});
+  Future<ContentPlace> getParoisseDetails({int? worshipId = 0});
   Future<List<LiturgicalCelebrationResponse>> getLiturgicalCelebration(int idParoisse);
   Future<List<ActivityResponse>> getActivities(int idParoisse);
   Future<List<MovementResponse>> getMouvements(int idParoisse);

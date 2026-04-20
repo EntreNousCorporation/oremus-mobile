@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:like_button/like_button.dart';
 import 'package:oremusapp/app/commons/components/image_displayer.dart';
+import 'package:oremusapp/app/commons/components/loader_widget.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
@@ -197,36 +198,36 @@ class ParoisseMenuScreen extends StatelessWidget {
                               children: [
                                 // Image de couverture avec hero animation
                                 (controller.paroisseSelected.value.coverImage?.link
-                                            ?.isNotEmpty ==
-                                        true)
+                                    ?.isNotEmpty ==
+                                    true)
                                     ? Hero(
-                                        tag: 'tag${controller.indexSelected.value}',
-                                        child: CachedNetworkImage(
-                                          imageUrl: controller.paroisseSelected.value
-                                                  .coverImage?.link ??
-                                              '',
-                                          fit: BoxFit.cover,
-                                          placeholder: (context, url) =>
-                                              LottieLoadingView(
-                                                  size: Get.width / 6),
-                                          errorWidget: (context, url, error) =>
-                                              Image.asset(
-                                            Assets.imagesBgLogin,
-                                            width: Get.width,
-                                            height: Get.width,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      )
-                                    : Hero(
-                                        tag: 'tag${controller.indexSelected.value}',
-                                        child: Image.asset(
+                                  tag: 'tag${controller.indexSelected.value}',
+                                  child: CachedNetworkImage(
+                                    imageUrl: controller.paroisseSelected.value
+                                        .coverImage?.link ??
+                                        '',
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) =>
+                                        LottieLoadingView(
+                                            size: Get.width / 6),
+                                    errorWidget: (context, url, error) =>
+                                        Image.asset(
                                           Assets.imagesBgLogin,
                                           width: Get.width,
                                           height: Get.width,
                                           fit: BoxFit.cover,
                                         ),
-                                      ),
+                                  ),
+                                )
+                                    : Hero(
+                                  tag: 'tag${controller.indexSelected.value}',
+                                  child: Image.asset(
+                                    Assets.imagesBgLogin,
+                                    width: Get.width,
+                                    height: Get.width,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                                 // Superposition ombrée
                                 Container(
                                   decoration: BoxDecoration(
@@ -298,14 +299,14 @@ class ParoisseMenuScreen extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
                       sliver: SliverGrid(
                         gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                           childAspectRatio: 4/3,
                           crossAxisCount: 2,
                           crossAxisSpacing: 16.0,
                           mainAxisSpacing: 16.0,
                         ),
                         delegate: SliverChildBuilderDelegate(
-                          (context, index) {
+                              (context, index) {
                             var menu = controller.menus[index];
                             return _buildEnhancedMenuItem(menu);
                           },
