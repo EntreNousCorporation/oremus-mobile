@@ -15,7 +15,7 @@ class DonationMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: colorWhite,
+      color: colorGrey5,
       child: GetX<DonationMenuController>(builder: (controller) {
         return KeyboardDismisser(
           child: Column(

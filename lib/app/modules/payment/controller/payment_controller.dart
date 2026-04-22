@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:app_links/app_links.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
+import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/modules/donation/data/model/donation_response.dart';
@@ -37,7 +38,7 @@ class PaymentController extends GetxController {
 
   var checkingPaymentStatus = false.obs;
   var isTimerActive = false.obs;
-  late Timer timer;
+  Timer? _timer;
 
   Rx<int> manualVerifyCount = Rx<int>(0);
   var manualVerify = false.obs;
@@ -52,21 +53,20 @@ class PaymentController extends GetxController {
   getArguments() {
     if (Get.arguments == null) return;
     Map<String, dynamic> arguments = Get.arguments;
+    if (arguments.containsKey('paroisse_selected') && arguments['paroisse_selected'] != null) {
+      paroisseSelected.value = ContentPlace.fromJson(arguments['paroisse_selected']);
+    }
     if (arguments.containsKey('payment_type')) {
       paymentType.value = Get.arguments['payment_type'];
       if (paymentType.value == PaymentType.donation) {
         if (arguments.containsKey('payment_response')) {
-          donationSelected.value = DonationResponse.fromJson(
-            Get.arguments['payment_response'],
-          );
+          donationSelected.value = DonationResponse.fromJson(arguments['payment_response']);
           initWebview();
         }
       }
       if (paymentType.value == PaymentType.massRequest) {
         if (arguments.containsKey('payment_response')) {
-          massRequestResponseSelected.value = MassRequestResponse.fromJson(
-            Get.arguments['payment_response'],
-          );
+          massRequestResponseSelected.value = MassRequestResponse.fromJson(arguments['payment_response']);
           initWebview();
         }
       }
@@ -74,9 +74,7 @@ class PaymentController extends GetxController {
   }
 
   moveToError() {
-    if (isTimerActive.value == true) {
-      timer.cancel();
-    }
+    _timer?.cancel();
     Get.offNamed(
       Routes.PAYMENT_ERROR,
       arguments: {
@@ -88,9 +86,7 @@ class PaymentController extends GetxController {
   }
 
   moveToSuccess() {
-    if (isTimerActive.value == true) {
-      timer.cancel();
-    }
+    _timer?.cancel();
     Get.offNamed(
       Routes.PAYMENT_SUCCESS,
       arguments: {
@@ -102,24 +98,24 @@ class PaymentController extends GetxController {
   }
 
   void moveToProcessing() {
-    if (isTimerActive.value == true) {
-      timer.cancel();
-    }
+    _timer?.cancel();
     Get.toNamed(
       Routes.PAYMENT_PROCESSING,
       arguments: {
+        'paroisse_selected': paroisseSelected.toJson(),
         'payment_type': paymentType.value,
       },
     );
   }
 
   doBack() async {
-    log('isTimerActive ::: ${isTimerActive.value}');
-    if (isTimerActive.value == true) {
-      timer.cancel();
-    }
+    _timer?.cancel();
     checkingPaymentStatus(true);
     Get.back();
+  }
+
+  bool _isExternalAppUrl(String url) {
+    return url.contains('wave.com') || url.startsWith('wave://');
   }
 
   initWebview() {
@@ -135,15 +131,11 @@ class PaymentController extends GetxController {
         onPageFinished: onPageFinished,
         onWebResourceError: onWebResourceError,
         onNavigationRequest: (navigation) {
-          log('onNavigationRequest URL ::: ${navigation.url}');
-          /*counter.value = counter.value + 1;
-          _handleInterceptedLink(navigation.url);
-          if (counter.value == 100) {
-            return NavigationDecision.navigate;
-          }*/
-          _handleInterceptedLink(navigation.url);
+          if (_isExternalAppUrl(navigation.url)) {
+            _handleInterceptedLink(navigation.url);
+            return NavigationDecision.prevent;
+          }
           return NavigationDecision.navigate;
-          //return NavigationDecision.prevent;
         },
       ),
     );
@@ -250,11 +242,11 @@ class PaymentController extends GetxController {
   }
 
   listenPaymentStatus() {
-    log('request listenPaymentStatus');
+    if (isTimerActive.value) {
+      return;
+    }
     isTimerActive(true);
-    timer = Timer.periodic(Duration(seconds: checkPaymentStatusInterval), (
-      timer,
-    ) {
+    _timer = Timer.periodic(Duration(seconds: checkPaymentStatusInterval), (_) {
       doGetPaymentStatus();
     });
   }
@@ -273,8 +265,6 @@ class PaymentController extends GetxController {
       transactionId = massRequestResponseSelected.value.transactionId ?? '';
     }
 
-    log('request doGetPaymentStatus :::');
-
     checkingPaymentStatus(true);
     paymentRepository
         .paymentStatus(
@@ -286,8 +276,7 @@ class PaymentController extends GetxController {
             if (value.paymentStatus == PaymentStatus.REFUSED.name ||
                 value.paymentStatus == PaymentStatus.FAILED.name) {
               checkingPaymentStatus(true);
-              paymentStatusMessage.value =
-                  'Le paiement a échoué. Veuillez réessayer svp !';
+              paymentStatusMessage.value = 'Le paiement a échoué. Veuillez réessayer svp !';
               moveToError();
               return;
             }
@@ -300,7 +289,6 @@ class PaymentController extends GetxController {
                 manualVerify.value = true;
               }
               checkingPaymentStatus(false);
-              //moveToProcessing();
               return;
             }
             if (value.paymentStatus == PaymentStatus.ACCEPTED.name ||
@@ -323,7 +311,7 @@ class PaymentController extends GetxController {
               return;
             }
 
-            checkingPaymentStatus(true);
+            checkingPaymentStatus(false);
             moveToProcessing();
           },
           onError: (error) {

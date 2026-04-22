@@ -1,8 +1,14 @@
 import 'package:get/get.dart';
+import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/enums.dart';
+import 'package:oremusapp/app/modules/donationhistory/controller/donation_history_controller.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
+import 'package:oremusapp/app/modules/massrequest/data/repository/mass_request_repository.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/controller/mass_request_history_controller.dart';
+import 'package:oremusapp/app/modules/massrequesthistory/data/repository/mass_request_history_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
+import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
+import 'package:oremusapp/app/remote/api_client.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
 class PaymentStatusController extends GetxController {
@@ -33,6 +39,7 @@ class PaymentStatusController extends GetxController {
     if (arguments.containsKey('payment_status_message')) {
       paymentStatusMessage.value = arguments['payment_status_message'];
     }
+    OremusLogger.debug('massRequestData 333 ::: ${paroisseSelected.toJson()}');
   }
 
   doRedirection() {
@@ -53,21 +60,30 @@ class PaymentStatusController extends GetxController {
     Get.offAllNamed(Routes.CUSTOM_HOME_NEW);
   }
 
-  moveToMassRequestHistory() async {
+  moveToMassRequestHistory() {
+    if (Get.isRegistered<MassRequestHistoryController>()) {
+      Get.find<MassRequestHistoryController>().refreshData();
+    }
+
     Get.offNamed(
       Routes.MASS_REQUEST_HISTORY,
-      arguments: paroisseSelected.toJson(),
+      arguments: {
+        'paroisse_selected': paroisseSelected.toJson(),
+        'can_go_to_home': true,
+      },
     );
-    var massRequestHistoryController = Get.find<MassRequestHistoryController>();
-    massRequestHistoryController.getMassRequests();
   }
 
   moveToDonationHistory() async {
+    if (Get.isRegistered<DonationHistoryController>()) {
+      Get.find<DonationHistoryController>().refreshData();
+    }
     Get.offNamed(
       Routes.DONATION_HISTORY,
-      arguments: paroisseSelected.toJson(),
+      arguments: {
+        'paroisse_selected': paroisseSelected.toJson(),
+        'can_go_to_home': true,
+      },
     );
-    var massRequestHistoryController = Get.find<MassRequestHistoryController>();
-    massRequestHistoryController.getMassRequests();
   }
 }

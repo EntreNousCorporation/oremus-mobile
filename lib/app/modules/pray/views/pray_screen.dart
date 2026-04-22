@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
-import 'package:oremusapp/app/commons/components/custom_header.dart';
 import 'package:oremusapp/app/commons/components/image_displayer.dart';
-import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
-import 'package:oremusapp/app/commons/components/not_found_page.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/pray/controller/pray_controller.dart';
 import 'package:oremusapp/app/modules/pray/views/custom_prayers_screen.dart';
 import 'package:oremusapp/app/modules/pray/views/mini_missel_screen.dart';
-import 'package:oremusapp/app/modules/pray/views/pray_item.dart';
 import 'package:oremusapp/generated/assets.dart';
-import 'package:pull_to_refresh_simple/pull_to_refresh_simple.dart';
 
 class PrayScreen extends StatelessWidget {
   const PrayScreen({Key? key}) : super(key: key);

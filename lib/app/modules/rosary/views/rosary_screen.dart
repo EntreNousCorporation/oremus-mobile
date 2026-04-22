@@ -514,7 +514,7 @@ class _RosaryScreenState extends State<RosaryScreen> {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         decoration: BoxDecoration(
-          color: Colors.grey[50],
+          color: colorGrey5,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.grey[200]!),
         ),

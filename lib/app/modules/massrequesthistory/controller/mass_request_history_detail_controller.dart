@@ -4,10 +4,12 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
+import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
+import 'package:oremusapp/app/modules/massrequesthistory/controller/history_mass_request_selectable.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/data/repository/mass_request_history_repository.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/views/widget/history_mass_date_dialog.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
@@ -16,7 +18,7 @@ import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_reposito
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
-class MassRequestHistoryDetailController extends GetxController {
+class MassRequestHistoryDetailController extends GetxController implements HistoryMassRequestSelectable {
   final MassRequestHistoryRepository massRequestHistoryRepository;
   final ParoisseRepository paroisseRepository;
 
@@ -32,9 +34,10 @@ class MassRequestHistoryDetailController extends GetxController {
   var hasError = false.obs;
   var isLiked = false.obs;
 
-  var paroisseSelected = ContentPlace().obs;
+  @override
   var massRequestSelected = MassRequestResponse().obs;
 
+  var paroisseSelected = ContentPlace().obs;
   RxList<MassRequestStatusData> massRequestStatuses = RxList<MassRequestStatusData>([]);
   RxList<MassRequestAvailablesStatusesData> availableStatuses = RxList<MassRequestAvailablesStatusesData>([]);
 
@@ -46,12 +49,46 @@ class MassRequestHistoryDetailController extends GetxController {
   }
 
   getArguments() {
-    if (Get.arguments != null) {
-      paroisseSelected.value = ContentPlace.fromJson(Get.arguments[0]);
-      massRequestSelected.value = MassRequestResponse.fromJson(Get.arguments[1]);
-      massRequestSelected.value.bookings?.sort((a, b) => a.day!.compareTo(b.day!));
-      log('massRequestSelected ::: ${jsonEncode(massRequestSelected.toJson())}');
+    if (Get.arguments == null) return;
+    Map arguments = Get.arguments;
+    if (arguments.containsKey('paroisse_selected') && arguments['paroisse_selected'] != null) {
+      paroisseSelected.value = ContentPlace.fromJson(arguments['paroisse_selected']);
+      if (paroisseSelected.value.identifier.toString().isNotEmpty) {
+        doGetWorshipDetails(paroisseSelected.value.identifier.toString());
+      }
     }
+    if (arguments.containsKey('mass_request_selected') && arguments['mass_request_selected'] != null) {
+      massRequestSelected.value = MassRequestResponse.fromJson(arguments['mass_request_selected']);
+    }
+  }
+
+  doGetWorshipDetails(String identifier) {
+    paroisseRepository
+        .getParoisseDetails(worshipId: paroisseSelected.value.identifier)
+        .then(
+          (value) {
+        paroisseSelected.value = value;
+        update();
+      },
+      onError: (error) {
+        var err = error as CustomException;
+        if (err.code.toString().contains('401')) {
+          showCustomDialog(
+            Get.context!,
+            message:
+            'Votre session a expiré\nVeuillez-vous reconnecter svp',
+          ).then((value) {
+            doLogout();
+          });
+        } else {
+          showNotification(
+            message:
+            'Erreur lors du chargement des données: ${err.code.toString()}',
+          );
+        }
+        debugPrint("error => ${error.toString()}");
+      },
+    );
   }
 
   moveToMassRequest(MassRequestResponse massRequestData) {
@@ -84,7 +121,7 @@ class MassRequestHistoryDetailController extends GetxController {
   }
 
   showMassHours() {
-    historyMassDateDialog();
+    historyMassDateDialog(this);
   }
 
   canClaimMassRequest() {
@@ -99,8 +136,6 @@ class MassRequestHistoryDetailController extends GetxController {
     isDataProcessing(true);
     hasData(false);
     hasError(false);
-
-    log('request doGetAllAvailablesStatuses ::: ${jsonEncode(request.toJson())}');
 
     massRequestHistoryRepository.getMassRequestsAvailablesStatuses(page: 0).then((value) {
       isDataProcessing(false);
@@ -205,12 +240,10 @@ class MassRequestHistoryDetailController extends GetxController {
   }
 
   saveFavorite(ContentPlace paroisse, bool state) {
-    log('saveFavorite 1 => ${paroisse.isFavorite}');
     paroisseRepository.addFavorite(paroisse);
   }
 
   removeFavorite(ContentPlace paroisse, bool state) {
-    log('removeFavorite 1 => ${paroisse.isFavorite}');
     paroisseRepository.deleteFavorite(paroisse);
   }
 }

@@ -13,7 +13,7 @@ class MassRequestMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: colorWhite,
+      color: colorGrey5,
       child: GetX<MassRequestMenuController>(builder: (controller) {
         return KeyboardDismisser(
           child: Column(

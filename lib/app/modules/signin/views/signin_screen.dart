@@ -219,7 +219,7 @@ class SigninScreen extends StatelessWidget {
                                                       labelText: 'E-mail',
                                                       prefixIcon: "assets/images/icon_enveloppe.svg",
                                                       prefixIconColor: colorGreen,
-                                                      //textFieldColor: Colors.grey[50],
+                                                      //textFieldColor: colorGrey5,
                                                       //borderRadius: 16,
                                                       keyboardType: TextInputType.emailAddress,
                                                       textCapitalization: TextCapitalization.none,
@@ -240,7 +240,7 @@ class SigninScreen extends StatelessWidget {
                                                       isPassword: true,
                                                       prefixIcon: 'assets/images/icon_password_profil.svg',
                                                       prefixIconColor: colorGreen,
-                                                      //textFieldColor: Colors.grey[50],
+                                                      //textFieldColor: colorGrey5,
                                                       //borderRadius: 16,
                                                       textCapitalization: TextCapitalization.none,
                                                       onChanged: (value) {

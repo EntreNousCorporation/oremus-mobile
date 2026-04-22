@@ -48,7 +48,7 @@ class OtpField extends StatelessWidget {
                   fieldHeight: 55,
                   fieldWidth: 50,
                   activeFillColor: Colors.white,
-                  inactiveFillColor: Colors.grey[50],
+                  inactiveFillColor: colorGrey5,
                   selectedFillColor: colorGreen.withOpacity(0.05),
                   inactiveColor: Colors.grey[300]!,
                   activeColor: colorGreen,

@@ -30,7 +30,7 @@ class LifePlanScreen extends StatelessWidget {
           return DefaultTabController(
             length: 2,
             child: Scaffold(
-              backgroundColor: Colors.grey[50],
+              backgroundColor: colorGrey5,
               body: Column(
                 children: [
                   BackgroundOperationsIndicator(controller: controller),
@@ -102,7 +102,7 @@ class LifePlanScreen extends StatelessWidget {
   // Widget affiché quand l'authentification est requise
   Widget _buildAuthenticationRequired(LifePlanController controller) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: colorGrey5,
       body: SizedBox(
         width: double.infinity,
         child: Column(

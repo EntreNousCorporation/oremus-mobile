@@ -128,22 +128,14 @@ class CustomHomeScreen extends StatelessWidget {
                                     AppConstants.HOME),
                             child:
                                 GetBuilder<CustomHomeController>(builder: (logic) {
-                              return Bounce(
-                                key: logic.basicIconAnimation,
-                                preferences: AnimationPreferences(
-                                  offset: const Duration(seconds: 3),
-                                  autoPlay: logic.applyAnimation(),
-                                  magnitude: 0.3,
-                                ),
-                                child: IconButton(
-                                  onPressed: () {
-                                    logic.goToFavorites();
-                                  },
-                                  icon: const Icon(
-                                    Icons.favorite_border_outlined,
-                                    color: colorWhite,
-                                    size: 25,
-                                  ),
+                              return IconButton(
+                                onPressed: () {
+                                  logic.goToFavorites();
+                                },
+                                icon: const Icon(
+                                  Icons.favorite_border_outlined,
+                                  color: colorWhite,
+                                  size: 25,
                                 ),
                               );
                             }),

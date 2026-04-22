@@ -6,13 +6,17 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
+import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/donation/data/model/donation_response.dart' hide PrayerIntentData, PriceData;
+import 'package:oremusapp/app/modules/massrequest/controller/payment_method_selectable.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart' hide TypeData, MassTypeRepetitionData;
 import 'package:oremusapp/app/modules/massrequest/data/repository/mass_request_repository.dart';
+import 'package:oremusapp/app/modules/massrequesthistory/controller/history_mass_request_selectable.dart';
+import 'package:oremusapp/app/modules/massrequesthistory/views/widget/history_mass_date_dialog.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/payment/data/model/payment_status_data.dart';
@@ -20,7 +24,7 @@ import 'package:oremusapp/app/modules/payment/data/repository/payment_repository
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
-class MassRequestRecapController extends GetxController {
+class MassRequestRecapController extends GetxController implements PaymentMethodSelectable, HistoryMassRequestSelectable {
   final PaymentRepository paymentRepository;
   final MassRequestRepository massRequestRepository;
 
@@ -30,10 +34,14 @@ class MassRequestRecapController extends GetxController {
   });
 
   var unlockBackButton = true.obs;
-  RxList<PaymentMethodData> paymentMethods = RxList<PaymentMethodData>([]);
-  Rx<PaymentMethodData?> paymentMethodSelected = Rx<PaymentMethodData?>(null);
+
+  @override
+  final RxList<PaymentMethodData> paymentMethods = <PaymentMethodData>[].obs;
+
+  @override
+  final Rx<PaymentMethodData?> paymentMethodSelected = Rx(null);
+
   var paroisseSelected = ContentPlace().obs;
-  var massRequestSelected = MassRequestResponse().obs;
   Rx<String?> prayerIntentSelected = Rx<String?>(null);
   Rx<String?> price = Rx<String?>(null);
   RxList<PriceData?> datesChoosen = RxList<PriceData?>([]);
@@ -48,7 +56,11 @@ class MassRequestRecapController extends GetxController {
   var isValidForm = false.obs;
   var phoneCode = '+225';
   var useOtherNumber = false.obs;
+  var enableUseOtherNumberSwitch = true.obs;
   var ciNumberLength = 10;
+
+  @override
+  var massRequestSelected = MassRequestResponse().obs;
 
   @override
   void onInit() {
@@ -76,7 +88,7 @@ class MassRequestRecapController extends GetxController {
       massRequestTypeSelected.value = TypeData.fromJson(arguments['typeOfMassRequest']);
     }
     if (arguments.containsKey('slots') && arguments['slots'] != null) {
-      datesChoosen.value = arguments['slots'];
+      datesChoosen.value = (arguments['slots']).whereType<PriceData>().toList();
     }
     if (arguments.containsKey('price') && arguments['price'] != null) {
       price.value = arguments['price'];
@@ -86,16 +98,27 @@ class MassRequestRecapController extends GetxController {
     }
     if (arguments.containsKey('selectedDate') && arguments['selectedDate'] != null) {
       selectedDate.value = PriceData.fromJson(arguments['selectedDate']);
+      OremusLogger.debug('selectedDate ::: ${selectedDate.toJson()}');
     }
     if (arguments.containsKey('selectedHour') && arguments['selectedHour'] != null) {
       selectedHour.value = Slot.fromJson(arguments['selectedHour']);
+      OremusLogger.debug('selectedHour ::: ${selectedHour.toJson()}');
     }
+    OremusLogger.debug('massRequestData 444 ::: ${paroisseSelected.toJson()}');
+  }
+
+  showMassHours() {
+    final bookings = datesChoosen.value.whereType<PriceData>().toList();
+    var mr = MassRequestResponse(bookings: bookings);
+    massRequestSelected.value = mr;
+    historyMassDateDialog(this);
   }
 
   moveToPayment(MassRequestResponse massRequestResponse) {
     Get.toNamed(
       Routes.PAYMENT,
       arguments: {
+        'paroisse_selected': paroisseSelected.toJson(),
         'payment_response': massRequestResponse.toJson(),
         'payment_type': PaymentType.massRequest,
       },
@@ -138,7 +161,6 @@ class MassRequestRecapController extends GetxController {
   doGetPaymentMethod() {
     hideKeyboard();
 
-    log('request doGetPaymentMethod');
     paymentRepository.getPaymentMethods().then((value) {
         if (value.isNotEmpty == true) {
           paymentMethods.value = value;
@@ -162,11 +184,24 @@ class MassRequestRecapController extends GetxController {
     );
   }
 
-
+  @override
   void checkForm() {
     isValidForm.value = phoneNumberController.text.isNotEmpty && phoneNumberController.text.replaceAll(RegExp(r'\s'), '').length == ciNumberLength && paymentMethodSelected.value != null;
     update();
   }
+
+  @override
+  onPaymentMethodSelected(PaymentMethodData pmd) {
+    if (pmd.code?.toUpperCase().contains('WAVE') == true) {
+      useOtherNumber.value = false;
+      enableUseOtherNumberSwitch.value = false;
+      phoneNumberController.text = getUserPhoneNumber();
+    } else {
+      enableUseOtherNumberSwitch.value = true;
+    }
+    paymentMethodSelected.value = pmd;
+  }
+
 
   doSendMassRequest({bool? forceDuplicateCreation}) {
     hideKeyboard();

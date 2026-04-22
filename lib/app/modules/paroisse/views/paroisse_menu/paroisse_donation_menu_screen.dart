@@ -35,7 +35,6 @@ class ParoisseDonationMenuScreen extends StatelessWidget {
               child: CustomScrollView(
                 physics: const BouncingScrollPhysics(),
                 slivers: [
-                  // En-tête extensible avec image de couverture
                   SliverAppBar(
                     expandedHeight: AppConstants.kExpandedHeight,
                     collapsedHeight: 100,
@@ -93,6 +92,7 @@ class ParoisseDonationMenuScreen extends StatelessWidget {
                       // Bouton favoris
                       Container(
                         margin: const EdgeInsets.only(top: 8),
+                        padding: const EdgeInsets.only(left: 5, right: 2),
                         decoration: BoxDecoration(
                           color: Colors.black.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),

@@ -25,11 +25,11 @@ class DonationHistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey[50],
+      color: colorGrey5,
       child: GetX<DonationHistoryController>(builder: (controller) {
         return KeyboardDismisser(
           child: Scaffold(
-            backgroundColor: Colors.grey[50],
+            backgroundColor: colorGrey5,
             resizeToAvoidBottomInset: true,
             body: NotificationListener<OverscrollIndicatorNotification>(
               onNotification: (notification) {
@@ -63,7 +63,7 @@ class DonationHistoryScreen extends StatelessWidget {
                       ),
                       child: IconButton(
                         onPressed: () {
-                          Get.back();
+                          controller.goToBack();
                         },
                         icon: const Icon(
                           Icons.arrow_back_rounded,
@@ -79,6 +79,7 @@ class DonationHistoryScreen extends StatelessWidget {
                       // Favorites button
                       Container(
                         margin: const EdgeInsets.only(top: 8),
+                        padding: const EdgeInsets.only(left: 5, right: 2),
                         decoration: BoxDecoration(
                           color: Colors.black.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),

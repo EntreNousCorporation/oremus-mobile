@@ -11,8 +11,7 @@ class MapViewGoogle extends StatelessWidget {
     return GetX<ParoisseMapController>(builder: (controller) {
       return GoogleMap(
         initialCameraPosition: CameraPosition(
-          target: LatLng(controller.paroisseSelected.value.localisation?.latitude ?? 0.0,
-              controller.paroisseSelected.value.localisation?.longitude ?? 0.0),
+          target: LatLng(controller.paroisseSelected.value.localisation?.latitude ?? 0.0, controller.paroisseSelected.value.localisation?.longitude ?? 0.0),
           zoom: 17.4746,
         ),
         zoomControlsEnabled: false,

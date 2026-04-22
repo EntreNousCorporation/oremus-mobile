@@ -1,29 +1,19 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_input_formatter/custom_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
-import 'package:like_button/like_button.dart';
 import 'package:oremusapp/app/commons/components/button.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
-import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/filter_mass_request_date_controller.dart';
-import 'package:oremusapp/app/modules/massrequest/controller/mass_request_controller.dart';
 import 'package:oremusapp/app/modules/massrequest/controller/mass_request_recap_controller.dart';
 import 'package:oremusapp/app/modules/massrequest/views/widget/info_section.dart';
-import 'package:oremusapp/app/modules/massrequest/views/widget/intent_type_description_widget.dart';
-import 'package:oremusapp/app/modules/massrequest/views/widget/mass_hour_filter.dart';
-import 'package:oremusapp/app/modules/massrequest/views/widget/mass_repetition_filter.dart';
-import 'package:oremusapp/app/modules/massrequest/views/widget/mass_type_filter.dart';
 import 'package:oremusapp/app/modules/massrequest/views/widget/payment_method_filter.dart';
-import 'package:oremusapp/app/modules/massrequest/views/widget/shimmer_price.dart';
 import 'package:oremusapp/generated/assets.dart';
 
 class MassRequestRecapScreen extends StatelessWidget {
@@ -291,11 +281,9 @@ class MassRequestRecapScreen extends StatelessWidget {
                                       ),
                                       child: Column(
                                         children: [
-                                          // Séparateur
-                                          _buildDivider(),
                                           GestureDetector(
                                             onTap: () {
-                                              //controller.showMassHours();
+                                              controller.showMassHours();
                                             },
                                             child: Container(
                                               width: double.infinity,
@@ -348,7 +336,7 @@ class MassRequestRecapScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 24),
 
-                          const PaymentMethodFilter(),
+                          PaymentMethodFilter(controller: controller),
                           const SizedBox(height: 24),
                           Material(
                             borderRadius: BorderRadius.circular(10.0),
@@ -413,15 +401,15 @@ class MassRequestRecapScreen extends StatelessWidget {
                             children: [
                               Switch(
                                 value: controller.useOtherNumber.value,
-                                onChanged: (value) {
+                                onChanged: controller.enableUseOtherNumberSwitch.value ? (value) {
                                   controller.toggleUseOtherNumber();
-                                },
+                                } : null,
                               ),
                               Text(
                                 'Utiliser un autre numéro',
                                 style: TextStyles.montserratSemiBold(
                                   textSize: TextSizes.fourteen,
-                                  textColor: colorGreen,
+                                  textColor: controller.enableUseOtherNumberSwitch.value ? colorGreen: colorGreySeparator,
                                 ),
                               ),
                             ],

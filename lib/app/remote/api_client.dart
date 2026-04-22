@@ -96,9 +96,6 @@ class ApiClientImpl implements ApiClient {
             break;
         }
 
-        log("statusCode $endpoint => ${response?.statusCode}");
-        log("body => ${response?.data}");
-
         resp = _response(response);
         return resp;
       } on DioException catch (e) {

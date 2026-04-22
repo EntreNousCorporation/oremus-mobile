@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 const Color colorBase = Color(0x0ff2f7d5);
 const Color colorGreen = Color(0xFF00BA40);
+const Color colorGrey1 = Color(0xFF9095A1);
+const Color colorGrey2 = Color(0xFFEDF0F0);
 const Color colorGrey3 = Color(0xFFf8f8f8);
 const Color colorGrey4 = Color(0xFFFEFEFE);
-const Color colorGrey2 = Color(0xFFEDF0F0);
-const Color colorGrey1 = Color(0xFF9095A1);
+const Color colorGrey5 = Color(0xFFFAFAFA);
 const Color colorGreyDrawer = Color(0xFFa1a6b0);
 const Color colorRed = Color(0xFFe93322);
 const Color colorRed1 = Color(0xFFC00000);

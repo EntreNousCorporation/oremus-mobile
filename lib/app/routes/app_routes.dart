@@ -62,6 +62,7 @@ abstract class Routes {
   static const FILTER_DONATION_CHOOSE_WORSHIP = '/filter-donation-choose-worship';
   static const DONATION_WITHOUT_WORSHIP = '/donation-without-worship';
   static const DONATION_MENU = '/donation-menu';
+  static const DONATION_RECAP = '/donation-recap';
 
   //PAYMENT
   static const PAYMENT = '/payment';

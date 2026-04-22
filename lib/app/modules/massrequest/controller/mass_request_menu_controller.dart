@@ -119,7 +119,7 @@ class MassRequestMenuController extends GetxController {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: colorBlack.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, -2),
             ),
@@ -152,7 +152,7 @@ class MassRequestMenuController extends GetxController {
               Icon(
                 Icons.lock_outline_rounded,
                 size: 48,
-                color: colorGreen.withOpacity(0.8),
+                color: colorGreen.withValues(alpha: 0.8),
               ),
               Expanded(
                 child: Column(
@@ -187,7 +187,7 @@ class MassRequestMenuController extends GetxController {
                       style: TextButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(color: colorGreen.withOpacity(0.7), width: 1),
+                          side: BorderSide(color: colorGreen.withValues(alpha: 0.7), width: 1),
                         ),
                       ),
                       onPressed: Get.back,
@@ -209,7 +209,7 @@ class MassRequestMenuController extends GetxController {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: colorGreen,
                         elevation: 2,
-                        shadowColor: colorGreen.withOpacity(0.5),
+                        shadowColor: colorGreen.withValues(alpha: 0.5),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -278,7 +278,9 @@ class MassRequestMenuController extends GetxController {
   moveToMassRequestHistory() async {
     await Get.toNamed(
       Routes.MASS_REQUEST_HISTORY,
-      arguments: paroisseSelected.toJson(),
+      arguments: {
+        'paroisse_selected': paroisseSelected.toJson(),
+      },
     );
   }
 

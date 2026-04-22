@@ -15,9 +15,7 @@ import 'package:oremusapp/main.dart';
 class ParoisseMassRequestMenuController extends GetxController {
   final ParoisseRepository paroisseRepository;
 
-  ParoisseMassRequestMenuController({
-    required this.paroisseRepository,
-  });
+  ParoisseMassRequestMenuController({required this.paroisseRepository});
 
   var paroisseSelected = ContentPlace().obs;
 
@@ -37,84 +35,90 @@ class ParoisseMassRequestMenuController extends GetxController {
   }
 
   initMenus() {
-    menus.value = [
-      TypeMenu(
-        code: 'FDM',
-        title: 'Faire une demande',
-        icon: Assets.imagesMesse,
-        isPngImage: false,
-        activeTint: colorGreenSemiLight,
-        bgColor: colorGreenLight,
-        goToPage: () async {
-          if (isUserConnected.value == false) {
-            checkIfUserIsconnected('FDM');
-            return;
-          }
-          moveToMassRequest();
-          //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite =
-              isWorshipPlaceFavorite(paroisseSelected.value);
-          paroisseSelected.refresh();
-        },
-      ),
-      TypeMenu(
-        code: 'MH',
-        title: 'Mes historiques de demande',
-        icon: Assets.imagesTime,
-        isPngImage: false,
-        activeTint: colorPurpleLight2,
-        bgColor: colorPurpleLight1,
-        goToPage: () async {
-          if (isUserConnected.value == false) {
-            checkIfUserIsconnected('MH');
-            return;
-          }
-          moveToMassRequestHistory();
-          //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
-          paroisseSelected.refresh();
-        },
-      ),
-      TypeMenu(
-        code: 'FR',
-        title: 'Faire une réclamation',
-        icon: Assets.imagesEvent,
-        isPngImage: false,
-        activeTint: colorOrangeLight3,
-        bgColor: colorOrangeLight1,
-        isVisible: false,
-        goToPage: () async {
-          if (isUserConnected.value == false) {
-            checkIfUserIsconnected('FR');
-            return;
-          }
-          moveToMassRequestClaims();
-          //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite =
-              isWorshipPlaceFavorite(paroisseSelected.value);
-          paroisseSelected.refresh();
-        },
-      ),
-      TypeMenu(
-        code: 'SR',
-        title: 'Suivi de réclamation',
-        icon: Assets.imagesChecklist,
-        isPngImage: false,
-        activeTint: colorOrangeLight4,
-        bgColor: colorOrangeLight2,
-        goToPage: () async {
-          if (isUserConnected.value == false) {
-            checkIfUserIsconnected('SR');
-            return;
-          }
-          moveToMassRequestTrackClaims();
-          //on met à jour la liste au cas où favoris mis à jour
-          paroisseSelected.value.isFavorite =
-              isWorshipPlaceFavorite(paroisseSelected.value);
-          paroisseSelected.refresh();
-        },
-      ),
-    ].where((element) => element.isVisible == true).toList();
+    menus.value =
+        [
+          TypeMenu(
+            code: 'FDM',
+            title: 'Faire une demande',
+            icon: Assets.imagesMesse,
+            isPngImage: false,
+            activeTint: colorGreenSemiLight,
+            bgColor: colorGreenLight,
+            goToPage: () async {
+              if (isUserConnected.value == false) {
+                checkIfUserIsconnected('FDM');
+                return;
+              }
+              moveToMassRequest();
+              //on met à jour la liste au cas où favoris mis à jour
+              paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(
+                paroisseSelected.value,
+              );
+              paroisseSelected.refresh();
+            },
+          ),
+          TypeMenu(
+            code: 'MH',
+            title: 'Mes historiques de demande',
+            icon: Assets.imagesTime,
+            isPngImage: false,
+            activeTint: colorPurpleLight2,
+            bgColor: colorPurpleLight1,
+            goToPage: () async {
+              if (isUserConnected.value == false) {
+                checkIfUserIsconnected('MH');
+                return;
+              }
+              moveToMassRequestHistory();
+              //on met à jour la liste au cas où favoris mis à jour
+              paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(
+                paroisseSelected.value,
+              );
+              paroisseSelected.refresh();
+            },
+          ),
+          TypeMenu(
+            code: 'FR',
+            title: 'Faire une réclamation',
+            icon: Assets.imagesEvent,
+            isPngImage: false,
+            activeTint: colorOrangeLight3,
+            bgColor: colorOrangeLight1,
+            isVisible: false,
+            goToPage: () async {
+              if (isUserConnected.value == false) {
+                checkIfUserIsconnected('FR');
+                return;
+              }
+              moveToMassRequestClaims();
+              //on met à jour la liste au cas où favoris mis à jour
+              paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(
+                paroisseSelected.value,
+              );
+              paroisseSelected.refresh();
+            },
+          ),
+          TypeMenu(
+            code: 'SR',
+            title: 'Suivi de réclamation',
+            icon: Assets.imagesChecklist,
+            isPngImage: false,
+            activeTint: colorOrangeLight4,
+            bgColor: colorOrangeLight2,
+            goToPage: () async {
+              if (isUserConnected.value == false) {
+                checkIfUserIsconnected('SR');
+                return;
+              }
+              moveToMassRequestTrackClaims();
+              //on met à jour la liste au cas où favoris mis à jour
+              paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(
+                paroisseSelected.value,
+              );
+              paroisseSelected.refresh();
+            },
+          ),
+        ].where((element) => element.isVisible == true).toList();
   }
 
   goToReportProblem() {
@@ -204,7 +208,10 @@ class ParoisseMassRequestMenuController extends GetxController {
                       style: TextButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(color: colorGreen.withOpacity(0.7), width: 1),
+                          side: BorderSide(
+                            color: colorGreen.withOpacity(0.7),
+                            width: 1,
+                          ),
                         ),
                       ),
                       onPressed: Get.back,
@@ -251,10 +258,7 @@ class ParoisseMassRequestMenuController extends GetxController {
   }
 
   moveToLogin(String code) async {
-    var result = await Get.toNamed(
-      Routes.SIGNIN,
-      arguments: true,
-    );
+    var result = await Get.toNamed(Routes.SIGNIN, arguments: true);
     if (result == true) {
       log('back moveToLogin');
       switch (code) {
@@ -277,36 +281,36 @@ class ParoisseMassRequestMenuController extends GetxController {
   moveToMassRequest() async {
     await Get.toNamed(
       Routes.MASS_REQUEST,
-      arguments: [
-        paroisseSelected.toJson(),
-        null,
-      ],
+      arguments: [paroisseSelected.toJson(), null],
     );
     //on met à jour la liste au cas où favoris mis à jour
-    paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+    paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(
+      paroisseSelected.value,
+    );
     paroisseSelected.refresh();
   }
 
   moveToMassRequestHistory() async {
     await Get.toNamed(
       Routes.MASS_REQUEST_HISTORY,
-      arguments: paroisseSelected.toJson(),
+      arguments: {'paroisse_selected': paroisseSelected.toJson()},
     );
     //on met à jour la liste au cas où favoris mis à jour
-    paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+    paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(
+      paroisseSelected.value,
+    );
     paroisseSelected.refresh();
   }
 
   moveToMassRequestClaims() async {
     await Get.toNamed(
       Routes.MASS_REQUEST_CLAIM,
-      arguments: [
-        paroisseSelected.toJson(),
-        null,
-      ],
+      arguments: [paroisseSelected.toJson(), null],
     );
     //on met à jour la liste au cas où favoris mis à jour
-    paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+    paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(
+      paroisseSelected.value,
+    );
     paroisseSelected.refresh();
   }
 
@@ -316,7 +320,9 @@ class ParoisseMassRequestMenuController extends GetxController {
       arguments: paroisseSelected.toJson(),
     );
     //on met à jour la liste au cas où favoris mis à jour
-    paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);
+    paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(
+      paroisseSelected.value,
+    );
     paroisseSelected.refresh();
   }
 
@@ -328,8 +334,9 @@ class ParoisseMassRequestMenuController extends GetxController {
   bool isWorshipPlaceFavorite(ContentPlace paroisse) {
     var isFavorite = false;
     var favorites = paroisseRepository.getAllFavorites();
-    var hasParoisse = favorites
-        .indexWhere((element) => element.identifier == paroisse.identifier);
+    var hasParoisse = favorites.indexWhere(
+      (element) => element.identifier == paroisse.identifier,
+    );
     if (hasParoisse != -1) {
       isFavorite = true;
     } else {
@@ -339,10 +346,7 @@ class ParoisseMassRequestMenuController extends GetxController {
   }
 
   goToMap() {
-    Get.toNamed(
-      Routes.PAROISSE_MAP,
-      arguments: paroisseSelected.toJson(),
-    );
+    Get.toNamed(Routes.PAROISSE_MAP, arguments: paroisseSelected.toJson());
   }
 
   saveFavorite(ContentPlace paroisse, bool state) {

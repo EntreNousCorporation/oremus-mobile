@@ -76,6 +76,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                       // Bouton favoris
                       Container(
                         margin: const EdgeInsets.only(top: 8),
+                        padding: const EdgeInsets.only(left: 5, right: 2),
                         decoration: BoxDecoration(
                           color: Colors.black.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),
@@ -376,7 +377,7 @@ class MassRequestHistoryDetailScreen extends StatelessWidget {
                                         width: double.infinity,
                                         padding: const EdgeInsets.all(16),
                                         decoration: BoxDecoration(
-                                          color: Colors.grey[50],
+                                          color: colorGrey5,
                                           borderRadius: BorderRadius.circular(12),
                                           border: Border.all(
                                             color: colorGreen.withValues(alpha: 0.2),

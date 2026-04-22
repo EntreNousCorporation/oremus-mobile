@@ -24,7 +24,7 @@ class DonationDescriptionWidget extends StatelessWidget {
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(16),
           filled: true,
-          fillColor: Colors.grey[50],
+          fillColor: colorGrey5,
           hintText: 'Partagez l\'intention de votre don...',
           hintStyle: TextStyles.montserratItalic(
             textColor: Colors.grey[500]!,

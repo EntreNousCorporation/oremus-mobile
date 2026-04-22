@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:like_button/like_button.dart';
 import 'package:oremusapp/app/commons/components/image_displayer.dart';
-import 'package:oremusapp/app/commons/components/loader_widget.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
@@ -96,6 +95,7 @@ class ParoisseMenuScreen extends StatelessWidget {
                         // Bouton favoris
                         Container(
                           margin: const EdgeInsets.only(top: 8),
+                          padding: const EdgeInsets.only(left: 5, right: 2),
                           decoration: BoxDecoration(
                             color: Colors.black.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(12),
@@ -324,7 +324,6 @@ class ParoisseMenuScreen extends StatelessWidget {
     );
   }
 
-  // Widget d'élément de menu amélioré
   Widget _buildEnhancedMenuItem(TypeMenu item) {
     return Container(
       decoration: BoxDecoration(

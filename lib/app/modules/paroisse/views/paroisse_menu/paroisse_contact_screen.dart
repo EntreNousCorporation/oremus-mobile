@@ -94,6 +94,7 @@ class ParoisseContactScreen extends StatelessWidget {
                         // Bouton favoris
                         Container(
                           margin: const EdgeInsets.only(top: 8),
+                          padding: const EdgeInsets.only(left: 5, right: 2),
                           decoration: BoxDecoration(
                             color: Colors.black.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(12),
@@ -319,7 +320,6 @@ class ParoisseContactScreen extends StatelessWidget {
     );
   }
 
-  // État vide amélioré
   Widget _buildEmptyState(String message) {
     return Padding(
       padding: const EdgeInsets.all(20),

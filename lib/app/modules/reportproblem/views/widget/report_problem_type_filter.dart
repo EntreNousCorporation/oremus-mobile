@@ -14,7 +14,7 @@ class ReportProblemTypeFilter extends StatelessWidget {
     return GetBuilder<ReportProblemController>(builder: (logic) {
       return Container(
         decoration: BoxDecoration(
-          color: Colors.grey[50],
+          color: colorGrey5,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: logic.reportProblemTypeSelected.value != null

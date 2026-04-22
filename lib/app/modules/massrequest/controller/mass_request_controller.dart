@@ -3,11 +3,9 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
-import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
@@ -815,9 +813,9 @@ class MassRequestController extends GetxController {
 
     // Calculer combien de jours ajouter pour atteindre le jour cible
     int daysToAdd = targetWeekday - date.weekday;
-    if (daysToAdd < 0)
-      daysToAdd +=
-          7; // Si le jour cible est avant aujourd'hui, passer à la semaine suivante
+    if (daysToAdd < 0) {
+      daysToAdd += 7; // Si le jour cible est avant aujourd'hui, passer à la semaine suivante
+    }
 
     result = result.add(Duration(days: daysToAdd));
     return result;

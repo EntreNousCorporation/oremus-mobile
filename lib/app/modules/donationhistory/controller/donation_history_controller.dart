@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -41,64 +38,88 @@ class DonationHistoryController extends GetxController {
   var refreshController = RefreshController();
   late TextEditingController searchController;
   var searchCriteria = SearchCriteria().obs;
-  var page = 0.obs;
+  final _page = 0.obs;
 
   var unlockBackButton = true.obs;
 
   var isDataProcessing = false.obs;
   var hasData = false.obs;
-  var isLiked = false.obs;
 
   var paroisseSelected = ContentPlace().obs;
 
-  var selectedDate = Rx<DateTimeRange>(DateTimeRange(start: DateTime.now(), end: DateTime.now()));
-  var datesRange = ''.obs;
-  var startDate = ''.obs;
-  var endDate = ''.obs;
-  var startDateApi = ''.obs;
-  var endDateApi = ''.obs;
+  final _selectedDate = Rx<DateTimeRange>(DateTimeRange(start: DateTime.now(), end: DateTime.now()));
+  final _datesRange = ''.obs;
+  final _startDate = ''.obs;
+  final _endDate = ''.obs;
+  final _startDateApi = ''.obs;
+  final _endDateApi = ''.obs;
+
+  final _canGoToHome = false.obs;
 
   @override
   void onInit() {
-    getArguments();
-    initController();
+    _getArguments();
+    _initController();
     super.onInit();
   }
 
   @override
   void onReady() {
-    initCriteria();
+    _initCriteria();
     super.onReady();
   }
 
-  getArguments() {
-    if (Get.arguments != null) {
-      paroisseSelected.value = ContentPlace.fromJson(Get.arguments);
+  _getArguments() {
+    if (Get.arguments == null) return;
+    Map arguments = Get.arguments;
+    if (arguments.containsKey('paroisse_selected') && arguments['paroisse_selected'] != null) {
+      paroisseSelected.value = ContentPlace.fromJson(arguments['paroisse_selected']);
+    }
+    if (arguments.containsKey('can_go_to_home') && arguments['can_go_to_home'] != null) {
+      _canGoToHome.value = arguments['can_go_to_home'];
     }
   }
 
-  initController() {
+  refreshData() {
+    _getArguments();
+    _initCriteria();
+  }
+
+  _initController() {
     searchController = TextEditingController(text: '');
   }
 
-  canRedoPayment(DonationResponse? donationSelected) {
-    return donationSelected?.status?.code == 'REQUEST_INITIATED';
+  goToBack() {
+    if (_canGoToHome.value) {
+      goToHome();
+    } else {
+      Get.back();
+    }
   }
 
-  initCriteria() {
-    startDate.value = Jiffy.now()
+  goToHome() {
+    Get.offAllNamed(Routes.CUSTOM_HOME_NEW);
+  }
+
+  canRedoPayment(DonationResponse? donationSelected) {
+    bool isValidTime = Jiffy.now().diff(Jiffy.parse(donationSelected?.createdAt ?? '', pattern: AppConstants.TIME_ZONE_FORMAT), unit: Unit.day) < 1;
+    return donationSelected?.status?.code == 'DONATION_INITIATED' && isValidTime;
+  }
+
+  _initCriteria() {
+    _startDate.value = Jiffy.now()
         .subtract(days: 6)
         .format(pattern: AppConstants.TIME_SIMPLE_FORMAT);
-    endDate.value =
+    _endDate.value =
         Jiffy.now().format(pattern: AppConstants.TIME_SIMPLE_FORMAT);
-    startDateApi.value = Jiffy.now()
+    _startDateApi.value = Jiffy.now()
         .subtract(days: 6)
         .format(pattern: '${AppConstants.TIME_SIMPLE_FORMA1}T00:00:00.988[Z]');
-    endDateApi.value = Jiffy.now()
+    _endDateApi.value = Jiffy.now()
         .format(pattern: '${AppConstants.TIME_SIMPLE_FORMA1}T23:59:59.988[Z]');
-    datesRange.value = '${startDate.value} - ${endDate.value}';
-    searchController.text = datesRange.value;
-    selectedDate.value = DateTimeRange(
+    _datesRange.value = '${_startDate.value} - ${_endDate.value}';
+    searchController.text = _datesRange.value;
+    _selectedDate.value = DateTimeRange(
         start: Jiffy.now().subtract(days: 6).dateTime,
         end: Jiffy.now().dateTime);
     getDonations();
@@ -107,10 +128,10 @@ class DonationHistoryController extends GetxController {
   showRangeDatePickerBack() async {
     final DateTimeRange? selected = await showDateRangePicker(
       context: Get.context!,
-      initialDateRange: selectedDate.value,
+      initialDateRange: _selectedDate.value,
       saveText: 'Valider',
       locale: const Locale('fr'),
-      currentDate: selectedDate.value.start,
+      currentDate: _selectedDate.value.start,
       firstDate: DateTime(2023),
       lastDate: DateTime.now(),
       cancelText: 'Annuler',
@@ -146,38 +167,38 @@ class DonationHistoryController extends GetxController {
       },
     );
     if (selected != null) {
-      selectedDate.value = selected;
+      _selectedDate.value = selected;
 
       //For startDate
-      String startDay = selectedDate.value.start.day.toString();
-      String startMonth = selectedDate.value.start.month.toString();
-      if (selectedDate.value.start.day < 10) {
+      String startDay = _selectedDate.value.start.day.toString();
+      String startMonth = _selectedDate.value.start.month.toString();
+      if (_selectedDate.value.start.day < 10) {
         startDay = "0$startDay";
       }
-      if (selectedDate.value.start.month < 10) {
+      if (_selectedDate.value.start.month < 10) {
         startMonth = "0$startMonth";
       }
 
       //For endDate
-      String endDay = selectedDate.value.end.day.toString();
-      String endMonth = selectedDate.value.end.month.toString();
-      if (selectedDate.value.end.day < 10) {
+      String endDay = _selectedDate.value.end.day.toString();
+      String endMonth = _selectedDate.value.end.month.toString();
+      if (_selectedDate.value.end.day < 10) {
         endDay = "0$endDay";
       }
-      if (selectedDate.value.end.month < 10) {
+      if (_selectedDate.value.end.month < 10) {
         endMonth = "0$endMonth";
       }
 
       //For result
-      startDateApi.value =
-          "${selectedDate.value.start.year}-$startMonth-$startDay${'T00:00:00.988Z'}";
-      endDateApi.value =
-          "${selectedDate.value.end.year}-$endMonth-$endDay${'T23:59:59.988Z'}";
-      startDate.value =
-          "$startDay/$startMonth/${selectedDate.value.start.year}";
-      endDate.value = "$endDay/$endMonth/${selectedDate.value.end.year}";
-      datesRange.value = '${startDate.value} - ${endDate.value}';
-      searchController.text = datesRange.value;
+      _startDateApi.value =
+          "${_selectedDate.value.start.year}-$startMonth-$startDay${'T00:00:00.988Z'}";
+      _endDateApi.value =
+          "${_selectedDate.value.end.year}-$endMonth-$endDay${'T23:59:59.988Z'}";
+      _startDate.value =
+          "$startDay/$startMonth/${_selectedDate.value.start.year}";
+      _endDate.value = "$endDay/$endMonth/${_selectedDate.value.end.year}";
+      _datesRange.value = '${_startDate.value} - ${_endDate.value}';
+      searchController.text = _datesRange.value;
       getDonations();
     }
   }
@@ -187,10 +208,10 @@ class DonationHistoryController extends GetxController {
 
     final DateTimeRange? selected = await showDateRangePicker(
       context: Get.context!,
-      initialDateRange: selectedDate.value,
+      initialDateRange: _selectedDate.value,
       saveText: 'Valider',
       locale: const Locale('fr'),
-      currentDate: selectedDate.value.start,
+      currentDate: _selectedDate.value.start,
       firstDate: DateTime(2023),
       lastDate: DateTime.now(),
       cancelText: 'Annuler',
@@ -325,19 +346,19 @@ class DonationHistoryController extends GetxController {
     );
 
     if (selected != null) {
-      selectedDate.value = selected;
+      _selectedDate.value = selected;
 
       String startDay = selected.start.day.toString().padLeft(2, '0');
       String startMonth = selected.start.month.toString().padLeft(2, '0');
       String endDay = selected.end.day.toString().padLeft(2, '0');
       String endMonth = selected.end.month.toString().padLeft(2, '0');
 
-      startDateApi.value = "${selected.start.year}-$startMonth-$startDay${'T00:00:00.988Z'}";
-      endDateApi.value = "${selected.end.year}-$endMonth-$endDay${'T23:59:59.988Z'}";
-      startDate.value = "$startDay/$startMonth/${selected.start.year}";
-      endDate.value = "$endDay/$endMonth/${selected.end.year}";
-      datesRange.value = '${startDate.value} - ${endDate.value}';
-      searchController.text = datesRange.value;
+      _startDateApi.value = "${selected.start.year}-$startMonth-$startDay${'T00:00:00.988Z'}";
+      _endDateApi.value = "${selected.end.year}-$endMonth-$endDay${'T23:59:59.988Z'}";
+      _startDate.value = "$startDay/$startMonth/${selected.start.year}";
+      _endDate.value = "$endDay/$endMonth/${selected.end.year}";
+      _datesRange.value = '${_startDate.value} - ${_endDate.value}';
+      searchController.text = _datesRange.value;
       getDonations();
     }
   }
@@ -348,6 +369,7 @@ class DonationHistoryController extends GetxController {
       arguments: {
         'payment_response': massRequestResponse?.toJson(),
         'payment_type': PaymentType.donation,
+        'paroisse_selected': paroisseSelected.toJson(),
       },
     );
   }
@@ -424,8 +446,8 @@ class DonationHistoryController extends GetxController {
 
   getDonations() {
     hideKeyboard();
-    searchCriteria.value.startDate = startDateApi.value;
-    searchCriteria.value.endDate = endDateApi.value;
+    searchCriteria.value.startDate = _startDateApi.value;
+    searchCriteria.value.endDate = _endDateApi.value;
     searchCriteria.value.worshipPlace = paroisseSelected.value.identifier;
     isDataProcessing(true);
 
@@ -440,7 +462,7 @@ class DonationHistoryController extends GetxController {
         hasData(false);
       }
       if (value.last == false) {
-        page.value += 1;
+        _page.value += 1;
       } else {
         refreshController.loadNoData();
       }
@@ -474,7 +496,7 @@ class DonationHistoryController extends GetxController {
       refreshController.refreshCompleted();
       donations.value = value.contents ?? [];
       if (value.last == false) {
-        page.value += 1;
+        _page.value += 1;
       } else {
         refreshController.loadNoData();
       }
@@ -503,13 +525,13 @@ class DonationHistoryController extends GetxController {
     //searchCriteria.value.name = searchController.text.trim();
 
     donationHistoryRepository
-        .getDonations(page: page.value, searchCriteria: searchCriteria.value)
+        .getDonations(page: _page.value, searchCriteria: searchCriteria.value)
         .then((value) {
       donations.addAll(value.contents ?? []);
       donations.refresh();
       refreshController.loadComplete();
       if (value.last == false) {
-        page.value += 1;
+        _page.value += 1;
       } else {
         refreshController.loadNoData();
       }
@@ -540,7 +562,7 @@ class DonationHistoryController extends GetxController {
   resetSearch() {
     refreshController.loadComplete();
     searchCriteria.value = SearchCriteria();
-    page.value = 0;
+    _page.value = 0;
     searchController.clear();
     hideKeyboard();
   }

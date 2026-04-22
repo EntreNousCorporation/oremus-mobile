@@ -21,7 +21,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey[50],
+      color: colorGrey5,
       child: GetBuilder<DonationWithoutWorshipController>(builder: (controller) {
         return KeyboardDismisser(
           child: PopScope(
@@ -319,7 +319,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                           ? colorGreenSemiLight
                                                           .withValues(
                                                           alpha: 0.12)
-                                                          : Colors.grey[50],
+                                                          : colorGrey5,
                                                       borderRadius: BorderRadius
                                                           .circular(16),
                                                       border: Border.all(
@@ -478,7 +478,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                           ? colorGreenSemiLight
                                                           .withValues(
                                                           alpha: 0.12)
-                                                          : Colors.grey[50],
+                                                          : colorGrey5,
                                                       borderRadius: BorderRadius
                                                           .circular(16),
                                                       border: Border.all(
@@ -699,7 +699,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                                       .symmetric(horizontal: 20,
                                                       vertical: 16),
                                                   decoration: BoxDecoration(
-                                                    color: Colors.grey[50],
+                                                    color: colorGrey5,
                                                     borderRadius: BorderRadius
                                                         .circular(16),
                                                     border: Border.all(
@@ -1000,7 +1000,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                           // Description textarea with improved style
                                           Container(
                                             decoration: BoxDecoration(
-                                              color: Colors.grey[50],
+                                              color: colorGrey5,
                                               borderRadius: BorderRadius
                                                   .circular(16),
                                               border: Border.all(
@@ -1045,16 +1045,12 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                         borderRadius: 16,
                                         textSize: TextSizes.seventeen,
                                         bgcolor: controller.isValidForm.isTrue
-                                            ? colorGreenSemiLight
-                                            : Colors.grey[300]!,
+                                            ? colorGreen
+                                            : colorGrey1.withValues(alpha: 0.5),
                                         borderColor: controller.isValidForm.isTrue
-                                            ? colorGreenSemiLight
-                                            : Colors.grey[300]!,
-                                        textColor: controller.isValidForm.isTrue
-                                            ? colorWhite
-                                            : Colors.grey[500]!,
-                                        actionColor: colorGreenSemiLight
-                                            .withValues(alpha: 0.8),
+                                            ? colorGreen
+                                            : colorGreen.withValues(alpha: 0),
+                                        actionColor: colorGreen.withValues(alpha: 0.5),
                                         enabled: controller.isValidForm.value,
                                         action: () {
                                           controller.doSendDonation();
@@ -1098,7 +1094,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
             decoration: BoxDecoration(
               color: isSelected
                   ? colorGreenSemiLight.withValues(alpha: 0.1)
-                  : Colors.grey[50],
+                  : colorGrey5,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isSelected ? colorGreenSemiLight : Colors.grey[300]!,

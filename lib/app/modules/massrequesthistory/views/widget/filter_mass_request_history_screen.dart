@@ -24,7 +24,7 @@ class FilterMassRequestHistoryScreen extends StatelessWidget {
             canPop: false,
             child: KeyboardDismisser(
               child: Scaffold(
-                backgroundColor: Colors.grey[50],
+                backgroundColor: colorGrey5,
                 appBar: AppBar(
                   backgroundColor: colorGreen,
                   elevation: 0,

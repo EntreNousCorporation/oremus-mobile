@@ -16,7 +16,7 @@ class AmountWithoutWorshipWidget extends StatelessWidget {
     return GetBuilder<DonationWithoutWorshipController>(builder: (logic) {
       return Container(
         decoration: BoxDecoration(
-          color: Colors.grey[50],
+          color: colorGrey5,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: logic.amountFocusNode.hasFocus ? colorGreenSemiLight : Colors.grey[300]!,

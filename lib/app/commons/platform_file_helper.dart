@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:oremusapp/app/commons/components/oremus_logger.dart';

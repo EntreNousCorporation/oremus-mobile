@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -28,7 +26,7 @@ class DonationScreen extends StatelessWidget {
           canPop: controller.unlockBackButton.value,
           child: Scaffold(
             resizeToAvoidBottomInset: true,
-            backgroundColor: Colors.grey[50],
+            backgroundColor: colorGrey5,
             body: NotificationListener<OverscrollIndicatorNotification>(
               onNotification: (notification) {
                 notification.disallowIndicator();
@@ -37,7 +35,6 @@ class DonationScreen extends StatelessWidget {
               child: CustomScrollView(
                 physics: const BouncingScrollPhysics(),
                 slivers: [
-                  // Enhanced header with cover image
                   SliverAppBar(
                     expandedHeight: AppConstants.kExpandedHeight,
                     collapsedHeight: 100,
@@ -76,6 +73,7 @@ class DonationScreen extends StatelessWidget {
                       // Favorites button
                       Container(
                         margin: const EdgeInsets.only(top: 8),
+                        padding: const EdgeInsets.only(left: 5, right: 2),
                         decoration: BoxDecoration(
                           color: Colors.black.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),
@@ -116,7 +114,7 @@ class DonationScreen extends StatelessWidget {
                       Container(
                         margin: const EdgeInsets.only(right: 8, top: 8),
                         decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.2),
+                          color: colorBlack.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: IconButton(
@@ -338,18 +336,15 @@ class DonationScreen extends StatelessWidget {
                             borderRadius: 16,
                             textSize: TextSizes.seventeen,
                             bgcolor: controller.isValidForm.isTrue
-                                ? colorGreenSemiLight
-                                : Colors.grey[300]!,
+                                ? colorGreen
+                                : colorGrey1.withValues(alpha: 0.5),
                             borderColor: controller.isValidForm.isTrue
-                                ? colorGreenSemiLight
-                                : Colors.grey[300]!,
-                            textColor: controller.isValidForm.isTrue
-                                ? colorWhite
-                                : Colors.grey[500]!,
-                            actionColor: colorGreenSemiLight.withValues(alpha: 0.8),
+                                ? colorGreen
+                                : colorGreen.withValues(alpha: 0),
+                            actionColor: colorGreen.withValues(alpha: 0.5),
                             enabled: controller.isValidForm.value,
                             action: () {
-                              controller.doSendDonation();
+                              controller.moveToRecap();
                             },
                           ),
                         ),
@@ -485,7 +480,7 @@ class DonationScreen extends StatelessWidget {
             decoration: BoxDecoration(
               color: isSelected
                   ? colorGreenSemiLight.withValues(alpha: 0.1)
-                  : Colors.grey[50],
+                  : colorGrey5,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isSelected ? colorGreenSemiLight : Colors.grey[300]!,

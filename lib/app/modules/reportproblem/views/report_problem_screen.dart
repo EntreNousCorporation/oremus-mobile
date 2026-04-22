@@ -233,7 +233,7 @@ class ReportProblemScreen extends StatelessWidget {
                                     decoration: InputDecoration(
                                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                                       filled: true,
-                                      fillColor: Colors.grey[50],
+                                      fillColor: colorGrey5,
                                       hintText: 'Saisissez votre email',
                                       hintStyle: TextStyles.montserratRegular(
                                         textColor: Colors.grey[400]!,

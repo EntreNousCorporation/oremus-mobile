@@ -14,7 +14,7 @@ class ActivitySelectionScreen extends StatelessWidget {
     return GetX<ActivitySelectionController>(
       builder: (controller) {
         return Scaffold(
-          backgroundColor: Colors.grey[50],
+          backgroundColor: colorGrey5,
           appBar: AppBar(
             backgroundColor: colorGreen,
             elevation: 0,

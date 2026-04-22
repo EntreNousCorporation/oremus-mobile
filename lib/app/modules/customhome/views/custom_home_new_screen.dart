@@ -94,7 +94,6 @@ class CustomHomeNewScreen extends StatelessWidget {
                 break;
             }
 
-            // L'écran est-il la page d'accueil principale?
             final bool isHomePage = logic.menus[position].code == AppConstants.HOME;
 
             return Scaffold(
@@ -181,29 +180,21 @@ class CustomHomeNewScreen extends StatelessWidget {
                                   AppConstants.HOME)
                                 GetBuilder<CustomHomeController>(
                                     builder: (homeLogic) {
-                                  return Bounce(
-                                    key: homeLogic.basicIconAnimation,
-                                    preferences: AnimationPreferences(
-                                      offset: const Duration(seconds: 3),
-                                      autoPlay: homeLogic.applyAnimation(),
-                                      magnitude: 0.3,
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color:
+                                          Colors.white.withValues(alpha: 0.3),
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color:
-                                            Colors.white.withValues(alpha: 0.3),
-                                        borderRadius: BorderRadius.circular(12),
+                                    child: IconButton(
+                                      icon: const Icon(
+                                        Icons.favorite_border_outlined,
+                                        color: colorWhite,
+                                        size: 22,
                                       ),
-                                      child: IconButton(
-                                        icon: const Icon(
-                                          Icons.favorite_border_outlined,
-                                          color: colorWhite,
-                                          size: 22,
-                                        ),
-                                        onPressed: () {
-                                          homeLogic.goToFavorites();
-                                        },
-                                      ),
+                                      onPressed: () {
+                                        homeLogic.goToFavorites();
+                                      },
                                     ),
                                   );
                                 })

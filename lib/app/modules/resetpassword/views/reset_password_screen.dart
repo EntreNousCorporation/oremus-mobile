@@ -283,7 +283,7 @@ class ResetPasswordScreen extends StatelessWidget {
                                                         width: double.infinity,
                                                         padding: const EdgeInsets.all(15),
                                                         decoration: BoxDecoration(
-                                                          color: Colors.grey[50],
+                                                          color: colorGrey5,
                                                           borderRadius: BorderRadius.circular(16),
                                                           border: Border.all(
                                                             color: Colors.grey[300]!,

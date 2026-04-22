@@ -9,8 +9,10 @@ import 'package:oremusapp/app/modules/diocese/binding/diocese_binding.dart';
 import 'package:oremusapp/app/modules/diocese/views/diocese_screen.dart';
 import 'package:oremusapp/app/modules/donation/binding/donation_binding.dart';
 import 'package:oremusapp/app/modules/donation/binding/donation_menu_binding.dart';
+import 'package:oremusapp/app/modules/donation/binding/donation_recap_binding.dart';
 import 'package:oremusapp/app/modules/donation/binding/donation_with_worship_binding.dart';
 import 'package:oremusapp/app/modules/donation/views/donation_menu_screen.dart';
+import 'package:oremusapp/app/modules/donation/views/donation_recap_screen.dart';
 import 'package:oremusapp/app/modules/donation/views/donation_screen.dart';
 import 'package:oremusapp/app/modules/donation/views/donation_without_worship_screen.dart';
 import 'package:oremusapp/app/modules/donationhistory/binding/donation_history_binding.dart';
@@ -401,6 +403,13 @@ class AppPages {
       name: Routes.DONATION_MENU,
       page: () => const DonationMenuScreen(),
       binding: DonationMenuBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: Routes.DONATION_RECAP,
+      page: () => const DonationRecapScreen(),
+      binding: DonationRecapBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),

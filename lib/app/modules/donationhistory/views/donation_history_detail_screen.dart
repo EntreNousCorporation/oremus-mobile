@@ -74,6 +74,7 @@ class DonationHistoryDetailScreen extends StatelessWidget {
                       // Bouton favoris
                       Container(
                         margin: const EdgeInsets.only(top: 8),
+                        padding: const EdgeInsets.only(left: 5, right: 2),
                         decoration: BoxDecoration(
                           color: Colors.black.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),

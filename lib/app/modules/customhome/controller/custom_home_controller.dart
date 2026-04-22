@@ -39,13 +39,11 @@ class CustomHomeController extends GetxController {
   var title = ''.obs;
 
   var applyAnim = true.obs;
-  final GlobalKey<AnimatorWidgetState> basicIconAnimation = GlobalKey<AnimatorWidgetState>();
 
   final OSNotificationService notificationService = OSNotificationService();
 
   @override
   void onInit() {
-    // Initialiser OneSignal avec le dialogue de consentement
     initNotification();
 
     if (flavor == AppConstants.ENV_PROD && GetPlatform.isAndroid) {
@@ -171,14 +169,6 @@ class CustomHomeController extends GetxController {
 
   goToFavorites() {
     Get.toNamed(Routes.FAVORITES);
-  }
-
-  applyAnimation() {
-    if (paroisseRepository.getAllFavorites().isNotEmpty) {
-      basicIconAnimation.currentState?.animator?.loop();
-      return AnimationPlayStates.Loop;
-    }
-    return AnimationPlayStates.None;
   }
 
   bool userCanUpdateProfile() {

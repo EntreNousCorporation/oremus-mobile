@@ -17,11 +17,11 @@ class MassRequestTrackClaimDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey[50],
+      color: colorGrey5,
       child: GetX<MassRequestTrackClaimDetailController>(builder: (controller) {
         return KeyboardDismisser(
           child: Scaffold(
-            backgroundColor: Colors.grey[50],
+            backgroundColor: colorGrey5,
             resizeToAvoidBottomInset: true,
             body: NotificationListener<OverscrollIndicatorNotification>(
               onNotification: (notification) {

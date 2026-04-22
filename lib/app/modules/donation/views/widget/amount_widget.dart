@@ -16,7 +16,7 @@ class AmountWidget extends StatelessWidget {
     return GetBuilder<DonationController>(builder: (logic) {
       return Container(
         decoration: BoxDecoration(
-          color: Colors.grey[50],
+          color: colorGrey5,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: logic.amountFocusNode.hasFocus ? colorGreenSemiLight : Colors.grey[300]!,
@@ -89,7 +89,7 @@ class AmountWidget extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: Colors.grey[50],
+            color: colorGrey5,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: Colors.grey[300]!,

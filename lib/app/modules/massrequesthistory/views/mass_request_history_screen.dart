@@ -25,11 +25,11 @@ class MassRequestHistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey[50],
+      color: colorGrey5,
       child: GetX<MassRequestHistoryController>(builder: (controller) {
         return KeyboardDismisser(
           child: Scaffold(
-            backgroundColor: Colors.grey[50],
+            backgroundColor: colorGrey5,
             resizeToAvoidBottomInset: true,
             body: NotificationListener<OverscrollIndicatorNotification>(
               onNotification: (notification) {
@@ -46,15 +46,15 @@ class MassRequestHistoryScreen extends StatelessWidget {
                     floating: false,
                     pinned: true,
                     backgroundColor: colorGreen,
-                    elevation: 0,
-                    shadowColor: Colors.transparent,
+                    elevation: 6,
+                    shadowColor: Colors.black.withValues(alpha: 0.2),
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(0),
                         bottomRight: Radius.circular(0),
                       ),
                     ),
-                    // Back button
+                    // Bouton retour
                     leading: Container(
                       margin: const EdgeInsets.only(left: 8, top: 8),
                       decoration: BoxDecoration(
@@ -63,7 +63,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
                       ),
                       child: IconButton(
                         onPressed: () {
-                          Get.back();
+                          controller.goToBack();
                         },
                         icon: const Icon(
                           Icons.arrow_back_rounded,
@@ -72,9 +72,9 @@ class MassRequestHistoryScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // Actions (favorites, map)
-                    actions: requestMassWithoutWorship.value ? null : [
-                      // Favorites button
+                    // Actions (favoris, carte)
+                    actions: [
+                      // Bouton favoris
                       Container(
                         margin: const EdgeInsets.only(top: 8),
                         decoration: BoxDecoration(
@@ -111,7 +111,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      // Map button
+                      // Bouton carte
                       Container(
                         margin: const EdgeInsets.only(right: 8, top: 8),
                         decoration: BoxDecoration(
@@ -130,10 +130,9 @@ class MassRequestHistoryScreen extends StatelessWidget {
                         ),
                       ),
                     ],
-                    // Title and background image
                     flexibleSpace: FlexibleSpaceBar(
                       centerTitle: true,
-                      title: Container(
+                      title: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
                           controller.paroisseSelected.value?.name ?? 'Mes demandes de messes',
@@ -154,10 +153,9 @@ class MassRequestHistoryScreen extends StatelessWidget {
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.2),
-                              blurRadius: 15,
-                              offset: const Offset(0, 5),
-                              spreadRadius: 2,
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
@@ -190,7 +188,7 @@ class MassRequestHistoryScreen extends StatelessWidget {
                                 height: Get.width,
                                 fit: BoxFit.cover,
                               ),
-                              // Shadow overlay
+                              // Superposition ombrée
                               Container(
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
@@ -200,7 +198,6 @@ class MassRequestHistoryScreen extends StatelessWidget {
                                       Colors.transparent,
                                       Colors.black.withValues(alpha: 0.7),
                                     ],
-                                    stops: const [0.5, 1.0],
                                   ),
                                 ),
                               ),

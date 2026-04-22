@@ -97,18 +97,17 @@ class ParoisseDonationMenuController extends GetxController {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, -2),
             ),
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(24), // Padding légèrement plus grand
+          padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              // Indicateur de dialogue en haut
               Container(
                 width: 50,
                 height: 5,
@@ -130,7 +129,7 @@ class ParoisseDonationMenuController extends GetxController {
               Icon(
                 Icons.lock_outline_rounded,
                 size: 48,
-                color: colorGreen.withOpacity(0.8),
+                color: colorGreen.withValues(alpha: 0.8),
               ),
               Expanded(
                 child: Column(
@@ -165,7 +164,7 @@ class ParoisseDonationMenuController extends GetxController {
                       style: TextButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(color: colorGreen.withOpacity(0.7), width: 1),
+                          side: BorderSide(color: colorGreen.withValues(alpha: 0.7), width: 1),
                         ),
                       ),
                       onPressed: Get.back,
@@ -187,7 +186,7 @@ class ParoisseDonationMenuController extends GetxController {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: colorGreen,
                         elevation: 2,
-                        shadowColor: colorGreen.withOpacity(0.5),
+                        shadowColor: colorGreen.withValues(alpha: 0.5),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -245,7 +244,7 @@ class ParoisseDonationMenuController extends GetxController {
   moveToDonationHistory() async {
     await Get.toNamed(
       Routes.DONATION_HISTORY,
-      arguments: paroisseSelected.toJson(),
+      arguments: {'paroisse_selected': paroisseSelected.toJson()},
     );
     //on met à jour la liste au cas où favoris mis à jour
     paroisseSelected.value.isFavorite = isWorshipPlaceFavorite(paroisseSelected.value);

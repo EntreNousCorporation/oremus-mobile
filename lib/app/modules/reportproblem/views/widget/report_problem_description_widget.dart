@@ -25,7 +25,7 @@ class ReportProblemDescriptionWidget extends StatelessWidget {
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           filled: true,
-          fillColor: Colors.grey[50],
+          fillColor: colorGrey5,
           hintText: 'Décrivez le problème rencontré...',
           hintStyle: TextStyles.montserratRegular(
             textColor: Colors.grey[400]!,

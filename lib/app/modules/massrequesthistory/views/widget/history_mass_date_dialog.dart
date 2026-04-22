@@ -7,9 +7,9 @@ import 'package:jiffy/jiffy.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
-import 'package:oremusapp/app/modules/massrequesthistory/controller/mass_request_history_detail_controller.dart';
+import 'package:oremusapp/app/modules/massrequesthistory/controller/history_mass_request_selectable.dart';
 
-Future historyMassDateDialog() {
+Future historyMassDateDialog(HistoryMassRequestSelectable controller) {
   return showModal(
     context: Get.context!,
     configuration: const FadeScaleTransitionConfiguration(
@@ -24,8 +24,7 @@ Future historyMassDateDialog() {
         backgroundColor: Colors.white,
         elevation: 10,
         insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-        child: GetX<MassRequestHistoryDetailController>(
-          builder: (controller) {
+        child: Obx(() {
             return Container(
               padding: const EdgeInsets.all(24),
               child: Column(

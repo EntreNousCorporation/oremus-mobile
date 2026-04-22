@@ -23,11 +23,11 @@ class MassRequestClaimScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey[50],
+      color: colorGrey5,
       child: GetX<MassRequestClaimController>(builder: (controller) {
         return KeyboardDismisser(
           child: Scaffold(
-            backgroundColor: Colors.grey[50],
+            backgroundColor: colorGrey5,
             resizeToAvoidBottomInset: true,
             body: NotificationListener<OverscrollIndicatorNotification>(
               onNotification: (notification) {
@@ -75,6 +75,7 @@ class MassRequestClaimScreen extends StatelessWidget {
                       // Favorites button
                       Container(
                         margin: const EdgeInsets.only(top: 8),
+                        padding: const EdgeInsets.only(left: 5, right: 2),
                         decoration: BoxDecoration(
                           color: Colors.black.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),
@@ -342,7 +343,7 @@ class MassRequestClaimScreen extends StatelessWidget {
                                       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                                       decoration: BoxDecoration(
-                                        color: Colors.grey[50],
+                                        color: colorGrey5,
                                         borderRadius: BorderRadius.circular(12),
                                         border: Border.all(
                                           color: controller.paroisseSelected.value.identifier != null

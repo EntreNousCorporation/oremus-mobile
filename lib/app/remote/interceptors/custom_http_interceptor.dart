@@ -6,7 +6,6 @@ import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/internet_checker/internet_connection_checker.dart';
 import 'package:oremusapp/app/configs/services/logger_service.dart';
-import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/main.dart';
 import 'package:talker_dio_logger/talker_dio_logger.dart';
 import 'package:talker_flutter/talker_flutter.dart';

@@ -132,8 +132,10 @@ class DonationData {
   String? amount;
   String? worshipPlace;
   String? description;
-  bool? isOremus; // Nouveau champ pour indiquer si le don est pour Oremus
+  bool? isOremus;
   bool? forceDuplicateCreation;
+  String? phoneNumber;
+  String? paymentMethod;
 
   DonationData({
     this.amount,
@@ -141,6 +143,8 @@ class DonationData {
     this.description,
     this.isOremus = false,
     this.forceDuplicateCreation,
+    this.phoneNumber,
+    this.paymentMethod,
   });
 
   Map<String, dynamic> toJson() {
@@ -152,6 +156,8 @@ class DonationData {
     }
     data['isOremus'] = isOremus;
     data['forceDuplicateCreation'] = forceDuplicateCreation;
+    data['phoneNumber'] = phoneNumber;
+    data['paymentMethod'] = paymentMethod;
     return data;
   }
 }
