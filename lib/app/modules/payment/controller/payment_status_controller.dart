@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
+import 'package:oremusapp/app/modules/massrequesthistory/controller/mass_request_history_controller.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
@@ -53,16 +54,20 @@ class PaymentStatusController extends GetxController {
   }
 
   moveToMassRequestHistory() async {
-    await Get.offNamed(
+    Get.offNamed(
       Routes.MASS_REQUEST_HISTORY,
       arguments: paroisseSelected.toJson(),
     );
+    var massRequestHistoryController = Get.find<MassRequestHistoryController>();
+    massRequestHistoryController.getMassRequests();
   }
 
   moveToDonationHistory() async {
-    await Get.offNamed(
+    Get.offNamed(
       Routes.DONATION_HISTORY,
       arguments: paroisseSelected.toJson(),
     );
+    var massRequestHistoryController = Get.find<MassRequestHistoryController>();
+    massRequestHistoryController.getMassRequests();
   }
 }
