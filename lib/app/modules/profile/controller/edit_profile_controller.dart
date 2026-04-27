@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -101,8 +100,8 @@ class EditProfileController extends GetxController {
 
     String firstname = firstnameController.text.trim();
     String lastname = lastnameController.text.trim();
-    String email = emailController.text.trim().toString().replaceAll(' ', '');
-    String phone = phoneController.text.trim().toString().replaceAll(' ', '');
+    String email = emailController.text.trim().toString().replaceAll(RegExp(r'\s'), '');
+    String phone = phoneController.text.trim().toString().replaceAll(RegExp(r'\s'), '');
 
     loading(true);
     lockScreen(true);
@@ -112,8 +111,6 @@ class EditProfileController extends GetxController {
       lastname: lastname,
       email: email,
     );
-
-    log('request signupUser => ${request.toJson().toString()}');
 
     var userId = DB.getUserSigninInfo()?.id ?? '';
     profileRepository.updateProfile(userId, request).then((value) {
@@ -138,10 +135,10 @@ class EditProfileController extends GetxController {
         showNotification(
             message: errorResponse.debugMessage.toString(),
         );
-      } else if (err.code == 900) {
+      } else if (err.code == 900 || err.code == 409) {
         showNotification(message: err.message.toString());
       } else {
-        showNotification(message: "Une erreur est survenue");
+        showNotification(message: "Une erreur inconnue est survenue");
       }
     });
   }

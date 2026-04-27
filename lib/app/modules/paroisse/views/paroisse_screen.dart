@@ -1,6 +1,5 @@
 import 'package:badges/badges.dart' as b;
 import 'package:flutter/material.dart';
-import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';

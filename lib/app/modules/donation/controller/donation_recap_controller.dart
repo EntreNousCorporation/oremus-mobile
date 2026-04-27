@@ -33,6 +33,7 @@ class DonationRecapController extends GetxController implements PaymentMethodSel
 
   var unlockBackButton = true.obs;
   var paroisseSelected = ContentPlace().obs;
+  Rx<bool?> isOremus = Rx<bool?>(null);
   Rx<String?> amount = Rx<String?>(null);
   Rx<String?> description = Rx<String?>(null);
 
@@ -69,6 +70,9 @@ class DonationRecapController extends GetxController implements PaymentMethodSel
     if (arguments.containsKey('donationAmount') && arguments['donationAmount'] != null) {
       amount.value = arguments['donationAmount'];
     }
+    if (arguments.containsKey('isOremus') && arguments['isOremus'] != null) {
+      isOremus.value = arguments['isOremus'];
+    }
   }
 
   String getAmount() {
@@ -86,6 +90,7 @@ class DonationRecapController extends GetxController implements PaymentMethodSel
         'paroisse_selected': paroisseSelected.toJson(),
         'payment_response': donationResponse.toJson(),
         'payment_type': PaymentType.donation,
+        'payment_method_selected': paymentMethodSelected.toJson(),
       },
     );
   }
@@ -134,6 +139,10 @@ class DonationRecapController extends GetxController implements PaymentMethodSel
     );
   }
 
+  String getWorshipName() {
+    return isOremus.value == true ? 'Oremus' : paroisseSelected.value.name ?? '-';
+  }
+
   @override
   void checkForm() {
     isValidForm.value = phoneNumberController.text.isNotEmpty && phoneNumberController.text.replaceAll(RegExp(r'\s'), '').length == ciNumberLength && paymentMethodSelected.value != null;
@@ -168,6 +177,7 @@ class DonationRecapController extends GetxController implements PaymentMethodSel
       worshipPlace: paroisseSelected.value.identifier.toString(),
       phoneNumber: '$phoneCode${phoneNumberController.text.replaceAll(RegExp(r'\s'), '')}',
       paymentMethod: paymentMethodSelected.value?.code,
+      isOremus: isOremus.value,
       forceDuplicateCreation: forceDuplicateCreation,
     );
 

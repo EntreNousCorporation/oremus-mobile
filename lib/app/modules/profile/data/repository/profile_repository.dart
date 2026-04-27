@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
@@ -56,9 +57,9 @@ class ProfileRepository implements IProfileRepository {
       method: HttpMethod.put,
       body: jsonEncode(request.toJson()),
     );
-
     if (response.statusCode != 200) {
       var e = ErrorResponse.fromJson(response.data);
+      OremusLogger.debug('updateProfile ::: ${e.toJson()}');
       throw CustomException(e.status, e.debugMessage);
     } else {
       return Profile.fromJson(response.data);

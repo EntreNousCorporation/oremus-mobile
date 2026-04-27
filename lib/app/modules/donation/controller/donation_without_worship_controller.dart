@@ -1,20 +1,13 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:oremusapp/app/commons/components/dialogs.dart';
-import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
 import 'package:oremusapp/app/commons/constants.dart';
-import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
-import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/donation/data/model/donation_response.dart';
 import 'package:oremusapp/app/modules/donation/data/repository/donation_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
-import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
 class DonationWithoutWorshipController extends GetxController {
@@ -71,9 +64,7 @@ class DonationWithoutWorshipController extends GetxController {
   }
 
   void initAmountListeners() {
-    // Observer les changements de texte dans amountController
     amountController.addListener(() {
-      // Mise à jour de selectedAmount quand amountController change
       selectedAmount.value = amountController.text.replaceAll(RegExp(r'\s'), '');
     });
   }
@@ -81,10 +72,6 @@ class DonationWithoutWorshipController extends GetxController {
   initControllers() {
     amountController = TextEditingController();
     descriptionController = TextEditingController();
-    // Attendre un court délai avant de donner le focus au TextField
-    /*Timer(const Duration(milliseconds: 500), () {
-      FocusScope.of(Get.context!).requestFocus(amountFocusNode);
-    });*/
   }
 
   void selectEntityType(String entityType) {
@@ -95,6 +82,19 @@ class DonationWithoutWorshipController extends GetxController {
       paroisseSelected.value = ContentPlace();
     }
     checkForm();
+  }
+
+  moveToRecap() {
+    Get.toNamed(
+      Routes.DONATION_RECAP,
+      arguments: {
+        'donationAmount': amountController.text,
+        'donationDescription': descriptionController.text,
+        'worshipPlace': selectedEntityType.value == EntityType.worship.name ?
+        paroisseSelected.toJson() : null,
+        'isOremus': selectedEntityType.value == EntityType.oremus.name,
+      },
+    );
   }
 
   moveToPayment(DonationResponse donationResponse) {
@@ -126,7 +126,6 @@ class DonationWithoutWorshipController extends GetxController {
   }
 
   void checkForm() {
-    log("checkForm appelé: montant=${amountController.text}, entityType=${selectedEntityType.value}, paroisseId=${paroisseSelected.value.identifier}");
 
     // Vérifier si le montant est vide
     if (amountController.text.isEmpty) {
@@ -157,74 +156,5 @@ class DonationWithoutWorshipController extends GetxController {
     isValidForm.refresh();
     log("isValidForm mis à jour: ${isValidForm.value}");
     update();
-  }
-
-  doSendDonation({bool? forceDuplicateCreation}) {
-    hideKeyboard();
-    EasyLoading.show(
-      status: 'Traitement en cours...',
-      maskType: EasyLoadingMaskType.black,
-      indicator: LottieLoadingView(),
-    ).then((v) {
-      unlockBackButton.value = false;
-    });
-
-    var request = DonationData(
-      amount: amountController.text.replaceAll(RegExp(r'\s'), ''),
-      description: descriptionController.text,
-      worshipPlace: selectedEntityType.value == EntityType.worship.name ?
-      paroisseSelected.value.identifier.toString() : null,
-      isOremus: selectedEntityType.value == EntityType.oremus.name, //variable do not go to backend
-      forceDuplicateCreation: forceDuplicateCreation,
-    );
-
-    log('request doSendDonation => ${jsonEncode(request.toJson())}');
-
-    donationRepository.sendDonation(request: request).then(
-          (value) {
-        EasyLoading.dismiss(animation: true).then((v) {
-          unlockBackButton.value = true;
-        });
-        moveToPayment(value);
-      },
-      onError: (error) {
-        EasyLoading.dismiss(animation: true).then((v) {
-          unlockBackButton.value = true;
-        });
-        debugPrint("error => ${error.toString()}");
-        var err = error as CustomException;
-        if (err.code == 401) {
-          showCustomDialog(
-            Get.context!,
-            message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-          ).then((value) {
-            doLogout();
-          });
-          return;
-        }
-        if (err.code == 409) {
-          showCustomDialog(
-            Get.context!,
-            message:
-            'Vous venez de faire un don identique. Souhaitez-vous confirmer ce don ?',
-            positiveLabel: 'OUI',
-            positiveCallBack: () {
-              doSendDonation(forceDuplicateCreation: true);
-            },
-            negativeLabel: 'NON',
-          );
-          return;
-        }
-        showNotification(
-            message: 'Une erreur est survenue',
-            duration: const Duration(seconds: 4));
-      },
-    );
-  }
-
-  doLogout() {
-    DB.saveData(AppConstants.KEY_USER_LOG_INFOS, null);
-    Get.deleteAll(force: true);
-    Get.offAllNamed(Routes.SIGNIN);
   }
 }

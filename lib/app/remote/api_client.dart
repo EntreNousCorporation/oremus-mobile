@@ -155,7 +155,7 @@ Error: $error
         var e = ErrorResponse.fromJson(jsonDecode(jsonEncode(response?.data)));
         throw UnauthorisedException(403, e.debugMessage);
       case 409:
-        throw ConflictedException(409, 'Conflit survenu');
+        throw ConflictedException(409, 'Un conflit de données est survenu');
       case 500:
         throw InternalServerErrorException(
             500, 'Une erreur interne du serveur est survenue');

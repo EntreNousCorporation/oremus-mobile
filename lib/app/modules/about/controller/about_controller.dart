@@ -9,12 +9,7 @@ import 'package:oremusapp/main.dart';
 
 class AboutController extends GetxController {
   AboutController();
-
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
+  
   moveToDonation() {
     if (isUserConnected.value == false) {
       checkIfUserIsconnected('FD');
@@ -35,7 +30,7 @@ class AboutController extends GetxController {
   checkIfUserIsconnected(String code) {
     Get.bottomSheet(
       Container(
-        height: Get.height * 0.32, // Légèrement plus haut pour plus d'espace
+        height: Get.height * 0.32,
         decoration: BoxDecoration(
           color: colorWhite,
           borderRadius: const BorderRadius.only(
@@ -44,7 +39,7 @@ class AboutController extends GetxController {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, -2),
             ),
@@ -77,7 +72,7 @@ class AboutController extends GetxController {
               Icon(
                 Icons.lock_outline_rounded,
                 size: 48,
-                color: colorGreen.withOpacity(0.8),
+                color: colorGreen.withValues(alpha: 0.8),
               ),
               Expanded(
                 child: Column(
@@ -112,7 +107,7 @@ class AboutController extends GetxController {
                       style: TextButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(color: colorGreen.withOpacity(0.7), width: 1),
+                          side: BorderSide(color: colorGreen.withValues(alpha: 0.7), width: 1),
                         ),
                       ),
                       onPressed: Get.back,
@@ -134,7 +129,7 @@ class AboutController extends GetxController {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: colorGreen,
                         elevation: 2,
-                        shadowColor: colorGreen.withOpacity(0.5),
+                        shadowColor: colorGreen.withValues(alpha: 0.5),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),

@@ -1053,7 +1053,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                         actionColor: colorGreen.withValues(alpha: 0.5),
                                         enabled: controller.isValidForm.value,
                                         action: () {
-                                          controller.doSendDonation();
+                                          controller.moveToRecap();
                                         },
                                       ),
                                     ),

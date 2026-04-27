@@ -76,7 +76,7 @@ class DonationRecapScreen extends StatelessWidget {
                         title: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(
-                            controller.paroisseSelected.value.name ?? '-',
+                            controller.getWorshipName(),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,

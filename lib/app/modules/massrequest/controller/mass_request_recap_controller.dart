@@ -121,6 +121,7 @@ class MassRequestRecapController extends GetxController implements PaymentMethod
         'paroisse_selected': paroisseSelected.toJson(),
         'payment_response': massRequestResponse.toJson(),
         'payment_type': PaymentType.massRequest,
+        'payment_method_selected': paymentMethodSelected.toJson(),
       },
     );
   }

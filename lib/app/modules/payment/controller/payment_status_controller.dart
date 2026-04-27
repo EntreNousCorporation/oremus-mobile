@@ -3,12 +3,8 @@ import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/donationhistory/controller/donation_history_controller.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart';
-import 'package:oremusapp/app/modules/massrequest/data/repository/mass_request_repository.dart';
 import 'package:oremusapp/app/modules/massrequesthistory/controller/mass_request_history_controller.dart';
-import 'package:oremusapp/app/modules/massrequesthistory/data/repository/mass_request_history_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
-import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
-import 'package:oremusapp/app/remote/api_client.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 
 class PaymentStatusController extends GetxController {

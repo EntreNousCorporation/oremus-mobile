@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
-import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';

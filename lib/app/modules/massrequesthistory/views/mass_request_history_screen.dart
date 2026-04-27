@@ -17,7 +17,6 @@ import 'package:oremusapp/app/modules/massrequesthistory/views/widget/history_it
 import 'package:oremusapp/app/modules/massrequesthistory/views/widget/search_widget.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/generated/assets.dart';
-import 'package:oremusapp/main.dart';
 
 class MassRequestHistoryScreen extends StatelessWidget {
   const MassRequestHistoryScreen({Key? key}) : super(key: key);

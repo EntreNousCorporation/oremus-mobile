@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
 import 'package:hidden_drawer_menu/hidden_drawer_menu.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
