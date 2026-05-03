@@ -114,7 +114,10 @@ Error Type: ${e.type}
         }
 
         if (e.response?.statusCode == 401) {
-          rethrow;
+          if (e.error is UnauthorisedException) {
+            throw e.error as UnauthorisedException;
+          }
+          throw UnauthorisedException(401, 'Session expirée');
         }
 
         if (e.response == null ||

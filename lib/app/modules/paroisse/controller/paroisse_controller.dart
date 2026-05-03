@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/lottie_loader_widget.dart';
+import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
@@ -536,24 +537,31 @@ class ParoisseController extends GetxController {
       } else {
         refreshController.loadNoData();
       }
-    }).catchError((error) {
+    }).catchError((error, stackTrace) {
       isDataProcessing(false);
       hasData(false);
 
-      log('Error in getParoisses: $error');
+      OremusLogger.error(
+        'getParoisses failed: ${error.runtimeType} -> $error\n$stackTrace',
+      );
 
-      var err = error as CustomException;
-      if (err.code.toString().contains('401')) {
-        showCustomDialog(
-          Get.context!,
-          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-        ).then((value) {
-          doLogout();
-        });
+      if (error is CustomException) {
+        if (error.code.toString().contains('401')) {
+          showCustomDialog(
+            Get.context!,
+            message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+          ).then((value) {
+            doLogout();
+          });
+        } else {
+          showNotification(
+            message:
+                'Erreur lors du chargement des données: ${error.code.toString()}',
+          );
+        }
       } else {
-        showNotification(message: 'Erreur lors du chargement des données: ${err.code.toString()}');
+        showNotification(message: 'Erreur lors du chargement des données');
       }
-      debugPrint("error => ${error.toString()}");
     });
   }
 
@@ -597,23 +605,26 @@ class ParoisseController extends GetxController {
       } else {
         refreshController.loadNoData();
       }
-    }, onError: (error) {
+    }, onError: (error, stackTrace) {
       refreshController.refreshCompleted();
-      var err = error as CustomException;
-      if (error.toString().contains('401')) {
-        showCustomDialog(
-          Get.context!,
-          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-        ).then((value) {
-          doLogout();
-        });
-      } else if (err.code.toString().contains('900')) {
-        showCustomDialog(
-          Get.context!,
-          message: err.message.toString(),
-        );
+      OremusLogger.error(
+        'onRefresh failed: ${error.runtimeType} -> $error\n$stackTrace',
+      );
+      if (error is CustomException) {
+        if (error.code.toString().contains('401')) {
+          showCustomDialog(
+            Get.context!,
+            message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+          ).then((value) {
+            doLogout();
+          });
+        } else if (error.code.toString().contains('900')) {
+          showCustomDialog(
+            Get.context!,
+            message: error.message.toString(),
+          );
+        }
       }
-      debugPrint("error => ${error.toString()}");
     });
   }
 
@@ -658,22 +669,31 @@ class ParoisseController extends GetxController {
       } else {
         refreshController.loadNoData();
       }
-    }, onError: (error) {
+    }, onError: (error, stackTrace) {
       refreshController.loadFailed();
-      var err = error as CustomException;
-      if (err.code == 401) {
-        showCustomDialog(
-          Get.context!,
-          message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-        ).then((value) {
-          doLogout();
-        });
-      } else if (err.code == 900) {
-        showNotification(message: err.message.toString());
+      OremusLogger.error(
+        'onLoading failed: ${error.runtimeType} -> $error\n$stackTrace',
+      );
+      if (error is CustomException) {
+        if (error.code == 401) {
+          showCustomDialog(
+            Get.context!,
+            message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+          ).then((value) {
+            doLogout();
+          });
+        } else if (error.code == 900) {
+          showNotification(message: error.message.toString());
+        } else {
+          showNotification(
+            message: 'Erreur lors du chargement des données supplémentaires',
+          );
+        }
       } else {
-        showNotification(message: 'Erreur lors du chargement des données supplémentaires');
+        showNotification(
+          message: 'Erreur lors du chargement des données supplémentaires',
+        );
       }
-      debugPrint("error => ${error.toString()}");
     });
   }
 

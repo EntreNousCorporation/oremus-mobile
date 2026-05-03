@@ -93,13 +93,16 @@ class DataResponse<T extends ToJsonInterface> {
       count: json['count'],
       page: json['page'],
       pageSize: json['pageSize'],
-      pageable:
-          json['pageable'] != null ? Pageable.fromJson(json['pageable']) : null,
+      pageable: json['pageable'] is Map<String, dynamic>
+          ? Pageable.fromJson(json['pageable'])
+          : null,
       totalPages: json['totalPages'],
       last: json['last'],
       first: json['first'],
       numberOfElements: json['numberOfElements'],
-      sort: json['sort'] != null ? Sort.fromJson(json['sort']) : null,
+      sort: json['sort'] is Map<String, dynamic>
+          ? Sort.fromJson(json['sort'])
+          : null,
       number: json['number'],
       size: json['size'],
       empty: json['empty'],
@@ -147,7 +150,9 @@ class Pageable {
   });
 
   Pageable.fromJson(Map<String, dynamic> json) {
-    sort = json['sort'] != null ? Sort.fromJson(json['sort']) : null;
+    sort = json['sort'] is Map<String, dynamic>
+        ? Sort.fromJson(json['sort'])
+        : null;
     pageNumber = json['pageNumber'];
     pageSize = json['pageSize'];
     offset = json['offset'];
