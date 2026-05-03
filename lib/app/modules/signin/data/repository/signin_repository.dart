@@ -43,4 +43,32 @@ class SigninRepository implements ISigninRepository {
       throw Exception(json.encode(response.data));
     }
   }
+
+  @override
+  Future<SigninResponse> refreshToken(String refreshToken) async {
+    Response response = await _apiClient.doRequest(
+      endpoint: "/auth/refresh",
+      body: {"refreshToken": refreshToken},
+      method: HttpMethod.post,
+      useBearer: false,
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception(json.encode(response.data));
+    } else {
+      return SigninResponse.fromJson(response.data);
+    }
+  }
+
+  @override
+  Future<void> logout(String refreshToken) async {
+    Response response = await _apiClient.doRequest(
+      endpoint: "/auth/logout",
+      body: {"refreshToken": refreshToken},
+      method: HttpMethod.post,
+    );
+    if (response.statusCode! < 200 || response.statusCode! > 205) {
+      throw Exception(json.encode(response.data));
+    }
+  }
 }
