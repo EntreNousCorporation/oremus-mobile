@@ -4,9 +4,8 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:oremusapp/app/commons/components/oremus_logger.dart';
-import 'package:oremusapp/app/commons/constants.dart';
-import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
+import 'package:oremusapp/app/commons/services/token_store.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/remote/dio_util.dart';
@@ -49,8 +48,10 @@ class ApiClientImpl implements ApiClient {
       headers['dId'] = phoneId;
       headers['platform'] = Platform.isAndroid ? 'Android' : 'iOS';
       if (useBearer) {
-        headers[HttpHeaders.authorizationHeader] =
-            'Bearer ${DB.getData(AppConstants.KEY_TOKEN)}';
+        final token = await TokenStore.getAccessToken();
+        if (token != null && token.isNotEmpty) {
+          headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
+        }
       }
       _dio?.options.headers = headers;
 
