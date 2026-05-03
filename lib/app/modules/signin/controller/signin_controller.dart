@@ -12,6 +12,7 @@ import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/email_validator.dart';
 import 'package:oremusapp/app/commons/services/auth_gate.dart';
 import 'package:oremusapp/app/commons/services/os_notification_service.dart';
+import 'package:oremusapp/app/commons/services/token_store.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/customhome/controller/custom_home_controller.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
@@ -110,12 +111,17 @@ class SigninController extends GetxController {
     lockScreen(true);
     Signin request = Signin(username: login, password: password);
 
-    signinRepository.loginUser(request).then((value) {
+    signinRepository.loginUser(request).then((value) async {
       EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;
       });
       lockScreen(false);
-      DB.saveData(AppConstants.KEY_TOKEN, value.accessToken);
+      if (value.accessToken != null && value.refreshToken != null) {
+        await TokenStore.saveTokens(
+          accessToken: value.accessToken!,
+          refreshToken: value.refreshToken!,
+        );
+      }
       Map<String, dynamic> payload = Jwt.parseJwt(value.accessToken ?? '');
       var userConnection = Signin(
         username: payload['username'],
