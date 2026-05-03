@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:oremusapp/app/commons/enums.dart';
+import 'package:oremusapp/app/modules/signin/data/model/refresh_token_request.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin_response.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/interfaces/interface_signin_repository.dart';
@@ -45,10 +46,10 @@ class SigninRepository implements ISigninRepository {
   }
 
   @override
-  Future<SigninResponse> refreshToken(String refreshToken) async {
+  Future<SigninResponse> refreshToken(RefreshTokenRequest request) async {
     Response response = await _apiClient.doRequest(
       endpoint: "/auth/refresh",
-      body: {"refreshToken": refreshToken},
+      body: request.toJson(),
       method: HttpMethod.post,
       useBearer: false,
     );
@@ -61,10 +62,10 @@ class SigninRepository implements ISigninRepository {
   }
 
   @override
-  Future<void> logout(String refreshToken) async {
+  Future<void> logout(RefreshTokenRequest request) async {
     Response response = await _apiClient.doRequest(
       endpoint: "/auth/logout",
-      body: {"refreshToken": refreshToken},
+      body: request.toJson(),
       method: HttpMethod.post,
     );
     if (response.statusCode! < 200 || response.statusCode! > 205) {

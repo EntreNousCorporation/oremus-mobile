@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/services/token_store.dart';
+import 'package:oremusapp/app/modules/signin/data/model/refresh_token_request.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
 import 'package:oremusapp/app/remote/api_client.dart';
 
@@ -20,9 +21,9 @@ class TokenRefresher {
     _inFlight = completer;
 
     try {
-      final response = await SigninRepository(
-        ApiClientImpl(),
-      ).refreshToken(refresh);
+      final response = await SigninRepository(ApiClientImpl()).refreshToken(
+        RefreshTokenRequest(refreshToken: refresh),
+      );
 
       if (response.accessToken != null && response.refreshToken != null) {
         await TokenStore.saveTokens(
