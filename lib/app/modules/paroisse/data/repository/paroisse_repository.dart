@@ -43,7 +43,7 @@ class ParoisseRepository implements IParoisseRepository {
 
     Response response = await _apiClient.doRequest(
       endpoint:
-          "/places-of-worship?page=$page&size=${AppConstants.PAGING_SIZE_1000}&sort=name%2CASC${(searchCriteria?.name == null || searchCriteria?.name?.isEmpty == true) ? '' : '&name=${searchCriteria?.name}'}${(searchCriteria?.likerUserId == null || searchCriteria?.likerUserId?.isEmpty == true) ? '' : '&likerUserId=${searchCriteria?.likerUserId}'}${(searchCriteria?.type == null || searchCriteria?.type?.isEmpty == true) ? '' : '&type=${searchCriteria?.type}'}${(searchCriteria?.diocese == null || searchCriteria?.diocese?.isEmpty == true) ? '' : '&diocese=${searchCriteria?.diocese}'}${(searchCriteria?.city == null || searchCriteria?.city?.isEmpty == true) ? '' : '&city=${searchCriteria?.city}'}${(searchCriteria?.municipality == null || searchCriteria?.municipality?.isEmpty == true) ? '' : '&municipality=${searchCriteria?.municipality}'}${(searchCriteria?.neighborhood == null || searchCriteria?.neighborhood?.isEmpty == true) ? '' : '&neighborhood=${searchCriteria?.neighborhood}'}",
+          "/places-of-worship?page=$page&size=${AppConstants.PAGING_SIZE_10}&sort=name%2CASC${(searchCriteria?.name == null || searchCriteria?.name?.isEmpty == true) ? '' : '&name=${searchCriteria?.name}'}${(searchCriteria?.likerUserId == null || searchCriteria?.likerUserId?.isEmpty == true) ? '' : '&likerUserId=${searchCriteria?.likerUserId}'}${(searchCriteria?.type == null || searchCriteria?.type?.isEmpty == true) ? '' : '&type=${searchCriteria?.type}'}${(searchCriteria?.diocese == null || searchCriteria?.diocese?.isEmpty == true) ? '' : '&diocese=${searchCriteria?.diocese}'}${(searchCriteria?.city == null || searchCriteria?.city?.isEmpty == true) ? '' : '&city=${searchCriteria?.city}'}${(searchCriteria?.municipality == null || searchCriteria?.municipality?.isEmpty == true) ? '' : '&municipality=${searchCriteria?.municipality}'}${(searchCriteria?.neighborhood == null || searchCriteria?.neighborhood?.isEmpty == true) ? '' : '&neighborhood=${searchCriteria?.neighborhood}'}",
       method: HttpMethod.get,
       useBearer: false,
     );
@@ -118,7 +118,7 @@ class ParoisseRepository implements IParoisseRepository {
       queryParameters: {
         'query': query,
         'page': page.toString(),
-        'size': AppConstants.PAGING_SIZE_1000.toString(),
+        'size': AppConstants.PAGING_SIZE_10.toString(),
       },
     );
 
@@ -501,7 +501,7 @@ class ParoisseRepository implements IParoisseRepository {
   Future<List<PlaceType>> getPlaceOfWorshipTypes({int? page = 0}) async {
     Response response = await _apiClient.doRequest(
       endpoint:
-          "/types-of-worship?page=$page&size=${AppConstants.PAGING_SIZE_1000}&sort=code%2CASC",
+          "/types-of-worship?page=$page&size=${AppConstants.PAGING_SIZE_10}&sort=code%2CASC",
       method: HttpMethod.get,
       useBearer: false,
     );

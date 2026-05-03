@@ -40,7 +40,8 @@ abstract class AppConstants {
   static const TIME_HUMAN_FORMAT1 = "dd MMM yyyy [à] HH:mm";
 
   //PAGGING
-  static const PAGING_SIZE_1000 = 10;
+  static const PAGING_SIZE_100 = 100;
+  static const PAGING_SIZE_10 = 10;
   static const PRAY_PAGING_SIZE = 15;
   static const MASS_REQUEST_PAGING_SIZE = 10;
   static const MASS_REQUEST_STATUSES_PAGING_SIZE = 50;

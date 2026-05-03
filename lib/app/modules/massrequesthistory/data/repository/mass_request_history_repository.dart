@@ -57,7 +57,7 @@ class MassRequestHistoryRepository implements IMassRequestHistoryRepository {
   @override
   Future<List<MassRequestAvailablesStatusesData>> getMassRequestsAvailablesStatuses({int? page = 0}) async {
     Response response = await _apiClient.doRequest(
-      endpoint: "/mass-request-statutes?page=$page&size=${AppConstants.MASS_REQUEST_STATUSES_PAGING_SIZE}&sort=createdAt,desc",
+      endpoint: "/mass-request-statutes?page=$page&size=${AppConstants.PAGING_SIZE_100}&sort=createdAt,desc",
       method: HttpMethod.get,
       useBearer: true,
     );

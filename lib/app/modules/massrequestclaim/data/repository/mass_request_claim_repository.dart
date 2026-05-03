@@ -52,7 +52,7 @@ class MassRequestClaimRepository implements IMassRequestClaimRepository {
   @override
   Future<List<TypeData>> getClaimTypes({int? page = 0}) async {
     Response response = await _apiClient.doRequest(
-      endpoint: "/types-of-claim?page=$page&size=${AppConstants.PAGING_SIZE_1000}&sort=code%2CASC",
+      endpoint: "/types-of-claim?page=$page&size=${AppConstants.PAGING_SIZE_100}&sort=code%2CASC",
       method: HttpMethod.get,
     );
 

@@ -16,7 +16,7 @@ class MassRequestRepository implements IMassRequestRepository {
   @override
   Future<List<TypeData>> getMassRequestType({int? page = 0}) async {
     Response response = await _apiClient.doRequest(
-      endpoint: "/types-of-mass-request?page=$page&size=${AppConstants.PAGING_SIZE_1000}&sort=code%2CASC",
+      endpoint: "/types-of-mass-request?page=$page&size=${AppConstants.PAGING_SIZE_100}&sort=code%2CASC",
       method: HttpMethod.get,
     );
 
@@ -33,7 +33,7 @@ class MassRequestRepository implements IMassRequestRepository {
   @override
   Future<List<PrayerIntentData>> getPrayerIntent({int? page = 0}) async {
     Response response = await _apiClient.doRequest(
-      endpoint: "/prayers-intent?page=$page&size=${AppConstants.PAGING_SIZE_1000}&sort=code%2CASC",
+      endpoint: "/prayers-intent?page=$page&size=${AppConstants.PAGING_SIZE_100}&sort=code%2CASC",
       method: HttpMethod.get,
     );
 
