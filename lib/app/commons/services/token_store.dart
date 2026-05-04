@@ -1,4 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:meta/meta.dart';
 import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
@@ -40,6 +41,11 @@ class TokenStore {
     _accessTokenCache = null;
     await _storage.delete(key: KEY_ACCESS_TOKEN);
     await _storage.delete(key: KEY_REFRESH_TOKEN);
+  }
+
+  @visibleForTesting
+  static void resetCacheForTesting() {
+    _accessTokenCache = null;
   }
 
   // Migration unique du token Hive existant vers le secure storage.
