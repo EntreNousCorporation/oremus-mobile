@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:oremusapp/app/commons/enums.dart';
+import 'package:oremusapp/app/modules/signin/data/model/refresh_token_request.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin_response.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/interfaces/interface_signin_repository.dart';
@@ -40,6 +41,34 @@ class SigninRepository implements ISigninRepository {
     if (response.statusCode! >= 200 && response.statusCode! <= 205) {
       return SigninResponse.fromJson(response.data);
     } else {
+      throw Exception(json.encode(response.data));
+    }
+  }
+
+  @override
+  Future<SigninResponse> refreshToken(RefreshTokenRequest request) async {
+    Response response = await _apiClient.doRequest(
+      endpoint: "/auth/refresh",
+      body: request.toJson(),
+      method: HttpMethod.post,
+      useBearer: false,
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception(json.encode(response.data));
+    } else {
+      return SigninResponse.fromJson(response.data);
+    }
+  }
+
+  @override
+  Future<void> logout(RefreshTokenRequest request) async {
+    Response response = await _apiClient.doRequest(
+      endpoint: "/auth/logout",
+      body: request.toJson(),
+      method: HttpMethod.post,
+    );
+    if (response.statusCode! < 200 || response.statusCode! > 205) {
       throw Exception(json.encode(response.data));
     }
   }

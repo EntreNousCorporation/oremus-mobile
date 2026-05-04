@@ -19,6 +19,7 @@ import 'package:oremusapp/app/commons/components/network_status_overlay.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/lang/translation_service.dart';
+import 'package:oremusapp/app/commons/services/token_store.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_theme.dart';
 import 'package:oremusapp/app/commons/utils.dart';
@@ -92,6 +93,9 @@ void main() async {
         'AVERTISSEMENT: Échec de l\'initialisation de la base de données, l\'application fonctionnera sans persistance',
       );
     }
+
+    await TokenStore.migrateFromHive();
+
     await getDeviceInfos();
     getAppVersion();
 

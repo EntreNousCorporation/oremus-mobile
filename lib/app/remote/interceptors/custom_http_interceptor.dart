@@ -6,8 +6,10 @@ import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/internet_checker/internet_connection_checker.dart';
 import 'package:oremusapp/app/commons/services/auth_gate.dart';
+import 'package:oremusapp/app/commons/services/token_refresher.dart';
 import 'package:oremusapp/app/configs/services/logger_service.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
+import 'package:oremusapp/app/remote/dio_util.dart';
 import 'package:oremusapp/main.dart';
 import 'package:talker_dio_logger/talker_dio_logger.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -134,10 +136,35 @@ Error Message: ${err.message}
     }
 
     if (err.response?.statusCode == 401) {
-      AuthGate.handleUnauthorized();
+      return _handleUnauthorized(err, handler);
+    }
+
+    handler.next(err);
+  }
+
+  // Flow 401 :
+  //  - sur /auth/refresh => session perdue, logout direct
+  //  - requête sans Bearer => mauvaises credentials, on laisse remonter
+  //  - requête déjà rejouée => éviter une boucle, logout direct
+  //  - sinon => refresh (mutex via TokenRefresher) puis retry de la requête originale
+  Future<void> _handleUnauthorized(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
+    final options = err.requestOptions;
+    final isRefreshCall = options.path == '/auth/refresh';
+    final hasBearer = (options.headers['Authorization'] as String?)
+            ?.startsWith('Bearer ') ==
+        true;
+    final alreadyRetried = options.extra['__retried_after_refresh'] == true;
+
+    if (isRefreshCall || !hasBearer || alreadyRetried) {
+      if (isRefreshCall || alreadyRetried) {
+        AuthGate.handleUnauthorized();
+      }
       return handler.reject(
         DioException(
-          requestOptions: err.requestOptions,
+          requestOptions: options,
           response: err.response,
           type: err.type,
           error: UnauthorisedException(401, 'Session expirée'),
@@ -145,6 +172,40 @@ Error Message: ${err.message}
       );
     }
 
-    handler.next(err);
+    final newAccessToken = await TokenRefresher.refreshIfNeeded();
+    if (newAccessToken == null) {
+      AuthGate.handleUnauthorized();
+      return handler.reject(
+        DioException(
+          requestOptions: options,
+          response: err.response,
+          type: err.type,
+          error: UnauthorisedException(401, 'Session expirée'),
+        ),
+      );
+    }
+
+    final retryOptions = options.copyWith(
+      headers: {
+        ...options.headers,
+        'Authorization': 'Bearer $newAccessToken',
+      },
+      extra: {
+        ...options.extra,
+        '__retried_after_refresh': true,
+      },
+    );
+
+    try {
+      final dio = await DioUtil().getInstance();
+      final response = await dio.fetch(retryOptions);
+      return handler.resolve(response);
+    } on DioException catch (retryErr) {
+      return handler.reject(retryErr);
+    } catch (e) {
+      return handler.reject(
+        DioException(requestOptions: retryOptions, error: e),
+      );
+    }
   }
 }
