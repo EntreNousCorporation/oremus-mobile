@@ -29,6 +29,7 @@ class DataResponse<T extends ToJsonInterface> {
     this.pageSize,
     this.pageable,
     this.totalPages,
+    this.totalElements,
     this.last,
     this.first,
     this.numberOfElements,
@@ -97,6 +98,7 @@ class DataResponse<T extends ToJsonInterface> {
           ? Pageable.fromJson(json['pageable'])
           : null,
       totalPages: json['totalPages'],
+      totalElements: json['totalElements'],
       last: json['last'],
       first: json['first'],
       numberOfElements: json['numberOfElements'],
