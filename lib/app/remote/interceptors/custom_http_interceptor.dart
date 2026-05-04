@@ -18,16 +18,23 @@ class CustomHttpInterceptor extends Interceptor {
   final Dio _dio;
   final Connectivity _connectivity = Connectivity();
 
+  // Permet aux tests d'injecter un Dio contrôlé pour le retry après refresh.
+  // En prod, on reste sur la singleton DioUtil.
+  final Future<Dio> Function() _retryDioProvider;
+
   CustomHttpInterceptor({
     required String baseUrl,
     Duration timeout = const Duration(seconds: AppConstants.REQUEST_TIMEOUT),
-  }) : _dio = Dio()
+    Future<Dio> Function()? retryDioProvider,
+  })  : _dio = Dio()
           ..options = BaseOptions(
             baseUrl: baseUrl,
             connectTimeout: timeout,
             receiveTimeout: timeout,
             sendTimeout: timeout,
-          ) {
+          ),
+        _retryDioProvider =
+            retryDioProvider ?? (() => DioUtil().getInstance()) {
     _dio.interceptors.add(_createLoggerInterceptor());
   }
 
@@ -197,7 +204,7 @@ Error Message: ${err.message}
     );
 
     try {
-      final dio = await DioUtil().getInstance();
+      final dio = await _retryDioProvider();
       final response = await dio.fetch(retryOptions);
       return handler.resolve(response);
     } on DioException catch (retryErr) {
