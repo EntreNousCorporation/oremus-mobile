@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/enums.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
