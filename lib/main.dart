@@ -14,6 +14,7 @@ import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:meta/meta.dart';
 import 'package:oremusapp/app/commons/components/custom_animation.dart';
 import 'package:oremusapp/app/commons/components/network_status_overlay.dart';
 import 'package:oremusapp/app/commons/constants.dart';
@@ -51,55 +52,99 @@ var showAppLogs;
 var bypassCert;
 var connectivityStatus = ConnectivityResult.none.obs;
 
-void main() async {
+/// Options d'init utilisées par les tests d'intégration pour skipper les
+/// services natifs lourds (Firebase, JustAudioBackground, OneSignal côté
+/// callers) et/ou injecter une `FlavorSettings` au lieu de passer par le
+/// `MethodChannel('flavor')`.
+class BootstrapOptions {
+  final bool initAudioBackground;
+  final bool initFirebase;
+  final bool listenConnectivity;
+  final bool fetchDeviceAndAppInfo;
+  final bool registerAudioServices;
+  final FlavorSettings? overrideFlavorSettings;
+
+  const BootstrapOptions({
+    this.initAudioBackground = true,
+    this.initFirebase = true,
+    this.listenConnectivity = true,
+    this.fetchDeviceAndAppInfo = true,
+    this.registerAudioServices = true,
+    this.overrideFlavorSettings,
+  });
+
+  /// Defaults pour les tests d'intégration : tout ce qui touche au natif
+  /// hors-binding standard est skippé. À surcharger si un test couvre par
+  /// ex. le rosaire (il faudra alors `initAudioBackground: true`).
+  @visibleForTesting
+  factory BootstrapOptions.forTests({
+    FlavorSettings? overrideFlavorSettings,
+  }) =>
+      BootstrapOptions(
+        initAudioBackground: false,
+        initFirebase: false,
+        listenConnectivity: false,
+        fetchDeviceAndAppInfo: false,
+        registerAudioServices: false,
+        overrideFlavorSettings: overrideFlavorSettings,
+      );
+}
+
+/// Init de l'app, extrait pour être réutilisable depuis les tests
+/// d'intégration sans dupliquer la logique. Ne fait pas `runApp` —
+/// le caller décide entre `runApp(OremusApp())` (prod) et
+/// `tester.pumpWidget(OremusApp())` (test).
+Future<void> bootstrap({
+  BootstrapOptions options = const BootstrapOptions(),
+}) async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialiser le service de lecture en arrière-plan
-  await JustAudioBackground.init(
-    androidNotificationChannelId: 'com.oremusapp.audio',
-    androidNotificationChannelName: 'Oremus Rosaire',
-    androidNotificationChannelDescription: 'Lecture audio du Rosaire',
-    androidNotificationOngoing: true,
-    androidShowNotificationBadge: true,
-    androidStopForegroundOnPause: true,
-    notificationColor: colorGreen,
-    androidNotificationIcon: 'mipmap/ic_launcher',
-  );
+  if (options.initAudioBackground) {
+    await JustAudioBackground.init(
+      androidNotificationChannelId: 'com.oremusapp.audio',
+      androidNotificationChannelName: 'Oremus Rosaire',
+      androidNotificationChannelDescription: 'Lecture audio du Rosaire',
+      androidNotificationOngoing: true,
+      androidShowNotificationBadge: true,
+      androidStopForegroundOnPause: true,
+      notificationColor: colorGreen,
+      androidNotificationIcon: 'mipmap/ic_launcher',
+    );
+  }
 
-  initializeDateFormatting('fr_FR', null).then((_) async {
-    final settings = await _getFlavorSettings();
-    appUrl =
-        settings.oremusFlavor.apiBaseUrl.toString() +
-        settings.oremusFlavor.endpoint.toString();
-    customBaseUrl =
-        settings.oremusFlavor.customBaseUrl.toString() +
-        settings.oremusFlavor.endpoint.toString();
-    shareAppLink = settings.oremusFlavor.shareAppLink;
-    canCheckConnectivity = settings.oremusFlavor.canCheckConectivity;
-    oneSignalAppID = settings.oremusFlavor.oneSignalAppID;
-    showAppLogs = settings.oremusFlavor.showAppLogs;
-    bypassCert = settings.oremusFlavor.bypassCert;
-    //byPassAuth = settings.oremusFlavor.byPassAuth;
+  await initializeDateFormatting('fr_FR', null);
 
-    await LoggerService.initialize(showAppLogs: showAppLogs);
+  final settings =
+      options.overrideFlavorSettings ?? await _getFlavorSettings();
+  appUrl = settings.oremusFlavor.apiBaseUrl.toString() +
+      settings.oremusFlavor.endpoint.toString();
+  customBaseUrl = settings.oremusFlavor.customBaseUrl.toString() +
+      settings.oremusFlavor.endpoint.toString();
+  shareAppLink = settings.oremusFlavor.shareAppLink;
+  canCheckConnectivity = settings.oremusFlavor.canCheckConectivity;
+  oneSignalAppID = settings.oremusFlavor.oneSignalAppID;
+  showAppLogs = settings.oremusFlavor.showAppLogs;
+  bypassCert = settings.oremusFlavor.bypassCert;
 
-    // Initialiser Dio
-    await DioUtil().initialize();
+  await LoggerService.initialize(showAppLogs: showAppLogs ?? false);
 
-    // Initialiser la base de données avec gestion d'erreur
-    bool dbInitSuccess = await DB.initDatabase();
-    if (!dbInitSuccess) {
-      log(
-        'AVERTISSEMENT: Échec de l\'initialisation de la base de données, l\'application fonctionnera sans persistance',
-      );
-    }
+  await DioUtil().initialize();
 
-    await TokenStore.migrateFromHive();
+  bool dbInitSuccess = await DB.initDatabase();
+  if (!dbInitSuccess) {
+    log(
+      'AVERTISSEMENT: Échec de l\'initialisation de la base de données, l\'application fonctionnera sans persistance',
+    );
+  }
 
+  await TokenStore.migrateFromHive();
+
+  if (options.fetchDeviceAndAppInfo) {
     await getDeviceInfos();
     getAppVersion();
+  }
 
-    // Initialiser la surveillance de la connectivité
+  if (options.listenConnectivity) {
     Connectivity().onConnectivityChanged.listen((
       List<ConnectivityResult> result,
     ) {
@@ -109,27 +154,32 @@ void main() async {
       }
     });
 
-    // Obtenir l'état initial de la connectivité
     final connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult.isNotEmpty) {
       connectivityStatus.value = connectivityResult.first;
     }
+  }
 
-    Jiffy.setLocale('fr');
-    configOrientation();
-    configLoading();
-    prepareArtworkFile();
+  Jiffy.setLocale('fr');
+  configOrientation();
+  configLoading();
+  prepareArtworkFile();
 
+  if (options.initFirebase) {
     await Firebase.initializeApp();
     FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+  }
 
-    // Enregistrer les services utilisés par l'application
+  if (options.registerAudioServices) {
     Get.put(AudioFileManagerService(), permanent: true);
     Get.put(AudioPlayerService(), permanent: true);
+  }
+}
 
-    runApp(OremusApp());
-  });
+void main() async {
+  await bootstrap();
+  runApp(OremusApp());
 }
 
 class OremusApp extends StatelessWidget {
