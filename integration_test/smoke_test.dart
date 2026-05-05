@@ -1,44 +1,22 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hive/hive.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:oremusapp/app/commons/db/db.dart';
-import 'package:oremusapp/app/commons/services/token_store.dart';
-import 'package:oremusapp/app/configs/services/logger_service.dart';
+import 'package:oremusapp/app/configs/flavor_settings.dart';
 import 'package:oremusapp/main.dart' as app;
 
-/// Smoke test "boot l'app" : exerce l'init minimale puis vérifie que
-/// le SplashScreen rend sans crash.
-///
-/// On évite d'appeler `app.main()` directement car il fait :
-///  - JustAudioBackground.init (channel natif)
-///  - Firebase.initializeApp
-///  - FirebaseCrashlytics
-///  - Connectivity().checkConnectivity (channel natif)
-///  - OneSignal init (via CustomHomeController plus tard)
-///
-/// On reproduit ici un sous-ensemble suffisant pour faire vivre OremusApp.
+/// Smoke test : exerce le `bootstrap()` réel de l'app (via
+/// `BootstrapOptions.forTests`) puis vérifie qu'`OremusApp` rend le
+/// splash sans crash.
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  const flavorChannel = MethodChannel('flavor');
   const secureStorageChannel =
       MethodChannel('plugins.it_nomads.com/flutter_secure_storage');
-  late Directory hiveTempDir;
+  final fakeSecureStorage = <String, String>{};
 
   setUpAll(() async {
-    // 1. Mock du MethodChannel `flavor` (sinon `_getFlavorSettings` throw).
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(flavorChannel, (call) async {
-      if (call.method == 'getFlavor') return 'dev';
-      return null;
-    });
-
-    // 2. Mock secure storage en mémoire.
-    final fakeSecureStorage = <String, String>{};
+    // Mock secure_storage en mémoire (pour TokenStore.getAccessToken etc.)
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(secureStorageChannel, (call) async {
       switch (call.method) {
@@ -64,33 +42,18 @@ void main() {
       }
     });
 
-    // 3. Hive sur disque temp + box assignée à DB.encryptedBox.
-    hiveTempDir = await Directory.systemTemp.createTemp('oremus_smoke_test');
-    Hive.init(hiveTempDir.path);
-    DB.encryptedBox = await Hive.openBox('smoke_test_box');
-
-    // 4. LoggerService (set OremusLogger._instance + LoggerService.talker).
-    await LoggerService.initialize(showAppLogs: false);
-
-    // 5. Globals normalement set par _getFlavorSettings dans main().
-    app.flavor = 'dev';
-    app.appUrl = 'https://api-test.local';
-    app.customBaseUrl = 'https://report-test.local';
-    app.canCheckConnectivity = false;
-    app.bypassCert = true;
-    app.showAppLogs = false;
+    // Boot avec settings dev injectés (skip Firebase / OneSignal /
+    // JustAudioBackground / connectivity / device info / audio services).
+    await app.bootstrap(
+      options: app.BootstrapOptions.forTests(
+        overrideFlavorSettings: FlavorSettings.dev(),
+      ),
+    );
   });
 
-  tearDownAll(() async {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(flavorChannel, null);
+  tearDownAll(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(secureStorageChannel, null);
-    await DB.encryptedBox?.close();
-    DB.encryptedBox = null;
-    TokenStore.resetCacheForTesting();
-    await Hive.close();
-    await hiveTempDir.delete(recursive: true);
   });
 
   testWidgets('OremusApp se construit sans crash et affiche le splash',
@@ -100,9 +63,6 @@ void main() {
     // a un timer de 3s qui déclenche une nav.
     await tester.pump();
 
-    // Le splash doit être visible. Sa structure exacte est détaillée dans
-    // splashscreen_screen.dart ; on vérifie au minimum un MaterialApp et
-    // qu'il n'y a pas de crash.
     expect(find.byType(MaterialApp), findsOneWidget);
   });
 }
