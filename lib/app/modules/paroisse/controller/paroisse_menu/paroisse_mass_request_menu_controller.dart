@@ -131,7 +131,7 @@ class ParoisseMassRequestMenuController extends GetxController {
   checkIfUserIsconnected(String code) {
     Get.bottomSheet(
       Container(
-        height: Get.height * 0.32, // Légèrement plus haut pour plus d'espace
+        height: Get.height * 0.4,
         decoration: BoxDecoration(
           color: colorWhite,
           borderRadius: const BorderRadius.only(
@@ -248,6 +248,7 @@ class ParoisseMassRequestMenuController extends GetxController {
                   ),
                 ],
               ),
+              SizedBox(height: MediaQuery.of(Get.context!).padding.bottom)
             ],
           ),
         ),
