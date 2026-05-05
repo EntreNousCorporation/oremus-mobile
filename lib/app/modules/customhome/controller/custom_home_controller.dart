@@ -10,6 +10,7 @@ import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/services/notification_consent_manager.dart';
 import 'package:oremusapp/app/commons/services/os_notification_service.dart';
+import 'package:oremusapp/app/commons/services/token_store.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/customhome/data/model/menu_item.dart';
@@ -232,7 +233,7 @@ class CustomHomeController extends GetxController {
     Get.offAllNamed(Routes.SIGNIN);
   }
 
-  doLogout() {
+  Future<void> doLogout() async {
     // Mémoriser l'ID de l'utilisateur avant la déconnexion
     ParoisseController.prepareForLogout();
 
@@ -251,7 +252,10 @@ class CustomHomeController extends GetxController {
       log('FavoriteController not available: $e');
     }
 
-    // Effacer les données de connexion
+    // Effacer les tokens en secure storage. Bug latent corrigé : sans
+    // ça, l'access/refresh restait dans le Keychain/EncryptedSharedPrefs
+    // après un logout manuel et pouvait être réutilisé au boot suivant.
+    await TokenStore.clear();
     DB.saveData(AppConstants.KEY_USER_LOG_INFOS, null);
     Get.deleteAll(force: false);
     isUserConnected.value = false;
