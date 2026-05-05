@@ -45,7 +45,12 @@ class ApiClientImpl implements ApiClient {
       headers[HttpHeaders.contentTypeHeader] =
           'application/json; charset=utf-8';
       headers[HttpHeaders.acceptHeader] = 'application/json';
-      headers['dId'] = phoneId;
+      // `phoneId` est rempli par `getDeviceInfos()` au boot ; les tests qui
+      // skippent cette étape laissent la valeur null. On reste défensif :
+      // omettre le header plutôt que crasher sur l'assignation Map<String,String>.
+      if (phoneId is String && (phoneId as String).isNotEmpty) {
+        headers['dId'] = phoneId;
+      }
       headers['platform'] = Platform.isAndroid ? 'Android' : 'iOS';
       if (useBearer) {
         final token = await TokenStore.getAccessToken();

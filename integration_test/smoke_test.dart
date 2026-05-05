@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:oremusapp/app/configs/flavor_settings.dart';
 import 'package:oremusapp/main.dart' as app;
+
+import 'test_helpers/secure_storage_mock.dart';
 
 /// Smoke test : exerce le `bootstrap()` réel de l'app (via
 /// `BootstrapOptions.forTests`) puis vérifie qu'`OremusApp` rend le
@@ -11,39 +12,10 @@ import 'package:oremusapp/main.dart' as app;
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  const secureStorageChannel =
-      MethodChannel('plugins.it_nomads.com/flutter_secure_storage');
-  final fakeSecureStorage = <String, String>{};
+  final secureStorage = SecureStorageMock();
 
   setUpAll(() async {
-    // Mock secure_storage en mémoire (pour TokenStore.getAccessToken etc.)
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(secureStorageChannel, (call) async {
-      switch (call.method) {
-        case 'read':
-          return fakeSecureStorage[call.arguments['key'] as String];
-        case 'write':
-          fakeSecureStorage[call.arguments['key'] as String] =
-              call.arguments['value'] as String;
-          return null;
-        case 'delete':
-          fakeSecureStorage.remove(call.arguments['key'] as String);
-          return null;
-        case 'readAll':
-          return Map<String, String>.from(fakeSecureStorage);
-        case 'deleteAll':
-          fakeSecureStorage.clear();
-          return null;
-        case 'containsKey':
-          return fakeSecureStorage
-              .containsKey(call.arguments['key'] as String);
-        default:
-          return null;
-      }
-    });
-
-    // Boot avec settings dev injectés (skip Firebase / OneSignal /
-    // JustAudioBackground / connectivity / device info / audio services).
+    secureStorage.install();
     await app.bootstrap(
       options: app.BootstrapOptions.forTests(
         overrideFlavorSettings: FlavorSettings.dev(),
@@ -52,8 +24,7 @@ void main() {
   });
 
   tearDownAll(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(secureStorageChannel, null);
+    secureStorage.uninstall();
   });
 
   testWidgets('OremusApp se construit sans crash et affiche le splash',
