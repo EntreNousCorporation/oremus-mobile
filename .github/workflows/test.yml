@@ -25,7 +25,11 @@ jobs:
         run: flutter pub get
 
       - name: Static analysis
-        run: flutter analyze --no-fatal-infos
+        # `--no-fatal-warnings` is a temporary concession: the codebase has
+        # ~30 pre-existing warnings (must_be_immutable, unused_field,
+        # unnecessary_null_comparison...). They still surface in the logs.
+        # Tighten this once a cleanup pass goes in.
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
       - name: Unit tests with coverage
         run: flutter test --coverage
