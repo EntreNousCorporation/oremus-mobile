@@ -8,10 +8,10 @@ class FlavorSettings {
   //------------------------------------+
   FlavorSettings.dev()
     : oremusFlavor = OremusFlavor(
-        //apiBaseUrl: 'https://api-dev.oremus.ci',
-        //customBaseUrl: 'https://report-dev.oremus.ci',
-        apiBaseUrl: 'https://api.oremus.ci',
-        customBaseUrl: 'https://report.oremus.ci',
+        apiBaseUrl: 'https://api-dev.oremus.ci',
+        customBaseUrl: 'https://report-dev.oremus.ci',
+        //apiBaseUrl: 'https://api.oremus.ci',
+        //customBaseUrl: 'https://report.oremus.ci',
         endpoint: '',
         shareAppLink: 'https://download-dev.oremus.ci/store-link',
         byPassAuth: false,
