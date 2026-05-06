@@ -213,10 +213,10 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                     ),
 
                                     // Champ de recherche
-                                    Expanded(
+                                    const Expanded(
                                       child: SizedBox(
                                         height: 50,
-                                        child: const Center(
+                                        child: Center(
                                           child: SearchWidget(),
                                         ),
                                       ),
@@ -244,7 +244,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                           position: b.BadgePosition.topEnd(
                                               top: -8, end: -8),
                                           badgeColor: colorGreenSemiLight,
-                                          padding: EdgeInsets.all(6),
+                                          padding: const EdgeInsets.all(6),
                                           badgeContent: Text(
                                             '${controller.searchCriteria.value.countCriteria}',
                                             style: TextStyles.montserratBold(
