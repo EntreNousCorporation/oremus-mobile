@@ -52,8 +52,6 @@ class ApiClientImpl implements ApiClient {
         headers['dId'] = phoneId;
       }
       headers['platform'] = Platform.isAndroid ? 'Android' : 'iOS';
-      log("useBearer => $useBearer");
-      log("getAccessToken => ${await TokenStore.getAccessToken()}");
       if (useBearer) {
         final token = await TokenStore.getAccessToken();
         if (token != null && token.isNotEmpty) {

@@ -116,10 +116,10 @@ class SigninController extends GetxController {
         unlockBackButton.value = true;
       });
       lockScreen(false);
-      if (value.accessToken != null && value.refreshToken != null) {
+      if (value.accessToken?.isNotEmpty == true) {
         await TokenStore.saveTokens(
           accessToken: value.accessToken!,
-          refreshToken: value.refreshToken!,
+          refreshToken: value.refreshToken,
         );
       }
       Map<String, dynamic> payload = Jwt.parseJwt(value.accessToken ?? '');
