@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
@@ -212,6 +213,7 @@ class ParoisseDonationMenuController extends GetxController {
   }
 
   moveToLogin(String code) async {
+    OremusLogger.debug('code ::: $code}');
     var result = await Get.toNamed(
       Routes.SIGNIN,
       arguments: true,
@@ -219,10 +221,10 @@ class ParoisseDonationMenuController extends GetxController {
     if (result == true) {
       log('back moveToLogin');
       switch (code) {
-        case 'DH':
+        case 'FD':
           moveToDonation();
           break;
-        case 'FD':
+        case 'DH':
           moveToDonationHistory();
           break;
       }

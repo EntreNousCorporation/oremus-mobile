@@ -99,6 +99,7 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                 body: Stack(
                   children: [
                     Container(
+                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
                       color: colorGrey4,
                       width: double.infinity,
                       child: Column(
@@ -301,7 +302,6 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                               : controller.hasData.isTrue
                               ? Expanded(
                                 child: SmartRefresher(
-                                  //scrollController: controller.scrollController,
                                   enablePullDown: true,
                                   enablePullUp: true,
                                   onRefresh: controller.onRefresh,
@@ -385,16 +385,14 @@ class _ParoisseScreenState extends State<ParoisseScreen>
                                     },
                                   ),
                                   controller: controller.refreshController,
-                                  physics:
-                                      const AlwaysScrollableScrollPhysics(
-                                        parent: BouncingScrollPhysics(),
-                                      ),
+                                  physics: const AlwaysScrollableScrollPhysics(
+                                    parent: BouncingScrollPhysics(),
+                                  ),
                                   child: ListView.separated(
                                     physics:
                                         const NeverScrollableScrollPhysics(),
                                     padding: const EdgeInsets.only(
                                       top: 16,
-                                      bottom: 0,
                                       left: 16,
                                       right: 16,
                                     ),
