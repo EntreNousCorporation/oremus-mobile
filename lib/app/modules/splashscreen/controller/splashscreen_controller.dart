@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
@@ -63,10 +65,22 @@ class SplashscreenController extends GetxController {
     return AnimationPlayStates.None;
   }
 
+  Timer? _initialViewTimer;
+
   getInitialView() {
-    Future.delayed(const Duration(seconds: 3), () {
+    // Timer cancellable plutôt que Future.delayed : indispensable pour les
+    // tests d'intégration où plusieurs OremusApp sont mountés/démountés en
+    // séquence. Sans cancel, le timer du splash d'un test précédent fire
+    // pendant un autre test et écrase la navigation en cours.
+    _initialViewTimer = Timer(const Duration(seconds: 3), () {
       Get.offNamed(Routes.CUSTOM_HOME_NEW);
-      //Get.offNamed(Routes.CUSTOM_HOME);
     });
+  }
+
+  @override
+  void onClose() {
+    _initialViewTimer?.cancel();
+    _initialViewTimer = null;
+    super.onClose();
   }
 }
