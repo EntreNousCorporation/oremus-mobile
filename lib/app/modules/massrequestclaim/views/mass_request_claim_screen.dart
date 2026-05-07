@@ -442,9 +442,9 @@ class MassRequestClaimScreen extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                                  child: const ClaimTypeFilter(),
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                                  child: ClaimTypeFilter(),
                                 ),
                               ],
                             ),
@@ -496,9 +496,9 @@ class MassRequestClaimScreen extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                                  child: const ClaimTypeWidget(),
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                                  child: ClaimTypeWidget(),
                                 ),
                               ],
                             ),
@@ -529,6 +529,7 @@ class MassRequestClaimScreen extends StatelessWidget {
                               },
                             ),
                           ),
+                          Separators.customSizeVertical(MediaQuery.of(context).padding.bottom + 30),
                         ],
                       ),
                     ),

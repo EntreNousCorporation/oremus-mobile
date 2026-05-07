@@ -330,7 +330,7 @@ class DonationRecapScreen extends StatelessWidget {
                               controller.doSendDonation();
                             },
                           ),
-                          const SizedBox(height: 16),
+                          Separators.customSizeVertical(MediaQuery.of(context).padding.bottom + 30),
                         ]),
                       ),
                     ),

@@ -436,7 +436,7 @@ class MassRequestRecapScreen extends StatelessWidget {
                               controller.doSendMassRequest();
                             },
                           ),
-                          const SizedBox(height: 16),
+                         Separators.customSizeVertical(MediaQuery.of(context).padding.bottom + 30),
                         ]),
                       ),
                     ),
