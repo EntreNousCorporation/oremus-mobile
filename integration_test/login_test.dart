@@ -77,18 +77,22 @@ void main() {
     Get.toNamed(Routes.SIGNIN);
     await tester.pumpAndSettle();
 
-    // Saisie via les controllers du SigninController : enterText sur les
-    // MyTextField passe par leurs FocusNode et déclenche checkForm via
-    // les listeners ; on garde quand même un appel explicite par sûreté.
-    final controller = Get.find<SigninController>();
-    controller.emailController.text = 'test@example.com';
-    controller.passwordController.text = 'password123';
-    controller.checkForm();
-    await tester.pump();
+    // Saisie via vrais gestures clavier `tester.enterText` sur les
+    // TextFormField (email = 1er, password = 2ème). Cela passe par les
+    // FocusNode et déclenche `onChanged` → `controller.checkForm()`.
+    final emailField = find.byType(TextFormField).at(0);
+    final passwordField = find.byType(TextFormField).at(1);
+    await tester.enterText(emailField, 'test@example.com');
+    await tester.enterText(passwordField, 'password123');
+    await tester.pumpAndSettle();
 
+    final controller = Get.find<SigninController>();
+    expect(controller.emailController.text, 'test@example.com');
+    expect(controller.passwordController.text, 'password123');
     expect(controller.isValidForm.isTrue, true,
         reason: 'le bouton "Se connecter" est gris-désactivé tant que '
-            'isValidForm est false');
+            'isValidForm est false ; checkForm doit être déclenché par '
+            'le onChanged des TextFormField');
 
     // Tap sur le bouton submit (ElevatedButton qui contient "Se connecter").
     await tester.tap(find.widgetWithText(ElevatedButton, 'Se connecter'));
