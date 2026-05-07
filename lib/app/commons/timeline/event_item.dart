@@ -40,7 +40,7 @@ class TimelineEventCard extends StatelessWidget {
   final Widget content;
   final EdgeInsetsGeometry padding;
 
-  TimelineEventCard({
+  const TimelineEventCard({super.key, 
     required this.title,
     required this.content,
     this.padding = const EdgeInsets.only(left: 16, top: 12, right: 16, bottom: 20),
@@ -49,8 +49,8 @@ class TimelineEventCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(
-          borderRadius: new BorderRadius.all(new Radius.circular(2.0)),
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(2.0)),
         ),
         child: _buildBody(context));
   }

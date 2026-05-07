@@ -129,7 +129,7 @@ class WorshipSpecialHoursList extends StatelessWidget {
 
             // Si aucun horaire n'est disponible, ne pas afficher cette messe
             if (availableSlots.isEmpty) {
-              return SizedBox.shrink();
+              return const SizedBox.shrink();
             }
 
             return Container(

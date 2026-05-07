@@ -10,7 +10,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/liturgical_celebration
 class DayConfessionItem extends StatelessWidget {
   DayConfessionItem({Key? key, required this.openingTime}) : super(key: key);
 
-  OpeningTime? openingTime;
+  final OpeningTime? openingTime;
 
   @override
   Widget build(BuildContext context) {

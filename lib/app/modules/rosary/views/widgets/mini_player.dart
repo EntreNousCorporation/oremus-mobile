@@ -33,7 +33,6 @@ class MiniPlayer extends StatelessWidget {
       case RosaryStyle.prestigieux:
         return PrestigieuxPlayer(audioService: audioService, controller: rosaryController);
       case RosaryStyle.classic:
-      default:
         return ClassicPlayer(audioService: audioService, controller: rosaryController);
     }
   }

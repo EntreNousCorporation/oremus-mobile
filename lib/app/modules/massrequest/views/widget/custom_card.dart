@@ -4,7 +4,7 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 class CustomCard extends StatelessWidget {
   CustomCard({super.key, required this.content});
 
-  Widget content;
+  final Widget content;
 
   @override
   Widget build(BuildContext context) {

@@ -253,7 +253,7 @@ class FilterMassRequestDateScreen extends StatelessWidget {
                     textSize: TextSizes.fourteen,
                   ),
                 ),
-                Icon(
+                const Icon(
                   Icons.calendar_today,
                   size: 16,
                   color: colorGreenSemiLight,

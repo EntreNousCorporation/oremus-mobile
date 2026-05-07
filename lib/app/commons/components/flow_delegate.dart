@@ -69,13 +69,13 @@ class Parallax extends SingleChildRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderParallax(scrollable: Scrollable.of(context)!);
+    return RenderParallax(scrollable: Scrollable.of(context));
   }
 
   @override
   void updateRenderObject(
       BuildContext context, covariant RenderParallax renderObject) {
-    renderObject.scrollable = Scrollable.of(context)!;
+    renderObject.scrollable = Scrollable.of(context);
   }
 }
 
