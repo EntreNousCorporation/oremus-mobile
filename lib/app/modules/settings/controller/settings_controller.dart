@@ -14,10 +14,6 @@ class SettingsController extends GetxController {
   var isLoading = false.obs;
 
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   doCheckAndRequestConsent() async {
     await _notificationService.checkAndRequestConsent(Get.context!);

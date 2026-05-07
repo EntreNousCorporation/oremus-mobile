@@ -504,6 +504,7 @@ class _RosaryScreenState extends State<RosaryScreen> {
   }
 
   // Widget pour l'information sur le jour actuel
+  // ignore: unused_element
   Widget _buildDailyInfo() {
     final currentDay = audioService.getCurrentDayName();
     final suggestedMysteryIndex = audioService.getMysteryIndexForCurrentDay();
@@ -569,6 +570,7 @@ class _RosaryScreenState extends State<RosaryScreen> {
     );
   }
 
+  // ignore: unused_element
   Widget _buildSimpleSpeedButton() {
     return Obx(() => GestureDetector(
       onTap: () => audioService.cycleSpeed(),

@@ -18,8 +18,6 @@ class FilterParoisseScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<FilterParoisseController>();
-
     return Container(
       color: colorGreen,
       child: GetBuilder<FilterParoisseController>(

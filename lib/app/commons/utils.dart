@@ -473,11 +473,6 @@ List<PriceData> duplicateEventsByRepeat(List<PriceData> events) {
 
 bool isDayOfWeekInDateRange(int dayOfWeek, DateTime startDate, DateTime endDate) {
   // Vérifier si les dates sont valides
-  if (startDate == null || endDate == null) {
-    return false;
-  }
-
-  // Convertir dayOfWeek (0-6) en format standard (1-7)
   int standardDayOfWeek = dayOfWeek + 1;
 
   // Parcourir la période jour par jour
@@ -641,7 +636,7 @@ extension ColorExtension on Color {
       red ?? this.red,
       green ?? this.green,
       blue ?? this.blue,
-      alpha ?? this.opacity,
+      alpha ?? opacity,
     );
   }
 }

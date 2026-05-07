@@ -133,7 +133,7 @@ class ParoisseContactController extends GetxController {
       if (code.value == 'DM') {
         contacts.value = value.where((element) => element.name == AppConstants.DEMANDE_MESSE).toList();
       } else {
-        contacts.value = value.where((element) => element.name != AppConstants.DEMANDE_MESSE).toList();;
+        contacts.value = value.where((element) => element.name != AppConstants.DEMANDE_MESSE).toList();
       }
       if (contacts.isNotEmpty == true) {
         hasData(true);

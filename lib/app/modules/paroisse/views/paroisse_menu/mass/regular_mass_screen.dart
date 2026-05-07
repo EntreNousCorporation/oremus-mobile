@@ -59,7 +59,7 @@ class RegularMassScreen extends StatelessWidget {
                         data: Theme.of(context).copyWith(
                           dividerColor: Colors.transparent,
                           colorScheme: Theme.of(context).colorScheme.copyWith(
-                            background: Colors.transparent,
+                            surface: Colors.transparent,
                           ),
                         ),
                         child: ExpansionTile(

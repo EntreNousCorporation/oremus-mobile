@@ -9,7 +9,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 class DioceseItem extends StatelessWidget {
   DioceseItem({Key? key, required this.diocese}) : super(key: key);
 
-  ContentPlace? diocese;
+  final ContentPlace? diocese;
 
   @override
   Widget build(BuildContext context) {

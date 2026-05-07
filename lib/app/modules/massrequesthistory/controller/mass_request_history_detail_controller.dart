@@ -130,9 +130,6 @@ class MassRequestHistoryDetailController extends GetxController implements Histo
 
   doGetAllAvailablesStatuses() {
     hideKeyboard();
-    var request = SearchCriteria(
-      traceId: massRequestSelected.value.traceId.toString(),
-    );
     isDataProcessing(true);
     hasData(false);
     hasError(false);

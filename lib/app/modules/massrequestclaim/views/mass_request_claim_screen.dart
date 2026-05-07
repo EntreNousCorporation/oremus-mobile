@@ -289,6 +289,7 @@ class MassRequestClaimScreen extends StatelessWidget {
 
                           // Parish selector (hidden by default)
                           if (false) // requestMassWithoutWorship.value when feature available
+                            // ignore: dead_code
                             Container(
                               margin: const EdgeInsets.only(bottom: 24),
                               decoration: BoxDecoration(
