@@ -331,7 +331,7 @@ class CalendarService {
         log('🗑️ Suppression: ${event.eventId}');
         final result = await _calendar.deleteEvent(calendar.id!, event.eventId!);
 
-        if (result.isSuccess ?? false) {
+        if (result.isSuccess) {
           deletedCount++;
           log('✅ Événement supprimé: ${event.eventId}');
         } else {

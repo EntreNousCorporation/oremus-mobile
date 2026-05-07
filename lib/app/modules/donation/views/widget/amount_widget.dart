@@ -79,6 +79,7 @@ class AmountWidget extends StatelessWidget {
     });
   }
 
+  // ignore: unused_element
   Widget _buildQuickAmountButton(DonationController controller, String displayAmount, String amount) {
     return Expanded(
       child: GestureDetector(

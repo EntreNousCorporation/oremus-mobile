@@ -13,11 +13,11 @@ class InfoSection extends StatelessWidget {
     this.padding,
   });
 
-  String label;
-  String value;
-  IconData? icon;
-  bool isFirst;
-  EdgeInsetsGeometry? padding;
+  final String label;
+  final String value;
+  final IconData? icon;
+  final bool isFirst;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {

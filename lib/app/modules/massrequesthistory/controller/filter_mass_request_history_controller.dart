@@ -146,7 +146,7 @@ class FilterMassRequestHistoryController extends GetxController {
   //SEARCH SECTION
   resetMassRequestTypeSearch() {
     typeMassRequestSearchController.clear();
-    massRequestTypesTemp.value = massRequestTypes.value;
+    massRequestTypesTemp.assignAll(massRequestTypes);
     hideKeyboard();
   }
 }

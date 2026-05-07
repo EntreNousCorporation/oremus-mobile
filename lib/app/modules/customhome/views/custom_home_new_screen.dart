@@ -245,6 +245,7 @@ class CustomHomeNewScreen extends StatelessWidget {
     );
   }
 
+  // ignore: unused_element
   Widget _buildWelcomeSection() {
     return Column(
       children: [

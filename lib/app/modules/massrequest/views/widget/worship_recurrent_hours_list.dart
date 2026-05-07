@@ -267,7 +267,6 @@ class WorshipRecurrentHoursList extends StatelessWidget {
 
             final dayOfWeek = int.parse(item.dayOfWeek ?? '0') + 1;
             final currentDayDate = getDateForDayOfWeek(ruleBasedDate, dayOfWeek);
-            final isFirstDay = isFirstOccurrence(currentDayDate, ruleBasedDate);
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -375,6 +374,7 @@ class WorshipRecurrentHoursList extends StatelessWidget {
     return result;
   }
 
+  // ignore: unused_element
   TimeRange _determineTimeRange(DateTime now) {
     final currentHour = now.hour;
     final currentMinute = now.minute;

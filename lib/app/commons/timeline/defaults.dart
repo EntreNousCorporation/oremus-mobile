@@ -24,20 +24,20 @@ class TimelineDots {
       decoration: BoxDecoration(
           color: Theme.of(context).primaryColor,
           image: null,
-          borderRadius: BorderRadius.all(Radius.circular(16)),
+          borderRadius: const BorderRadius.all(Radius.circular(16)),
           border: Border.all()),
     );
   }
 
   Widget get icon {
-    return Icon(Icons.event);
+    return const Icon(Icons.event);
   }
 
   Widget get section {
     return Container(
       height: 12,
       width: 12,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.black,
         image: null,
         shape: BoxShape.circle,
@@ -49,11 +49,11 @@ class TimelineDots {
     return Container(
       width: 24,
       height: 24,
-      child: Icon(
+      child: const Icon(
         Icons.event,
         color: Colors.white,
       ),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           color: Colors.lightBlue,
           borderRadius: BorderRadius.all(
             Radius.circular(64),

@@ -694,9 +694,10 @@ class MassRequestWithWorshipController extends GetxController {
 
     // Calculer combien de jours ajouter pour atteindre le jour cible
     int daysToAdd = targetWeekday - date.weekday;
-    if (daysToAdd < 0)
+    if (daysToAdd < 0) {
       daysToAdd +=
           7; // Si le jour cible est avant aujourd'hui, passer à la semaine suivante
+    }
 
     result = result.add(Duration(days: daysToAdd));
     return result;
@@ -927,7 +928,7 @@ class MassRequestWithWorshipController extends GetxController {
               DateTime now = DateTime.now();
               DateTime today = DateTime(now.year, now.month, now.day);
 
-              DateTime datetime = allowedDates.value.firstWhere(
+              DateTime datetime = allowedDates.firstWhere(
                 (date) => date.isAfter(today) || date.isAtSameMomentAs(today),
                 orElse: () => allowedDates.first,
               );
