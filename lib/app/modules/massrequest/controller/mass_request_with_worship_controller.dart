@@ -801,7 +801,8 @@ class MassRequestWithWorshipController extends GetxController {
             update();
           },
           onError: (error) {
-            var err = error as CustomException;
+            if (error is! CustomException) return;
+            final err = error;
             if (err.code == 401) {
               showCustomDialog(
                 Get.context!,
@@ -832,7 +833,8 @@ class MassRequestWithWorshipController extends GetxController {
             update();
           },
           onError: (error) {
-            var err = error as CustomException;
+            if (error is! CustomException) return;
+            final err = error;
             if (err.code == 401) {
               showCustomDialog(
                 Get.context!,
@@ -936,7 +938,8 @@ class MassRequestWithWorshipController extends GetxController {
           },
           onError: (error) {
             isDatesProcessing(false);
-            var err = error as CustomException;
+            if (error is! CustomException) return;
+            final err = error;
             if (err.code == 401) {
               showCustomDialog(
                 Get.context!,
@@ -975,7 +978,8 @@ class MassRequestWithWorshipController extends GetxController {
           onError: (error) {
             isPricingProcessing(false);
             hasData(false);
-            var err = error as CustomException;
+            if (error is! CustomException) return;
+            final err = error;
             if (err.code == 401) {
               showCustomDialog(
                 Get.context!,

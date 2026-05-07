@@ -108,7 +108,8 @@ class SignupController extends GetxController {
       lockScreen(false);
       debugPrint("error => ${error.toString()}");
 
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       debugPrint("error => ${err.toString()}");
       if (err.code == 409) {
         showNotification(

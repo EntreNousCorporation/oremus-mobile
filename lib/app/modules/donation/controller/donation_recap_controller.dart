@@ -124,7 +124,8 @@ class DonationRecapController extends GetxController implements PaymentMethodSel
         update();
       },
       onError: (error) {
-        var err = error as CustomException;
+        if (error is! CustomException) return;
+        final err = error;
         if (err.code == 401) {
           showCustomDialog(
             Get.context!,
@@ -193,7 +194,8 @@ class DonationRecapController extends GetxController implements PaymentMethodSel
           unlockBackButton.value = true;
         });
         debugPrint("error => ${error.toString()}");
-        var err = error as CustomException;
+        if (error is! CustomException) return;
+        final err = error;
         if (err.code == 401) {
           showCustomDialog(
             Get.context!,

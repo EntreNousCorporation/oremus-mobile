@@ -76,7 +76,8 @@ class PrayController extends GetxController {
     }, onError: (error) {
       isMisselPrayersDataProcessing(false);
       hasMisselPrayersData(false);
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -104,7 +105,8 @@ class PrayController extends GetxController {
           }
     }, onError: (error) {
       refreshMisselPrayerController.refreshCompleted();
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -134,7 +136,8 @@ class PrayController extends GetxController {
       }
     }, onError: (error) {
       refreshMisselPrayerController.loadFailed();
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -177,7 +180,8 @@ class PrayController extends GetxController {
     }, onError: (error) {
       isCustomPrayersDataProcessing(false);
       hasCustomPrayersData(false);
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -205,7 +209,8 @@ class PrayController extends GetxController {
           }
     }, onError: (error) {
       refreshCustomPrayersController.refreshCompleted();
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -235,7 +240,8 @@ class PrayController extends GetxController {
       }
     }, onError: (error) {
       refreshCustomPrayersController.loadFailed();
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,

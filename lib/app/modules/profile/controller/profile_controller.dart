@@ -98,7 +98,8 @@ class ProfileController extends GetxController {
       isDataProcessing(false);
       hasData(false);
       hasError(true);
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -205,7 +206,8 @@ class ProfileController extends GetxController {
       EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;
       });
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,

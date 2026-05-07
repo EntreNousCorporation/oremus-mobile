@@ -109,7 +109,8 @@ class FilterParoisseController extends GetxController {
     }, onError: (error) {
       isWorshipPlaceDataProcessing(false);
       hasWorshipPlaceData(false);
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
             Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
@@ -142,7 +143,8 @@ class FilterParoisseController extends GetxController {
     }, onError: (error) {
       isDioceseDataProcessing(false);
       hasDioceseData(false);
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
             Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',

@@ -112,7 +112,8 @@ class ParoisseMassController extends GetxController {
     }, onError: (error) {
       isRegularMassDataProcessing(false);
       hasRegularMassData(false);
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -145,7 +146,8 @@ class ParoisseMassController extends GetxController {
       }
     }, onError: (error) {
       refreshController.refreshCompleted();
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -188,7 +190,8 @@ class ParoisseMassController extends GetxController {
     }, onError: (error) {
       isSpecialMassDataProcessing(false);
       hasSpecialMassData(false);
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -226,7 +229,8 @@ class ParoisseMassController extends GetxController {
       }
     }, onError: (error) {
       refreshNotRecurrentController.refreshCompleted();
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,

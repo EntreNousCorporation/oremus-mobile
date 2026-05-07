@@ -99,7 +99,8 @@ class ResetPasswordController extends GetxController {
       });
       lockScreen(false);
       debugPrint("error => ${error.toString()}");
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (error.toString().isNotEmpty && error is Map) {
         var errorResponse = ErrorResponse.fromJson(json.decode(error.toString()));
         showNotification(
