@@ -272,12 +272,12 @@ class FilterParoisseController extends GetxController {
   //SEARCH SECTION
   resetTypeLiturgicalSearch() {
     typeLiturgicalSearchController.clear();
-    paroisseTypesTemp.value = paroisseTypes.value;
+    paroisseTypesTemp.assignAll(paroisseTypes);
     hideKeyboard();
   }
   resetDioceseSearch() {
     dioceseSearchController.clear();
-    diocesesTemp.value = dioceses.value;
+    diocesesTemp.assignAll(dioceses);
     hideKeyboard();
   }
 }

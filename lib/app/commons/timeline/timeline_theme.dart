@@ -5,6 +5,7 @@ import 'package:oremusapp/app/commons/timeline/timeline_theme_data.dart';
 /// The timeline theme is honored by [Timeline] widgets.
 class TimelineTheme extends InheritedTheme {
   final TimelineThemeData data;
+  @override
   final Widget child;
 
   /// Creates an timeline theme that controls the styles of descendant widgets.
@@ -22,7 +23,7 @@ class TimelineTheme extends InheritedTheme {
       BuildContext context) {
     final TimelineTheme? timelineTheme =
         context.dependOnInheritedWidgetOfExactType<TimelineTheme>();
-    return timelineTheme?.data ?? TimelineThemeData.fallback();
+    return timelineTheme?.data ?? const TimelineThemeData.fallback();
   }
 
   @override

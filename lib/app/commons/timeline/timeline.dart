@@ -7,7 +7,7 @@ import 'indicator_position.dart';
 
 class Timeline extends StatelessWidget {
   const Timeline(
-      {required this.events,
+      {super.key, required this.events,
       this.isLeftAligned = true,
       this.padding = const EdgeInsets.all(8),
       this.controller,

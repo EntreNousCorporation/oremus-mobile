@@ -404,6 +404,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+  // ignore: unused_element
   Widget _buildBiometricCard(ProfileController controller) {
     return Card(
       elevation: 2,

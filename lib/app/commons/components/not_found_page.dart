@@ -20,14 +20,14 @@ class NotFoundScreen extends StatelessWidget {
       required this.message,
       Key? key})
       : super(key: key);
-  var lottieIcon;
-  var repeated;
-  var circled;
-  var message = '';
-  String? buttonTitle = '';
-  Function? doAction;
-  Widget? separatorWidget;
-  double? textSize;
+  final dynamic lottieIcon;
+  final dynamic repeated;
+  final dynamic circled;
+  final String message;
+  final String? buttonTitle;
+  final Function? doAction;
+  final Widget? separatorWidget;
+  final double? textSize;
 
   @override
   Widget build(BuildContext context) {

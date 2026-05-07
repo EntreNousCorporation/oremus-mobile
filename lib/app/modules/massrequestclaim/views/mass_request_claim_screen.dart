@@ -289,6 +289,7 @@ class MassRequestClaimScreen extends StatelessWidget {
 
                           // Parish selector (hidden by default)
                           if (false) // requestMassWithoutWorship.value when feature available
+                            // ignore: dead_code
                             Container(
                               margin: const EdgeInsets.only(bottom: 24),
                               decoration: BoxDecoration(
@@ -442,9 +443,9 @@ class MassRequestClaimScreen extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                                  child: const ClaimTypeFilter(),
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                                  child: ClaimTypeFilter(),
                                 ),
                               ],
                             ),
@@ -496,9 +497,9 @@ class MassRequestClaimScreen extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                                  child: const ClaimTypeWidget(),
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                                  child: ClaimTypeWidget(),
                                 ),
                               ],
                             ),

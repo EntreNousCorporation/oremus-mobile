@@ -17,15 +17,15 @@ class CustomButton extends StatefulWidget {
   final double iconHeight;
   final double iconWidth;
   final double borderRadius;
-  Color bgcolor;
-  Color actionColor;
-  TextAlign textAlign;
-  String? icon;
-  bool? isIconCustom;
-  IconData? iconData;
-  Function? action;
-  bool? enabled;
-  TextDecoration? textDecoration;
+  final Color bgcolor;
+  final Color actionColor;
+  final TextAlign textAlign;
+  final String? icon;
+  final bool? isIconCustom;
+  final IconData? iconData;
+  final Function? action;
+  final bool? enabled;
+  final TextDecoration? textDecoration;
 
   CustomButton({Key? key,
     this.text = "",
@@ -89,13 +89,11 @@ class _CustomButtonState extends State<CustomButton> {
 
   bool _isPressed = false;
 
-  late Timer _timer;
-
   _AnimatedButton(Function action) {
     setState(() => _isPressed = true);
-    _timer = Timer(const Duration(milliseconds: 10), () {
+    Timer(const Duration(milliseconds: 10), () {
       setState(() {
-        action != null ? action.call() : _isPressed = false;
+        action.call();
         _isPressed = false;
       });
     });

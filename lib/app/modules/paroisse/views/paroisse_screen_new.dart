@@ -35,7 +35,6 @@ class _ParoisseScreenState extends State<ParoisseScreen>
 
   // Animation pour la transition entre compact et étendu
   late AnimationController _sizeAnimationController;
-  late Animation<double> _widthAnimation;
 
   @override
   void initState() {
@@ -55,13 +54,6 @@ class _ParoisseScreenState extends State<ParoisseScreen>
     _sizeAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
-    );
-
-    _widthAnimation = Tween<double>(begin: 75.0, end: 250.0).animate(
-      CurvedAnimation(
-        parent: _sizeAnimationController,
-        curve: Curves.easeOutCubic,
-      ),
     );
 
     // Initialiser l'écouteur après un court délai pour s'assurer que le contrôleur est prêt

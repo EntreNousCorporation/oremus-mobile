@@ -108,7 +108,7 @@ class MassRequestRecapController extends GetxController implements PaymentMethod
   }
 
   showMassHours() {
-    final bookings = datesChoosen.value.whereType<PriceData>().toList();
+    final bookings = datesChoosen.whereType<PriceData>().toList();
     var mr = MassRequestResponse(bookings: bookings);
     massRequestSelected.value = mr;
     historyMassDateDialog(this);

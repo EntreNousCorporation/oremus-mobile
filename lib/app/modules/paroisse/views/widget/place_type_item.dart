@@ -9,7 +9,7 @@ import 'package:oremusapp/app/modules/paroisse/data/model/place_type.dart';
 class PlaceTypeItem extends StatelessWidget {
   PlaceTypeItem({Key? key, required this.placeType}) : super(key: key);
 
-  PlaceType? placeType;
+  final PlaceType? placeType;
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<FilterParoisseController>();
