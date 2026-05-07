@@ -335,7 +335,8 @@ class PaymentController extends GetxController {
           },
           onError: (error) {
             checkingPaymentStatus(false);
-            var err = error as CustomException;
+            if (error is! CustomException) return;
+            final err = error;
             OremusLogger.info(err.message.toString());
             showNotification(
               message: err.message ?? 'Une erreur interne est survenue',

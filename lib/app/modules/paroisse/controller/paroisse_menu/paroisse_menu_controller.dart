@@ -383,7 +383,8 @@ class ParoisseMenuController extends GetxController {
             update();
           },
           onError: (error) {
-            var err = error as CustomException;
+            if (error is! CustomException) return;
+            final err = error;
             if (err.code.toString().contains('401')) {
               showCustomDialog(
                 Get.context!,

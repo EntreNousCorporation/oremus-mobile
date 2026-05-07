@@ -119,7 +119,8 @@ class MassRequestTrackClaimController extends GetxController {
       isDataProcessing(false);
       hasData(false);
 
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code.toString().contains('401')) {
         showCustomDialog(
           Get.context!,
@@ -153,7 +154,8 @@ class MassRequestTrackClaimController extends GetxController {
       }
     }, onError: (error) {
       refreshController.refreshCompleted();
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (error.toString().contains('401')) {
         showCustomDialog(
           Get.context!,
@@ -190,7 +192,8 @@ class MassRequestTrackClaimController extends GetxController {
       }
     }, onError: (error) {
       refreshController.loadFailed();
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
