@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:app_links/app_links.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
 import 'package:oremusapp/app/commons/components/oremus_logger.dart';
@@ -11,6 +12,7 @@ import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_respon
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/payment/data/model/payment_status_data.dart';
 import 'package:oremusapp/app/modules/payment/data/repository/payment_repository.dart';
+import 'package:oremusapp/app/modules/payment/utils/payment_url_utils.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -32,7 +34,11 @@ class PaymentController extends GetxController {
 
   var donationSelected = DonationResponse().obs;
   var massRequestResponseSelected = MassRequestResponse().obs;
-  var webViewController = Rx<WebViewController>(WebViewController());
+  // Lazy : la construction d'un `WebViewController` requiert que
+  // `WebViewPlatform.instance` soit set, ce qui n'est pas le cas en unit
+  // test. On ne paie le coût qu'au 1er accès (= au build de l'écran).
+  late final Rx<WebViewController> webViewController =
+      Rx<WebViewController>(WebViewController());
   var paymentProcessing = false.obs;
   var paymentStatusMessage = ''.obs;
   var paymentType = PaymentType.none.obs;
@@ -78,7 +84,9 @@ class PaymentController extends GetxController {
     }
   }
 
-  _moveToError() {
+  @visibleForTesting
+  @protected
+  moveToError() {
     _timer?.cancel();
     Get.offNamed(
       Routes.PAYMENT_ERROR,
@@ -90,7 +98,9 @@ class PaymentController extends GetxController {
     );
   }
 
-  _moveToSuccess() {
+  @visibleForTesting
+  @protected
+  moveToSuccess() {
     _timer?.cancel();
     Get.offNamed(
       Routes.PAYMENT_SUCCESS,
@@ -102,7 +112,9 @@ class PaymentController extends GetxController {
     );
   }
 
-  void _moveToProcessing() {
+  @visibleForTesting
+  @protected
+  void moveToProcessing() {
     _timer?.cancel();
     Get.toNamed(
       Routes.PAYMENT_PROCESSING,
@@ -119,10 +131,6 @@ class PaymentController extends GetxController {
     Get.back();
   }
 
-  bool _isExternalAppUrl(String url) {
-    return url.contains('wave.com') || url.startsWith('wave://');
-  }
-
   _initWebview() {
     webViewController.value.setJavaScriptMode(JavaScriptMode.unrestricted);
     webViewController.value.setBackgroundColor(colorTransparent);
@@ -136,7 +144,7 @@ class PaymentController extends GetxController {
         onPageFinished: _onPageFinished,
         onWebResourceError: _onWebResourceError,
         onNavigationRequest: (navigation) {
-          if (_isExternalAppUrl(navigation.url)) {
+          if (PaymentUrlUtils.isExternalAppUrl(navigation.url)) {
             _handleInterceptedLink(navigation.url);
             isDataProcessing(false);
             _listenPaymentStatus();
@@ -171,7 +179,7 @@ class PaymentController extends GetxController {
   _handleInterceptedLink(String value) async {
     OremusLogger.info('_handleInterceptedLink value: $value');
     if (value.contains('wave.com')) {
-      var newUrl = value.split('capture/').last;
+      var newUrl = PaymentUrlUtils.extractWaveCaptureUrl(value);
       OremusLogger.info('_handleInterceptedLink newUrl: $newUrl');
       _launchWaveOrFallback(newUrl);
       await _listenForDeepLink(); //not really usefull for now
@@ -266,12 +274,13 @@ class PaymentController extends GetxController {
     }
     isTimerActive(true);
     _timer = Timer.periodic(Duration(seconds: checkPaymentStatusInterval), (_) {
-      _doGetPaymentStatus();
+      doGetPaymentStatus();
     });
   }
 
   //CHECK PAYMENT STATUS
-  _doGetPaymentStatus() {
+  @visibleForTesting
+  doGetPaymentStatus() {
     if (checkingPaymentStatus.value == true) {
       return;
     }
@@ -296,7 +305,7 @@ class PaymentController extends GetxController {
                 value.paymentStatus == PaymentStatus.FAILED.name) {
               checkingPaymentStatus(true);
               paymentStatusMessage.value = 'Le paiement a échoué. Veuillez réessayer svp !';
-              _moveToError();
+              moveToError();
               return;
             }
             if (value.paymentStatus == PaymentStatus.PENDING.name ||
@@ -326,12 +335,12 @@ class PaymentController extends GetxController {
                   paymentStatusMessage.value = 'Payment effectué avec succès';
                   break;
               }
-              _moveToSuccess();
+              moveToSuccess();
               return;
             }
 
             checkingPaymentStatus(false);
-            _moveToProcessing();
+            moveToProcessing();
           },
           onError: (error) {
             checkingPaymentStatus(false);
