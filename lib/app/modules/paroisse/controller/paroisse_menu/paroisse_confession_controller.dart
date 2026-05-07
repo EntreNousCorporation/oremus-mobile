@@ -107,7 +107,8 @@ class ParoisseConfessionController extends GetxController {
     }, onError: (error) {
       isRegularConfessionDataProcessing(false);
       hasRegularConfessionData(false);
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -136,7 +137,8 @@ class ParoisseConfessionController extends GetxController {
       }
     }, onError: (error) {
       refreshController.refreshCompleted();
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -174,7 +176,8 @@ class ParoisseConfessionController extends GetxController {
     }, onError: (error) {
       isSpecialConfessionDataProcessing(false);
       hasSpecialConfessionData(false);
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -207,7 +210,8 @@ class ParoisseConfessionController extends GetxController {
       }
     }, onError: (error) {
       refreshNotRecurrentController.refreshCompleted();
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,

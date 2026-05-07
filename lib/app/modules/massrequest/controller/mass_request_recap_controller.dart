@@ -169,7 +169,8 @@ class MassRequestRecapController extends GetxController implements PaymentMethod
         update();
       },
       onError: (error) {
-        var err = error as CustomException;
+        if (error is! CustomException) return;
+        final err = error;
         if (err.code == 401) {
           showCustomDialog(
             Get.context!,
@@ -240,7 +241,8 @@ class MassRequestRecapController extends GetxController implements PaymentMethod
               unlockBackButton.value = true;
             });
             debugPrint("error => ${error.toString()}");
-            var err = error as CustomException;
+            if (error is! CustomException) return;
+            final err = error;
             if (err.code == 401) {
               showCustomDialog(
                 Get.context!,

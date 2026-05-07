@@ -110,7 +110,8 @@ class EditPasswordController extends GetxController {
       });
       lockScreen(false);
       debugPrint("error => ${error.toString()}");
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showNotification(
           message: "Le mot de passe est incorrect",

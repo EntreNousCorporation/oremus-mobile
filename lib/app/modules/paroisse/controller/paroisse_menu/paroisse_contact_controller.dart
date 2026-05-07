@@ -141,7 +141,8 @@ class ParoisseContactController extends GetxController {
         hasData(false);
       }
     }, onError: (error) {
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       isDataProcessing(false);
       hasData(false);
       if (err.code == 401) {
@@ -181,7 +182,8 @@ class ParoisseContactController extends GetxController {
       }
     }, onError: (error) {
       refreshController.refreshCompleted();
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,

@@ -103,7 +103,8 @@ class ParoisseActivityMovementController extends GetxController {
     }, onError: (error) {
       isMovementDataProcessing(false);
       hasMovementData(false);
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
@@ -136,7 +137,8 @@ class ParoisseActivityMovementController extends GetxController {
     }, onError: (error) {
       isActivityDataProcessing(false);
       hasActivityData(false);
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
@@ -162,7 +164,8 @@ class ParoisseActivityMovementController extends GetxController {
       }
     }, onError: (error) {
       refreshActivitiesController.refreshCompleted();
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
@@ -188,7 +191,8 @@ class ParoisseActivityMovementController extends GetxController {
       }
     }, onError: (error) {
       refreshMovementsController.refreshCompleted();
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!, message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',

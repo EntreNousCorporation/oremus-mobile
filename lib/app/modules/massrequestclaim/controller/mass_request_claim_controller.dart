@@ -115,7 +115,8 @@ class MassRequestClaimController extends GetxController {
       /*EasyLoading.dismiss(animation: true).then((v) {
         unlockBackButton.value = true;
       });*/
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
@@ -172,7 +173,8 @@ class MassRequestClaimController extends GetxController {
         unlockBackButton.value = true;
       });
       debugPrint("error => ${error.toString()}");
-      var err = error as CustomException;
+      if (error is! CustomException) return;
+      final err = error;
       if (err.code == 401) {
         showCustomDialog(
           Get.context!,
