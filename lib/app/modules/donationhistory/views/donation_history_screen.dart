@@ -357,21 +357,17 @@ class DonationHistoryScreen extends StatelessWidget {
                                 // List of donations
                                 ListView.separated(
                                   shrinkWrap: true,
-                                  padding: EdgeInsets.zero,
-                                  physics:
-                                  const NeverScrollableScrollPhysics(),
+                                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 30),
+                                  physics: const NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     var donation = controller.donations[index];
-                                    return DonationHistoryItem(
-                                        donation: donation);
+                                    return DonationHistoryItem(donation: donation);
                                   },
                                   separatorBuilder: (context, index) {
                                     return const SizedBox(height: 16);
                                   },
                                   itemCount: controller.donations.length,
                                 ),
-
-                                const SizedBox(height: 24),
                               ],
                             ),
                           ),

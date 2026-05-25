@@ -33,7 +33,6 @@ class ParoisseTypeMasseScreen extends StatelessWidget {
                   child: CustomScrollView(
                     physics: const NeverScrollableScrollPhysics(),
                     slivers: [
-                      // En-tête extensible avec image de couverture
                       SliverAppBar(
                         expandedHeight: AppConstants.kExpandedHeight,
                         collapsedHeight: 100,
@@ -275,7 +274,7 @@ class ParoisseTypeMasseScreen extends StatelessWidget {
                       ),
                       const SliverPadding(padding: EdgeInsets.symmetric(vertical: 8)),
                       SliverPadding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                        padding: EdgeInsets.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom + 30),
                         sliver: SliverFillRemaining(
                           child: DefaultTabController(
                             length: 2,

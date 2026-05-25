@@ -30,7 +30,6 @@ class FilterParoisseScreen extends StatelessWidget {
                 backgroundColor: colorGreen,
                 body: Column(
                   children: [
-                    // En-tête avec fond vert - Design amélioré
                     SizedBox(height: MediaQuery.of(context).padding.top),
                     Container(
                       padding: const EdgeInsets.only(
@@ -38,8 +37,8 @@ class FilterParoisseScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: colorGreen,
                         borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(28),
-                          bottomRight: Radius.circular(28),
+                          bottomLeft: Radius.circular(0),
+                          bottomRight: Radius.circular(0),
                         ),
                         boxShadow: [
                           BoxShadow(
@@ -52,11 +51,9 @@ class FilterParoisseScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Boutons de navigation avec design amélioré
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              // Bouton retour avec animation
                               TweenAnimationBuilder(
                                 tween: Tween<double>(begin: 0, end: 1),
                                 duration: const Duration(milliseconds: 400),
@@ -91,7 +88,6 @@ class FilterParoisseScreen extends StatelessWidget {
                                 },
                               ),
 
-                              // Bouton réinitialiser avec animation
                               TweenAnimationBuilder(
                                 tween: Tween<double>(begin: 0, end: 1),
                                 duration: const Duration(milliseconds: 600),
@@ -184,8 +180,6 @@ class FilterParoisseScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-
-                    // Contenu principal - Design amélioré
                     Expanded(
                       child: Container(
                         color: colorGrey4,
@@ -497,8 +491,6 @@ class FilterParoisseScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-
-                    // Bouton d'application des filtres - Design amélioré avec Obx pour réactivité
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
@@ -512,27 +504,32 @@ class FilterParoisseScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: TweenAnimationBuilder(
-                        tween: Tween<double>(begin: 0, end: 1),
-                        duration: const Duration(milliseconds: 1000),
-                        builder: (context, double value, child) {
-                          return Transform.scale(
-                            scale: 0.8 + (value * 0.2),
-                            child: Obx(() => CustomButton(
-                              text: 'Appliquer les filtres',
-                              textSize: TextSizes.sixteen,
-                              actionColor: colorGreenSemiLight,
-                              enabled: controller.enabledApplyButton.value,
-                              borderColor:
-                              controller.enabledApplyButton.value ? colorGreen : colorGrey1,
-                              bgcolor: controller.enabledApplyButton.value ? colorGreen : colorGrey1,
-                              action: () {
-                                controller.goBackToParoisse();
-                              },
-                              borderRadius: 16,
-                            )),
-                          );
-                        },
+                      child: Column(
+                        children: [
+                          TweenAnimationBuilder(
+                            tween: Tween<double>(begin: 0, end: 1),
+                            duration: const Duration(milliseconds: 1000),
+                            builder: (context, double value, child) {
+                              return Transform.scale(
+                                scale: 0.8 + (value * 0.2),
+                                child: Obx(() => CustomButton(
+                                  text: 'Appliquer les filtres',
+                                  textSize: TextSizes.sixteen,
+                                  actionColor: colorGreenSemiLight,
+                                  enabled: controller.enabledApplyButton.value,
+                                  borderColor:
+                                  controller.enabledApplyButton.value ? colorGreen : colorGrey1,
+                                  bgcolor: controller.enabledApplyButton.value ? colorGreen : colorGrey1,
+                                  action: () {
+                                    controller.goBackToParoisse();
+                                  },
+                                  borderRadius: 16,
+                                )),
+                              );
+                            },
+                          ),
+                          SizedBox(height: MediaQuery.of(context).padding.bottom),
+                        ],
                       ),
                     ),
                   ],

@@ -54,8 +54,12 @@ class MovementScreen extends StatelessWidget {
       controller: logic.refreshMovementsController,
       onRefresh: logic.onRefreshMouvements,
       header: const CustomClassicHeader(),
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+      child: ListView.separated(
+        physics: const BouncingScrollPhysics(),
+        padding: EdgeInsets.only(top: 16, bottom: MediaQuery.of(Get.context!).padding.bottom + 30),
+        separatorBuilder: (context, index) {
+          return Separators.customSizeVertical(16);
+        },
         itemCount: logic.movements.length,
         itemBuilder: (context, index) {
           var movement = logic.movements[index];

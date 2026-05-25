@@ -45,6 +45,7 @@ var versionName;
 var versionCode;
 var phoneId;
 var shareAppLink;
+var moreInfo;
 var canCheckConnectivity;
 var oneSignalAppID;
 var showAppLogs;
@@ -120,6 +121,7 @@ Future<void> bootstrap({
   customBaseUrl = settings.oremusFlavor.customBaseUrl.toString() +
       settings.oremusFlavor.endpoint.toString();
   shareAppLink = settings.oremusFlavor.shareAppLink;
+  moreInfo = settings.oremusFlavor.moreInfo;
   canCheckConnectivity = settings.oremusFlavor.canCheckConectivity;
   oneSignalAppID = settings.oremusFlavor.oneSignalAppID;
   showAppLogs = settings.oremusFlavor.showAppLogs;

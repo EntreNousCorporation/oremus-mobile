@@ -107,6 +107,68 @@ class ParoisseRepository implements IParoisseRepository {
   }
 
   @override
+  Future<DataResponse<ContentPlace>> getParoissesBySchedule_({
+    int? page = 0,
+    required String query,
+  }) async {
+    bool isUserLoggedIn = DB.getUserSigninInfo()?.id != null && DB.getUserSigninInfo()?.id?.isNotEmpty == true;
+    String? currentUserId = DB.getUserSigninInfo()?.id;
+
+    Response response = await _apiClient.doRequest(
+      customBaseUrl: customBaseUrl,
+      endpoint: '/worship-places?query=$query&page=$page&size=${AppConstants.PAGING_SIZE_10}',
+      method: HttpMethod.get,
+      useBearer: false,
+    );
+
+
+    if (response.statusCode != 200) {
+      final e = ErrorResponse.fromJson(response.data);
+      throw CustomException(e.debugMessage, e.status);
+    }
+
+    final scheduleResponse = ScheduleApiResponse.fromJson(response.data);
+
+    final result =
+    DataResponse<ContentPlace>()
+      ..contents = scheduleResponse.content
+      ..last = scheduleResponse.page?.isLast ?? true;
+
+    if (result.contents == null || result.contents!.isEmpty) {
+      return result;
+    }
+
+    if (isUserLoggedIn) {
+      try {
+        final ids =
+        result.contents!
+            .where((e) => e?.identifier != null)
+            .map((e) => e?.identifier!)
+            .toList();
+
+        final favoritesStatus = await getUserFavoritesForPlaces(ids);
+
+        final map = {
+          for (var f in favoritesStatus)
+            f.identifier: f.isUserFavorite ?? false,
+        };
+
+        for (var p in result.contents!) {
+          final isFav = map[p?.identifier] ?? false;
+          p?.isUserFavorite = isFav;
+          p?.isFavorite = isFav;
+        }
+      } catch (e) {
+        _applyLocalFavorites(result.contents ?? []);
+      }
+    } else {
+      _applyLocalFavorites(result.contents!);
+    }
+
+    return result;
+  }
+
+  @override
   Future<DataResponse<ContentPlace>> getParoissesBySchedule({
     int? page = 0,
     required String query,

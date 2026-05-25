@@ -25,440 +25,505 @@ class MassRequestHistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: colorGrey5,
-      child: GetX<MassRequestHistoryController>(builder: (controller) {
-        return KeyboardDismisser(
-          child: Scaffold(
-            backgroundColor: colorGrey5,
-            resizeToAvoidBottomInset: true,
-            body: NotificationListener<OverscrollIndicatorNotification>(
-              onNotification: (notification) {
-                notification.disallowIndicator();
-                return false;
-              },
-              child: CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  // Enhanced header with cover image
-                  SliverAppBar(
-                    expandedHeight: AppConstants.kExpandedHeight,
-                    collapsedHeight: 100,
-                    floating: false,
-                    pinned: true,
-                    backgroundColor: colorGreen,
-                    elevation: 6,
-                    shadowColor: Colors.black.withValues(alpha: 0.2),
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(0),
-                        bottomRight: Radius.circular(0),
-                      ),
-                    ),
-                    // Bouton retour
-                    leading: Container(
-                      margin: const EdgeInsets.only(left: 8, top: 8),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: IconButton(
-                        onPressed: () {
-                          controller.goToBack();
-                        },
-                        icon: const Icon(
-                          Icons.arrow_back_rounded,
-                          color: colorWhite,
-                          size: 22,
+      child: GetX<MassRequestHistoryController>(
+        builder: (controller) {
+          return KeyboardDismisser(
+            child: Scaffold(
+              backgroundColor: colorGrey5,
+              resizeToAvoidBottomInset: true,
+              body: NotificationListener<OverscrollIndicatorNotification>(
+                onNotification: (notification) {
+                  notification.disallowIndicator();
+                  return false;
+                },
+                child: CustomScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    // Enhanced header with cover image
+                    SliverAppBar(
+                      expandedHeight: AppConstants.kExpandedHeight,
+                      collapsedHeight: 100,
+                      floating: false,
+                      pinned: true,
+                      backgroundColor: colorGreen,
+                      elevation: 6,
+                      shadowColor: Colors.black.withValues(alpha: 0.2),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(0),
+                          bottomRight: Radius.circular(0),
                         ),
                       ),
-                    ),
-                    // Actions (favoris, carte)
-                    actions: [
-                      // Bouton favoris
-                      Container(
-                        margin: const EdgeInsets.only(top: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: LikeButton(
-                          isLiked: controller.paroisseSelected.value?.isFavorite,
-                          onTap: (isLiked) async {
-                            log('isLiked => $isLiked');
-                            controller.paroisseSelected.value?.isFavorite = !isLiked;
-                            if (isLiked) {
-                              controller.removeFavorite(controller.paroisseSelected.value ?? ContentPlace(), isLiked);
-                            } else {
-                              controller.saveFavorite(controller.paroisseSelected.value ?? ContentPlace(), isLiked);
-                            }
-                            return !isLiked;
-                          },
-                          size: 25,
-                          circleColor: const CircleColor(
-                              start: Color(0xff93291E), end: Color(0xFFED213A)),
-                          bubblesColor: const BubblesColor(
-                            dotPrimaryColor: Color(0xFFED213A),
-                            dotSecondaryColor: Color(0xff93291E),
-                          ),
-                          likeBuilder: (bool isLiked) {
-                            return Icon(
-                              isLiked ? Icons.favorite : Icons.favorite_border,
-                              color: isLiked ? const Color(0xFFED213A) : colorWhite,
-                              size: 22,
-                            );
-                          },
-                          padding: const EdgeInsets.all(8),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      // Bouton carte
-                      Container(
-                        margin: const EdgeInsets.only(right: 8, top: 8),
+                      // Bouton retour
+                      leading: Container(
+                        margin: const EdgeInsets.only(left: 8, top: 8),
                         decoration: BoxDecoration(
                           color: Colors.black.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: IconButton(
                           onPressed: () {
-                            controller.goToMap();
+                            controller.goToBack();
                           },
                           icon: const Icon(
-                            Icons.map_rounded,
+                            Icons.arrow_back_rounded,
                             color: colorWhite,
                             size: 22,
                           ),
                         ),
                       ),
-                    ],
-                    flexibleSpace: FlexibleSpaceBar(
-                      centerTitle: true,
-                      title: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Text(
-                          controller.paroisseSelected.value?.name ?? 'Mes demandes de messes',
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          style: TextStyles.montserratBold(
-                            textSize: TextSizes.eighteen,
-                            textColor: colorWhite,
+                      // Actions (favoris, carte)
+                      actions: [
+                        // Bouton favoris
+                        Container(
+                          margin: const EdgeInsets.only(top: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                        ),
-                      ),
-                      background: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(0),
-                            bottomRight: Radius.circular(0),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.1),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
+                          child: LikeButton(
+                            isLiked:
+                                controller.paroisseSelected.value?.isFavorite,
+                            onTap: (isLiked) async {
+                              log('isLiked => $isLiked');
+                              controller.paroisseSelected.value?.isFavorite =
+                                  !isLiked;
+                              if (isLiked) {
+                                controller.removeFavorite(
+                                  controller.paroisseSelected.value ??
+                                      ContentPlace(),
+                                  isLiked,
+                                );
+                              } else {
+                                controller.saveFavorite(
+                                  controller.paroisseSelected.value ??
+                                      ContentPlace(),
+                                  isLiked,
+                                );
+                              }
+                              return !isLiked;
+                            },
+                            size: 25,
+                            circleColor: const CircleColor(
+                              start: Color(0xff93291E),
+                              end: Color(0xFFED213A),
                             ),
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(0),
-                            bottomRight: Radius.circular(0),
+                            bubblesColor: const BubblesColor(
+                              dotPrimaryColor: Color(0xFFED213A),
+                              dotSecondaryColor: Color(0xff93291E),
+                            ),
+                            likeBuilder: (bool isLiked) {
+                              return Icon(
+                                isLiked
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color:
+                                    isLiked
+                                        ? const Color(0xFFED213A)
+                                        : colorWhite,
+                                size: 22,
+                              );
+                            },
+                            padding: const EdgeInsets.all(8),
                           ),
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              // Cover image
-                              (controller.paroisseSelected.value?.coverImage?.link?.isNotEmpty == true)
-                                  ? CachedNetworkImage(
-                                imageUrl: controller.paroisseSelected.value?.coverImage?.link ?? '',
-                                fit: BoxFit.cover,
-                                placeholder: (context, url) =>
-                                    LottieLoadingView(size: Get.width / 6),
-                                errorWidget: (context, url, error) =>
-                                    Image.asset(
+                        ),
+                        const SizedBox(width: 8),
+                        // Bouton carte
+                        Container(
+                          margin: const EdgeInsets.only(right: 8, top: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              controller.goToMap();
+                            },
+                            icon: const Icon(
+                              Icons.map_rounded,
+                              color: colorWhite,
+                              size: 22,
+                            ),
+                          ),
+                        ),
+                      ],
+                      flexibleSpace: FlexibleSpaceBar(
+                        centerTitle: true,
+                        title: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Text(
+                            controller.paroisseSelected.value?.name ??
+                                'Mes demandes de messes',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            style: TextStyles.montserratBold(
+                              textSize: TextSizes.eighteen,
+                              textColor: colorWhite,
+                            ),
+                          ),
+                        ),
+                        background: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(0),
+                              bottomRight: Radius.circular(0),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.1),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(0),
+                              bottomRight: Radius.circular(0),
+                            ),
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                // Cover image
+                                (controller
+                                            .paroisseSelected
+                                            .value
+                                            ?.coverImage
+                                            ?.link
+                                            ?.isNotEmpty ==
+                                        true)
+                                    ? CachedNetworkImage(
+                                      imageUrl:
+                                          controller
+                                              .paroisseSelected
+                                              .value
+                                              ?.coverImage
+                                              ?.link ??
+                                          '',
+                                      fit: BoxFit.cover,
+                                      placeholder:
+                                          (context, url) => LottieLoadingView(
+                                            size: Get.width / 6,
+                                          ),
+                                      errorWidget:
+                                          (context, url, error) => Image.asset(
+                                            Assets.imagesBgLogin,
+                                            width: Get.width,
+                                            height: Get.width,
+                                            fit: BoxFit.cover,
+                                          ),
+                                    )
+                                    : Image.asset(
                                       Assets.imagesBgLogin,
                                       width: Get.width,
                                       height: Get.width,
                                       fit: BoxFit.cover,
                                     ),
-                              )
-                                  : Image.asset(
-                                Assets.imagesBgLogin,
-                                width: Get.width,
-                                height: Get.width,
-                                fit: BoxFit.cover,
-                              ),
-                              // Superposition ombrée
-                              Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.transparent,
-                                      Colors.black.withValues(alpha: 0.7),
-                                    ],
+                                // Superposition ombrée
+                                Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.transparent,
+                                        Colors.black.withValues(alpha: 0.7),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
 
-                  // Search section and mass requests list
-                  SliverToBoxAdapter(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Section header
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(24, 30, 24, 24),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 50,
-                                height: 50,
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: colorGreenSemiLight.withValues(alpha: 0.15),
-                                  borderRadius: BorderRadius.circular(15),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: colorGreenSemiLight.withValues(alpha: 0.1),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: const Icon(
-                                  Icons.church_outlined,
-                                  color: colorGreenSemiLight,
-                                  size: 24,
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-
-                              // Section title
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Historique de demandes',
-                                      style: TextStyles.montserratBold(
-                                        textSize: TextSizes.eighteen,
-                                        textColor: colorGreenSemiLight,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      'Vos demandes de messes',
-                                      style: TextStyles.montserratRegular(
-                                        textSize: TextSizes.fourteen,
-                                        textColor: Colors.grey[600]!,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Enhanced search bar with filters
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
-                          child: Container(
-                            height: 56,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.05),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
+                    // Search section and mass requests list
+                    SliverToBoxAdapter(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Section header
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(24, 30, 24, 24),
                             child: Row(
                               children: [
-                                // Search icon container
                                 Container(
-                                  width: 56,
-                                  height: 56,
-                                  decoration: const BoxDecoration(
-                                    color: colorGreenSemiLight,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(16),
-                                      bottomLeft: Radius.circular(16),
+                                  width: 50,
+                                  height: 50,
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: colorGreenSemiLight.withValues(
+                                      alpha: 0.15,
                                     ),
+                                    borderRadius: BorderRadius.circular(15),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: colorGreenSemiLight.withValues(
+                                          alpha: 0.1,
+                                        ),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
                                   ),
                                   child: const Icon(
-                                    Icons.calendar_month_rounded,
-                                    color: Colors.white,
+                                    Icons.church_outlined,
+                                    color: colorGreenSemiLight,
                                     size: 24,
                                   ),
                                 ),
+                                const SizedBox(width: 16),
 
-                                // Search field
-                                const Expanded(
-                                  child: SizedBox(
-                                    height: 56,
-                                    child: Center(
-                                      child: SearchWidget(),
-                                    ),
+                                // Section title
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Historique de demandes',
+                                        style: TextStyles.montserratBold(
+                                          textSize: TextSizes.eighteen,
+                                          textColor: colorGreenSemiLight,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Vos demandes de messes',
+                                        style: TextStyles.montserratRegular(
+                                          textSize: TextSizes.fourteen,
+                                          textColor: Colors.grey[600]!,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
 
-                        const SizedBox(height: 24),
+                          // Enhanced search bar with filters
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            child: Container(
+                              height: 56,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.05),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  // Search icon container
+                                  Container(
+                                    width: 56,
+                                    height: 56,
+                                    decoration: const BoxDecoration(
+                                      color: colorGreenSemiLight,
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(16),
+                                        bottomLeft: Radius.circular(16),
+                                      ),
+                                    ),
+                                    child: const Icon(
+                                      Icons.calendar_month_rounded,
+                                      color: Colors.white,
+                                      size: 24,
+                                    ),
+                                  ),
 
-                        // Mass requests list or loading/empty indicators
-                        controller.isDataProcessing.isTrue
-                            ? SizedBox(
-                          height: 200,
-                          child: Center(
-                            child: LottieLoadingView(
-                              size: Get.width / 4,
+                                  // Search field
+                                  const Expanded(
+                                    child: SizedBox(
+                                      height: 56,
+                                      child: Center(child: SearchWidget()),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        )
-                            : controller.hasData.isTrue
-                            ? FadeIn(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 24),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // List of mass requests
-                                ListView.separated(
-                                  shrinkWrap: true,
-                                  padding: EdgeInsets.zero,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    var massRequest = controller.massRequests[index];
-                                    return HistoryItem(massRequest: massRequest);
-                                  },
-                                  separatorBuilder: (context, index) {
-                                    return const SizedBox(height: 16);
-                                  },
-                                  itemCount: controller.massRequests.length,
+
+                          const SizedBox(height: 24),
+
+                          // Mass requests list or loading/empty indicators
+                          controller.isDataProcessing.isTrue
+                              ? SizedBox(
+                                height: 200,
+                                child: Center(
+                                  child: LottieLoadingView(size: Get.width / 4),
                                 ),
-
-                                const SizedBox(height: 30),
-
-                                Center(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      controller.moveToMassRequest();
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-                                      decoration: BoxDecoration(
-                                        color: colorGreenSemiLight,
-                                        borderRadius: BorderRadius.circular(16),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: colorGreenSemiLight.withValues(alpha: 0.3),
-                                            blurRadius: 10,
-                                            offset: const Offset(0, 4),
-                                            spreadRadius: 0,
-                                          ),
-                                        ],
+                              )
+                              : controller.hasData.isTrue
+                              ? FadeIn(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 24,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // List of mass requests
+                                      ListView.separated(
+                                        shrinkWrap: true,
+                                        padding: EdgeInsets.only(
+                                          bottom:
+                                              MediaQuery.of(
+                                                context,
+                                              ).padding.bottom +
+                                              30,
+                                        ),
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          var massRequest =
+                                              controller.massRequests[index];
+                                          return HistoryItem(
+                                            massRequest: massRequest,
+                                          );
+                                        },
+                                        separatorBuilder: (context, index) {
+                                          return const SizedBox(height: 16);
+                                        },
+                                        itemCount:
+                                            controller.massRequests.length,
                                       ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const Icon(
-                                            Icons.add_circle_outline_rounded,
-                                            color: Colors.white,
-                                            size: 22,
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Text(
-                                            'Nouvelle demande de messe',
-                                            style: TextStyles.montserratSemiBold(
-                                              textSize: TextSizes.fifteen,
-                                              textColor: Colors.white,
+
+                                      const SizedBox(height: 30),
+
+                                      Center(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            controller.moveToMassRequest();
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 16,
+                                              horizontal: 24,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: colorGreenSemiLight,
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: colorGreenSemiLight.withValues(alpha: 0.3),
+                                                  blurRadius: 10,
+                                                  offset: const Offset(0, 4),
+                                                  spreadRadius: 0,
+                                                ),
+                                              ],
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                const Icon(
+                                                  Icons
+                                                      .add_circle_outline_rounded,
+                                                  color: Colors.white,
+                                                  size: 22,
+                                                ),
+                                                const SizedBox(width: 12),
+                                                Text(
+                                                  'Nouvelle demande de messe',
+                                                  style:
+                                                      TextStyles.montserratSemiBold(
+                                                        textSize:
+                                                            TextSizes.fifteen,
+                                                        textColor: Colors.white,
+                                                      ),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                        ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                              : SizedBox(
+                                height: 380,
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      child: NotFoundScreen(
+                                        message:
+                                            "Aucune demande de messe trouvée !",
                                       ),
                                     ),
-                                  ),
-                                ),
-                                const SizedBox(height: 30),
-                              ],
-                            ),
-                          ),
-                        )
-                            : SizedBox(
-                          height: 380,
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: NotFoundScreen(
-                                  message: "Aucune demande de messe trouvée !",
-                                ),
-                              ),
-                              Center(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    controller.moveToMassRequest();
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-                                    decoration: BoxDecoration(
-                                      color: colorGreenSemiLight,
-                                      borderRadius: BorderRadius.circular(16),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: colorGreenSemiLight.withValues(alpha: 0.3),
-                                          blurRadius: 10,
-                                          offset: const Offset(0, 4),
-                                          spreadRadius: 0,
-                                        ),
-                                      ],
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(
-                                          Icons.add_circle_outline_rounded,
-                                          color: Colors.white,
-                                          size: 22,
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Text(
-                                          'Nouvelle demande de messe',
-                                          style: TextStyles.montserratSemiBold(
-                                            textSize: TextSizes.fifteen,
-                                            textColor: Colors.white,
+                                    Center(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          controller.moveToMassRequest();
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 16,
+                                            horizontal: 24,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: colorGreenSemiLight,
+                                            borderRadius: BorderRadius.circular(
+                                              16,
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: colorGreenSemiLight
+                                                    .withValues(alpha: 0.3),
+                                                blurRadius: 10,
+                                                offset: const Offset(0, 4),
+                                                spreadRadius: 0,
+                                              ),
+                                            ],
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const Icon(
+                                                Icons
+                                                    .add_circle_outline_rounded,
+                                                color: Colors.white,
+                                                size: 22,
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Text(
+                                                'Nouvelle demande de messe',
+                                                style:
+                                                    TextStyles.montserratSemiBold(
+                                                      textSize:
+                                                          TextSizes.fifteen,
+                                                      textColor: Colors.white,
+                                                    ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ],
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      }),
+          );
+        },
+      ),
     );
   }
 }

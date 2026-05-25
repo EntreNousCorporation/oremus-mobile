@@ -56,7 +56,6 @@ class SearchWidget extends StatelessWidget {
             hintText: 'Recherche par nom, adresse, diocèse, description OU heure (ex: 10:00)',
             hintStyle: TextStyles.montserratItalic(
                 textColor: colorPurpleLight, textSize: TextSizes.fourteen),
-
             suffixIcon: logic.isSearchFieldEmpty.isFalse
                 ? FadeIn(
               child: IconButton(

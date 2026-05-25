@@ -530,6 +530,7 @@ class MassRequestClaimScreen extends StatelessWidget {
                               },
                             ),
                           ),
+                          Separators.customSizeVertical(MediaQuery.of(context).padding.bottom + 30),
                         ],
                       ),
                     ),

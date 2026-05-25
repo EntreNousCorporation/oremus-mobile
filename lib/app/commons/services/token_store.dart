@@ -30,11 +30,13 @@ class TokenStore {
 
   static Future<void> saveTokens({
     required String accessToken,
-    required String refreshToken,
+    String? refreshToken,
   }) async {
     _accessTokenCache = accessToken;
     await _storage.write(key: KEY_ACCESS_TOKEN, value: accessToken);
-    await _storage.write(key: KEY_REFRESH_TOKEN, value: refreshToken);
+    if (refreshToken != null && refreshToken.isNotEmpty) {
+      await _storage.write(key: KEY_REFRESH_TOKEN, value: refreshToken);
+    }
   }
 
   static Future<void> clear() async {

@@ -1027,7 +1027,6 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                               },
                             ),
 
-                            // Confirmation button - Enhanced with animation
                             TweenAnimationBuilder(
                               tween: Tween<double>(begin: 0.0, end: 1.0),
                               duration: const Duration(milliseconds: 800),
@@ -1061,6 +1060,7 @@ class DonationWithoutWorshipScreen extends StatelessWidget {
                                 );
                               },
                             ),
+                            SizedBox(height: MediaQuery.of(Get.context!).padding.bottom)
                           ],
                         ),
                       ),

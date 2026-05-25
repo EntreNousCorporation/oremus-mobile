@@ -110,7 +110,7 @@ class MassRequestMenuController extends GetxController {
   checkIfUserIsconnected(String code) {
     Get.bottomSheet(
       Container(
-        height: Get.height * 0.32, // Légèrement plus haut pour plus d'espace
+        height: Get.height * 0.4,
         decoration: BoxDecoration(
           color: colorWhite,
           borderRadius: const BorderRadius.only(
@@ -126,7 +126,7 @@ class MassRequestMenuController extends GetxController {
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(24), // Padding légèrement plus grand
+          padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -224,6 +224,7 @@ class MassRequestMenuController extends GetxController {
                   ),
                 ],
               ),
+              SizedBox(height: MediaQuery.of(Get.context!).padding.bottom)
             ],
           ),
         ),

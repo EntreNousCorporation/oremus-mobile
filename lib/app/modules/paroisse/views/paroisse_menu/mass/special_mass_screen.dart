@@ -33,15 +33,18 @@ class SpecialMassScreen extends StatelessWidget {
                 controller: logic.refreshNotRecurrentController,
                 onRefresh: logic.onSpecialMassesRefresh,
                 header: const CustomClassicHeader(),
-                child: ListView.builder(
+                child: ListView.separated(
                   itemCount: logic.specialMasses.length,
-                  padding: const EdgeInsets.only(top: 16),
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.only(top: 10, bottom: MediaQuery.of(context).padding.bottom + 30),
+                  separatorBuilder: (context, index) {
+                    return Separators.customSizeVertical(16);
+                  },
                   itemBuilder: (context, index) {
                     final value = logic.specialMasses[index];
                     final bool isExpired = isEventExpired(value);
 
                     return Container(
-                      margin: const EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),

@@ -404,8 +404,6 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 32),
-
-                            // Bouton continuer
                             CustomButton(
                               text: 'Continuer',
                               borderRadius: 12,
@@ -422,7 +420,7 @@ class MassRequestWithWorshipScreen extends StatelessWidget {
                                 controller.moveToRecap();
                               },
                             ),
-                            const SizedBox(height: 16),
+                            SizedBox(height: MediaQuery.of(Get.context!).padding.bottom)
                           ],
                         ),
                       ),

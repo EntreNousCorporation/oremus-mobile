@@ -73,7 +73,7 @@ abstract class AppConstants {
   static const MASS = 'MASS'; //Messe
   static const CONFESSION = 'CONFESSION'; //Confession
   static const SPECIAL_CONFESSION = 'SPECIAL_CONFESSION'; //Veillée Pascale
-  static const DEMANDE_MESSE = 'demande_de_messe'; //DEMANDE_MESSE
+  static const DEMANDE_MESSE = 'demande_de_messe';
 
-  static const APP_SHARE_MSG = "Télécharge gratuitement l'appli #Oremus et accède à tes paroisses du bout du doigt! Lien de téléchargement📲: {link}"; //DEMANDE_MESSE
+  static const APP_SHARE_MSG = "Télécharge gratuitement l'appli #Oremus et accède à tes paroisses du bout du doigt!\n📲 Lien: {link}\n💬 Plus d'infos: {info}";
 }

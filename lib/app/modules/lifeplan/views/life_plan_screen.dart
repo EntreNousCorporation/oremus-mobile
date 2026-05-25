@@ -22,7 +22,6 @@ class LifePlanScreen extends StatelessWidget {
     return GetBuilder<LifePlanController>(
       builder: (controller) {
         return Obx(() {
-          // Vérifier si l'utilisateur est connecté
           if (!isUserConnected.value) {
             return _buildAuthenticationRequired(controller);
           }

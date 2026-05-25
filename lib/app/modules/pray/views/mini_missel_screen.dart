@@ -110,14 +110,18 @@ class MiniMisselScreen extends StatelessWidget {
               ),
               physics: const BouncingScrollPhysics(),
               controller: controller.refreshMisselPrayerController,
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 20,
-                ),
+              child: ListView.separated(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: controller.misselPrayers.length,
+                padding: const EdgeInsets.only(
+                  left: 20,
+                  right: 20,
+                  top: 20,
+                ),
+                separatorBuilder: (context, index) {
+                  return Separators.customSizeVertical(16);
+                },
                 itemBuilder: (context, index) {
                   var pray = controller.misselPrayers[index];
                   return Padding(

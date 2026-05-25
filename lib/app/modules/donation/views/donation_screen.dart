@@ -327,7 +327,6 @@ class DonationScreen extends StatelessWidget {
 
                         const SizedBox(height: 30),
 
-                        // Continue button with enhanced style
                         SizedBox(
                           width: double.infinity,
                           height: 60,
@@ -349,7 +348,7 @@ class DonationScreen extends StatelessWidget {
                           ),
                         ),
 
-                        const SizedBox(height: 16),
+                        SizedBox(height: MediaQuery.of(Get.context!).padding.bottom),
                       ]),
                     ),
                   ),

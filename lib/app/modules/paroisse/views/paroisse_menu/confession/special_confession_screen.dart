@@ -34,9 +34,13 @@ class SpecialConfessionScreen extends StatelessWidget {
                 controller: logic.refreshNotRecurrentController,
                 onRefresh: logic.onSpecialConfessionRefresh,
                 header: const CustomClassicHeader(),
-                child: ListView.builder(
+                child: ListView.separated(
                   itemCount: logic.specialConfessions.length,
-                  padding: const EdgeInsets.all(0),
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.only(top: 10, bottom: MediaQuery.of(context).padding.bottom + 30),
+                  separatorBuilder: (context, index) {
+                    return Separators.customSizeVertical(16);
+                  },
                   itemBuilder: (context, index) {
                     final value = logic.specialConfessions[index];
                     final bool isExpired = isEventExpired(value);
