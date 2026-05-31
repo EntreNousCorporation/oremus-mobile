@@ -113,7 +113,7 @@ class CustomPrayersScreen extends StatelessWidget {
               child: ListView.separated(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: controller.misselPrayers.length,
+                itemCount: controller.customPrayers.length,
                 padding: const EdgeInsets.only(
                   left: 20,
                   right: 20,
