@@ -35,10 +35,10 @@ class ResetPasswordScreen extends StatelessWidget {
               ),
               child: KeyboardDismisser(
                 child: Scaffold(
-                  backgroundColor: Colors.black.withOpacity(0.3),
+                  backgroundColor: Colors.black.withValues(alpha: 0.3),
                   resizeToAvoidBottomInset: true,
-                  body: WillPopScope(
-                    onWillPop: () async => controller.unlockBackButton.value,
+                  body: PopScope(
+                    canPop: controller.unlockBackButton.value,
                     child: AbsorbPointer(
                       absorbing: controller.lockScreen.value,
                       child: Stack(
@@ -59,11 +59,12 @@ class ResetPasswordScreen extends StatelessWidget {
                                 child: Container(
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.95),
+                                    color: Colors.white.withValues(alpha: 0.95),
                                     borderRadius: BorderRadius.circular(16),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withOpacity(0.15),
+                                        color: Colors.black.withValues(
+                                            alpha: 0.15),
                                         blurRadius: 12,
                                         offset: const Offset(0, 4),
                                       ),
@@ -94,11 +95,12 @@ class ResetPasswordScreen extends StatelessWidget {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 24, vertical: 12),
                                   decoration: BoxDecoration(
-                                    color: colorGreen.withOpacity(0.9),
+                                    color: colorGreen.withValues(alpha: 0.9),
                                     borderRadius: BorderRadius.circular(30),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: colorGreen.withOpacity(0.3),
+                                        color: colorGreen.withValues(
+                                            alpha: 0.3),
                                         blurRadius: 15,
                                         offset: const Offset(0, 5),
                                       ),
@@ -131,19 +133,22 @@ class ResetPasswordScreen extends StatelessWidget {
                                       offset: Duration(milliseconds: 400),
                                     ),
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .center,
                                       children: [
                                         // Icon
                                         Container(
                                           height: 80,
                                           width: 80,
-                                          margin: const EdgeInsets.only(bottom: 20),
+                                          margin: const EdgeInsets.only(
+                                              bottom: 20),
                                           decoration: BoxDecoration(
                                             color: Colors.white,
                                             shape: BoxShape.circle,
                                             boxShadow: [
                                               BoxShadow(
-                                                color: colorGreen.withOpacity(0.3),
+                                                color: colorGreen.withValues(
+                                                    alpha: 0.3),
                                                 blurRadius: 20,
                                                 spreadRadius: 5,
                                               ),
@@ -163,16 +168,20 @@ class ResetPasswordScreen extends StatelessWidget {
                                         // Form Container with elegant styling
                                         SlideInUp(
                                           preferences: const AnimationPreferences(
-                                            duration: Duration(milliseconds: 800),
+                                            duration: Duration(
+                                                milliseconds: 800),
                                             offset: Duration(milliseconds: 500),
                                           ),
                                           child: Container(
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(30),
-                                              color: Colors.white.withOpacity(0.97),
+                                              borderRadius: BorderRadius
+                                                  .circular(30),
+                                              color: Colors.white.withValues(
+                                                  alpha: 0.97),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: Colors.black.withOpacity(0.15),
+                                                  color: Colors.black
+                                                      .withValues(alpha: 0.15),
                                                   blurRadius: 25,
                                                   offset: const Offset(0, 10),
                                                   spreadRadius: 0,
@@ -182,16 +191,21 @@ class ResetPasswordScreen extends StatelessWidget {
                                             child: Form(
                                               key: controller.formSigninKey,
                                               child: Padding(
-                                                padding: const EdgeInsets.all(30),
+                                                padding: const EdgeInsets.all(
+                                                    30),
                                                 child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment
+                                                      .center,
                                                   children: [
                                                     // Title and instructions
                                                     Text(
                                                       "Créer un nouveau mot de passe",
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyles.montserratBold(
-                                                        textSize: TextSizes.twenty,
+                                                      textAlign: TextAlign
+                                                          .center,
+                                                      style: TextStyles
+                                                          .montserratBold(
+                                                        textSize: TextSizes
+                                                            .twenty,
                                                         textColor: colorGreen,
                                                       ),
                                                     ),
@@ -200,10 +214,14 @@ class ResetPasswordScreen extends StatelessWidget {
 
                                                     Text(
                                                       "Votre nouveau mot de passe doit être différent de vos anciens mots de passe.",
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyles.montserratRegular(
-                                                        textSize: TextSizes.fourteen,
-                                                        textColor: Colors.grey[600]!,
+                                                      textAlign: TextAlign
+                                                          .center,
+                                                      style: TextStyles
+                                                          .montserratRegular(
+                                                        textSize: TextSizes
+                                                            .fourteen,
+                                                        textColor: Colors
+                                                            .grey[600]!,
                                                       ),
                                                     ),
 
@@ -212,24 +230,35 @@ class ResetPasswordScreen extends StatelessWidget {
                                                     // Password Fields
                                                     Container(
                                                       width: double.infinity,
-                                                      padding: const EdgeInsets.all(15),
+                                                      padding: const EdgeInsets
+                                                          .all(15),
                                                       decoration: BoxDecoration(
-                                                        color: colorGreen.withOpacity(0.05),
-                                                        borderRadius: BorderRadius.circular(16),
+                                                        color: colorGreen
+                                                            .withValues(
+                                                            alpha: 0.05),
+                                                        borderRadius: BorderRadius
+                                                            .circular(16),
                                                         border: Border.all(
-                                                          color: colorGreen.withOpacity(0.1),
+                                                          color: colorGreen
+                                                              .withValues(
+                                                              alpha: 0.1),
                                                           width: 1,
                                                         ),
                                                       ),
                                                       child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        crossAxisAlignment: CrossAxisAlignment
+                                                            .start,
                                                         children: [
                                                           Padding(
-                                                            padding: const EdgeInsets.only(left: 8, bottom: 10),
+                                                            padding: const EdgeInsets
+                                                                .only(left: 8,
+                                                                bottom: 10),
                                                             child: Text(
                                                               "Sécurité",
-                                                              style: TextStyles.montserratSemiBold(
-                                                                textSize: TextSizes.fourteen,
+                                                              style: TextStyles
+                                                                  .montserratSemiBold(
+                                                                textSize: TextSizes
+                                                                    .fourteen,
                                                                 textColor: colorGreen,
                                                               ),
                                                             ),
@@ -237,38 +266,47 @@ class ResetPasswordScreen extends StatelessWidget {
 
                                                           // New Password Field
                                                           MyTextField(
-                                                            focusNode: controller.newPasswordFocusNode,
-                                                            controller: controller.newPasswordController,
+                                                            focusNode: controller
+                                                                .newPasswordFocusNode,
+                                                            controller: controller
+                                                                .newPasswordController,
                                                             hintText: 'Votre nouveau mot de passe',
                                                             labelText: 'Nouveau mot de passe',
                                                             isPassword: true,
-                                                            prefixIcon: 'assets/images/icon_password_profil.svg',
+                                                            prefixIcon: Assets
+                                                                .imagesIconPasswordProfil,
                                                             prefixIconColor: colorGreen,
-                                                            //textFieldColor: Colors.white,
-                                                            //borderRadius: 16,
                                                             onChanged: (value) {
-                                                              controller.checkForm();
+                                                              controller
+                                                                  .checkForm();
                                                             },
-                                                            errorText: controller.newPasswordErrorMessage.value,
+                                                            errorText: controller
+                                                                .newPasswordErrorMessage
+                                                                .value,
                                                           ),
 
-                                                          const SizedBox(height: 15),
+                                                          const SizedBox(
+                                                              height: 15),
 
                                                           // Confirm Password Field
                                                           MyTextField(
-                                                            focusNode: controller.confPasswordFocusNode,
-                                                            controller: controller.confPasswordController,
+                                                            focusNode: controller
+                                                                .confPasswordFocusNode,
+                                                            controller: controller
+                                                                .confPasswordController,
                                                             hintText: 'Confirmez votre mot de passe',
                                                             labelText: 'Confirmer le mot de passe',
                                                             isPassword: true,
-                                                            prefixIcon: 'assets/images/icon_password_profil.svg',
+                                                            prefixIcon: Assets
+                                                                .imagesIconPasswordProfil,
                                                             prefixIconColor: colorGreen,
-                                                            //textFieldColor: Colors.white,
-                                                            //borderRadius: 16,
                                                             onChanged: (value) {
-                                                              controller.checkForm();
+                                                              controller
+                                                                  .checkForm();
                                                             },
-                                                            errorText: controller.confPasswordErrorMessage.value,
+                                                            errorText: controller
+                                                                .confPasswordErrorMessage
+                                                                .value,
                                                           ),
                                                         ],
                                                       ),
@@ -277,108 +315,144 @@ class ResetPasswordScreen extends StatelessWidget {
                                                     const SizedBox(height: 30),
 
                                                     // Password Rules
-                                                    Visibility(
-                                                      visible: false,
-                                                      child: Container(
-                                                        width: double.infinity,
-                                                        padding: const EdgeInsets.all(15),
-                                                        decoration: BoxDecoration(
-                                                          color: colorGrey5,
-                                                          borderRadius: BorderRadius.circular(16),
-                                                          border: Border.all(
-                                                            color: Colors.grey[300]!,
-                                                            width: 1,
-                                                          ),
+                                                    Container(
+                                                      width: double.infinity,
+                                                      padding: const EdgeInsets
+                                                          .all(15),
+                                                      decoration: BoxDecoration(
+                                                        color: colorGrey5,
+                                                        borderRadius: BorderRadius
+                                                            .circular(16),
+                                                        border: Border.all(
+                                                          color: Colors
+                                                              .grey[300]!,
+                                                          width: 1,
                                                         ),
-                                                        child: Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Text(
-                                                              "Le mot de passe doit contenir:",
-                                                              style: TextStyles.montserratMedium(
-                                                                textSize: TextSizes.fourteen,
-                                                                textColor: Colors.grey[700]!,
-                                                              ),
+                                                      ),
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment
+                                                            .start,
+                                                        children: [
+                                                          Text(
+                                                            "Le mot de passe doit contenir:",
+                                                            style: TextStyles
+                                                                .montserratMedium(
+                                                              textSize: TextSizes
+                                                                  .fourteen,
+                                                              textColor: Colors
+                                                                  .grey[700]!,
                                                             ),
-                                                            const SizedBox(height: 8),
-                                                            _buildPasswordRule("Au moins 8 caractères"),
-                                                            _buildPasswordRule("Une lettre majuscule"),
-                                                            _buildPasswordRule("Une lettre minuscule"),
-                                                            _buildPasswordRule("Un chiffre"),
-                                                            _buildPasswordRule("Un caractère spécial"),
-                                                          ],
-                                                        ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 8),
+                                                          _buildPasswordRule("Au moins ${ResetPasswordController.PASSWORD_LENGTH} caractères", controller.hasPasswordLength.value),
+                                                          //_buildPasswordRule("Une lettre majuscule"),
+                                                          //_buildPasswordRule("Une lettre minuscule"),
+                                                          //_buildPasswordRule("Un chiffre"),
+                                                          //_buildPasswordRule("Un caractère spécial"),
+                                                        ],
                                                       ),
                                                     ),
 
-                                                    //const SizedBox(height: 30),
+                                                    const SizedBox(height: 30),
 
                                                     // Submit Button
                                                     Container(
                                                       width: double.infinity,
                                                       height: 56,
                                                       decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(18),
+                                                        borderRadius: BorderRadius
+                                                            .circular(18),
                                                         gradient: LinearGradient(
-                                                          colors: controller.isValidForm.isTrue
+                                                          colors: controller
+                                                              .isValidForm
+                                                              .isTrue
                                                               ? [
-                                                            colorGreen.withOpacity(0.9),
+                                                            colorGreen
+                                                                .withValues(
+                                                                alpha: 0.9),
                                                             colorGreen,
                                                           ]
                                                               : [
                                                             Colors.grey[300]!,
                                                             Colors.grey[400]!,
                                                           ],
-                                                          begin: Alignment.topLeft,
-                                                          end: Alignment.bottomRight,
+                                                          begin: Alignment
+                                                              .topLeft,
+                                                          end: Alignment
+                                                              .bottomRight,
                                                         ),
-                                                        boxShadow: controller.isValidForm.isTrue
+                                                        boxShadow: controller
+                                                            .isValidForm.isTrue
                                                             ? [
                                                           BoxShadow(
-                                                            color: colorGreen.withOpacity(0.3),
+                                                            color: colorGreen
+                                                                .withValues(
+                                                                alpha: 0.3),
                                                             blurRadius: 15,
-                                                            offset: const Offset(0, 8),
+                                                            offset: const Offset(
+                                                                0, 8),
                                                             spreadRadius: 0,
                                                           ),
                                                         ]
                                                             : [],
                                                       ),
                                                       child: TextButton(
-                                                        onPressed: controller.isValidForm.isTrue
+                                                        onPressed: controller
+                                                            .isValidForm.isTrue
                                                             ? () {
-                                                          controller.doResetPassword();
+                                                          controller
+                                                              .doResetPassword();
                                                         }
                                                             : null,
-                                                        style: TextButton.styleFrom(
-                                                          foregroundColor: Colors.white,
+                                                        style: TextButton
+                                                            .styleFrom(
+                                                          foregroundColor: Colors
+                                                              .white,
                                                           shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(18),
+                                                            borderRadius: BorderRadius
+                                                                .circular(18),
                                                           ),
-                                                          padding: const EdgeInsets.symmetric(vertical: 12),
+                                                          padding: const EdgeInsets
+                                                              .symmetric(
+                                                              vertical: 12),
                                                         ),
                                                         child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          mainAxisAlignment: MainAxisAlignment
+                                                              .center,
                                                           children: [
                                                             Text(
                                                               "Réinitialiser",
                                                               style: TextStyle(
                                                                 fontSize: 16,
-                                                                fontWeight: FontWeight.bold,
+                                                                fontWeight: FontWeight
+                                                                    .bold,
                                                                 letterSpacing: 0.5,
-                                                                color: controller.isValidForm.isTrue
-                                                                    ? Colors.white
-                                                                    : Colors.grey[500],
+                                                                color: controller
+                                                                    .isValidForm
+                                                                    .isTrue
+                                                                    ? Colors
+                                                                    .white
+                                                                    : Colors
+                                                                    .grey[500],
                                                               ),
                                                             ),
-                                                            const SizedBox(width: 10),
+                                                            const SizedBox(
+                                                                width: 10),
                                                             SvgPicture.asset(
-                                                              'assets/images/icon_arrow_right.svg',
+                                                              Assets
+                                                                  .imagesIconArrowRight,
                                                               width: 20,
                                                               height: 20,
-                                                              colorFilter: ColorFilter.mode(
-                                                                controller.isValidForm.isTrue
-                                                                    ? Colors.white
-                                                                    : Colors.grey[500]!,
+                                                              colorFilter: ColorFilter
+                                                                  .mode(
+                                                                controller
+                                                                    .isValidForm
+                                                                    .isTrue
+                                                                    ? Colors
+                                                                    .white
+                                                                    : Colors
+                                                                    .grey[500]!,
                                                                 BlendMode.srcIn,
                                                               ),
                                                             ),
@@ -413,14 +487,14 @@ class ResetPasswordScreen extends StatelessWidget {
   }
 
   // Helper method to build password rule items
-  Widget _buildPasswordRule(String text) {
+  Widget _buildPasswordRule(String text, bool isValid) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Row(
         children: [
-          const Icon(
+          Icon(
             Icons.check_circle_outline,
-            color: colorGreen,
+            color: isValid ? colorGreen : Colors.grey[600]!,
             size: 16,
           ),
           const SizedBox(width: 8),
@@ -428,7 +502,7 @@ class ResetPasswordScreen extends StatelessWidget {
             text,
             style: TextStyles.montserratRegular(
               textSize: TextSizes.thirteen,
-              textColor: Colors.grey[600]!,
+              textColor: isValid ? colorGreen : Colors.grey[600]!,
             ),
           ),
         ],

@@ -40,6 +40,9 @@ class ResetPasswordController extends GetxController {
   FocusNode newPasswordFocusNode = FocusNode();
   FocusNode confPasswordFocusNode = FocusNode();
 
+  static const PASSWORD_LENGTH = 8;
+  var hasPasswordLength = false.obs;
+
   @override
   void onInit() {
     getArguments();
@@ -126,10 +129,15 @@ class ResetPasswordController extends GetxController {
 
     if (newPasswordFocusNode.hasFocus) {
       if (newPassword.isEmpty) {
-        newPasswordErrorMessage.value =
-        "Le nouveau mot de passe est obligatoire";
+        newPasswordErrorMessage.value = "Le nouveau mot de passe est obligatoire";
       } else {
         newPasswordErrorMessage.value = '';
+      }
+      if (newPassword.length < PASSWORD_LENGTH) {
+        newPasswordErrorMessage.value = "Le nouveau mot de passe doit contenir au moins 8 caractères";
+        hasPasswordLength.value = false;
+      } else {
+        hasPasswordLength.value = true;
       }
     }
 
