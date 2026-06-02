@@ -158,7 +158,7 @@ class ResetPasswordController extends GetxController {
       confPasswordErrorMessage.value = '';
     }
 
-    isValidForm.value = newPassword.isNotEmpty && confPassword.isNotEmpty && isSamePassword;
+    isValidForm.value = newPassword.isNotEmpty && newPassword.length >= PASSWORD_LENGTH && confPassword.isNotEmpty && isSamePassword;
   }
 
   @override

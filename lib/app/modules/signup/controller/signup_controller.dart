@@ -47,6 +47,9 @@ class SignupController extends GetxController {
   FocusNode passwordFocusNode = FocusNode();
   FocusNode confPasswordFocusNode = FocusNode();
 
+  static const PASSWORD_LENGTH = 8;
+  var hasPasswordLength = false.obs;
+
   @override
   void onInit() {
     initControllers();
@@ -180,6 +183,12 @@ class SignupController extends GetxController {
       } else {
         passwordErrorMessage.value = '';
       }
+      if (password.length < PASSWORD_LENGTH) {
+        passwordErrorMessage.value = "Le mot de passe doit contenir au moins 8 caractères";
+        hasPasswordLength.value = false;
+      } else {
+        hasPasswordLength.value = true;
+      }
     }
 
     if (confPasswordFocusNode.hasFocus) {
@@ -205,6 +214,7 @@ class SignupController extends GetxController {
         isValidEmail &&
         phone.isNotEmpty &&
         password.isNotEmpty &&
+        password.length >= PASSWORD_LENGTH &&
         confPassword.isNotEmpty &&
         isSamePassword;
   }
