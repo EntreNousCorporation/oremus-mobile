@@ -132,6 +132,10 @@ class SigninController extends GetxController {
       isUserConnected.value = true;
       AuthGate.resetAfterLogin();
       DB.saveUserSigninInfo(userConnection);
+      // Lie la souscription OneSignal a l'External ID = userId backend (stable).
+      // OneSignal resout ensuite lui-meme la souscription active, ce qui evite
+      // les player_ids perimes cote backend.
+      await _notificationService.setExternalUserId(payload['sub'].toString());
       if (tempLogin.value == true) {
         Get.find<CustomHomeController>().onInit();
         Get.back(result: true);

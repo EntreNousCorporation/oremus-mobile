@@ -65,6 +65,15 @@ class CustomHomeController extends GetxController {
         } else {
           log('deviceId is NULL');
         }
+      } else {
+        // Rattrapage du parc existant : un utilisateur deja connecte avant la
+        // MAJ (qui ne repassera pas par l'ecran de login) lie son External ID
+        // a la premiere ouverture. Le userId est deja persiste en Hive, donc
+        // aucune re-connexion n'est requise. Doit s'executer APRES l'init OneSignal.
+        final userId = DB.getUserSigninInfo()?.id;
+        if (userId != null && userId.isNotEmpty) {
+          await notificationService.setExternalUserId(userId);
+        }
       }
     });
   }
@@ -256,6 +265,10 @@ class CustomHomeController extends GetxController {
     // ça, l'access/refresh restait dans le Keychain/EncryptedSharedPrefs
     // après un logout manuel et pouvait être réutilisé au boot suivant.
     await TokenStore.clear();
+    // Dissocie l'External ID OneSignal du device : sans ca, l'alias resterait
+    // attache et l'appareil (potentiellement partage) pourrait recevoir les
+    // notifications ciblees de l'utilisateur deconnecte.
+    await notificationService.logoutUser();
     DB.saveData(AppConstants.KEY_USER_LOG_INFOS, null);
     Get.deleteAll(force: false);
     isUserConnected.value = false;
