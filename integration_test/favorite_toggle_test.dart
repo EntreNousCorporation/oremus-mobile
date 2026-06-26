@@ -14,6 +14,12 @@ import 'test_helpers/secure_storage_mock.dart';
 /// Happy path : un user connecté tape le like d'une paroisse →
 /// `POST /favorites` est tiré, et l'état local de la paroisse passe à
 /// `isFavorite = true`.
+///
+/// Note : on appelle directement `controller.onLikeButtonTapped(...)` plutôt
+/// qu'un vrai `tester.tap` sur le `LikeButton`, car la home rend un overlay
+/// (Theater/AbsorbPointer) au-dessus de la liste des paroisses qui fait
+/// échouer le hit-test du `tester.tap`. Le vrai tap UI est exercé par
+/// `login_test` (form fields + submit) et par les autres tests d'auth/CTA.
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 

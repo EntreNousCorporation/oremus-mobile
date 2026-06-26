@@ -14,7 +14,6 @@ import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:just_audio_background/just_audio_background.dart';
-import 'package:meta/meta.dart';
 import 'package:oremusapp/app/commons/components/custom_animation.dart';
 import 'package:oremusapp/app/commons/components/network_status_overlay.dart';
 import 'package:oremusapp/app/commons/constants.dart';
@@ -46,6 +45,7 @@ var versionName;
 var versionCode;
 var phoneId;
 var shareAppLink;
+var moreInfo;
 var canCheckConnectivity;
 var oneSignalAppID;
 var showAppLogs;
@@ -121,6 +121,7 @@ Future<void> bootstrap({
   customBaseUrl = settings.oremusFlavor.customBaseUrl.toString() +
       settings.oremusFlavor.endpoint.toString();
   shareAppLink = settings.oremusFlavor.shareAppLink;
+  moreInfo = settings.oremusFlavor.moreInfo;
   canCheckConnectivity = settings.oremusFlavor.canCheckConectivity;
   oneSignalAppID = settings.oremusFlavor.oneSignalAppID;
   showAppLogs = settings.oremusFlavor.showAppLogs;

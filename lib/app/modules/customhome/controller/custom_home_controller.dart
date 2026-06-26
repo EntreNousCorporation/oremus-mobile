@@ -223,7 +223,7 @@ class CustomHomeController extends GetxController {
 
   doShareApp() {
     shareApp(
-      AppConstants.APP_SHARE_MSG.replaceAll('{link}', shareAppLink),
+      AppConstants.APP_SHARE_MSG.replaceAll('{link}', shareAppLink).replaceAll('{info}', moreInfo),
       includeFile: GetPlatform.isAndroid ? true : false,
       filePath: Assets.imagesLogo,
     );

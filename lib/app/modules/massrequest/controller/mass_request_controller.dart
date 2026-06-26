@@ -481,7 +481,6 @@ class MassRequestController extends GetxController {
     PriceData? previousSelectedDate = selectedDate.value;
     Slot? previousSelectedHour = selectedHour.value;
     String? previousPrice = price.value;
-    List<PriceData?> previousDatesChoosen = List.from(datesChoosen);
 
     // Réinitialiser les données pour plusieurs messes
     if (massTypeRepetitionData?.code == RepetitionType.many.name) {
@@ -1029,7 +1028,7 @@ class MassRequestController extends GetxController {
               DateTime now = DateTime.now();
               DateTime today = DateTime(now.year, now.month, now.day);
 
-              DateTime datetime = allowedDates.value.firstWhere(
+              DateTime datetime = allowedDates.firstWhere(
                 (date) => date.isAfter(today) || date.isAtSameMomentAs(today),
                 orElse: () => allowedDates.first,
               );

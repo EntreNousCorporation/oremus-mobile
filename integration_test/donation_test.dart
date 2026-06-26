@@ -5,7 +5,6 @@ import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/configs/flavor_settings.dart';
 import 'package:oremusapp/app/modules/donation/controller/donation_recap_controller.dart';
 import 'package:oremusapp/app/modules/donation/data/repository/donation_repository.dart';
-import 'package:oremusapp/app/modules/payment/data/model/payment_status_data.dart';
 import 'package:oremusapp/app/modules/payment/data/repository/payment_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/signin/data/model/signin.dart';

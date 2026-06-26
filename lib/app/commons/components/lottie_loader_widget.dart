@@ -12,8 +12,8 @@ class LottieLoadingView extends StatelessWidget {
   }) : super(key: key);
 
   final Color? color;
-  double? size;
-  String? file;
+  final double? size;
+  final String? file;
 
   @override
   Widget build(BuildContext context) {

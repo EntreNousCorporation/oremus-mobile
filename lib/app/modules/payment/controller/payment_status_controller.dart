@@ -23,14 +23,17 @@ class PaymentStatusController extends GetxController {
     super.onInit();
   }
 
-  getArguments() {
-    if (Get.arguments == null) return;
-    Map<String, dynamic> arguments = Get.arguments;
+  /// Hydrate les obs depuis [args] (pour les tests) ou sinon depuis
+  /// `Get.arguments` (production).
+  getArguments({Map<String, dynamic>? args}) {
+    final arguments = args ?? Get.arguments;
+    if (arguments == null) return;
     if (arguments.containsKey('payment_type')) {
-      paymentType.value = Get.arguments['payment_type'];
+      paymentType.value = arguments['payment_type'];
     }
     if (arguments.containsKey('paroisse_selected')) {
-      paroisseSelected.value = ContentPlace.fromJson(Get.arguments['paroisse_selected']);
+      paroisseSelected.value =
+          ContentPlace.fromJson(arguments['paroisse_selected']);
     }
     if (arguments.containsKey('payment_status_message')) {
       paymentStatusMessage.value = arguments['payment_status_message'];

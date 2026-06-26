@@ -35,13 +35,16 @@ class RegularConfessionScreen extends StatelessWidget {
                 controller: logic.refreshController,
                 onRefresh: logic.onRegularConfessionsRefresh,
                 header: const CustomClassicHeader(),
-                child: ListView.builder(
+                child: ListView.separated(
+                  physics: const BouncingScrollPhysics(),
                   itemCount: logic.regularConfessions.length,
-                  padding: const EdgeInsets.only(top: 10),
+                  padding: EdgeInsets.only(top: 10, bottom: MediaQuery.of(context).padding.bottom + 30),
+                  separatorBuilder: (context, index) {
+                    return Separators.customSizeVertical(16);
+                  },
                   itemBuilder: (context, index) {
                     final value = logic.regularConfessions[index];
                     return Container(
-                      margin: const EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
@@ -57,7 +60,7 @@ class RegularConfessionScreen extends StatelessWidget {
                         data: Theme.of(context).copyWith(
                           dividerColor: Colors.transparent,
                           colorScheme: Theme.of(context).colorScheme.copyWith(
-                            background: Colors.transparent,
+                            surface: Colors.transparent,
                           ),
                         ),
                         child: ExpansionTile(

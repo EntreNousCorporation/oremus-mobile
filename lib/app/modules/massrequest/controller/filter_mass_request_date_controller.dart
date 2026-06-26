@@ -478,7 +478,6 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
   void _restoreRecurrentMasses(List<Map<String, dynamic>> savedRecurrentMasses) {
     final now = DateTime.now();
     final currentWeekDay = now.weekday - 1; // 0=lundi, 6=dimanche
-    final isAfternoon = now.hour >= 12;
 
     for (var savedMass in savedRecurrentMasses) {
       var mass = worshipRecurrentHours.firstWhereOrNull(
@@ -591,6 +590,7 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
   }
 
   // Déterminer la plage horaire en fonction de l'heure actuelle
+  // ignore: unused_element
   TimeRange _determineTimeRange(DateTime now) {
     final currentHour = now.hour;
     final currentMinute = now.minute;
@@ -805,7 +805,7 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
             countOccurrencesAndAssignDates(
                 Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime,
                 Jiffy.parse(endSelectedDate.value?.day ?? '').dateTime,
-                datesChoosenForWorshipRecurrentHours.value);
+                datesChoosenForWorshipRecurrentHours);
       } else {}
     } else {
       worshipRecurrentHours.refresh();
@@ -877,7 +877,6 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
                 onPrimary: colorWhite,
                 onSurface: colorBlack,
                 primary: colorPurpleLight),
-            dialogBackgroundColor: Colors.white,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                 foregroundColor: colorWhite,
@@ -892,7 +891,7 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
                   borderRadius: BorderRadius.circular(50),
                 ),
               ),
-            ),
+            ), dialogTheme: const DialogThemeData(backgroundColor: Colors.white),
           ),
           child: child!,
         );
@@ -917,7 +916,7 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
           countOccurrencesAndAssignDates(
               Jiffy.parse(initialSelectedDate.value?.day ?? '').dateTime,
               selected,
-              datesChoosenForWorshipRecurrentHours.value);
+              datesChoosenForWorshipRecurrentHours);
 
       // Mettre à jour l'état du bouton de continuation
       canDoApplyAction();
@@ -1030,7 +1029,6 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
               onSurface: colorBlack,
               primary: colorGreen,
             ),
-            dialogBackgroundColor: Colors.white,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                 foregroundColor: colorWhite,
@@ -1040,7 +1038,7 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
                   borderRadius: BorderRadius.circular(50),
                 ),
               ),
-            ),
+            ), dialogTheme: const DialogThemeData(backgroundColor: Colors.white),
           ),
           child: child!,
         );
@@ -1308,7 +1306,7 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
 
   resetRecurrentHours() {
     datesChoosenForWorshipRecurrentHours.clear();
-    for (PriceData item in worshipRecurrentHours.value) {
+    for (PriceData item in worshipRecurrentHours) {
       item.isDaySelected = false;
       item.day = '';
       item.dayToDisplay = '';
@@ -1321,7 +1319,7 @@ class FilterMassRequestDateController extends GetxController with GetSingleTicke
 
   resetSpecialHours() {
     datesChoosenWorshipSpecialHours.clear();
-    for (PriceData item in worshipSpecialHours.value) {
+    for (PriceData item in worshipSpecialHours) {
       for (Slot hour in item.slots ?? []) {
         hour.isHourSelected = false;
       }

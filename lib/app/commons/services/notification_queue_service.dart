@@ -27,7 +27,9 @@ class NotificationQueueService {
   // Set pour tracker les IDs des notifications déjà traitées
   final Set<String> _processedNotificationIds = <String>{};
 
-  // Durée de rétention des IDs (pour éviter un memory leak)
+  // TODO: implémenter un cleanup périodique de _processedNotificationIds
+  // basé sur cette durée pour éviter le memory leak.
+  // ignore: unused_field
   static const Duration _idRetentionDuration = Duration(hours: 24);
 
   // Ajoute une notification à la file d'attente et démarre le traitement si nécessaire

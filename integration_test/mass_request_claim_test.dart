@@ -6,7 +6,6 @@ import 'package:oremusapp/app/configs/flavor_settings.dart';
 import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart' show MassRequestResponse;
 // `TypeData` est ambigu (donation et massrequest la déclarent) ; on prend
 // celle de massrequest, qui est ce que `claimTypes` exporte via le repo.
-import 'package:oremusapp/app/modules/massrequest/data/model/mass_request_response.dart' show TypeData;
 import 'package:oremusapp/app/modules/massrequestclaim/controller/mass_request_claim_controller.dart';
 import 'package:oremusapp/app/modules/massrequestclaim/data/repository/mass_request_claim_repository.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';

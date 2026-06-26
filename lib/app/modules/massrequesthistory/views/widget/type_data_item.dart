@@ -9,7 +9,7 @@ import 'package:oremusapp/app/modules/massrequesthistory/controller/filter_mass_
 class TypeDataItem extends StatelessWidget {
   TypeDataItem({Key? key, required this.typeData}) : super(key: key);
 
-  TypeData? typeData;
+  final TypeData? typeData;
 
   @override
   Widget build(BuildContext context) {

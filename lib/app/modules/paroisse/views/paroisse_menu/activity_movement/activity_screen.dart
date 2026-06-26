@@ -38,8 +38,12 @@ class ActivityScreen extends StatelessWidget {
                   controller: logic.refreshActivitiesController,
                   onRefresh: logic.onRefreshActivities,
                   header: const CustomClassicHeader(),
-                  child: ListView.builder(
-                      padding: const EdgeInsets.only(top: 16),
+                  child: ListView.separated(
+                      physics: const BouncingScrollPhysics(),
+                      padding: EdgeInsets.only(top: 16, bottom: MediaQuery.of(context).padding.bottom + 30),
+                      separatorBuilder: (context, index) {
+                        return Separators.customSizeVertical(16);
+                      },
                       itemCount: logic.activities.length,
                       itemBuilder: (context, index) {
                         var activity = logic.activities[index];

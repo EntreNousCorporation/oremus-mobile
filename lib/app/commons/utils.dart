@@ -244,19 +244,23 @@ shareApp(String message, {bool? includeFile = true, String filePath = ''}) async
   final path = '${temp.path}/logo.png';
   File(path).writeAsBytesSync(imagebyte.buffer.asUint8List());
 
-  if (includeFile == true) {
-    await Share.shareXFiles(
-      [XFile(path)],
-      text: message,
-      subject: '',
-      sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
-    );
-  } else {
-    await Share.share(
-      message,
-      subject: '',
-      sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
-    );
+  final params = ShareParams(
+    files: includeFile == true ? [XFile(path)] : null,
+    text: message,
+    subject: '',
+    title: message,
+    previewThumbnail: XFile(path),
+    sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+  );
+  final result = await SharePlus.instance.share(params);
+  if (result.status == ShareResultStatus.success) {
+    OremusLogger.info('Share successed !');
+  }
+  if (result.status == ShareResultStatus.dismissed) {
+    OremusLogger.warning('Share dismissed !');
+  }
+  if (result.status == ShareResultStatus.unavailable) {
+    OremusLogger.error('Share unavailable !');
   }
 }
 
@@ -473,11 +477,6 @@ List<PriceData> duplicateEventsByRepeat(List<PriceData> events) {
 
 bool isDayOfWeekInDateRange(int dayOfWeek, DateTime startDate, DateTime endDate) {
   // Vérifier si les dates sont valides
-  if (startDate == null || endDate == null) {
-    return false;
-  }
-
-  // Convertir dayOfWeek (0-6) en format standard (1-7)
   int standardDayOfWeek = dayOfWeek + 1;
 
   // Parcourir la période jour par jour
@@ -641,7 +640,7 @@ extension ColorExtension on Color {
       red ?? this.red,
       green ?? this.green,
       blue ?? this.blue,
-      alpha ?? this.opacity,
+      alpha ?? opacity,
     );
   }
 }

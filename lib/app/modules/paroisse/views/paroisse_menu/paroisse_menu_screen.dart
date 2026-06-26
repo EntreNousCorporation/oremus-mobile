@@ -296,7 +296,7 @@ class ParoisseMenuScreen extends StatelessWidget {
 
                     // Grille de menu
                     SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                      padding: EdgeInsets.fromLTRB(16, 16, 16, MediaQuery.of(context).padding.bottom + 30),
                       sliver: SliverGrid(
                         gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
