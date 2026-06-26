@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
+import 'package:oremusapp/app/commons/services/os_notification_service.dart';
 import 'package:oremusapp/app/commons/services/token_store.dart';
 import 'package:oremusapp/app/routes/app_pages.dart';
 import 'package:oremusapp/main.dart';
@@ -20,6 +21,9 @@ class AuthGate {
 
     try {
       await TokenStore.clear();
+      // Dissocie aussi l'External ID OneSignal sur un logout force (401),
+      // sinon l'alias survit a la session invalidee.
+      await OSNotificationService().logoutUser();
       DB.saveData(AppConstants.KEY_USER_LOG_INFOS, null);
       DB.clearAllUserSpecificData();
       isUserConnected.value = false;
