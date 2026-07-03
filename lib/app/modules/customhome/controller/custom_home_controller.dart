@@ -129,12 +129,12 @@ class CustomHomeController extends GetxController {
         icon: Assets.imagesRosary,
         isVisible: true,
       ),
-      MenusItem(
-        code: AppConstants.LIFE_PLAN,
-        libelle: "Plan de vie",
-        icon: Assets.imagesAssignment,
-        isVisible: true,
-      ),
+      // MenusItem(
+      //   code: AppConstants.LIFE_PLAN,
+      //   libelle: "Plan de vie",
+      //   icon: Assets.imagesAssignment,
+      //   isVisible: true,
+      // ),
       MenusItem(
         code: AppConstants.PROMO,
         libelle: 'Codes promo',
