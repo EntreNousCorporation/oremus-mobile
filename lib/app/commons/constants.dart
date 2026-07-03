@@ -65,6 +65,7 @@ abstract class AppConstants {
   static const SETTINGS = 11;
   static const ROSAIRE = 12;
   static const LIFE_PLAN = 13;
+  static const MASS_READINGS = 14;
 
   static const MIN_AMOUNT = 100;
 

@@ -84,6 +84,7 @@ import 'package:oremusapp/app/modules/payment/views/payment_error_screen.dart';
 import 'package:oremusapp/app/modules/payment/views/payment_processing_screen.dart';
 import 'package:oremusapp/app/modules/payment/views/payment_screen.dart';
 import 'package:oremusapp/app/modules/payment/views/payment_success_screen.dart';
+import 'package:oremusapp/app/modules/massreadings/binding/mass_readings_binding.dart';
 import 'package:oremusapp/app/modules/pray/binding/pray_binding.dart';
 import 'package:oremusapp/app/modules/pray/views/pray_screen.dart';
 import 'package:oremusapp/app/modules/profile/binding/edit_profile_binding.dart';
@@ -126,6 +127,7 @@ class AppPages {
         MassRequestMenuBinding(),
         DonationMenuBinding(),
         PrayBinding(),
+        MassReadingsBinding(),
         SettingsBinding(),
         RosaryBinding(),
         LifePlanBinding(),
@@ -141,6 +143,7 @@ class AppPages {
         MassRequestMenuBinding(),
         DonationMenuBinding(),
         PrayBinding(),
+        MassReadingsBinding(),
         SettingsBinding(),
         RosaryBinding(),
         LifePlanBinding(),
