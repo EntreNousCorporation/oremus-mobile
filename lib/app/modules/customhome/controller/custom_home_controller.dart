@@ -116,7 +116,7 @@ class CustomHomeController extends GetxController {
       MenusItem(
         code: AppConstants.MASS_READINGS,
         libelle: "Textes de Messe",
-        icon: Assets.imagesIconBookmark,
+        icon: Assets.imagesIconOpenBook,
       ),
       MenusItem(
         code: AppConstants.DONATION_WITHOUT_WORSHIP,
