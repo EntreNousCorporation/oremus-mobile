@@ -62,6 +62,7 @@ class Assets {
   static const String imagesGroup = 'assets/images/group.svg';
   static const String imagesIconArrowRight = 'assets/images/icon_arrow_right.svg';
   static const String imagesIconBookmark = 'assets/images/icon_bookmark.svg';
+  static const String imagesIconOpenBook = 'assets/images/icon_open_book.svg';
   static const String imagesIconCalendar = 'assets/images/icon_calendar.svg';
   static const String imagesIconClock = 'assets/images/icon_clock.svg';
   static const String imagesIconDefaultPin = 'assets/images/icon_default_pin.svg';
