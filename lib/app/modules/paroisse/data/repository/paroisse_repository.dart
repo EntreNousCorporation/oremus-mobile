@@ -106,13 +106,11 @@ class ParoisseRepository implements IParoisseRepository {
     }
   }
 
-  @override
   Future<DataResponse<ContentPlace>> getParoissesBySchedule_({
     int? page = 0,
     required String query,
   }) async {
     bool isUserLoggedIn = DB.getUserSigninInfo()?.id != null && DB.getUserSigninInfo()?.id?.isNotEmpty == true;
-    String? currentUserId = DB.getUserSigninInfo()?.id;
 
     Response response = await _apiClient.doRequest(
       customBaseUrl: customBaseUrl,

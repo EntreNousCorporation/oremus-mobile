@@ -70,8 +70,8 @@ void main() {
       final codes = controller.menus.map((m) => m.code).toSet();
       expect(codes, contains(AppConstants.HOME));
       expect(codes, contains(AppConstants.PRAY));
+      expect(codes, contains(AppConstants.MASS_READINGS));
       expect(codes, contains(AppConstants.ROSAIRE));
-      expect(codes, contains(AppConstants.LIFE_PLAN));
       expect(codes, contains(AppConstants.SHARE_APP));
       expect(codes, contains(AppConstants.SETTINGS));
     });

@@ -14,6 +14,7 @@ import 'package:oremusapp/app/modules/faq/views/faq_screen.dart';
 import 'package:oremusapp/app/modules/lifeplan/views/life_plan_screen.dart';
 import 'package:oremusapp/app/modules/massrequest/views/mass_request_menu_screen.dart';
 import 'package:oremusapp/app/modules/paroisse/views/paroisse_screen.dart';
+import 'package:oremusapp/app/modules/massreadings/views/mass_readings_screen.dart';
 import 'package:oremusapp/app/modules/pray/views/pray_screen.dart';
 import 'package:oremusapp/app/modules/profile/controller/profile_controller.dart';
 import 'package:oremusapp/app/modules/profile/views/profile_screen.dart';
@@ -50,6 +51,10 @@ class CustomHomeNewScreen extends StatelessWidget {
               case AppConstants.PRAY:
                 logic.title.value = logic.menus[position].libelle ?? 'Prières';
                 screenCurrent = const PrayScreen();
+                break;
+              case AppConstants.MASS_READINGS:
+                logic.title.value = logic.menus[position].libelle ?? 'Textes de Messe';
+                screenCurrent = const MassReadingsScreen();
                 break;
               case AppConstants.REQUEST_MASS_WITHOUT_WORSHIP:
                 logic.title.value =
