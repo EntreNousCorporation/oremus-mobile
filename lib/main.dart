@@ -15,6 +15,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:oremusapp/app/commons/components/custom_animation.dart';
+import 'package:oremusapp/app/commons/components/multi_tap_detector.dart';
 import 'package:oremusapp/app/commons/components/network_status_overlay.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
@@ -227,8 +228,9 @@ class OremusApp extends StatelessWidget {
                 data: MediaQuery.of(
                   context,
                 ).copyWith(textScaler: const TextScaler.linear(1)),
-                child: GestureDetector(
-                  onLongPress: () {
+                child: MultiTapDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onMultiTap: () {
                     moveToMonitoringHubScreen();
                   },
                   child: MainAppWrapper(child: child!),
