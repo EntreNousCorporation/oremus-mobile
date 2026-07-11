@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_dimension.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
@@ -165,6 +166,7 @@ class _ReadingsPagerState extends State<_ReadingsPager>
 
   Widget _header() {
     final data = widget.data;
+    final dateLue = _formatDate(data.date);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
@@ -194,15 +196,28 @@ class _ReadingsPagerState extends State<_ReadingsPager>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // La date est mise en avant : elle atteste que les lectures
+                // affichees sont bien celles du jour.
                 Text(
-                  (data.jourLiturgique?.isNotEmpty == true)
-                      ? data.jourLiturgique!
-                      : 'Messe du jour',
+                  dateLue ??
+                      ((data.jourLiturgique?.isNotEmpty == true)
+                          ? data.jourLiturgique!
+                          : 'Messe du jour'),
                   style: TextStyles.montserratBold(
                     textSize: TextSizes.sixteen,
                     textColor: colorGreenSemiLight,
                   ),
                 ),
+                if (dateLue != null && data.jourLiturgique?.isNotEmpty == true) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    data.jourLiturgique!,
+                    style: TextStyles.montserratMedium(
+                      textSize: TextSizes.thirteen,
+                      textColor: colorGrey1,
+                    ),
+                  ),
+                ],
                 if (data.degre?.isNotEmpty == true) ...[
                   const SizedBox(height: 2),
                   Text(
@@ -222,11 +237,15 @@ class _ReadingsPagerState extends State<_ReadingsPager>
   }
 
   Widget _readingContent(Reading reading) {
-    // Avec intro lue (évangile, 1re lecture) : l'intro se fige en haut au scroll.
-    if (reading.introLue?.isNotEmpty == true) {
-      return _readingWithStickyIntro(reading);
-    }
-    return _readingSimple(reading);
+    // SelectionArea : appui long sur le texte pour selectionner puis copier.
+    // Portee limitee au contenu de l'onglet (les libelles d'onglets restent
+    // non selectionnables, sinon le geste entre en conflit avec le swipe).
+    return SelectionArea(
+      // Avec intro lue (évangile, 1re lecture) : l'intro se fige en haut au scroll.
+      child: reading.introLue?.isNotEmpty == true
+          ? _readingWithStickyIntro(reading)
+          : _readingSimple(reading),
+    );
   }
 
   /// Lecture avec introduction lue figée (sticky) pendant le scroll du texte.
@@ -373,6 +392,21 @@ class _ReadingsPagerState extends State<_ReadingsPager>
         },
       ),
     );
+  }
+
+  /// Formate la date AELF (`yyyy-MM-dd`) en francais : "Jeudi 9 juillet 2026".
+  /// Retourne null si la date est absente ou illisible, pour laisser l'en-tete
+  /// retomber sur le jour liturgique.
+  String? _formatDate(String? date) {
+    if (date == null || date.isEmpty) return null;
+    final parsed = DateTime.tryParse(date);
+    if (parsed == null) return null;
+    final jour = DateFormat('EEEE', 'fr_FR').format(parsed);
+    final mois = DateFormat('MMMM yyyy', 'fr_FR').format(parsed);
+    // "1er mars" et non "1 mars".
+    final quantieme = parsed.day == 1 ? '1er' : '${parsed.day}';
+    final libelle = '$jour $quantieme $mois';
+    return libelle[0].toUpperCase() + libelle.substring(1);
   }
 
   /// Libelle du type de lecture pour les onglets.

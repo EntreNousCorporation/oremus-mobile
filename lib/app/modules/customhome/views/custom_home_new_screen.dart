@@ -53,7 +53,7 @@ class CustomHomeNewScreen extends StatelessWidget {
                 screenCurrent = const PrayScreen();
                 break;
               case AppConstants.MASS_READINGS:
-                logic.title.value = logic.menus[position].libelle ?? 'Textes de Messe';
+                logic.title.value = logic.menus[position].libelle ?? 'Lectures du jour';
                 screenCurrent = const MassReadingsScreen();
                 break;
               case AppConstants.REQUEST_MASS_WITHOUT_WORSHIP:
