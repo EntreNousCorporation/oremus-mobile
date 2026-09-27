@@ -2,8 +2,8 @@ name: oremusapp
 description: A new Flutter project.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-#version: 1.2.11+32 #PROD
-version: 1.0.18+75
+version: 1.2.13+34 #PROD
+#version: 1.0.18+75
 
 environment:
   sdk: ^3.7.0
@@ -37,7 +37,11 @@ dependencies:
 
   #FIREBASE
   firebase_core: ^3.8.0
+  firebase_analytics: ^11.3.6
   firebase_crashlytics: ^4.1.5
+
+  #ATTRIBUTION (IDFA pour Google Ads / Firebase Analytics)
+  app_tracking_transparency: ^2.0.6
 
   #MAPS
   google_maps_flutter: ^2.5.3
@@ -186,6 +190,9 @@ flutter_native_splash:
 
 # The following section is specific to Flutter.
 flutter:
+  # Le projet iOS lie Firebase via CocoaPods. Sans ceci, Flutter 3.29
+  # ignore ces pods au profit de Swift Package Manager.
+  disable-swift-package-manager: true
 
   uses-material-design: true
   # To add assets to your application, add an assets section, like this:

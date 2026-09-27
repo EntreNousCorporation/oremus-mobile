@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -171,6 +172,8 @@ Future<void> bootstrap({
     await Firebase.initializeApp();
     FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+    // first_open (installation) est envoyé automatiquement par le SDK.
+    await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
   }
 
   if (options.registerAudioServices) {

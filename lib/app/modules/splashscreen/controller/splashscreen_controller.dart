@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
+import 'package:oremusapp/app/commons/services/tracking_authorization_service.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/signin/data/repository/signin_repository.dart';
 import 'package:oremusapp/app/modules/splashscreen/data/repository/splashscreen_repository.dart';
@@ -41,6 +42,7 @@ class SplashscreenController extends GetxController {
     updateLocale(currentLanguage.value);
 
     hasUserConnected();
+    TrackingAuthorizationService.requestIfNeeded();
     getInitialView();
     super.onReady();
   }

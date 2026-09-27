@@ -66,6 +66,15 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Afin de trouver l'itinéraire des paroisses proche de vous</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>Cette autorisation nous permet de savoir quelles campagnes vous ont fait découvrir Oremus, afin de mieux faire connaître l'application.</string>
+	<key>SKAdNetworkItems</key>
+	<array>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>cstr6suwn9.skadnetwork</string>
+		</dict>
+	</array>
 	<key>Oremus - Flavor</key>
 	<string>$(APP_FLAVOR)</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
