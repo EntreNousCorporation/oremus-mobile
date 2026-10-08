@@ -18,7 +18,7 @@ class FlavorSettings {
         byPassAuth: false,
         canCheckConectivity: true,
         envCredentials: EnvCredentials.dev,
-        oneSignalAppID: '25d270d6-2c54-4adb-83ea-6004918f7c29',
+        oneSignalAppID: 'cee3817e-bb25-46db-b96d-e46d070991f9',
       );
 
   //------------------------------------+
@@ -33,7 +33,7 @@ class FlavorSettings {
         moreInfo: 'https://linktr.ee/oremusci',
         byPassAuth: true,
         envCredentials: EnvCredentials.prod,
-        oneSignalAppID: '0d127e7e-a1dd-4275-b268-bb7cc626e0db',
+        oneSignalAppID: '654fdc09-64bd-44a5-b4a3-8aefb05f546cb',
         showAppLogs: false,
       );
 }
