@@ -33,7 +33,7 @@ class FlavorSettings {
         moreInfo: 'https://linktr.ee/oremusci',
         byPassAuth: true,
         envCredentials: EnvCredentials.prod,
-        oneSignalAppID: '654fdc09-64bd-44a5-b4a3-8aefb05f546cb',
+        oneSignalAppID: '654fdc09-64bd-44a5-b4a3-8aefb05f546c',
         showAppLogs: false,
       );
 }
