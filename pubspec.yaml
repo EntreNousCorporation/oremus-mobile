@@ -2,8 +2,8 @@ name: oremusapp
 description: A new Flutter project.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-#version: 1.2.13+34 #PROD
-version: 1.0.18+77
+version: 1.2.14+35 #PROD
+#version: 1.0.18+77
 
 environment:
   sdk: ^3.7.0
