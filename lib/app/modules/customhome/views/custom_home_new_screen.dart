@@ -23,13 +23,24 @@ import 'package:oremusapp/app/modules/rosary/controller/rosary_controller.dart';
 import 'package:oremusapp/app/modules/rosary/views/rosary_screen.dart';
 import 'package:oremusapp/app/modules/settings/views/settings_screen.dart';
 import 'package:oremusapp/main.dart';
+import 'package:upgrader/upgrader.dart';
 
 class CustomHomeNewScreen extends StatelessWidget {
   const CustomHomeNewScreen({Key? key}) : super(key: key);
 
+  /// Même principe que Peya Pay : alerte App Store. Android reste sur in_app_update.
+  static final Upgrader _iosUpgrader = Upgrader(
+    countryCode: 'CI',
+    debugDisplayAlways: false,
+    debugLogging: false,
+    dialogStyle: UpgradeDialogStyle.cupertino,
+    durationUntilAlertAgain: const Duration(minutes: 3),
+    messages: UpgraderMessages(code: 'fr'),
+  );
+
   @override
   Widget build(BuildContext context) {
-    return NotificationListener(
+    final home = NotificationListener(
       child: GetBuilder<CustomHomeController>(builder: (logic) {
         return SimpleHiddenDrawer(
           menu: const DrawerMenu(),
@@ -247,6 +258,17 @@ class CustomHomeNewScreen extends StatelessWidget {
           },
         );
       }),
+    );
+    return _wrapIosStoreUpdate(home);
+  }
+
+  Widget _wrapIosStoreUpdate(Widget child) {
+    if (flavor != AppConstants.ENV_PROD || !GetPlatform.isIOS) {
+      return child;
+    }
+    return UpgradeAlert(
+      upgrader: _iosUpgrader,
+      child: child,
     );
   }
 
