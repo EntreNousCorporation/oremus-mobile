@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:hidden_drawer_menu/controllers/simple_hidden_drawer_controller.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:oremusapp/app/commons/components/dialogs.dart';
+import 'package:oremusapp/app/commons/components/oremus_logger.dart';
 import 'package:oremusapp/app/commons/constants.dart';
 import 'package:oremusapp/app/commons/db/db.dart';
 import 'package:oremusapp/app/commons/services/notification_consent_manager.dart';
@@ -73,20 +74,35 @@ class CustomHomeController extends GetxController {
         final userId = DB.getUserSigninInfo()?.id;
         if (userId != null && userId.isNotEmpty) {
           await notificationService.setExternalUserId(userId);
+          // L'External ID ne suffit pas : les campagnes du backoffice enumerent
+          // la table device du backend, qui ignore cet appareil tant qu'il ne
+          // s'est pas declare. Sans cet appel, un connecte qui reinstalle ou
+          // change de telephone n'est joignable qu'apres une deconnexion suivie
+          // d'une reconnexion, seul chemin qui poste /devices aujourd'hui.
+          final deviceId = await notificationService.getDeviceId();
+          if (deviceId?.isNotEmpty == true) {
+            _sendDeviceId(deviceId, userId: userId);
+          } else {
+            OremusLogger.warning(
+                'deviceId indisponible : appareil non declare au backend pour $userId');
+          }
         }
       }
     });
   }
-  ///Function to send one signal device id
-  _sendDeviceId(String? deviceId) {
+  /// Declare l'appareil au backend. [userId] est fourni des qu'on le connait :
+  /// le backend rattache alors la ligne device au compte, ce qui conditionne le
+  /// ciblage par alias External ID. Sans lui, l'appareil reste anonyme.
+  _sendDeviceId(String? deviceId, {String? userId}) {
     SigninRepository signinRepository = Get.put<SigninRepository>(SigninRepository(ApiClientImpl()));
-    Signin request = Signin(deviceId: deviceId);
-    log('request annonymous _sendDeviceId => ${request.toJson()}');
+    Signin request = Signin(userId: userId, deviceId: deviceId);
+    final scope = userId == null ? 'anonyme' : 'utilisateur $userId';
+    OremusLogger.info('_sendDeviceId ($scope) => ${request.toJson()}');
 
     signinRepository.devices(request).then((value) {
-      log('_sendDeviceId annonymous successfully');
+      OremusLogger.info('_sendDeviceId ($scope) : appareil declare');
     }, onError: (error) {
-      debugPrint("error annonymous _sendDeviceId => ${error.toString()}");
+      OremusLogger.error("_sendDeviceId ($scope) en echec => ${error.toString()}");
     });
   }
 
