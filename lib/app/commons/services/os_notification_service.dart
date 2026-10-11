@@ -131,6 +131,21 @@ class OSNotificationService {
       // Device ID might change when subscription status changes, so update it
       getDeviceId();
     });
+
+    // L'identifiant de souscription n'existe PAS au demarrage : OneSignal doit
+    // d'abord s'enregistrer aupres d'Apple ou Google, et l'utilisateur doit
+    // avoir accepte les notifications. Le lire une seule fois juste apres
+    // l'init renvoie donc souvent null, et plus rien ne le reclame ensuite.
+    // Cet observateur publie l'identifiant des qu'il arrive (ou change), ce qui
+    // permet de declarer l'appareil au backend meme si l'utilisateur accepte la
+    // permission plusieurs minutes apres l'ouverture.
+    OneSignal.User.pushSubscription.addObserver((state) {
+      final id = state.current.id;
+      if (id != null && id.isNotEmpty && id != deviceId.value) {
+        log("🆔 Identifiant de souscription disponible : $id");
+        deviceId.value = id;
+      }
+    });
   }
 
   // Reset redirection flag (call this after navigation is complete)
