@@ -57,6 +57,11 @@ class CustomHomeController extends GetxController {
 
   initNotification() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // L'identifiant de souscription arrive de facon asynchrone, parfois
+      // plusieurs secondes apres l'init (et seulement une fois la permission
+      // accordee). On s'abonne AVANT la premiere lecture pour ne pas perdre la
+      // course : si l'identifiant n'est pas encore la, l'ecoute le rattrapera.
+      notificationService.deviceId.addListener(_declareDeviceWhenAvailable);
       await notificationService.initializeWithConsent(oneSignalAppID, Get.context!);
       if (!isUserConnected.value) {
         var deviceId = await notificationService.getDeviceId();
@@ -90,10 +95,29 @@ class CustomHomeController extends GetxController {
       }
     });
   }
+  /// Derniere declaration envoyee, sous la forme "deviceId|userId", pour ne pas
+  /// reposter en boucle. La cle inclut l'utilisateur : apres une connexion, le
+  /// meme appareil DOIT etre redeclare avec son userId pour etre rattache.
+  String? _lastDeclaration;
+
+  /// Appele quand l'identifiant de souscription arrive (ou change). C'est le
+  /// filet de securite du premier lancement : la lecture synchrone faite juste
+  /// apres l'init renvoie null tant que OneSignal n'a pas fini de s'enregistrer,
+  /// et sans cette ecoute l'appareil n'etait jamais declare de la session.
+  void _declareDeviceWhenAvailable() {
+    final deviceId = notificationService.deviceId.value;
+    if (deviceId == null || deviceId.isEmpty) return;
+    final rawUserId = isUserConnected.value ? DB.getUserSigninInfo()?.id : null;
+    final userId = (rawUserId?.isNotEmpty == true) ? rawUserId : null;
+    if ('$deviceId|${userId ?? ''}' == _lastDeclaration) return;
+    _sendDeviceId(deviceId, userId: userId);
+  }
+
   /// Declare l'appareil au backend. [userId] est fourni des qu'on le connait :
   /// le backend rattache alors la ligne device au compte, ce qui conditionne le
   /// ciblage par alias External ID. Sans lui, l'appareil reste anonyme.
   _sendDeviceId(String? deviceId, {String? userId}) {
+    _lastDeclaration = '$deviceId|${userId ?? ''}';
     SigninRepository signinRepository = Get.put<SigninRepository>(SigninRepository(ApiClientImpl()));
     Signin request = Signin(userId: userId, deviceId: deviceId);
     final scope = userId == null ? 'anonyme' : 'utilisateur $userId';
@@ -337,6 +361,12 @@ class CustomHomeController extends GetxController {
     } catch (ex) {
       log('Catch Error performAppUpdate ${ex.toString()}');
     }
+  }
+
+  @override
+  void onClose() {
+    notificationService.deviceId.removeListener(_declareDeviceWhenAvailable);
+    super.onClose();
   }
 
   doPerformAppUpdate() {
