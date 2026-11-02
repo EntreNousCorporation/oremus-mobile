@@ -17,22 +17,23 @@ import 'package:pull_to_refresh_simple/pull_to_refresh_simple.dart';
 class FavoriteController extends GetxController {
   final ParoisseRepository paroisseRepository;
 
-  FavoriteController({
-    required this.paroisseRepository,
-  });
+  FavoriteController({required this.paroisseRepository});
 
   var favorites = RxList<ContentPlace>([]);
   var isLoading = false.obs;
   var currentUserId = ''.obs;
 
   // Vérifier si l'utilisateur est connecté
-  bool get isUserLoggedIn => DB.getUserSigninInfo()?.id != null && DB.getUserSigninInfo()?.id?.isNotEmpty == true;
+  bool get isUserLoggedIn =>
+      DB.getUserSigninInfo()?.id != null &&
+      DB.getUserSigninInfo()?.id?.isNotEmpty == true;
 
   // Observer l'ID de l'utilisateur pour détecter les changements
   String? get userId => DB.getUserSigninInfo()?.id;
 
   final GlobalKey<AnimatedListState> key = GlobalKey();
-  RefreshController get refreshController => RefreshControllerFactory.getController('favorite_list');
+  RefreshController get refreshController =>
+      RefreshControllerFactory.getController('favorite_list');
 
   @override
   void onInit() {
@@ -79,14 +80,17 @@ class FavoriteController extends GetxController {
           log('Synced favorites cache is empty, fetching from server');
 
           // Obtenir les favoris depuis le serveur
-          var serverFavoritesResponse = await paroisseRepository.getServerFavorites();
-          List<ContentPlace?> serverFavorites = serverFavoritesResponse.contents ?? [];
+          var serverFavoritesResponse =
+              await paroisseRepository.getServerFavorites();
+          List<ContentPlace?> serverFavorites =
+              serverFavoritesResponse.contents ?? [];
 
           // Filtrer les valeurs nulles et convertir en liste de ContentPlace
-          syncedFavorites = serverFavorites
-              .where((item) => item != null)
-              .map((item) => item!)
-              .toList();
+          syncedFavorites =
+              serverFavorites
+                  .where((item) => item != null)
+                  .map((item) => item!)
+                  .toList();
 
           // Définir tous les favoris comme favoris (isFavorite = true)
           for (var favorite in syncedFavorites) {
@@ -96,7 +100,9 @@ class FavoriteController extends GetxController {
 
           // Sauvegarder dans le cache local
           DB.saveSyncedFavorites(syncedFavorites);
-          log('Saved ${syncedFavorites.length} favorites to synced cache for user: $currentUserId');
+          log(
+            'Saved ${syncedFavorites.length} favorites to synced cache for user: $currentUserId',
+          );
         }
 
         favorites.value = syncedFavorites;
@@ -116,7 +122,10 @@ class FavoriteController extends GetxController {
     }
   }
 
-  Future<void> removeToFavoriteList(ContentPlace? paroisseToRemove, int index) async {
+  Future<void> removeToFavoriteList(
+    ContentPlace? paroisseToRemove,
+    int index,
+  ) async {
     if (paroisseToRemove == null) return;
 
     log('Removing favorite: ${paroisseToRemove.name}');
@@ -132,30 +141,26 @@ class FavoriteController extends GetxController {
           paroisseToRemove.isUserFavorite = false;
 
           // Supprimer de la liste visuelle immédiatement
-          key.currentState!.removeItem(
-            index,
-                (_, animation) {
-              return SizeTransition(
-                sizeFactor: animation,
-                child: Card(
-                  margin: const EdgeInsets.all(8),
-                  elevation: 0,
-                  color: colorWhite,
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.all(8),
-                    title: Text(
-                      "",
-                      style: TextStyles.montserratMedium(
-                        textSize: TextSizes.fourteen,
-                        textColor: colorBlack,
-                      ),
+          key.currentState!.removeItem(index, (_, animation) {
+            return SizeTransition(
+              sizeFactor: animation,
+              child: Card(
+                margin: const EdgeInsets.all(8),
+                elevation: 0,
+                color: colorWhite,
+                child: ListTile(
+                  contentPadding: const EdgeInsets.all(8),
+                  title: Text(
+                    "",
+                    style: TextStyles.montserratMedium(
+                      textSize: TextSizes.fourteen,
+                      textColor: colorBlack,
                     ),
                   ),
                 ),
-              );
-            },
-            duration: const Duration(milliseconds: 300),
-          );
+              ),
+            );
+          }, duration: const Duration(milliseconds: 300));
 
           // Supprimer du repository (local et/ou serveur)
           await paroisseRepository.deleteFavorite(paroisseToRemove);
@@ -168,11 +173,14 @@ class FavoriteController extends GetxController {
           // Mettre à jour aussi dans ParoisseController si disponible
           try {
             final paroisseController = Get.find<ParoisseController>();
-            int paroisseIndex = paroisseController.paroisses.indexWhere((element) => element?.identifier == paroisseToRemove.identifier);
+            int paroisseIndex = paroisseController.paroisses.indexWhere(
+              (element) => element?.identifier == paroisseToRemove.identifier,
+            );
             if (paroisseIndex != -1) {
               paroisseController.paroisses[paroisseIndex]?.isFavorite = false;
-              paroisseController.paroisses[paroisseIndex]?.isUserFavorite = false;
-              paroisseController.paroisses.refresh();
+              paroisseController.paroisses[paroisseIndex]?.isUserFavorite =
+                  false;
+              paroisseController.pinFavoritesFirst(includeKnownFavorites: true);
             }
           } catch (e) {
             // Le contrôleur n'est pas disponible, rien à faire

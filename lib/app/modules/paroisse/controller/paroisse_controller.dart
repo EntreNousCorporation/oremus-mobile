@@ -18,6 +18,7 @@ import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/commons/utils.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/place_response.dart';
 import 'package:oremusapp/app/modules/paroisse/data/model/search_criteria.dart';
+import 'package:oremusapp/app/modules/paroisse/data/parish_list_order.dart';
 import 'package:oremusapp/app/modules/paroisse/data/repository/paroisse_repository.dart';
 import 'package:oremusapp/app/remote/custom_exception.dart';
 import 'package:oremusapp/app/remote/data_response.dart';
@@ -28,9 +29,7 @@ import 'package:pull_to_refresh_simple/pull_to_refresh_simple.dart';
 class ParoisseController extends GetxController {
   final ParoisseRepository paroisseRepository;
 
-  ParoisseController({
-    required this.paroisseRepository,
-  });
+  ParoisseController({required this.paroisseRepository});
 
   RxList<ContentPlace?> paroisses = RxList<ContentPlace?>([]);
 
@@ -45,7 +44,8 @@ class ParoisseController extends GetxController {
 
   var page = 0.obs;
 
-  RefreshController get refreshController => RefreshControllerFactory.getController('paroisse_list');
+  RefreshController get refreshController =>
+      RefreshControllerFactory.getController('paroisse_list');
 
   late TextEditingController searchController;
   var isSearchFieldEmpty = true.obs;
@@ -57,7 +57,10 @@ class ParoisseController extends GetxController {
   var offset = const Offset(16, 16).obs;
 
   // Observable pour suivre si l'utilisateur est connecté
-  RxBool get isUserLoggedIn => RxBool(DB.getUserSigninInfo()?.id != null && DB.getUserSigninInfo()?.id?.isNotEmpty == true);
+  RxBool get isUserLoggedIn => RxBool(
+    DB.getUserSigninInfo()?.id != null &&
+        DB.getUserSigninInfo()?.id?.isNotEmpty == true,
+  );
   // Obtenir l'ID de l'utilisateur actuel
   static String? get currentUserId => DB.getUserSigninInfo()?.id;
   static var userIdBeforeLogout = ''.obs;
@@ -67,13 +70,12 @@ class ParoisseController extends GetxController {
   // Pour savoir si c'est un format d'heure
   var isTimeFormatSearch = false.obs;
 
-// Variables pour le dialog de sélection d'horaire
+  // Variables pour le dialog de sélection d'horaire
   var selectedDay = ''.obs;
   var selectedStartTime = ''.obs;
   var selectedEndTime = ''.obs;
   var startTimeController = TextEditingController();
   var endTimeController = TextEditingController();
-
 
   @override
   void onInit() {
@@ -88,7 +90,8 @@ class ParoisseController extends GetxController {
     ever(isUserLoggedIn, (bool loggedIn) {
       if (loggedIn) {
         // Vérifier si c'est une nouvelle connexion
-        if (userIdBeforeLogout.isEmpty || userIdBeforeLogout.value != currentUserId) {
+        if (userIdBeforeLogout.isEmpty ||
+            userIdBeforeLogout.value != currentUserId) {
           log('New user logged in: $currentUserId');
 
           // Nettoyer les anciens favoris au cas où
@@ -128,12 +131,14 @@ class ParoisseController extends GetxController {
   }
 
   void _scrollListener() {
-    if (scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+    if (scrollController.position.userScrollDirection ==
+        ScrollDirection.reverse) {
       if (isExtended.isTrue) {
         isExtended.value = false;
       }
     }
-    if (scrollController.position.userScrollDirection == ScrollDirection.forward) {
+    if (scrollController.position.userScrollDirection ==
+        ScrollDirection.forward) {
       if (isExtended.isFalse) {
         isExtended.value = true;
       }
@@ -149,11 +154,13 @@ class ParoisseController extends GetxController {
     if (query.trim().isEmpty) return false;
 
     // Regex pour détecter les formats HH:mm ou HH:mm:ss
-    RegExp timeRegex = RegExp(r'^([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$');
+    RegExp timeRegex = RegExp(
+      r'^([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$',
+    );
     return timeRegex.hasMatch(query.trim());
   }
 
-// Méthode pour normaliser l'heure au format HH:mm:ss
+  // Méthode pour normaliser l'heure au format HH:mm:ss
   String _normalizeTimeFormat(String time) {
     String trimmedTime = time.trim();
     // Si le format est HH:mm, ajouter :00
@@ -188,10 +195,7 @@ class ParoisseController extends GetxController {
   }
 
   moveToLogin(String code) async {
-    var result = await Get.toNamed(
-      Routes.SIGNIN,
-      arguments: true,
-    );
+    var result = await Get.toNamed(Routes.SIGNIN, arguments: true);
     if (result == true) {
       log('back moveToLogin');
       switch (code) {
@@ -393,9 +397,9 @@ class ParoisseController extends GetxController {
                         CupertinoDialogAction(
                           child: const Text('OK'),
                           onPressed: () {
-                            Navigator.of(context).pop(
-                              TimeOfDay.fromDateTime(selectedTime),
-                            );
+                            Navigator.of(
+                              context,
+                            ).pop(TimeOfDay.fromDateTime(selectedTime));
                           },
                         ),
                       ],
@@ -403,7 +407,8 @@ class ParoisseController extends GetxController {
                   },
                 );
                 if (time != null) {
-                  String displayTime = "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
+                  String displayTime =
+                      "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
                   startTimeController.text = displayTime;
                 }
               },
@@ -441,7 +446,9 @@ class ParoisseController extends GetxController {
                 // Marquer comme recherche d'heure ET recherche simple
                 currentSearchType.value = SearchType.simple;
                 isTimeFormatSearch.value = true;
-                scheduleQuery.value = _normalizeTimeFormat(startTimeController.text);
+                scheduleQuery.value = _normalizeTimeFormat(
+                  startTimeController.text,
+                );
 
                 // Déclencher la recherche
                 doLaunchSimpleSearch();
@@ -450,9 +457,7 @@ class ParoisseController extends GetxController {
                 showNotification(message: 'Veuillez sélectionner une heure');
               }
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: colorGreen,
-            ),
+            style: ElevatedButton.styleFrom(backgroundColor: colorGreen),
             child: Text(
               'Rechercher',
               style: TextStyles.montserratSemiBold(
@@ -490,6 +495,103 @@ class ParoisseController extends GetxController {
     Get.toNamed(Routes.DONATION_WITHOUT_WORSHIP);
   }
 
+  /// Liste d'accueil, sans recherche ni filtre : tous les favoris connus
+  /// (cache local) sont fusionnés en tête. En recherche, on ne remonte
+  /// que les favoris déjà présents dans les résultats.
+  bool get _isUnfilteredHomeList {
+    if (currentSearchType.value != SearchType.advanced) return false;
+    if (searchController.text.trim().isNotEmpty) return false;
+    if ((searchCriteria.value.name ?? '').trim().isNotEmpty) return false;
+    return searchCriteria.value.isCriteriaEmpty == true;
+  }
+
+  List<ContentPlace> _knownFavoritesForCurrentList() {
+    if (!_isUnfilteredHomeList) return const [];
+    return paroisseRepository.getAllFavorites();
+  }
+
+  /// Favoris locaux, complétés par le serveur si l'utilisateur est connecté,
+  /// pour qu'un favori hors de la première page alphabétique soit quand même en tête.
+  Future<List<ContentPlace>> _loadKnownFavorites() async {
+    if (!_isUnfilteredHomeList) return const [];
+    final local = paroisseRepository.getAllFavorites();
+    if (isUserLoggedIn.value != true) return local;
+
+    try {
+      final remote = <ContentPlace>[];
+      var pageIndex = 0;
+      while (pageIndex < 20) {
+        final response = await paroisseRepository.getServerFavorites(
+          page: pageIndex,
+        );
+        final batch =
+            (response.contents ?? []).whereType<ContentPlace>().toList();
+        for (final place in batch) {
+          place.isFavorite = true;
+          place.isUserFavorite = true;
+        }
+        remote.addAll(batch);
+        if (response.last != false || batch.isEmpty) break;
+        pageIndex++;
+      }
+      if (remote.isEmpty) return local;
+
+      final byId = <dynamic, ContentPlace>{};
+      for (final place in remote) {
+        if (place.identifier != null) byId[place.identifier] = place;
+      }
+      for (final place in local) {
+        place.isFavorite = true;
+        final id = place.identifier;
+        if (id != null && !byId.containsKey(id)) {
+          byId[id] = place;
+        }
+      }
+      return byId.values.toList();
+    } catch (e, stackTrace) {
+      OremusLogger.error('Chargement des favoris pour le tri: $e\n$stackTrace');
+      return local;
+    }
+  }
+
+  List<ContentPlace?> _orderedParishes(
+    List<ContentPlace?> parishes, {
+    bool includeKnownFavorites = true,
+    List<ContentPlace>? knownFavorites,
+  }) {
+    return orderParishesFavoritesFirst(
+      parishes,
+      knownFavorites:
+          knownFavorites ??
+          (includeKnownFavorites ? _knownFavoritesForCurrentList() : const []),
+      sortRemainderByName: _isUnfilteredHomeList,
+    );
+  }
+
+  void _replaceParishes(
+    List<ContentPlace?> contents, {
+    List<ContentPlace>? knownFavorites,
+  }) {
+    paroisses.assignAll(
+      _orderedParishes(contents, knownFavorites: knownFavorites),
+    );
+  }
+
+  void _appendParishes(List<ContentPlace?> contents) {
+    paroisses.assignAll(_orderedParishes([...paroisses, ...contents]));
+  }
+
+  /// Favoris en tête de la liste affichée. [includeKnownFavorites] réinjecte
+  /// le cache une fois l'enregistrement terminé.
+  void pinFavoritesFirst({bool includeKnownFavorites = false}) {
+    paroisses.assignAll(
+      _orderedParishes(
+        paroisses.toList(),
+        includeKnownFavorites: includeKnownFavorites,
+      ),
+    );
+  }
+
   ///Chargement initial des paroisses
   getParoisses() {
     hideKeyboard();
@@ -501,10 +603,14 @@ class ParoisseController extends GetxController {
     log('request getParoisses - IsUserLoggedIn: ${isUserLoggedIn.value}');
 
     Future<DataResponse<ContentPlace>> searchFuture;
+    final knownFavoritesFuture = _loadKnownFavorites();
 
     if (currentSearchType.value == SearchType.simple) {
       // Recherche simple (texte ou heure) - utilise toujours l'endpoint /worship-places
-      String query = scheduleQuery.value.isNotEmpty ? scheduleQuery.value : searchController.text.trim();
+      String query =
+          scheduleQuery.value.isNotEmpty
+              ? scheduleQuery.value
+              : searchController.text.trim();
 
       searchFuture = paroisseRepository.getParoissesBySchedule(
         page: 0,
@@ -518,51 +624,61 @@ class ParoisseController extends GetxController {
       );
     }
 
-    searchFuture.then((value) {
-      isDataProcessing(false);
-      paroisses.value = value.contents ?? [];
-
-      // Log pour vérifier les favoris
-      int favoritesCount = paroisses.where((p) => p?.isFavorite == true).length;
-      log('Loaded ${paroisses.length} parishes, $favoritesCount are favorites');
-
-      if (paroisses.isNotEmpty == true) {
-        hasData(true);
-      } else {
-        hasData(false);
-      }
-
-      if (value.last == false) {
-        page.value += 1;
-      } else {
-        refreshController.loadNoData();
-      }
-    }).catchError((error, stackTrace) {
-      isDataProcessing(false);
-      hasData(false);
-
-      OremusLogger.error(
-        'getParoisses failed: ${error.runtimeType} -> $error\n$stackTrace',
-      );
-
-      if (error is CustomException) {
-        if (error.code.toString().contains('401')) {
-          showCustomDialog(
-            Get.context!,
-            message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-          ).then((value) {
-            doLogout();
-          });
-        } else {
-          showNotification(
-            message:
-                'Erreur lors du chargement des données: ${error.code.toString()}',
+    searchFuture
+        .then((value) async {
+          final knownFavorites = await knownFavoritesFuture;
+          isDataProcessing(false);
+          _replaceParishes(
+            value.contents ?? [],
+            knownFavorites: knownFavorites,
           );
-        }
-      } else {
-        showNotification(message: 'Erreur lors du chargement des données');
-      }
-    });
+
+          // Log pour vérifier les favoris
+          int favoritesCount =
+              paroisses.where((p) => p?.isFavorite == true).length;
+          log(
+            'Loaded ${paroisses.length} parishes, $favoritesCount are favorites',
+          );
+
+          if (paroisses.isNotEmpty == true) {
+            hasData(true);
+          } else {
+            hasData(false);
+          }
+
+          if (value.last == false) {
+            page.value += 1;
+          } else {
+            refreshController.loadNoData();
+          }
+        })
+        .catchError((error, stackTrace) {
+          isDataProcessing(false);
+          hasData(false);
+
+          OremusLogger.error(
+            'getParoisses failed: ${error.runtimeType} -> $error\n$stackTrace',
+          );
+
+          if (error is CustomException) {
+            if (error.code.toString().contains('401')) {
+              showCustomDialog(
+                Get.context!,
+                message:
+                    'Votre session a expiré\nVeuillez-vous reconnecter svp',
+              ).then((value) {
+                doLogout();
+              });
+            } else {
+              showNotification(
+                message:
+                    'Erreur lors du chargement des données: ${error.code.toString()}',
+              );
+            }
+          } else {
+            showNotification(message: 'Erreur lors du chargement des données');
+          }
+        });
   }
 
   ///Réinitialisation de la liste des paroisses
@@ -575,9 +691,13 @@ class ParoisseController extends GetxController {
     page.value = 0;
 
     Future<DataResponse<ContentPlace>> searchFuture;
+    final knownFavoritesFuture = _loadKnownFavorites();
 
     if (currentSearchType.value == SearchType.simple) {
-      String query = scheduleQuery.value.isNotEmpty ? scheduleQuery.value : searchController.text.trim();
+      String query =
+          scheduleQuery.value.isNotEmpty
+              ? scheduleQuery.value
+              : searchController.text.trim();
 
       log('request onRefresh - using query: $query');
 
@@ -592,40 +712,44 @@ class ParoisseController extends GetxController {
       );
     }
 
-    searchFuture.then((value) {
-      refreshController.refreshCompleted();
-      paroisses.value = value.contents ?? [];
+    searchFuture.then(
+      (value) async {
+        final knownFavorites = await knownFavoritesFuture;
+        refreshController.refreshCompleted();
+        _replaceParishes(value.contents ?? [], knownFavorites: knownFavorites);
 
-      // Log pour vérifier les favoris après refresh
-      int favoritesCount = paroisses.where((p) => p?.isFavorite == true).length;
-      log('Refreshed: ${paroisses.length} parishes, $favoritesCount are favorites');
+        // Log pour vérifier les favoris après refresh
+        int favoritesCount =
+            paroisses.where((p) => p?.isFavorite == true).length;
+        log(
+          'Refreshed: ${paroisses.length} parishes, $favoritesCount are favorites',
+        );
 
-      if (value.last == false) {
-        page.value += 1;
-      } else {
-        refreshController.loadNoData();
-      }
-    }, onError: (error, stackTrace) {
-      refreshController.refreshCompleted();
-      OremusLogger.error(
-        'onRefresh failed: ${error.runtimeType} -> $error\n$stackTrace',
-      );
-      if (error is CustomException) {
-        if (error.code.toString().contains('401')) {
-          showCustomDialog(
-            Get.context!,
-            message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-          ).then((value) {
-            doLogout();
-          });
-        } else if (error.code.toString().contains('900')) {
-          showCustomDialog(
-            Get.context!,
-            message: error.message.toString(),
-          );
+        if (value.last == false) {
+          page.value += 1;
+        } else {
+          refreshController.loadNoData();
         }
-      }
-    });
+      },
+      onError: (error, stackTrace) {
+        refreshController.refreshCompleted();
+        OremusLogger.error(
+          'onRefresh failed: ${error.runtimeType} -> $error\n$stackTrace',
+        );
+        if (error is CustomException) {
+          if (error.code.toString().contains('401')) {
+            showCustomDialog(
+              Get.context!,
+              message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+            ).then((value) {
+              doLogout();
+            });
+          } else if (error.code.toString().contains('900')) {
+            showCustomDialog(Get.context!, message: error.message.toString());
+          }
+        }
+      },
+    );
   }
 
   ///Pagination des paroisses
@@ -639,7 +763,10 @@ class ParoisseController extends GetxController {
 
     if (currentSearchType.value == SearchType.simple) {
       // Recherche simple avec pagination (endpoint /worship-places)
-      String query = scheduleQuery.value.isNotEmpty ? scheduleQuery.value : searchController.text.trim();
+      String query =
+          scheduleQuery.value.isNotEmpty
+              ? scheduleQuery.value
+              : searchController.text.trim();
 
       searchFuture = paroisseRepository.getParoissesBySchedule(
         page: page.value,
@@ -654,55 +781,61 @@ class ParoisseController extends GetxController {
       );
     }
 
-    searchFuture.then((value) {
-      paroisses.addAll(value.contents ?? []);
-      paroisses.refresh();
-      refreshController.loadComplete();
-      log('Total paroisses after loading: ${paroisses.length}');
+    searchFuture.then(
+      (value) {
+        _appendParishes(value.contents ?? []);
+        refreshController.loadComplete();
+        log('Total paroisses after loading: ${paroisses.length}');
 
-      // Log pour vérifier les favoris après refresh
-      int favoritesCount = paroisses.where((p) => p?.isFavorite == true).length;
-      log('Refreshed: ${paroisses.length} parishes, $favoritesCount are favorites');
+        // Log pour vérifier les favoris après refresh
+        int favoritesCount =
+            paroisses.where((p) => p?.isFavorite == true).length;
+        log(
+          'Refreshed: ${paroisses.length} parishes, $favoritesCount are favorites',
+        );
 
-      if (value.last == false) {
-        page.value += 1;
-      } else {
-        refreshController.loadNoData();
-      }
-    }, onError: (error, stackTrace) {
-      refreshController.loadFailed();
-      OremusLogger.error(
-        'onLoading failed: ${error.runtimeType} -> $error\n$stackTrace',
-      );
-      if (error is CustomException) {
-        if (error.code == 401) {
-          showCustomDialog(
-            Get.context!,
-            message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
-          ).then((value) {
-            doLogout();
-          });
-        } else if (error.code == 900) {
-          showNotification(message: error.message.toString());
+        if (value.last == false) {
+          page.value += 1;
+        } else {
+          refreshController.loadNoData();
+        }
+      },
+      onError: (error, stackTrace) {
+        refreshController.loadFailed();
+        OremusLogger.error(
+          'onLoading failed: ${error.runtimeType} -> $error\n$stackTrace',
+        );
+        if (error is CustomException) {
+          if (error.code == 401) {
+            showCustomDialog(
+              Get.context!,
+              message: 'Votre session a expiré\nVeuillez-vous reconnecter svp',
+            ).then((value) {
+              doLogout();
+            });
+          } else if (error.code == 900) {
+            showNotification(message: error.message.toString());
+          } else {
+            showNotification(
+              message: 'Erreur lors du chargement des données supplémentaires',
+            );
+          }
         } else {
           showNotification(
             message: 'Erreur lors du chargement des données supplémentaires',
           );
         }
-      } else {
-        showNotification(
-          message: 'Erreur lors du chargement des données supplémentaires',
-        );
-      }
-    });
+      },
+    );
   }
 
   ///on vérifie si la paroisse est dans la liste des favoris
   bool isWorshipPlaceFavorite(ContentPlace? paroisse) {
     var isFavorite = false;
     var favorites = paroisseRepository.getAllFavorites();
-    var hasParoisse = favorites
-        .indexWhere((element) => element.identifier == paroisse?.identifier);
+    var hasParoisse = favorites.indexWhere(
+      (element) => element.identifier == paroisse?.identifier,
+    );
     if (hasParoisse != -1) {
       isFavorite = true;
     } else {
@@ -722,28 +855,33 @@ class ParoisseController extends GetxController {
 
     try {
       // Mettre à jour l'UI immédiatement
-      int index = paroisses.indexWhere((element) => element?.identifier == paroisse.identifier);
+      int index = paroisses.indexWhere(
+        (element) => element?.identifier == paroisse.identifier,
+      );
       if (index != -1) {
         paroisses[index]?.isFavorite = true;
         // Si l'utilisateur est connecté, on anticipe aussi la mise à jour de isUserFavorite
         if (isUserLoggedIn.value) {
           paroisses[index]?.isUserFavorite = true;
         }
-        paroisses.refresh();
+        pinFavoritesFirst();
       }
 
       // Sauvegarder le favori
       await paroisseRepository.addFavorite(paroisse);
+      pinFavoritesFirst(includeKnownFavorites: true);
     } catch (e) {
       log('Error saving favorite: $e');
       // Restaurer l'état en cas d'erreur
-      int index = paroisses.indexWhere((element) => element?.identifier == paroisse.identifier);
+      int index = paroisses.indexWhere(
+        (element) => element?.identifier == paroisse.identifier,
+      );
       if (index != -1) {
         paroisses[index]?.isFavorite = false;
         if (isUserLoggedIn.value) {
           paroisses[index]?.isUserFavorite = false;
         }
-        paroisses.refresh();
+        pinFavoritesFirst();
       }
     }
   }
@@ -759,28 +897,33 @@ class ParoisseController extends GetxController {
 
     try {
       // Mettre à jour l'UI immédiatement
-      int index = paroisses.indexWhere((element) => element?.identifier == paroisse.identifier);
+      int index = paroisses.indexWhere(
+        (element) => element?.identifier == paroisse.identifier,
+      );
       if (index != -1) {
         paroisses[index]?.isFavorite = false;
         // Si l'utilisateur est connecté, on anticipe aussi la mise à jour de isUserFavorite
         if (isUserLoggedIn.value) {
           paroisses[index]?.isUserFavorite = false;
         }
-        paroisses.refresh();
+        pinFavoritesFirst();
       }
 
       // Supprimer le favori
       await paroisseRepository.deleteFavorite(paroisse);
+      pinFavoritesFirst(includeKnownFavorites: true);
     } catch (e) {
       log('Error removing favorite: $e');
       // Restaurer l'état en cas d'erreur
-      int index = paroisses.indexWhere((element) => element?.identifier == paroisse.identifier);
+      int index = paroisses.indexWhere(
+        (element) => element?.identifier == paroisse.identifier,
+      );
       if (index != -1) {
         paroisses[index]?.isFavorite = true;
         if (isUserLoggedIn.value) {
           paroisses[index]?.isUserFavorite = true;
         }
-        paroisses.refresh();
+        pinFavoritesFirst();
       }
     }
   }
@@ -792,18 +935,21 @@ class ParoisseController extends GetxController {
           padding: const EdgeInsets.all(5.0),
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-            child: (paroisse?.coverImage?.link?.isNotEmpty == true)
-                ? CachedNetworkImage(
-                    imageUrl: paroisse?.coverImage?.link ?? '',
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => SizedBox(
-                        width: Get.width / 4,
-                        height: Get.width / 4,
-                        child: LottieLoadingView(size: Get.width / 6)),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                  )
-                : null,
+            child:
+                (paroisse?.coverImage?.link?.isNotEmpty == true)
+                    ? CachedNetworkImage(
+                      imageUrl: paroisse?.coverImage?.link ?? '',
+                      fit: BoxFit.cover,
+                      placeholder:
+                          (context, url) => SizedBox(
+                            width: Get.width / 4,
+                            height: Get.width / 4,
+                            child: LottieLoadingView(size: Get.width / 6),
+                          ),
+                      errorWidget:
+                          (context, url, error) => const Icon(Icons.error),
+                    )
+                    : null,
           ),
         ),
         message: '«${paroisse?.name}» a été rajouté dans vos favoris',
@@ -815,18 +961,21 @@ class ParoisseController extends GetxController {
           padding: const EdgeInsets.all(5.0),
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-            child: (paroisse?.coverImage?.link?.isNotEmpty == true)
-                ? CachedNetworkImage(
-                    imageUrl: paroisse?.coverImage?.link ?? '',
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => SizedBox(
-                        width: Get.width / 4,
-                        height: Get.width / 4,
-                        child: LottieLoadingView(size: Get.width / 6)),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                  )
-                : null,
+            child:
+                (paroisse?.coverImage?.link?.isNotEmpty == true)
+                    ? CachedNetworkImage(
+                      imageUrl: paroisse?.coverImage?.link ?? '',
+                      fit: BoxFit.cover,
+                      placeholder:
+                          (context, url) => SizedBox(
+                            width: Get.width / 4,
+                            height: Get.width / 4,
+                            child: LottieLoadingView(size: Get.width / 6),
+                          ),
+                      errorWidget:
+                          (context, url, error) => const Icon(Icons.error),
+                    )
+                    : null,
           ),
         ),
         message: '«${paroisse?.name}» a été retiré des favoris',
@@ -843,10 +992,7 @@ class ParoisseController extends GetxController {
   goToParoisseDetail(ContentPlace? paroisse, int index) async {
     await Get.toNamed(
       Routes.PAROISSE_MENU,
-      arguments: [
-        index,
-        paroisse?.toJson(),
-      ],
+      arguments: [index, paroisse?.toJson()],
     );
     //on met à jour la liste au cas où favoris mis à jour
     //paroisses[index]?.isFavorite = isWorshipPlaceFavorite(paroisse);
@@ -865,7 +1011,6 @@ class ParoisseController extends GetxController {
     log('searchCriteria => ${searchCriteria.value.toJson().toString()}');
     log('searchCriteria isEmpty => ${searchCriteria.value.isCriteriaEmpty}');
   }
-
 
   //SEARCH SECTION
 
