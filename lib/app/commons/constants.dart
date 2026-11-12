@@ -66,6 +66,9 @@ abstract class AppConstants {
   static const ROSAIRE = 12;
   static const LIFE_PLAN = 13;
   static const MASS_READINGS = 14;
+  static const CATHOQUIZ = 15;
+
+  static const CATHOQUIZ_URL = 'https://rec-prodeo.vercel.app/cathoquiz';
 
   static const MIN_AMOUNT = 100;
 

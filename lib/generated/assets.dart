@@ -46,6 +46,7 @@ class Assets {
   static const String imagesAvatar = 'assets/images/avatar.svg';
   static const String imagesBgLogin = 'assets/images/bg_login.jpg';
   static const String imagesCalendar = 'assets/images/calendar.svg';
+  static const String imagesCathoquizLogo = 'assets/images/cathoquiz_logo.png';
   static const String imagesCheck = 'assets/images/check.svg';
   static const String imagesChecklist = 'assets/images/checklist.svg';
   static const String imagesConfessionIcon = 'assets/images/confession_icon.svg';

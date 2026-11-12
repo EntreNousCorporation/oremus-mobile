@@ -200,6 +200,12 @@ class CustomHomeController extends GetxController {
         isVisible: false,
       ),
       MenusItem(
+        code: AppConstants.CATHOQUIZ,
+        libelle: 'CathoQuiz',
+        icon: Assets.imagesCathoquizLogo,
+        isVisible: true,
+      ),
+      MenusItem(
         code: AppConstants.SHARE_APP,
         libelle: "Partager l'application",
         icon: Assets.imagesShareIcon,

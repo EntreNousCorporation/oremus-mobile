@@ -37,12 +37,19 @@ class DrawerMenuItem extends StatelessWidget {
                   ),
                 ),
                 Separators.minimunHorizontal(),
-                SvgPicture.asset(
-                  menu.icon ?? '',
-                  width: 20,
-                  colorFilter: const ColorFilter.mode(colorWhite, BlendMode.srcIn),
-                  fit: BoxFit.fill,
-                ),
+                (menu.icon ?? '').toLowerCase().endsWith('.svg')
+                    ? SvgPicture.asset(
+                        menu.icon ?? '',
+                        width: 20,
+                        colorFilter: const ColorFilter.mode(
+                            colorWhite, BlendMode.srcIn),
+                        fit: BoxFit.fill,
+                      )
+                    : Image.asset(
+                        menu.icon ?? '',
+                        width: 24,
+                        fit: BoxFit.contain,
+                      ),
                 Separators.normalHorizontal(),
                 Text(
                   menu.libelle ?? '',

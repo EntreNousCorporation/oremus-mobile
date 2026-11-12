@@ -2,8 +2,8 @@ name: oremusapp
 description: A new Flutter project.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.2.14+35 #PROD
-#version: 1.0.18+77
+#version: 1.2.14+35 #PROD
+version: 1.0.18+77
 
 environment:
   sdk: ^3.7.0
@@ -92,7 +92,7 @@ dependencies:
 
   #AUDIO
   #just_audio: ^0.9.46
-  just_audio: ^0.10.0
+  just_audio: ^0.10.6
   audio_session: ^0.1.25
   just_audio_background: ^0.0.1-beta.15
   just_waveform: ^0.0.7

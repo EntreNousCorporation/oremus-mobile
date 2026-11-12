@@ -7,6 +7,7 @@ import 'package:oremusapp/app/commons/theme/app_colors.dart';
 import 'package:oremusapp/app/commons/theme/app_text_theme.dart';
 import 'package:oremusapp/app/modules/about/views/about_screen.dart';
 import 'package:oremusapp/app/modules/contact/views/contact_screen.dart';
+import 'package:oremusapp/app/modules/cathoquiz/views/cathoquiz_screen.dart';
 import 'package:oremusapp/app/modules/customhome/controller/custom_home_controller.dart';
 import 'package:oremusapp/app/modules/customhome/views/widget/drawer_menu.dart';
 import 'package:oremusapp/app/modules/donation/views/donation_menu_screen.dart';
@@ -66,6 +67,10 @@ class CustomHomeNewScreen extends StatelessWidget {
               case AppConstants.MASS_READINGS:
                 logic.title.value = logic.menus[position].libelle ?? 'Lectures du jour';
                 screenCurrent = const MassReadingsScreen();
+                break;
+              case AppConstants.CATHOQUIZ:
+                logic.title.value = logic.menus[position].libelle ?? 'CathoQuiz';
+                screenCurrent = const CathoQuizScreen();
                 break;
               case AppConstants.REQUEST_MASS_WITHOUT_WORSHIP:
                 logic.title.value =
